@@ -64,3 +64,72 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model BingSearchTerms {
+    id            String    @id @default(cuid())
+    terms         String?
+    impressions   Int?
+    clicks        Int?
+    date      String?
+}
+
+model GoogleSearchTerms {
+    id            String    @id @default(cuid())
+    terms         String?
+    impressions   Int?
+    clicks        Int?
+    date      String?
+}
+
+model LeadEntry {
+    id                  String    @id @default(cuid())
+    leadID              Int?
+    leadNo              Int?
+    leadStatus          Int?
+    leadDate            String?
+    organisationID      Int?
+    channel             Int?
+    fieldOfInterest     Int?
+    specificOfInterest  String?
+    parameterOfInteres  String?
+    diagnosisOfInterest String?
+    matrixOfInterest    String?
+    quantityOfInterest  String?
+    lastEdited          DateTime?
+}
+
+model OrderEntry {
+    id                      String    @id @default(cuid())
+    customerID              Int?
+    orderID                 Int?
+    orderDate               DateTime?
+    oderPrice               Int?
+    storageTemp             String?
+    donorID                 String?
+    cbhSampleID             String?
+    matrix                  String?
+    supplierID              Int?
+    supplierSampleID        String?
+    productID               Int?
+    countryID               Int?
+    quantity                Float?
+    unit                    String?
+    age                     Int?
+    gender                  String?
+    ethnicity               String?
+    labParameter            String?
+    resultNumerical         Int?
+    resultUnit              String?
+    resultInterpretation    String?
+    testMethod              String?
+    testKitManufacturer     String?
+    testSystemManufacturer  String?
+    diagnosis               String?
+    icd                     String?
+    histologicalDiagnosis   String?
+    organ                   String?
+    collectionCountry       String?
+    collectionDate          DateTime?
+    lstEdited               DateTime?
+}
+
