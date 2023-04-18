@@ -8,7 +8,8 @@ import Header from "~/components/header";
 import Sidebar from "~/components/sidebar";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const samples = api.samples.getAll.useQuery({ pages: 1, lines: 1, search: "j"})
+  console.log(samples.data?.at(0)?.cbhDonorID)
 
   return (
     <>
@@ -28,7 +29,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const AuthShowcase: React.FC = () => {
+/*const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
@@ -50,4 +51,4 @@ const AuthShowcase: React.FC = () => {
       </button>
     </div>
   );
-};
+};*/
