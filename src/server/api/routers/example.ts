@@ -7,19 +7,29 @@ import {
 } from "~/server/api/trpc";
 
 export const exampleRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
+  //Read
+  getAll: publicProcedure
+    .input(z.object({ pages: z.number(), lines: z.number(), search: z.string() }))
+    .query(({ ctx, input }) => {
+    return ctx.prisma.samples.findMany({ 
+      take: input.lines, 
+      skip: (input.pages -1) * input.lines,
+      where: {
+        cbhDonorID: {
+          search: input.search,
+        },
+      },
+    });
+  }),
+
+  //Delete
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input}) => {
+      return ctx.prisma.samples.delete({
+        where: {
+          id: input.id,
+        },
+      });
     }),
-
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
-  }),
-
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
 });

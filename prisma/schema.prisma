@@ -3,6 +3,7 @@
 
 generator client {
     provider = "prisma-client-js"
+    previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -65,7 +66,7 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-model OrderEntry {
+model Samples {
     id                                  String    @id @default(cuid())
     cbhDonorID                          String?
     cbhMasterID                         String?
