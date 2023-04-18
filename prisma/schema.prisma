@@ -65,71 +65,59 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-model BingSearchTerms {
-    id            String    @id @default(cuid())
-    terms         String?
-    impressions   Int?
-    clicks        Int?
-    date      String?
-}
-
-model GoogleSearchTerms {
-    id            String    @id @default(cuid())
-    terms         String?
-    impressions   Int?
-    clicks        Int?
-    date      String?
-}
-
-model LeadEntry {
-    id                  String    @id @default(cuid())
-    leadID              Int?
-    leadNo              Int?
-    leadStatus          Int?
-    leadDate            String?
-    organisationID      Int?
-    channel             Int?
-    fieldOfInterest     Int?
-    specificOfInterest  String?
-    parameterOfInteres  String?
-    diagnosisOfInterest String?
-    matrixOfInterest    String?
-    quantityOfInterest  String?
-    lastEdited          DateTime?
-}
-
 model OrderEntry {
-    id                      String    @id @default(cuid())
-    customerID              Int?
-    orderID                 Int?
-    orderDate               DateTime?
-    oderPrice               Int?
-    storageTemp             String?
-    donorID                 String?
-    cbhSampleID             String?
-    matrix                  String?
-    supplierID              Int?
-    supplierSampleID        String?
-    productID               Int?
-    countryID               Int?
-    quantity                Float?
-    unit                    String?
-    age                     Int?
-    gender                  String?
-    ethnicity               String?
-    labParameter            String?
-    resultNumerical         Int?
-    resultUnit              String?
-    resultInterpretation    String?
-    testMethod              String?
-    testKitManufacturer     String?
-    testSystemManufacturer  String?
-    diagnosis               String?
-    icd                     String?
-    histologicalDiagnosis   String?
-    organ                   String?
-    collectionCountry       String?
-    collectionDate          DateTime?
-    lstEdited               DateTime?
+    id                                  String    @id @default(cuid())
+    cbhDonorID                          String?
+    cbhMasterID                         String?
+    cbhSampleID                         String?
+    price                               Int?
+    quantity                            Float?
+    unit                                String?
+    matrix                              String?
+    storageTemperature                  String?
+    freezeThawCycles                    Int?
+    sampleCondition                     String?
+    infectiousDeiseaseTestResult        String?
+    gender                              String?
+    age                                 Int?
+    ethnicity                           String?
+    bmi                                 Int?
+    labParameter                        String?
+    resultInterpretation                String?
+    resltRaw                            Float?
+    resultNumerical                     Float?
+    resultUnit                          String?
+    cutOffRaw                           String?
+    cutOffNumerical                     Float?
+    testMethod                          String?
+    testSystem                          String?
+    testSystemManufacturer              String?
+    resultObtainedFrom                  String?
+    diagnosis                           String?
+    diagnosisRemarks                    String?
+    ICDCode                             String?
+    pregnancyWeek                       Int?
+    pregnancyTrimester                  String?
+    medication                          String?
+    therapy                             String?
+    histologicalDiagnosis               String?
+    organ                               String?
+    diseasePresentation                 String?
+    TNMClassN                           String?
+    TNMClassM                           String?
+    tumorGrade                          String?
+    tumorStage                          String?
+    viableCellsPer                      String?
+    necroticCellsPer                    String?
+    tumorCellsPer                       String?
+    proliferationRate                   String?
+    estrogenReceptor                    String?
+    progesteronReceptor                 String?
+    HER2Receptor                        String?
+    otherGeneMutations                  String?
+    countryOfCollection                 String?
+    dateOfCollection                    DateTime?
+    procurementType                     String?
+    informedConsent                     String?
 }
 
