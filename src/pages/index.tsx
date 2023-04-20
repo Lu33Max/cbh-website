@@ -3,13 +3,15 @@ import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
-import { api } from "~/utils/api";
+//import { api } from "~/utils/api";
 import Header from "~/components/header";
 import Sidebar from "~/components/sidebar";
+import Search from "~/components/search";
 
 const Home: NextPage = () => {
-  const samples = api.samples.getAll.useQuery({ pages: 1, lines: 1, search: "j"})
-  console.log(samples.data?.at(0)?.cbhDonorID)
+  //const samples = api.samples.getAll.useQuery({ pages: 1, lines: 20, search: "blood | gore"})
+  //console.log(samples.data?.at(0)?.cbhDonorID)
+  //console.log(samples.data?.length)
 
   return (
     <>
@@ -22,6 +24,7 @@ const Home: NextPage = () => {
       <main className="bg-gray-200 min-h-screen">
         <Header/>
         <Sidebar/>
+        <Search/>
       </main>
     </>
   );

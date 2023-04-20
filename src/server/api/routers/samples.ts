@@ -15,14 +15,22 @@ export const sampleRouter = createTRPCRouter({
                 take: input.lines, 
                 skip: (input.pages -1) * input.lines,
                 where: {
-                    cbhDonorID: {
-                        contains: input.search,
-                    },
+                    OR: [
+                    { cbhDonorID: { search: input.search, mode: 'insensitive' } },
+                    { cbhMasterID: { search: input.search, mode: 'insensitive' } },
+                    { cbhSampleID: { search: input.search, mode: 'insensitive' } },
+                    { labParameter: { search: input.search, mode: 'insensitive' } },
+                    { diagnosis: { search: input.search, mode: 'insensitive' } },
+                    { matrix: { search: input.search, mode: 'insensitive' } },
+                    { ICDCode: { search: input.search, mode: 'insensitive' } },
+                    { resultInterpretation: { search: input.search, mode: 'insensitive' } },
+                    { resultUnit: { search: input.search, mode: 'insensitive' } },
+                    ]
                 },
             });
         }),
 
-  // Delete
+    // Delete
     delete: publicProcedure
         .input(z.object({ id: z.string() }))
         .mutation(async ({ ctx, input}) => {
