@@ -1,17 +1,23 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
 
 //import { api } from "~/utils/api";
 import Header from "~/components/header";
 import Sidebar from "~/components/sidebar";
 import Search from "~/components/search";
 
+type test = {
+  num: number,
+  obj: string | test
+}
+
 const Home: NextPage = () => {
-  //const samples = api.samples.getAll.useQuery({ pages: 1, lines: 20, search: "blood | gore"})
-  //console.log(samples.data?.at(0)?.cbhDonorID)
-  //console.log(samples.data?.length)
+  //const samples = api.samples.getAll.useQuery({ pages: 1, lines: 1, search: ""})
+  const samples = api.samples.test.useQuery({obj: "juju"})
+  console.table(samples.data)
+
+  const t: test = {num: 0, obj: { num: 2, obj: "hi"}}
+  console.log(t)
 
   return (
     <>
@@ -21,10 +27,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       
-      <main className="bg-gray-200 min-h-screen">
+      <main className="bg-gray-200 min-h-screen overflow-x-hidden">
         <Header/>
-        <Sidebar/>
-        <Search/>
+        <span className="grid grid-cols-7">
+            <Sidebar/>
+        </span>
       </main>
     </>
   );
