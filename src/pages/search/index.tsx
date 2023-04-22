@@ -37,7 +37,7 @@ const Search: NextPage = () => {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       
-      <main className="bg-gray-200 min-h-screen overflow-x-hidden">
+      <main className="bg-gray-200 min-h-screen">
         <Header/>
         <span className="grid grid-cols-7">
             <Sidebar/>
@@ -78,12 +78,17 @@ const Content: React.FC = () => {
   const [filter, setFilter] = useState<Filter>(defaultFilter)
 
   const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
-      { pages: undefined, lines: undefined, search: search }
+      { pages: undefined, lines: undefined, search: search, filter: filter }
   )
 
   useEffect(() => {
     void refetchSamples()
   }, [search, refetchSamples])
+
+  useEffect(() => {
+    //void refetchSamples()
+    console.log(filter.labParameter)
+  }, [filter, refetchSamples])
 
   return(
       <div>
@@ -92,7 +97,126 @@ const Content: React.FC = () => {
             setSearch(e.currentTarget.value)
             e.currentTarget.value = ""
           }
-        }}/>
+        }}/><br/>
+        <label>cbhMasterID </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = e.currentTarget.value
+            setFilter(filter => ({...filter, cbhMasterID: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
+        <label>cbhDonorID </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = e.currentTarget.value
+            setFilter(filter => ({...filter, cbhDonorID: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
+        <label>cbhSampleID </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = e.currentTarget.value
+            setFilter(filter => ({...filter, cbhSampleID: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
+        <label>min price </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.price
+            temp.min = parseFloat(e.currentTarget.value)
+            setFilter(filter => ({...filter, price: temp}))
+          }
+        }}/><br/>
+        <label>max price </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.price
+            temp.max = parseFloat(e.currentTarget.value)
+            setFilter(filter => ({...filter, price: temp}))
+          }
+        }}/><br/>
+        <label>matrix </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.matrix
+            temp.push(e.currentTarget.value)
+            setFilter(filter => ({...filter, matrix: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
+        <label>min quantity </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.quantity
+            temp.min = parseFloat(e.currentTarget.value)
+            setFilter(filter => ({...filter, quantity: temp}))
+          }
+        }}/><br/>
+        <label>max quantity </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.quantity
+            temp.max = parseFloat(e.currentTarget.value)
+            setFilter(filter => ({...filter, quantity: temp}))
+          }
+        }}/><br/>
+        <label>unit </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.unit
+            temp.push(e.currentTarget.value)
+            setFilter(filter => ({...filter, unit: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
+        <label>labParameter </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.labParameter
+            temp.push(e.currentTarget.value)
+            setFilter(filter => ({...filter, labParameter: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
+        <label>resultInterpretation </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.resultInterpretation
+            temp.push(e.currentTarget.value)
+            setFilter(filter => ({...filter, resultInterpretation: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
+        <label>resultUnit </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.resultUnit
+            temp.push(e.currentTarget.value)
+            setFilter(filter => ({...filter, resultUnit: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
+        <label>diagnosis </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.diagnosis
+            temp.push(e.currentTarget.value)
+            setFilter(filter => ({...filter, diagnosis: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
+        <label>ICDCode </label>
+        <input type="text" onKeyDown={e => {
+          if(e.key === "Enter"){
+            const temp = filter.ICDCode
+            temp.push(e.currentTarget.value)
+            setFilter(filter => ({...filter, ICDCode: temp}))
+            e.currentTarget.value = ""
+          }
+        }}/><br/>
         <div className="mx-4 my-5">
           {JSON.stringify(samples)}
         </div>
