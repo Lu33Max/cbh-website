@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
 
 .button-sidebar{
     font-family: Arial, Helvetica, sans-serif;
@@ -28,6 +30,6 @@
 
 .activeButton{
     border-radius: 10%;
-    background-color: rgb(131, 139, 96);
+    background-color: rgb(131,182,94);
     top: -3%;
 }

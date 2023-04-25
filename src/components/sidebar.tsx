@@ -17,7 +17,7 @@ const Sidebar: React.FC = () => {
   const router = useRouter();
 
   return(
-    <div className="w-full h-[95vh] bg-white flex flex-col items-center justify-start py-5 px-5 overflow-scroll overflow-x-hidden">
+    <div className="w-full h-[95vh] bg-white flex flex-col items-center justify-start py-5 px-5 overflow-y-auto overflow-x-hidden">
       <div>
         <Image src="/CBH Logo.png" alt="Logo" width={200} height={200}/>
       </div>

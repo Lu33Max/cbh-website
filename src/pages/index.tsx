@@ -4,7 +4,9 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 import Header from "~/components/header";
 import Sidebar from "~/components/sidebar";
-import Search from "~/components/search";
+import BasicCarousel from "~/components/carousel";
+import { Carousel } from "@trendyol-js/react-carousel/";
+import SimpleSlider from "~/components/carousel";
 
 type test = {
   num: number,
@@ -30,7 +32,12 @@ const Home: NextPage = () => {
       <main className="bg-gray-200 min-h-screen overflow-x-hidden">
         <Header/>
         <span className="grid grid-cols-7">
+          <div className="grid col-span-1">
             <Sidebar/>
+          </div>  
+          <div className="grid col-span-6 w-[50vw] h-[10vh]">
+            <SimpleSlider/>
+          </div>
         </span>
       </main>
     </>

@@ -6,6 +6,11 @@ import Header from "~/components/header";
 import Sidebar from "~/components/sidebar";
 import { useEffect, useState } from "react";
 
+import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
+
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+
 type Filter = {
   cbhMasterID: string | undefined,
   cbhDonorID: string | undefined,
@@ -40,8 +45,12 @@ const Search: NextPage = () => {
       <main className="bg-gray-200 min-h-screen">
         <Header/>
         <span className="grid grid-cols-7">
-            <Sidebar/>
-            <Content/>
+            <div className="grid col-span-1">
+              <Sidebar/>
+            </div>
+            <div className="grid col-span-6 h-[95vh]">
+              <Content/>
+            </div>
         </span>
       </main>
     </>
@@ -71,155 +80,377 @@ const Content: React.FC = () => {
     diagnosis: [],
     ICDCode: []
   }
+  const defaultShow: boolean[] = []
 
   const [page, setPage] = useState<number>(1)
   const [pagelength, setPagelength] = useState<number>(100)
   const [search, setSearch] = useState<string | undefined>()
   const [filter, setFilter] = useState<Filter>(defaultFilter)
 
+  for(let i = 0; i < pagelength; i++){
+    defaultShow.push(false)
+  }
+
+  const [show, setShow] = useState<boolean[]>(defaultShow)
+
   const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
-      { pages: undefined, lines: undefined, search: search, filter: filter }
+      { pages: page, lines: pagelength, search: search, filter: filter }
   )
 
   useEffect(() => {
     void refetchSamples()
   }, [search, refetchSamples])
 
-  useEffect(() => {
-    //void refetchSamples()
-    console.log(filter.labParameter)
-  }, [filter, refetchSamples])
+
+  const updateState = (index: number) => {
+    const newArray = show.map((item, i) => {
+      if(index === i){
+        return !item
+      } else {
+        return item
+      }
+    })
+    setShow(newArray)
+  }
 
   return(
-      <div>
-        <input type="text" onKeyDown={e => {
+      <div className="w-full overflow-x-hidden font-poppins">
+        {<input type="text" onKeyDown={e => {
           if(e.key === "Enter"){
             setSearch(e.currentTarget.value)
             e.currentTarget.value = ""
           }
-        }}/><br/>
-        <label>cbhMasterID </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = e.currentTarget.value
-            setFilter(filter => ({...filter, cbhMasterID: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <label>cbhDonorID </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = e.currentTarget.value
-            setFilter(filter => ({...filter, cbhDonorID: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <label>cbhSampleID </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = e.currentTarget.value
-            setFilter(filter => ({...filter, cbhSampleID: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <label>min price </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.price
-            temp.min = parseFloat(e.currentTarget.value)
-            setFilter(filter => ({...filter, price: temp}))
-          }
-        }}/><br/>
-        <label>max price </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.price
-            temp.max = parseFloat(e.currentTarget.value)
-            setFilter(filter => ({...filter, price: temp}))
-          }
-        }}/><br/>
-        <label>matrix </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.matrix
-            temp.push(e.currentTarget.value)
-            setFilter(filter => ({...filter, matrix: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <label>min quantity </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.quantity
-            temp.min = parseFloat(e.currentTarget.value)
-            setFilter(filter => ({...filter, quantity: temp}))
-          }
-        }}/><br/>
-        <label>max quantity </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.quantity
-            temp.max = parseFloat(e.currentTarget.value)
-            setFilter(filter => ({...filter, quantity: temp}))
-          }
-        }}/><br/>
-        <label>unit </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.unit
-            temp.push(e.currentTarget.value)
-            setFilter(filter => ({...filter, unit: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <label>labParameter </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.labParameter
-            temp.push(e.currentTarget.value)
-            setFilter(filter => ({...filter, labParameter: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <label>resultInterpretation </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.resultInterpretation
-            temp.push(e.currentTarget.value)
-            setFilter(filter => ({...filter, resultInterpretation: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <label>resultUnit </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.resultUnit
-            temp.push(e.currentTarget.value)
-            setFilter(filter => ({...filter, resultUnit: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <label>diagnosis </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.diagnosis
-            temp.push(e.currentTarget.value)
-            setFilter(filter => ({...filter, diagnosis: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <label>ICDCode </label>
-        <input type="text" onKeyDown={e => {
-          if(e.key === "Enter"){
-            const temp = filter.ICDCode
-            temp.push(e.currentTarget.value)
-            setFilter(filter => ({...filter, ICDCode: temp}))
-            e.currentTarget.value = ""
-          }
-        }}/><br/>
-        <div className="mx-4 my-5">
-          {JSON.stringify(samples)}
+        }}/>}
+
+        <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900">Overall Search</h1>
+     
+        {/* Input fields */}   
+        <div className="px-5 py-3 items-center justify-center">
+          <div className="grid grid-cols-4 gap-2 max-w-full">
+            {/* CBH Master ID */}
+            <div className="items-center text-center w-full">
+              <input type="text" className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onKeyDown={e => {
+                if(e.key === "Enter"){
+                  const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
+                  setFilter(filter => ({...filter, cbhMasterID: temp}))
+                }
+              }}/>
+            </div>
+            {/* CBH Donor ID */}
+            <div className="items-center text-center">
+              <input type="text" className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onKeyDown={e => {
+                if(e.key === "Enter"){
+                  const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
+                  setFilter(filter => ({...filter, cbhDonorID: temp}))
+                }
+              }}/>
+            </div>
+            {/* CBH Sample ID */}
+            <div className="items-center text-center">
+              <input type="text" className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onKeyDown={e => {
+                if(e.key === "Enter"){
+                  const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
+                  setFilter(filter => ({...filter, cbhSampleID: temp}))
+                }
+              }}/>
+            </div>
+            {/* Price */}
+            <div className="items-center text-center">
+              <OverlayTrigger trigger="click" placement="bottom" overlay={
+                <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                  <Popover.Body>
+                    <div className="grid grid-cols-4 gap-2">
+                      <div className="col-span-1">
+                        Min:
+                      </div>
+                      <input type="number" className="text-center col-span-3" placeholder="Min price" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.price
+                          temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, price: temp}))
+                        }
+                      }}/>
+                      <div className="col-span-1">
+                        Max:
+                      </div>
+                      <input type="number" className="text-center col-span-3" placeholder="Max price" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.price
+                          temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, price: temp}))
+                        }
+                      }}/>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }>
+                <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md rounded-lg">Price</button>
+              </OverlayTrigger>
+            </div>
+          </div>
+          <div className="grid grid-cols-4 max-w-full gap-2 mt-2">
+            {/* General Data */}
+            <div className="items-center text-center">
+              <OverlayTrigger trigger="click" placement="bottom" overlay={
+                <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+                  <Popover.Body>
+                    <div className="grid grid-cols-4 gap-2">
+                      <div className="col-span-1">
+                        Matrix:
+                      </div>
+                      <input type="text" className="col-span-3 text-center" placeholder="Matrix" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.matrix
+                          temp.push(e.currentTarget.value)
+                          setFilter(filter => ({...filter, matrix: temp}))
+                          e.currentTarget.value = ""
+                        }
+                      }}/>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }>
+                <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md rounded-lg">General Data</button>
+              </OverlayTrigger>
+            </div>
+            {/* Quantity Information */}
+            <div className="items-center text-center">
+              <OverlayTrigger trigger="click" placement="bottom" overlay={
+                <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+                  <Popover.Body>
+                    <div className="grid grid-cols-4 gap-2">
+                      <div className="col-span-1">
+                        Min:
+                      </div>
+                      <input type="text" className="col-span-3 text-center" placeholder="Min quantity" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.quantity
+                          temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, quantity: temp}))
+                        }
+                      }}/>
+                      <div className="col-span-1">
+                        Max:
+                      </div>
+                      <input type="text" className="col-span-3 text-center" placeholder="Max quantity" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.quantity
+                          temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, quantity: temp}))
+                        }
+                      }}/>
+                      <div className="col-span-1">
+                        Unit:
+                      </div>
+                      <input type="text" className="col-span-3 text-center" placeholder="Unit" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.unit
+                          temp.push(e.currentTarget.value)
+                          setFilter(filter => ({...filter, unit: temp}))
+                          e.currentTarget.value = ""
+                        }
+                      }}/>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }>
+                <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Quantity Information</button>
+              </OverlayTrigger>
+            </div>
+            {/* Laboratory */}
+            <div className="items-center text-center">
+              <OverlayTrigger trigger="click" placement="bottom" overlay={
+                <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+                  <Popover.Body>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="col-span-1 text-right">
+                        Parameter:
+                      </div>
+                      <input type="text" className="col-span-2 text-center" placeholder="LabParameter" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.labParameter
+                          temp.push(e.currentTarget.value)
+                          setFilter(filter => ({...filter, labParameter: temp}))
+                          e.currentTarget.value = ""
+                        }
+                      }}/>
+                      <div className="col-span-1 text-right">
+                        Result Interpretation:
+                      </div>
+                      <input type="text" className="col-span-2 text-center" placeholder="Result Interpretation" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.resultInterpretation
+                          temp.push(e.currentTarget.value)
+                          setFilter(filter => ({...filter, resultInterpretation: temp}))
+                          e.currentTarget.value = ""
+                        }
+                      }}/>
+                      <div className="col-span-1 text-right">
+                        Unit:
+                      </div>
+                      <input type="text" className="col-span-2 text-center" placeholder="Result Unit" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.resultUnit
+                          temp.push(e.currentTarget.value)
+                          setFilter(filter => ({...filter, resultUnit: temp}))
+                          e.currentTarget.value = ""
+                        }
+                      }}/>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }>
+                <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Laboratory</button>
+              </OverlayTrigger>
+            </div>
+            {/* Clinical Diagnosis */}
+            <div className="items-center text-center">
+              <OverlayTrigger trigger="click" placement="bottom" overlay={
+                <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+                  <Popover.Body>
+                    <div className="grid grid-cols-4 gap-2">
+                      <div className="col-span-1">
+                        Diagnosis:
+                      </div>
+                      <input type="text" className="col-span-3" placeholder="Diagnosis" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.diagnosis
+                          temp.push(e.currentTarget.value)
+                          setFilter(filter => ({...filter, diagnosis: temp}))
+                          e.currentTarget.value = ""
+                        }
+                      }}/>
+                      <div className="col-span-1">
+                        ICD Code:
+                      </div>
+                      <input type="text" className="col-span-3" placeholder="ICD Code" onKeyDown={e => {
+                        if(e.key === "Enter"){
+                          const temp = filter.ICDCode
+                          temp.push(e.currentTarget.value)
+                          setFilter(filter => ({...filter, ICDCode: temp}))
+                          e.currentTarget.value = ""
+                        }
+                      }}/>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }>
+                <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Laboratory</button>
+              </OverlayTrigger>
+            </div>
+          </div>
         </div>
+
+        {/* Displaying active filters */}
+        <div className="flex flex-row mx-5 max-w-full overflow-x-auto overflow-y-hidden whitespace-nowrap">
+          <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${search ? "" : "hidden"}`}>
+            Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
+          </span>
+          <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.matrix.length > 0 ? "" : "hidden"}`}>
+            Matrix:&nbsp;
+            {filter.matrix.map((item, i) => (
+              <>
+                {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              </>
+            ))}
+            <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, matrix: []}))}><BiX/></button>
+          </span>
+          <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.unit.length > 0 ? "" : "hidden"}`}>
+            Unit:&nbsp;
+            {filter.unit.map((item, i) => (
+              <>
+                {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              </>
+            ))}
+            <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, unit: []}))}><BiX/></button>
+          </span>
+          <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.labParameter.length > 0 ? "" : "hidden"}`}>
+            Parameter:&nbsp;
+            {filter.labParameter.map((item, i) => (
+              <>
+                {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              </>
+            ))}
+            <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, labParameter: []}))}><BiX/></button>
+          </span>
+          <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.resultInterpretation.length > 0 ? "" : "hidden"}`}>
+            Res.Interpretation:&nbsp;
+            {filter.resultInterpretation.map((item, i) => (
+              <>
+                {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              </>
+            ))}
+            <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, resultInterpretation: []}))}><BiX/></button>
+          </span>
+          <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.resultUnit.length > 0 ? "" : "hidden"}`}>
+            Res.Unit:&nbsp;
+            {filter.resultUnit.map((item, i) => (
+              <>
+                {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              </>
+            ))}
+            <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, resultUnit: []}))}><BiX/></button>
+          </span>
+          <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.diagnosis.length > 0 ? "" : "hidden"}`}>
+            Diagnosis:&nbsp;
+            {filter.diagnosis.map((item, i) => (
+              <>
+                {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              </>
+            ))}
+            <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, diagnosis: []}))}><BiX/></button>
+          </span>
+          <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.ICDCode.length > 0 ? "" : "hidden"}`}>
+            ICD:&nbsp;
+            {filter.ICDCode.map((item, i) => (
+              <>
+                {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              </>
+            ))}
+            <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, ICDCode: []}))}><BiX/></button>
+          </span>
+        </div>
+
+        <div className="mx-4 my-5">
+          <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
+            <thead>
+              <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
+                <th className="py-2 font-extralight border-dotted rounded-l-xl border-black border-r-2">Cart</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2">CBHDonorID</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2">CBHSampleID</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2">Details</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2">Matrix</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2">Quantity</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2">Unit</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2">Age</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2">Gender</th>
+                <th className="py-2 font-extralight rounded-r-xl">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {samples?.map((sample, index) => (
+                <>
+                  <tr key={index} className="my-1 text-center">
+                    <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button><BiCartAdd className="relative top-1"/></button></td>
+                    <td className="py-2 px-3 bg-gray-300">{sample.CBH_Donor_ID}</td>
+                    <td className="py-2 px-3 bg-gray-300">{sample.CBH_Sample_ID}</td>
+                    <td className="items-center text-2xl bg-gray-300"><button onClick={() => {updateState(index)}}><BiDetail className="relative top-1"/></button></td>
+                    <td className="py-2 px-3 bg-gray-300">{sample.Matrix}</td>
+                    <td className="py-2 px-3 bg-gray-300">{sample.Quantity}</td>
+                    <td className="py-2 px-3 bg-gray-300">{sample.Unit}</td>
+                    <td className="py-2 px-3 bg-gray-300">{sample.Age}</td>
+                    <td className="py-2 px-3 bg-gray-300">{sample.Gender}</td>
+                    <td className="py-2 px-3 bg-gray-300 rounded-r-xl">{sample.Price} €</td> 
+                  </tr>
+                  <div className={`${show[index] ? "" : "hidden"}`}>
+                    hallo
+                  </div>
+                </>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
       </div>
   )
 }
