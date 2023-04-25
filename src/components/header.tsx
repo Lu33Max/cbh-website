@@ -15,10 +15,10 @@ const Header: React.FC = () => {
           <BiSearch color='grey'/>
         </div>    
       </span>
-        <button className='flex flex-row gap-2 hover:bg-[#859486] px-2'>
+        <button className='flex flex-row gap-2 hover:bg-[rgb(149,201,112)] px-2'>
           <BiNews className='relative top-1'/>Newsletter
         </button>
-        <button className='flex flex-row gap-2 hover:bg-[#859486] px-2'onClick={sessionData ? () => void signOut() : () => void signIn()}>
+        <button className='flex flex-row gap-2 hover:bg-[rgb(149,201,112)]  px-2'onClick={sessionData ? () => void signOut() : () => void signIn()}>
           <BiLogIn className='relative top-1'/>{sessionData ? "Logout" : "Login"}
         </button>
     </div>

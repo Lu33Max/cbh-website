@@ -42,17 +42,17 @@ const Search: NextPage = () => {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       
-      <main className="bg-gray-200 min-h-screen">
+      <div className="bg-gray-200 min-h-screen overflow-y-hidden">
         <Header/>
         <span className="grid grid-cols-7">
-            <div className="grid col-span-1">
+            <div className="col-span-1">
               <Sidebar/>
             </div>
-            <div className="grid col-span-6 h-[95vh]">
+            <div className="col-span-6 h-[95vh] overflow-y-auto">
               <Content/>
             </div>
         </span>
-      </main>
+      </div>
     </>
   );
 };
@@ -115,12 +115,12 @@ const Content: React.FC = () => {
 
   return(
       <div className="w-full overflow-x-hidden font-poppins">
-        {<input type="text" onKeyDown={e => {
+        {/*<input type="text" onKeyDown={e => {
           if(e.key === "Enter"){
             setSearch(e.currentTarget.value)
             e.currentTarget.value = ""
           }
-        }}/>}
+        }}/>*/}
 
         <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900">Overall Search</h1>
      
@@ -156,7 +156,7 @@ const Content: React.FC = () => {
             </div>
             {/* Price */}
             <div className="items-center text-center">
-              <OverlayTrigger trigger="click" placement="bottom" overlay={
+              <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
                 <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
                   <Popover.Body>
                     <div className="grid grid-cols-4 gap-2">
@@ -191,7 +191,7 @@ const Content: React.FC = () => {
           <div className="grid grid-cols-4 max-w-full gap-2 mt-2">
             {/* General Data */}
             <div className="items-center text-center">
-              <OverlayTrigger trigger="click" placement="bottom" overlay={
+              <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
                 <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                   <Popover.Body>
                     <div className="grid grid-cols-4 gap-2">
@@ -215,7 +215,7 @@ const Content: React.FC = () => {
             </div>
             {/* Quantity Information */}
             <div className="items-center text-center">
-              <OverlayTrigger trigger="click" placement="bottom" overlay={
+              <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
                 <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                   <Popover.Body>
                     <div className="grid grid-cols-4 gap-2">
@@ -259,7 +259,7 @@ const Content: React.FC = () => {
             </div>
             {/* Laboratory */}
             <div className="items-center text-center">
-              <OverlayTrigger trigger="click" placement="bottom" overlay={
+              <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
                 <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                   <Popover.Body>
                     <div className="grid grid-cols-3 gap-2">
@@ -305,14 +305,14 @@ const Content: React.FC = () => {
             </div>
             {/* Clinical Diagnosis */}
             <div className="items-center text-center">
-              <OverlayTrigger trigger="click" placement="bottom" overlay={
+              <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
                 <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                   <Popover.Body>
                     <div className="grid grid-cols-4 gap-2">
                       <div className="col-span-1">
                         Diagnosis:
                       </div>
-                      <input type="text" className="col-span-3" placeholder="Diagnosis" onKeyDown={e => {
+                      <input type="text" className="col-span-3 text-center" placeholder="Diagnosis" onKeyDown={e => {
                         if(e.key === "Enter"){
                           const temp = filter.diagnosis
                           temp.push(e.currentTarget.value)
@@ -323,7 +323,7 @@ const Content: React.FC = () => {
                       <div className="col-span-1">
                         ICD Code:
                       </div>
-                      <input type="text" className="col-span-3" placeholder="ICD Code" onKeyDown={e => {
+                      <input type="text" className="col-span-3 text-center" placeholder="ICD Code" onKeyDown={e => {
                         if(e.key === "Enter"){
                           const temp = filter.ICDCode
                           temp.push(e.currentTarget.value)
@@ -430,7 +430,7 @@ const Content: React.FC = () => {
             <tbody>
               {samples?.map((sample, index) => (
                 <>
-                  <tr key={index} className="my-1 text-center">
+                  <tr key={index} className="text-center">
                     <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button><BiCartAdd className="relative top-1"/></button></td>
                     <td className="py-2 px-3 bg-gray-300">{sample.CBH_Donor_ID}</td>
                     <td className="py-2 px-3 bg-gray-300">{sample.CBH_Sample_ID}</td>
@@ -442,9 +442,52 @@ const Content: React.FC = () => {
                     <td className="py-2 px-3 bg-gray-300">{sample.Gender}</td>
                     <td className="py-2 px-3 bg-gray-300 rounded-r-xl">{sample.Price} €</td> 
                   </tr>
-                  <div className={`${show[index] ? "" : "hidden"}`}>
-                    hallo
-                  </div>
+                  <tr className={`mx-5 ${show[index] ? "" : "hidden"}`}>
+                    <td colSpan={2} className="px-5 bg-gray-200">
+                      <div className="grid grid-cols-2">
+                        <strong className="col-span-2">General Data</strong>
+                        <span>CBH Master ID:</span> {sample.CBH_Master_ID ?? "NaN"}
+                        <span>Storage Temperature:</span> {sample.Storage_Temperature ?? "NaN"}
+                        <span>Freeze Thaw Cycles:</span> {sample.Freeze_Thaw_Cycles ?? "NaN"}
+                        <span>Infectious Disease Test Result:</span> {(sample.Infectious_Disease_Test_Result !== null && sample.Infectious_Disease_Test_Result !== "") ? sample.Infectious_Disease_Test_Result : "NaN"}
+                        <span>Sample Condition:</span> {sample.Sample_Condition ?? "NaN"}
+                      </div>
+                    </td>
+                    <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
+                      <div className="grid grid-cols-2 ">
+                        <strong className="col-span-2">Donor</strong>
+                        <span>Age:</span> {sample.Age ?? "NaN"}
+                        <span>Gender:</span> {sample.Gender ?? "NaN"}
+                        <span>Ethnicity:</span> {sample.Ethnicity ?? "NaN"}
+                        <strong className="col-span-2 mt-2">Ethics</strong>
+                        <span>Procurement Type:</span> {sample.Procurement_Type ?? "NaN"}
+                      </div>
+                    </td>
+                    <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
+                      <div className="grid grid-cols-2">
+                        <strong className="col-span-2">Laboratory</strong>
+                        <span>Lab Parameter</span> {sample.Lab_Parameter ?? "NaN"}
+                        <span>Result Raw:</span> {sample.Result_Raw ?? "NaN"}
+                        <span>Result Unit:</span> {sample.Result_Unit ?? "NaN"}
+                        <span>Interpretation:</span> {sample.Result_Interpretation ?? "NaN"}
+                        <span>Cut Off Raw:</span> {sample.Cut_Off_Raw ?? "NaN"}
+                        <span>Cut Off Unit:</span> {sample.Result_Unit ?? "NaN"}
+                        <span>Test Method:</span> {sample.Test_Method ?? "NaN"}
+                        <span>Test System:</span> {sample.Test_System ?? "NaN"}
+                        <span>Test System Manuf.:</span> {sample.Test_System_Manufacturer ?? "NaN"}
+                      </div>
+                    </td>
+                    <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={4}>
+                      <div className="grid grid-cols-2">
+                        <strong className="col-span-2">Clinical Diagnosis</strong>
+                        <span>Diagnosis:</span> {sample.Diagnosis ?? "NaN"}
+                        <span>Diagnosis Remarks:</span> {(sample.Diagnosis_Remarks !== null && sample.Diagnosis_Remarks !== "") ? sample.Diagnosis_Remarks : "NaN"}
+                        <strong className="col-span-2 mt-2">Preanalytics</strong>
+                        <span>Collection Country:</span> {sample.Country_of_Collection ?? "NaN"}
+                        <span>Collection Date:</span> {sample.Date_of_Collection?.toDateString() ?? "NaN"}
+                      </div>
+                    </td>
+                  </tr>
                 </>
               ))}
             </tbody>
