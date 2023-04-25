@@ -15,25 +15,25 @@ export default function SimpleSlider() {
     <div className="h-[20vh] w-[80vw] mx-10">
       <Slider {...settings} className="items-center justify-center text-center">
         <div>
-          <img src="/erstens1.png" alt="Logo" width={200} height={200} className="m-auto"/>
+          <img src="/erstens1.png" alt="Logo" width={150} height={150} className="m-auto"/>
         </div>
         <div>
-          <img src="/zweitens.png" alt="Logo" width={200} height={200} className="m-auto"/>
+          <img src="/zweitens.png" alt="Logo" width={150} height={150} className="m-auto"/>
         </div>
         <div>
-          <img src="/drittens.png" alt="Logo" width={200} height={200} className="m-auto"/>
+          <img src="/drittens.png" alt="Logo" width={150} height={150} className="m-auto"/>
         </div>
         <div>
-          <img src="/vier.png" alt="Logo" width={200} height={200} className="m-auto"/>
+          <img src="/vier.png" alt="Logo" width={150} height={150} className="m-auto"/>
         </div>
         <div>
-          <img src="/funf.png" alt="Logo" width={200} height={200} className="m-auto"/>
+          <img src="/funf.png" alt="Logo" width={150} height={150} className="m-auto"/>
         </div>
         <div>
-          <img src="/sechs.png" alt="Logo" width={200} height={200} className="m-auto"/>
+          <img src="/sechs.png" alt="Logo" width={150} height={150} className="m-auto"/>
         </div>
         <div>
-          <img src="/sieben.png" alt="Logo" width={200} height={200} className="m-auto"/>
+          <img src="/sieben.png" alt="Logo" width={150} height={150} className="m-auto"/>
         </div>
       </Slider>
     </div>

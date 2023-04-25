@@ -480,7 +480,7 @@ const Content: React.FC = () => {
                     <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={4}>
                       <div className="grid grid-cols-2">
                         <strong className="col-span-2">Clinical Diagnosis</strong>
-                        <span>Diagnosis:</span> {sample.Diagnosis ?? "NaN"}
+                        <span>Diagnosis:</span> {(sample.Diagnosis !== null && sample.Diagnosis !== "") ? sample.Diagnosis : "NaN"}
                         <span>Diagnosis Remarks:</span> {(sample.Diagnosis_Remarks !== null && sample.Diagnosis_Remarks !== "") ? sample.Diagnosis_Remarks : "NaN"}
                         <strong className="col-span-2 mt-2">Preanalytics</strong>
                         <span>Collection Country:</span> {sample.Country_of_Collection ?? "NaN"}
