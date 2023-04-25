@@ -4,6 +4,8 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 import Header from "~/components/header";
 import Sidebar from "~/components/sidebar";
+import SimpleSlider from "~/components/carousel"
+import Testimonials from "~/components/testimonials";
 
 type test = {
   num: number,
@@ -28,9 +30,14 @@ const Home: NextPage = () => {
       
       <main className="bg-gray-200 min-h-screen overflow-x-hidden">
         <Header/>
-        <span className="grid grid-cols-7">
-            <Sidebar/>
-        </span>
+          <span className="grid grid-cols-7">
+            <div className="grid col-span-1">
+              <Sidebar/>  
+            </div>     
+            <div className="grid col-span-6 h-[95vh]">
+              <Content/>
+            </div>         
+          </span>
       </main>
     </>
   );
@@ -61,3 +68,50 @@ export default Home;
     </div>
   );
 };*/
+
+const Content: React.FC = () => {
+
+  return(
+    <div>
+      <div className="flex flex-row w-full items-center justify-center">
+        <div className="w-full border-2 border-solid h-4 border-black rounded-3xl m-5"></div>
+        <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-1">Biospecimen Categories</h1>
+        <div className="w-full border-2 border-solid h-4 border-black rounded-3xl m-5"></div>
+      </div>
+      <div className="mt-5">
+        <SimpleSlider/>
+      </div>
+      <div className="flex flex-row w-full items-center justify-center">
+        <div className="w-full border-2 border-solid h-4 border-black rounded-3xl m-5"></div>
+        <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-2">Welcome to CBH!</h1>
+        <div className="w-full border-2 border-solid h-4 border-black rounded-3xl m-5"></div>
+      </div>
+      <img src="/banner.png" alt="Banner" className="m-auto w-full"/>
+      <div className="flex flex-row w-full items-center justify-center">
+        <div className="w-full border-2 border-solid h-4 border-black rounded-3xl m-5"></div>
+        <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-2">Our Partners - Your Suppliers</h1>
+        <div className="w-full border-2 border-solid h-4 border-black rounded-3xl m-5"></div>
+      </div>
+      <div className="flex flex-row w-full items-center justify-center">
+        <a href="https://indorivclinical.com/" className="w-full ml-5 mr-20 sponsor-link">
+          <img src="/image 13.png" alt="Indoriv Clinical Logo" className="imgSponsor m-auto"/>
+        </a>
+        <a href="https://audubonbio.com/" className="w-full ml-5 mr-5 sponsor-link">
+          <img src="/image 16.png" alt="Audobon Bioscience Logo" className="imgSponsor m-auto"/>
+        </a>
+        <a href="https://www.innov-research.com/" className="w-full ml-5 mr-20 sponsor-link">
+          <img src="/image 15.png" alt="Innovate Research Logo" className="imgSponsor m-auto"/>
+        </a>
+      </div>
+      <div className="flex flex-row w-full items-center justify-center">
+        <div className="w-full border-2 border-solid h-4 border-black rounded-3xl m-5"></div>
+        <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-2">Testimonials</h1>
+        <div className="w-full border-2 border-solid h-4 border-black rounded-3xl m-5"></div>
+      </div>
+      <div className="mt-5">
+        <Testimonials/>
+      </div>
+
+    </div>
+  )
+}
