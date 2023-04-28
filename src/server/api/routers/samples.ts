@@ -199,6 +199,86 @@ export const sampleRouter = createTRPCRouter({
             return "hi"
         }),
     //-------------------------//
+
+    getDistinct: publicProcedure
+        .input( z.string() )
+        .query(({ ctx, input }) => {
+
+            switch (input) {
+                case 'Matrix':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Matrix'],
+                        select: {
+                            Matrix: true,
+                        },
+                    }).then(result => result.map(item => item.Matrix));
+                case 'Unit':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Unit'],
+                        select: {
+                            Unit: true,
+                        },
+                    }).then(result => result.map(item => item.Unit));
+                case 'Storage_Temperature':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Storage_Temperature'],
+                        select: {
+                            Storage_Temperature: true,
+                        },
+                    }).then(result => result.map(item => item.Storage_Temperature));
+                case 'Lab_Parameter':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Lab_Parameter'],
+                        select: {
+                            Lab_Parameter: true,
+                        },
+                    }).then(result => result.map(item => item.Lab_Parameter));
+                case 'Sample_Condition':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Sample_Condition'],
+                        select: {
+                            Sample_Condition: true,
+                        },
+                    }).then(result => result.map(item => item.Sample_Condition));
+                case 'Infectious_Disease_Test_Result':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Infectious_Disease_Test_Result'],
+                        select: {
+                            Infectious_Disease_Test_Result: true,
+                        },
+                    }).then(result => result.map(item => item.Infectious_Disease_Test_Result));
+                case 'Ethnicity':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Ethnicity'],
+                        select: {
+                            Ethnicity: true,
+                        },
+                    }).then(result => result.map(item => item.Ethnicity));
+                case 'Gender':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Gender'],
+                        select: {
+                            Gender: true,
+                        },
+                    }).then(result => result.map(item => item.Gender));
+                case 'Result_Interpretation':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Result_Interpretation'],
+                        select: {
+                            Result_Interpretation: true,
+                        },
+                    }).then(result => result.map(item => item.Result_Interpretation));
+                case 'Result_Unit':
+                    return ctx.prisma.samples.findMany({ 
+                        distinct: ['Result_Unit'],
+                        select: {
+                            Result_Unit: true,
+                        },
+                    }).then(result => result.map(item => item.Result_Unit));
+                default:
+                    throw new Error(`Invalid column name: ${input}`);
+            }
+        }),
 })
 
 function getValue(obj: string | number): string {

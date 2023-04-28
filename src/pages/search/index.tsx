@@ -101,6 +101,9 @@ const Content: React.FC = () => {
     void refetchSamples()
   }, [search, refetchSamples])
 
+  const matrices = api.samples.getDistinct.useQuery('Storage_Temperature');
+  console.log("Test")
+  console.log(matrices)
 
   const updateState = (index: number) => {
     const newArray = show.map((item, i) => {
