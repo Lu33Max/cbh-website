@@ -5,11 +5,14 @@ import { api } from "~/utils/api";
 import Header from "~/components/header";
 import Sidebar from "~/components/sidebar";
 import { useEffect, useState } from "react";
+import Footer from "~/components/footer";
 
 import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
+import { Samples } from "@prisma/client";
+import { set } from "zod";
 
 type Filter = {
   cbhMasterID: string | undefined,
@@ -83,13 +86,18 @@ const Content: React.FC = () => {
   const defaultShow: boolean[] = []
 
   const [page, setPage] = useState<number>(1)
-  const [pagelength, setPagelength] = useState<number>(100)
+  const [pagelength, setPagelength] = useState<number>(10)
   const [search, setSearch] = useState<string | undefined>()
   const [filter, setFilter] = useState<Filter>(defaultFilter)
+  const [range, setRange] = useState<number[]>([])
 
   for(let i = 0; i < pagelength; i++){
     defaultShow.push(false)
   }
+
+  const handlePageLengthChange = (length: number) => {
+    setPagelength(length);
+  };
 
   const [show, setShow] = useState<boolean[]>(defaultShow)
 
@@ -97,9 +105,22 @@ const Content: React.FC = () => {
       { pages: page, lines: pagelength, search: search, filter: filter }
   )
 
+  const { data: count, refetch: refetchCount } = api.samples.count.useQuery()
+
   useEffect(() => {
     void refetchSamples()
-  }, [search, refetchSamples])
+  }, [search, page, pagelength, refetchSamples])
+
+  useEffect(() => {
+    const newRange = [];
+    if (count !== undefined){
+    const num = Math.ceil(count / pagelength);
+    for (let i = 1; i <= num; i++) {
+        newRange.push(i);
+    }
+    }
+    setRange(newRange);
+  }, [count, pagelength])
 
   const matrices = api.samples.getDistinct.useQuery('Storage_Temperature');
   console.log("Test")
@@ -496,6 +517,23 @@ const Content: React.FC = () => {
             </tbody>
           </table>
         </div>
+        <div className="flex flex-row w-full items-center justify-center">
+        <Footer range={range} page={page} setPage={setPage}/>
+
+        <p>Show rows</p>
+        <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={150}>150</option>
+          <option value={200}>200</option>
+          <option value={250}>250</option>
+          <option value={500}>500</option>
+          <option value={1000}>1000</option>
+        </select>
+        </div>
+        
+        
+        
 
       </div>
   )
