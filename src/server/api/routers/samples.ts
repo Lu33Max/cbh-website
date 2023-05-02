@@ -173,6 +173,12 @@ export const sampleRouter = createTRPCRouter({
             });
         }),
 
+    // Counts all entries in table
+    count: publicProcedure
+    .query(({ctx}) => {
+        return ctx.prisma.samples.count()
+    }),
+
     // Delete
     delete: publicProcedure
         .input(z.object({ id: z.string() }))
