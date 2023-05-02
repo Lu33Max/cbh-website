@@ -101,10 +101,16 @@ const Content: React.FC = () => {
     void refetchSamples()
   }, [search, refetchSamples])
 
-  type Group = {
+  type stringFilter = {
     link: string,
     filter: string[],
-    groups: Group[]
+    groups: stringFilter[]
+    }
+
+  type numberFilter = {
+    link: string,
+    filter: string[],
+    groups: numberFilter[]
     }
 
   const updateState = (index: number) => {

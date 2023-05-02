@@ -387,6 +387,62 @@ export const sampleRouter = createTRPCRouter({
                                 TNM_Class_M: true,
                             },
                         }).then(result => result.map(item => item.TNM_Class_M));
+                        case 'Tumour_Grade':
+                            return ctx.prisma.samples.findMany({ 
+                                distinct: ['Tumour_Grade'],
+                                select: {
+                                    Tumour_Grade: true,
+                                },
+                            }).then(result => result.map(item => item.Tumour_Grade));
+                        case 'Estrogen_Receptor':
+                            return ctx.prisma.samples.findMany({ 
+                                distinct: ['Estrogen_Receptor'],
+                                select: {
+                                    Estrogen_Receptor: true,
+                                },
+                            }).then(result => result.map(item => item.Estrogen_Receptor));
+                        case 'HER_2_Receptor':
+                            return ctx.prisma.samples.findMany({ 
+                                distinct: ['HER_2_Receptor'],
+                                select: {
+                                    HER_2_Receptor: true,
+                                },
+                            }).then(result => result.map(item => item.HER_2_Receptor));
+                        case 'Other_Gene_Mutations':
+                            return ctx.prisma.samples.findMany({ 
+                                distinct: ['Other_Gene_Mutations'],
+                                select: {
+                                    Other_Gene_Mutations: true,
+                                },
+                            }).then(result => result.map(item => item.Other_Gene_Mutations));
+                        case 'Country_of_Collection':
+                            return ctx.prisma.samples.findMany({ 
+                                distinct: ['Country_of_Collection'],
+                                select: {
+                                    Country_of_Collection: true,
+                                },
+                            }).then(result => result.map(item => item.Country_of_Collection));
+                        case 'Date_of_Collection':
+                            return ctx.prisma.samples.findMany({ 
+                                distinct: ['Date_of_Collection'],
+                                select: {
+                                    Date_of_Collection: true,
+                                },
+                            }).then(result => result.map(item => item.Date_of_Collection));
+                        case 'Procurement_Type':
+                            return ctx.prisma.samples.findMany({ 
+                                distinct: ['Procurement_Type'],
+                                select: {
+                                    Procurement_Type: true,
+                                },
+                            }).then(result => result.map(item => item.Procurement_Type));
+                        case 'Informed_Consent':
+                            return ctx.prisma.samples.findMany({ 
+                                distinct: ['Informed_Consent'],
+                                select: {
+                                    Informed_Consent: true,
+                                },
+                            }).then(result => result.map(item => item.Informed_Consent));
                 default:
                     throw new Error(`Invalid column name: ${input}`);
             }
