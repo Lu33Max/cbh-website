@@ -123,3 +123,7 @@ model Samples {
     Informed_Consent                     String?
 }
 
+model Test {
+    test String
+}
+
