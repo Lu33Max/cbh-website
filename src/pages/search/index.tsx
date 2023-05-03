@@ -30,7 +30,7 @@ type Filter = {
   unit: string[],
   labParameter: string[],
   resultInterpretation: string[],
-  //resultNumerical
+  //resultNumericals
   resultUnit: string[],
   diagnosis: string[],
   ICDCode: string[]
@@ -102,11 +102,11 @@ const Content: React.FC = () => {
   const [show, setShow] = useState<boolean[]>(defaultShow)
 
   const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
-      { pages: page, lines: pagelength, search: search, filter: filter }
+    { pages: page, lines: pagelength, search: search, filter: filter }
   )
 
   const { data: count, refetch: refetchCount } = api.samples.count.useQuery()
-
+  
   useEffect(() => {
     void refetchSamples()
   }, [search, page, pagelength, refetchSamples])
@@ -114,10 +114,10 @@ const Content: React.FC = () => {
   useEffect(() => {
     const newRange = [];
     if (count !== undefined){
-    const num = Math.ceil(count / pagelength);
-    for (let i = 1; i <= num; i++) {
+      const num = Math.ceil(count / pagelength);
+      for (let i = 1; i <= num; i++) {
         newRange.push(i);
-    }
+      }
     }
     setRange(newRange);
   }, [count, pagelength])
@@ -126,13 +126,7 @@ const Content: React.FC = () => {
     link: string,
     filter: string[],
     groups: stringFilter[]
-    }
-
-  type numberFilter = {
-    link: string,
-    filter: string[],
-    groups: numberFilter[]
-    }
+  }
 
   const updateState = (index: number) => {
     const newArray = show.map((item, i) => {
@@ -526,23 +520,19 @@ const Content: React.FC = () => {
           </table>
         </div>
         <div className="flex flex-row w-full items-center justify-center">
-        <Footer range={range} page={page} setPage={setPage}/>
+          <Footer range={range} page={page} setPage={setPage}/>
 
-        <p>Show rows</p>
-        <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
-          <option value={50}>50</option>
-          <option value={100}>100</option>
-          <option value={150}>150</option>
-          <option value={200}>200</option>
-          <option value={250}>250</option>
-          <option value={500}>500</option>
-          <option value={1000}>1000</option>
-        </select>
+          <p>Show rows</p>
+          <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+            <option value={150}>150</option>
+            <option value={200}>200</option>
+            <option value={250}>250</option>
+            <option value={500}>500</option>
+            <option value={1000}>1000</option>
+          </select>
         </div>
-        
-        
-        
-
       </div>
   )
 }

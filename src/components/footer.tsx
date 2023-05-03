@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react'
+import React, {type Dispatch, type SetStateAction} from 'react'
 
 type props = {
     range: number[],
@@ -9,7 +9,7 @@ type props = {
 const Footer: React.FC<props> = ({range, page, setPage}) => {
     console.log(range)
     return (
-    <div>          
+        <div>          
             {range.map((el, index) => (
                 <>
                     {(el === 1) && (
@@ -34,7 +34,7 @@ const Footer: React.FC<props> = ({range, page, setPage}) => {
                 </>
             ))}
         </div>
-  )
+    )
 }
 
 export default Footer
