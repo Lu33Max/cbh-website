@@ -86,7 +86,7 @@ const Content: React.FC = () => {
   const defaultShow: boolean[] = []
 
   const [page, setPage] = useState<number>(1)
-  const [pagelength, setPagelength] = useState<number>(10)
+  const [pagelength, setPagelength] = useState<number>(50)
   const [search, setSearch] = useState<string | undefined>()
   const [filter, setFilter] = useState<Filter>(defaultFilter)
   const [range, setRange] = useState<number[]>([])

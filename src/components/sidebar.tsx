@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 const buttonsSidebar = [
   { name: 'Home', link: '/' },
   { name: 'Explore', link: '/search' },
-  { name: 'Expert Search', link: '/Expert' },
+  { name: 'Expert Search', link: '/expertsearch' },
   { name: 'Cart', link: '/Cart' },
   { name: 'About Us', link: '/About' },
   { name: 'Become a Supplier', link: '/BecomeSup' },
