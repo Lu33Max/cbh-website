@@ -2,10 +2,10 @@ import { type NextPage } from "next";
 import Head from "next/head";
 
 import { api } from "~/utils/api";
-import Header from "~/components/header";
-import Sidebar from "~/components/sidebar";
-import SimpleSlider from "~/components/carousel"
-import Testimonials from "~/components/testimonials";
+import Header from "~/components/overall/header";
+import Sidebar from "~/components/overall/sidebar";
+import SimpleSlider from "~/components/home/carousel"
+import Testimonials from "~/components/home/testimonials";
 
 type test = {
   num: number,

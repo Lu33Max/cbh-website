@@ -2,10 +2,10 @@ import { type NextPage } from "next";
 import Head from "next/head";
 
 import { api } from "~/utils/api";
-import Header from "~/components/header";
-import Sidebar from "~/components/sidebar";
+import Header from "~/components/overall/header";
+import Sidebar from "~/components/overall/sidebar";
 import { useEffect, useState } from "react";
-import Footer from "~/components/footer";
+import Footer from "~/components/search/footer";
 
 import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 
@@ -182,22 +182,18 @@ const Content: React.FC = () => {
                     <div className="col-span-1">
                       Min:
                     </div>
-                    <input type="number" className="text-center col-span-3" placeholder="Min price" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.price
-                        temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                        setFilter(filter => ({...filter, price: temp}))
-                      }
+                    <input type="number" value={filter.price.min} className="text-center col-span-3" placeholder="Min price" onChange={e => {
+                      const temp = filter.price
+                      temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                      setFilter(filter => ({...filter, price: temp}))
                     }}/>
                     <div className="col-span-1">
                       Max:
                     </div>
-                    <input type="number" className="text-center col-span-3" placeholder="Max price" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.price
-                        temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                        setFilter(filter => ({...filter, price: temp}))
-                      }
+                    <input type="number" value={filter.price.max} className="text-center col-span-3" placeholder="Max price" onChange={e => {
+                      const temp = filter.price
+                      temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                      setFilter(filter => ({...filter, price: temp}))
                     }}/>
                   </div>
                 </Popover.Body>
@@ -241,22 +237,18 @@ const Content: React.FC = () => {
                     <div className="col-span-1">
                       Min:
                     </div>
-                    <input type="text" className="col-span-3 text-center" placeholder="Min quantity" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.quantity
-                        temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                        setFilter(filter => ({...filter, quantity: temp}))
-                      }
+                    <input type="number" value={filter.quantity.min} className="col-span-3 text-center" placeholder="Min quantity" onChange={e => {
+                      const temp = filter.quantity
+                      temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                      setFilter(filter => ({...filter, quantity: temp}))
                     }}/>
                     <div className="col-span-1">
                       Max:
                     </div>
-                    <input type="text" className="col-span-3 text-center" placeholder="Max quantity" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.quantity
-                        temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                        setFilter(filter => ({...filter, quantity: temp}))
-                      }
+                    <input type="number" value={filter.quantity.max} className="col-span-3 text-center" placeholder="Max quantity" onChange={e => {
+                      const temp = filter.quantity
+                      temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                      setFilter(filter => ({...filter, quantity: temp}))
                     }}/>
                     <div className="col-span-1">
                       Unit:

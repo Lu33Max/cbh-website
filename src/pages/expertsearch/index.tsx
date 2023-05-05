@@ -5,9 +5,9 @@ import { api } from "~/utils/api";
 
 import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 import Head from 'next/head';
-import Header from '~/components/header';
-import Sidebar from '~/components/sidebar';
-import Footer from "~/components/footer";
+import Header from '~/components/overall/header';
+import Sidebar from '~/components/overall/sidebar';
+import Footer from "~/components/search/footer";
 
 type group= {
     not: boolean,
@@ -299,8 +299,8 @@ const Table: React.FC = () => {
     
       const [page, setPage] = useState<number>(1)
       const [pagelength, setPagelength] = useState<number>(50)
-      const [search, setSearch] = useState<string | undefined>()
-      const [filter, setFilter] = useState<Filter>(defaultFilter)
+      const [search, ] = useState<string | undefined>()
+      const [filter, ] = useState<Filter>(defaultFilter)
       const [range, setRange] = useState<number[]>([])
     
       for(let i = 0; i < pagelength; i++){
