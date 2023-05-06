@@ -118,7 +118,7 @@ const Content: React.FC = () => {
   
   useEffect(() => {
     void refetchSamples()
-  }, [search, page, pagelength, refetchSamples])
+  }, [search, page, pagelength, filter, refetchSamples])
 
   useEffect(() => {
     const newRange = [];

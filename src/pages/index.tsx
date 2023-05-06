@@ -1,25 +1,12 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { api } from "~/utils/api";
 import Header from "~/components/header";
 import Sidebar from "~/components/sidebar";
 import SimpleSlider from "~/components/carousel"
 import Testimonials from "~/components/testimonials";
 
-type test = {
-  num: number,
-  obj: string | test
-}
-
 const Home: NextPage = () => {
-  //const samples = api.samples.getAll.useQuery({ pages: 1, lines: 1, search: ""})
-  const samples = api.samples.test.useQuery({obj: "juju"})
-  console.table(samples.data)
-
-  const t: test = {num: 0, obj: { num: 2, obj: "hi"}}
-  console.log(t)
-
   return (
     <>
       <Head>

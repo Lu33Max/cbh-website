@@ -7,7 +7,6 @@ type props = {
 }
 
 const Footer: React.FC<props> = ({range, page, setPage}) => {
-    console.log(range)
     return (
         <div>          
             {range.map((el, index) => (
