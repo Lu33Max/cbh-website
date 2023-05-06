@@ -1,7 +1,8 @@
-import { Prisma, type Samples } from "@prisma/client";
+import { type Samples } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { prisma } from "~/server/db";
 
 export const sampleRouter = createTRPCRouter({
 
@@ -191,6 +192,7 @@ export const sampleRouter = createTRPCRouter({
         }),
 
     //--- Test purpose only ----//
+    /*
     test: publicProcedure
         .input(z.object({ obj: z.string().or(z.number()).optional()}))
         .query(({ ctx, input }) => {
@@ -198,12 +200,7 @@ export const sampleRouter = createTRPCRouter({
                 input.obj ? Prisma.sql`WHERE "cbhDonorID" = ${getValue(input.obj)}` : Prisma.empty
             }`
         }),
-
-    simpleFilter: publicProcedure
-        .input(z.object({ filters: z.object({ sampleID: z.array(z.string()), labParameter: z.array(z.string()) })}))
-        .query(({ctx, input}) => {
-            return "hi"
-        }),
+    */
     //-------------------------//
 
     getDistinct: publicProcedure
@@ -385,8 +382,17 @@ export const sampleRouter = createTRPCRouter({
                     throw new Error(`Invalid column name: ${input}`);
             }
         }),
+
+    applyFilter: publicProcedure
+        .input( z.string() )
+        .query(async ({ ctx, input }) => {
+            if (input == "") {
+                return ctx.prisma.samples.findMany()
+            }
+            return prisma.$queryRawUnsafe<Samples[]>(`SELECT * FROM "Samples" WHERE `+ input +`;`)
+        }),
 })
 
-function getValue(obj: string | number): string {
-    return `${obj}`
-}
+// function getValue(obj: string | number): Prisma.Sql {
+//     return Prisma.sql`${obj}`
+// }

@@ -7,19 +7,7 @@ import Sidebar from "~/components/overall/sidebar";
 import SimpleSlider from "~/components/home/carousel"
 import Testimonials from "~/components/home/testimonials";
 
-type test = {
-  num: number,
-  obj: string | test
-}
-
 const Home: NextPage = () => {
-  //const samples = api.samples.getAll.useQuery({ pages: 1, lines: 1, search: ""})
-  const samples = api.samples.test.useQuery({obj: "juju"})
-  console.table(samples.data)
-
-  const t: test = {num: 0, obj: { num: 2, obj: "hi"}}
-  console.log(t)
-
   return (
     <>
       <Head>

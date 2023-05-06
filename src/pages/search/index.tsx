@@ -34,6 +34,17 @@ type Filter = {
   ICDCode: string[]
 }
 
+type group = {
+  not: boolean,
+  link: string,
+  filter: {
+  col: string,
+  type: string,
+  values: string[]
+  },
+  groups?: group[]
+  }
+
 const Search: NextPage = () => {
   return (
     <>
@@ -107,7 +118,7 @@ const Content: React.FC = () => {
   
   useEffect(() => {
     void refetchSamples()
-  }, [search, page, pagelength, refetchSamples])
+  }, [search, page, pagelength, filter, refetchSamples])
 
   useEffect(() => {
     const newRange = [];
@@ -120,7 +131,6 @@ const Content: React.FC = () => {
     setRange(newRange);
   }, [count, pagelength])
 
-
   const updateState = (index: number) => {
     const newArray = show.map((item, i) => {
       if(index === i){
@@ -130,7 +140,7 @@ const Content: React.FC = () => {
       }
     })
     setShow(newArray)
-  }
+  } 
 
   return(
     <div className="w-full overflow-x-hidden font-poppins">
