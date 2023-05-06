@@ -8,6 +8,7 @@ import Head from 'next/head';
 import Header from '~/components/header';
 import Sidebar from '~/components/sidebar';
 import Footer from "~/components/footer";
+import { array } from 'zod';
 
 type group= {
     not: boolean,
@@ -42,6 +43,96 @@ type Filter = {
     ICDCode: string[]
   }
 
+  function buildQuery(ctx: State<group>): string {
+
+    let sql = '';  
+    const group = useHookstate(ctx)
+
+    if (group != undefined) {     
+          if (group.groups.value && group.groups.value.length > 0) {
+            sql += '(';
+        
+            group.groups.ornull?.map((g, i) => {
+              if (i > 0) {
+                sql += ` ${group.link.value.toUpperCase()} `;
+              }
+      
+              console.log(i)
+        
+              sql += buildQuery(g);
+            });
+        
+            sql += ')';
+          }
+        
+          if (group.filter.length > 0) {
+            for (let i = 0; i < group.filter.length ; i++) {
+                if (group.filter[i]?.values && group.filter[i].values.length > 0) {
+                    if (i != 0) {
+                        sql += ` ${group.link.value?.toUpperCase()} `;
+                    }
+                  if (group.filter.values.length === 1) {
+                    sql += `"${group.filter[i]?.col.value}" ${getOperator(group.filter[i]?.type.value?? "invalid")} '${group.filter[i]?.values[0]?.value}'`;
+                  } else {
+                    if (group.filter[i]?.type.value == "between" && group.filter[i]?.values[0] != undefined && group.filter[i]?.values[1] != undefined) {
+                        sql += `"${group.filter[i]?.col.value}" ${getOperator(group.filter[i]?.type.value?? "invalid")} (${group.filter[i]?.values.value.map(v => `'${v}'`).join(' AND ')})`;
+                    } else {
+                        sql += `"${group.filter[i]?.col.value}" ${getOperator(group.filter[i]?.type.value?? "invalid")} (${group.filter[i]?.values.value.map(v => `'${v}'`).join(', ')})`;
+                    }
+                  }
+                }
+            } 
+          }
+          if ( sql != "" && group.not) {
+            sql = 'NOT ' + sql;
+          }
+    }
+    console.log(sql)
+    return sql;
+  }
+
+  function getOperator(type: string): string {
+    switch (type) {
+      case 'equal':
+        return '=';
+      case 'in':
+        return 'IN';
+      case 'less':
+        return '<';
+      case 'lessequal':
+        return '<=';
+      case 'more':
+        return '>';
+      case 'moreequal':
+        return '>=';
+      case 'between':
+        return 'BETWEEN';
+      default:
+        throw new Error(`Invalid filter type: ${type}`);
+    }
+  }
+
+  const test: group = 
+    {
+      not: false,
+      link: 'AND',
+      filter: [{
+        col: 'matrix',
+        type: 'equal',
+        values: ['Plasma K3EDTA'],
+      }],
+      groups: [{
+        not: true,
+        link: 'OR',
+        filter: [{
+          col: 'Date_of_Collection',
+          type: 'more',
+          values: ['05.11.2021'],
+        }],
+      }],
+    }
+  ;
+
 const ExampleComponent: NextPage = () => {
     const state = useHookstate<group[] | undefined>([
         {
@@ -54,7 +145,7 @@ const ExampleComponent: NextPage = () => {
             }],         
         },
     ]);
-
+    
     return (
         <>
             <Head>
@@ -74,7 +165,7 @@ const ExampleComponent: NextPage = () => {
                         <div className='max-h-[600px] mx-3 overflow-x-auto overflow-y-auto'>
                             <GroupListEditor groups={state} deleteDisabled={true} />
                         </div>
-                        <Table/>
+                        <Table filter={state}/>
                     </div>
                 </span>
             </div>
@@ -274,7 +365,9 @@ function ChooseValues(props: {values: State<string[]>, type: State<string>}) {
     )
 }
 
-const Table: React.FC = () => {
+type props = { filter: State<group[] | undefined> }
+
+const Table: React.FC<props> = ({filter}) => {
     const defaultFilter: Filter = {
         cbhMasterID: undefined, 
         cbhDonorID: undefined, 
@@ -300,8 +393,8 @@ const Table: React.FC = () => {
       const [page, setPage] = useState<number>(1)
       const [pagelength, setPagelength] = useState<number>(50)
       const [search, setSearch] = useState<string | undefined>()
-      const [filter, setFilter] = useState<Filter>(defaultFilter)
       const [range, setRange] = useState<number[]>([])
+      const filters = useHookstate(filter)
     
       for(let i = 0; i < pagelength; i++){
         defaultShow.push(false)
@@ -312,10 +405,12 @@ const Table: React.FC = () => {
       };
     
       const [show, setShow] = useState<boolean[]>(defaultShow)
-    
-      const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
-        { pages: page, lines: pagelength, search: search, filter: filter }
-      )
+      
+      var filterQuery = ""
+
+      filters.ornull && filters.ornull.map((group: State<group>, i) => { filterQuery = buildQuery(group)})
+
+      const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery(filterQuery)
     
       const { data: count } = api.samples.count.useQuery()
       

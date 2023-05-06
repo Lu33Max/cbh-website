@@ -2,6 +2,7 @@ import { Prisma, type Samples } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { prisma } from "~/server/db";
 
 export const sampleRouter = createTRPCRouter({
 
@@ -385,8 +386,22 @@ export const sampleRouter = createTRPCRouter({
                     throw new Error(`Invalid column name: ${input}`);
             }
         }),
+
+    applyFilter: publicProcedure
+        .input( z.string() )
+        .query(async ({ ctx, input }) => {
+
+            if (input == "") {
+                return ctx.prisma.samples.findMany()
+            }
+
+            const string = getValue(input)
+
+            console.log(`SELECT * FROM "Samples" WHERE ` + string)
+            return prisma.$queryRawUnsafe<Samples[]>(`SELECT * FROM "Samples" WHERE `+ input +`;`)
+        }),
 })
 
-function getValue(obj: string | number): string {
-    return `${obj}`
+function getValue(obj: string | number): Prisma.Sql {
+    return Prisma.sql`${obj}`
 }
