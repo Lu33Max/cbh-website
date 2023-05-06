@@ -43,7 +43,7 @@ function BuildQuery(group: State<group>): string {
           if (i != 0) {
               sql += ` ${group.link.value?.toUpperCase()} `;
           }
-          if (group.filter[i]?.type.value !== "between" && group.filter[i]?.type.value !== "in" && group.filter[i]?.values[0] !== undefined) {
+          if (group.filter[i]?.type.value !== "between" && group.filter[i]?.type.value !== "in" && group.filter[i]?.values[0]) {
             sql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} '${group.filter[i]?.values[0]?.value ?? ""}'`;
           } else {
             if (group.filter[i]?.type.value === "between" && group.filter[i]?.values[0] !== undefined && group.filter[i]?.values[1] !== undefined) {
@@ -93,7 +93,7 @@ const ExampleComponent: NextPage = () => {
       filter:[{
         col: 'CBH_Donor_ID',
         type: 'equal',
-        values: ['CBHD5086072'],
+        values: [],
       }],         
     },
   ]);
