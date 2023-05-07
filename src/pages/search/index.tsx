@@ -12,6 +12,7 @@ import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
+import { useRouter } from "next/router";
 
 type Filter = {
   cbhMasterID: string | undefined,
@@ -86,9 +87,9 @@ const Content: React.FC = () => {
   const defaultShow: boolean[] = []
 
   /*Search Bar function */
+  const router = useRouter()
   const searchBar = useSearchParams();
   const searchQuery = searchBar ? searchBar.get('q') : null;
-
   const encodedSearchQuery = encodeURI(searchQuery || "");
 
   const [page, setPage] = useState<number>(1)
@@ -118,6 +119,13 @@ const Content: React.FC = () => {
   }, [search, page, pagelength, filter, refetchSamples])
 
   useEffect(() => {
+    const newSearchQuery = searchBar ? searchBar.get('q') : null;
+    const newEncodedSearchQuery = encodeURI(newSearchQuery || "");
+
+    setSearch(newEncodedSearchQuery)
+  }, [searchBar])
+
+  useEffect(() => {
     const newRange = [];
     if (count !== undefined){
       const num = Math.ceil(count / pagelength);
@@ -142,13 +150,6 @@ const Content: React.FC = () => {
 
   return(
     <div className="w-full overflow-x-hidden font-poppins">
-      {/*<input type="text" onKeyDown={e => {
-        if(e.key === "Enter"){
-          setSearch(e.currentTarget.value)
-          e.currentTarget.value = ""
-        }
-      }}/>*/}
-
       <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Overall Search</b></h1>
 
       <p className="px-5 my-7 text-lg">Explore the Abundance and Find the Perfect <b>Human Biospecimens</b> for You! Expert search is a tailor-made solution to improve your search by understanding the precise needs and search 
