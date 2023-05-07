@@ -84,13 +84,12 @@ const Content: React.FC = () => {
     ICDCode: []
   }
   const defaultShow: boolean[] = []
+
   /*Search Bar function */
   const searchBar = useSearchParams();
   const searchQuery = searchBar ? searchBar.get('q') : null;
 
   const encodedSearchQuery = encodeURI(searchQuery || "");
-
-  console.log("SEARCH PARAMS", encodedSearchQuery);
 
   const [page, setPage] = useState<number>(1)
   const [pagelength, setPagelength] = useState<number>(50)
