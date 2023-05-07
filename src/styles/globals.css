@@ -44,7 +44,8 @@
 .imgSponsor {
     filter: gray;
     -webkit-filter: grayscale(1);
-    -webkit-transition: all .8s ease-in-out;  
+    -webkit-transition: all .8s ease-in-out;
+    transition: all .8s ease-in-out;
     max-width: 100%;
     height: auto;
   }
@@ -53,6 +54,7 @@
   filter: none;
   -webkit-filter: grayscale(0);
   -webkit-transform: scale(1.01);
+  transform: scale(1.01);
 }
 
 .sponsor-link {

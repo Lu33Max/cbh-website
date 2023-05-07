@@ -1,7 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { api } from "~/utils/api";
 import Header from "~/components/overall/header";
 import Sidebar from "~/components/overall/sidebar";
 import SimpleSlider from "~/components/home/carousel"
@@ -91,7 +90,7 @@ const Content: React.FC = () => {
           <img src="/new.png" alt="Innovate Research Logo" className="imgSponsor m-auto"/>
         </a>
       </div>
-      <div className="flex flex-row w-full items-center justify-center">
+      <div className="flex flex-row w-full items-center justify-center mt-5">
         <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>
         <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-2">Testimonials</h1>
         <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>

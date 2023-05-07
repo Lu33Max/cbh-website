@@ -26,10 +26,10 @@ function BuildQuery(group: State<group>): string {
   if (group !== undefined) {     
     if (group.groups.value && group.groups.value.length > 0) {
       group.groups.ornull?.map((g, i) => {
-        if (i > 0) {
+        if (i > 0 && sql !== '') {
           sql += ` ${group.link.value.toUpperCase()} `;
         }
-        sql += `(${BuildQuery(g)})`
+        sql += BuildQuery(g)
       });
     }
 
@@ -56,8 +56,11 @@ function BuildQuery(group: State<group>): string {
       } 
     }
 
-    if ( sql != "" && group.not.value) {
-      sql = 'NOT ' + sql;
+    if ( sql !== "") {
+      if(group.not.value){
+        sql = 'NOT ' + sql;
+      }
+      sql = "(" + sql + ")"
     }
   }
 
@@ -258,12 +261,12 @@ function TypeSelect(props: {type: State<string>, values: State<string[]>}){
 
     return (
         <select className='mr-10' onChange={(e) => {values.set([]); type.set(e.target.value); }}>
-            <option value={'equal'}>equal</option>
+            <option value={'equal'}>equal to</option>
             <option value={'in'}>in</option>
-            <option value={'less'}>less</option>
-            <option value={'lessequal'}>less or equal</option>
-            <option value={'more'}>more</option>
-            <option value={'moreequal'}>more or equal</option>
+            <option value={'less'}>less than</option>
+            <option value={'lessequal'}>less than or equal to</option>
+            <option value={'more'}>greater than</option>
+            <option value={'moreequal'}>greater than or equal to</option>
             <option value={'between'}>between</option>
         </select>
     )
@@ -468,13 +471,13 @@ const Table: React.FC<props> = ({filter}) => {
 
                 <p>Show rows</p>
                 <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-                <option value={150}>150</option>
-                <option value={200}>200</option>
-                <option value={250}>250</option>
-                <option value={500}>500</option>
-                <option value={1000}>1000</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                  <option value={150}>150</option>
+                  <option value={200}>200</option>
+                  <option value={250}>250</option>
+                  <option value={500}>500</option>
+                  <option value={1000}>1000</option>
                 </select>
             </div>
         </>
