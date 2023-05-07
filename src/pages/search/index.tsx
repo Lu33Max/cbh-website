@@ -6,6 +6,7 @@ import Header from "~/components/overall/header";
 import Sidebar from "~/components/overall/sidebar";
 import { useEffect, useState } from "react";
 import Footer from "~/components/search/footer";
+import { useSearchParams } from "next/navigation";
 
 import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 
@@ -35,6 +36,7 @@ type Filter = {
 }
 
 const Search: NextPage = () => {
+
   return (
     <>
       <Head>
@@ -83,9 +85,15 @@ const Content: React.FC = () => {
   }
   const defaultShow: boolean[] = []
 
+  /*Search Bar function */
+  const searchBar = useSearchParams();
+  const searchQuery = searchBar ? searchBar.get('q') : null;
+
+  const encodedSearchQuery = encodeURI(searchQuery || "");
+
   const [page, setPage] = useState<number>(1)
   const [pagelength, setPagelength] = useState<number>(50)
-  const [search, setSearch] = useState<string | undefined>()
+  const [search, setSearch] = useState<string | undefined>(encodedSearchQuery)
   const [filter, setFilter] = useState<Filter>(defaultFilter)
   const [range, setRange] = useState<number[]>([])
 
@@ -130,6 +138,7 @@ const Content: React.FC = () => {
     })
     setShow(newArray)
   } 
+
 
   return(
     <div className="w-full overflow-x-hidden font-poppins">
@@ -366,64 +375,71 @@ const Content: React.FC = () => {
           Matrix:&nbsp;
           {filter.matrix.map((item, i) => (
             <>
-              {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              <>{(i !== 0) ? (<>, {item}</>) : (<>{item}</>)} </>
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, matrix: filter.matrix.filter((_, index) => index !== i)})) }}><BiX/></button>
             </>
           ))}
-          <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, matrix: []}))}><BiX/></button>
+          
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.unit.length > 0 ? "" : "hidden"}`}>
           Unit:&nbsp;
           {filter.unit.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, unit: filter.unit.filter((_, index) => index !== i)})) }}><BiX/></button>
             </>
+            
           ))}
-          <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, unit: []}))}><BiX/></button>
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.labParameter.length > 0 ? "" : "hidden"}`}>
           Parameter:&nbsp;
           {filter.labParameter.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, labParameter: filter.labParameter.filter((_, index) => index !== i)})) }}><BiX/></button>
             </>
           ))}
-          <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, labParameter: []}))}><BiX/></button>
+          
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.resultInterpretation.length > 0 ? "" : "hidden"}`}>
           Res.Interpretation:&nbsp;
           {filter.resultInterpretation.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultInterpretation: filter.resultInterpretation.filter((_, index) => index !== i)})) }}><BiX/></button>
             </>
           ))}
-          <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, resultInterpretation: []}))}><BiX/></button>
+          
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.resultUnit.length > 0 ? "" : "hidden"}`}>
           Res.Unit:&nbsp;
           {filter.resultUnit.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultUnit: filter.resultUnit.filter((_, index) => index !== i)})) }}><BiX/></button>
             </>
           ))}
-          <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, resultUnit: []}))}><BiX/></button>
+          
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.diagnosis.length > 0 ? "" : "hidden"}`}>
           Diagnosis:&nbsp;
           {filter.diagnosis.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, diagnosis: filter.diagnosis.filter((_, index) => index !== i)})) }}><BiX/></button>
             </>
           ))}
-          <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, diagnosis: []}))}><BiX/></button>
+          
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.ICDCode.length > 0 ? "" : "hidden"}`}>
           ICD:&nbsp;
           {filter.ICDCode.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, ICDCode: filter.ICDCode.filter((_, index) => index !== i)})) }}><BiX/></button>
             </>
           ))}
-          <button className="text-xl relative top-1" onClick={() => setFilter(filter => ({...filter, ICDCode: []}))}><BiX/></button>
+          
         </span>
       </div>
 
