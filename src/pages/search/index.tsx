@@ -6,6 +6,7 @@ import Header from "~/components/header";
 import Sidebar from "~/components/sidebar";
 import { useEffect, useState } from "react";
 import Footer from "~/components/footer";
+import { useSearchParams } from "next/navigation";
 
 import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 
@@ -35,6 +36,7 @@ type Filter = {
 }
 
 const Search: NextPage = () => {
+
   return (
     <>
       <Head>
@@ -82,10 +84,17 @@ const Content: React.FC = () => {
     ICDCode: []
   }
   const defaultShow: boolean[] = []
+  /*Search Bar function */
+  const searchBar = useSearchParams();
+  const searchQuery = searchBar ? searchBar.get('q') : null;
+
+  const encodedSearchQuery = encodeURI(searchQuery || "");
+
+  console.log("SEARCH PARAMS", encodedSearchQuery);
 
   const [page, setPage] = useState<number>(1)
   const [pagelength, setPagelength] = useState<number>(50)
-  const [search, setSearch] = useState<string | undefined>()
+  const [search, setSearch] = useState<string | undefined>(encodedSearchQuery)
   const [filter, setFilter] = useState<Filter>(defaultFilter)
   const [range, setRange] = useState<number[]>([])
 

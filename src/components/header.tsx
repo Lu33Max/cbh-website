@@ -17,7 +17,6 @@ const Header: React.FC = () => {
     const encodedSearchQuery = encodeURI(searchQuery);
     router.push(`/search?q=${encodedSearchQuery}`);
 
-    console.log('current query', encodedSearchQuery);
   }
 
   return (
