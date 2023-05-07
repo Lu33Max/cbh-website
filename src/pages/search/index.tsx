@@ -12,7 +12,6 @@ import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import { useRouter } from "next/router";
 
 type Filter = {
   cbhMasterID: string | undefined,
@@ -87,7 +86,6 @@ const Content: React.FC = () => {
   const defaultShow: boolean[] = []
 
   /*Search Bar function */
-  const router = useRouter()
   const searchBar = useSearchParams();
   const searchQuery = searchBar ? searchBar.get('q') : null;
   const encodedSearchQuery = encodeURI(searchQuery || "");
