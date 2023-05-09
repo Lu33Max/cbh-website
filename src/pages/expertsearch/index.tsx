@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHookstate, type State, __state } from '@hookstate/core';
+import { useHookstate, type State } from '@hookstate/core';
 import { type NextPage } from 'next';
 import { api } from "~/utils/api";
 
@@ -344,7 +344,7 @@ type props = { filter: State<group[] | undefined> }
 const Table: React.FC<props> = ({filter}) => {
       const [page, setPage] = useState<number>(1)
       const [pagelength, setPagelength] = useState<number>(50)
-      const [search, setSearch] = useState<string | undefined>()
+      const [search, ] = useState<string | undefined>()
       const [range, setRange] = useState<number[]>([])
       const [filterQuery, setFilterQuery] = useState<string>("")
       
@@ -357,7 +357,7 @@ const Table: React.FC<props> = ({filter}) => {
     
       const [show, setShow] = useState<boolean[]>(defaultShow)
 
-      const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery(filterQuery)   
+      const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({query: filterQuery, pages: page , pagelength: pagelength})
       const { data: count } = api.samples.count.useQuery()
       
       useEffect(() => {
