@@ -191,7 +191,7 @@ function GroupListEditor(props: { groups: State<group[] | undefined>, deleteDisa
     const disabled = props.deleteDisabled
 
     return (
-        <div className={`bg-gray-100 mx-5 py-1 border-solid border-black min-w-[1050px] w-fit ${(state.value && state.value.length > 0) ? 'border-2' : 'border-0'}`} style={{ paddingLeft: 20 }}>
+        <div className={`bg-gray-100 mx-5 py-1 border-solid border-black min-w-[1100px] w-fit ${(state.value && state.value.length > 0) ? 'border-2' : 'border-0'}`} style={{ paddingLeft: 20 }}>
             {state.ornull && state.ornull.map((groupState: State<group>, i) =>
                 <div key={i}>
                     <GroupContentEditor linkState={groupState.link} childrenState={groupState.groups} filterState={groupState.filter} groupState={state} index={i} deleteDisabled={disabled} notState={groupState.not}/>
