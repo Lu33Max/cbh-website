@@ -357,6 +357,7 @@ const Table: React.FC<props> = ({filter}) => {
     
       const [show, setShow] = useState<boolean[]>(defaultShow)
 
+      //Test
       const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({query: filterQuery, pages: page , pagelength: pagelength})
       const { data: count } = api.samples.count.useQuery()
       
