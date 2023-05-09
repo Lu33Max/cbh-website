@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 
-const Group: React.FC = () => {
+import Popover from 'react-bootstrap/Popover';
 
+const Group: React.FC = () => {
   return (
     <div className='bg-orange-100 mx-5'>
     <div className='flex flex-row px-5 py-2 font-body font-poppins text-2xl font-thin'>
