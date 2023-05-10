@@ -366,8 +366,8 @@ const Content: React.FC = () => {
       </div>
 
       {/* Displaying active filters */}
-      <div className="flex flex-row mx-5 max-w-full overflow-x-auto overflow-y-hidden whitespace-nowrap">
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${search ? "" : "hidden"}`}>
+      <div className="flex flex-col mx-5 max-w-10xl overflow-x-auto overflow-y-hidden whitespace-normal">
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
           Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.matrix.length > 0 ? "" : "hidden"}`}>
@@ -380,7 +380,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.unit.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.unit.length > 0 ? "" : "hidden"}`}>
           Unit:&nbsp;
           {filter.unit.map((item, i) => (
             <>
@@ -390,7 +390,7 @@ const Content: React.FC = () => {
             
           ))}
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.labParameter.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.labParameter.length > 0 ? "" : "hidden"}`}>
           Parameter:&nbsp;
           {filter.labParameter.map((item, i) => (
             <>
@@ -400,7 +400,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.resultInterpretation.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.length > 0 ? "" : "hidden"}`}>
           Res.Interpretation:&nbsp;
           {filter.resultInterpretation.map((item, i) => (
             <>
@@ -410,7 +410,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.resultUnit.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultUnit.length > 0 ? "" : "hidden"}`}>
           Res.Unit:&nbsp;
           {filter.resultUnit.map((item, i) => (
             <>
@@ -420,7 +420,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.diagnosis.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.diagnosis.length > 0 ? "" : "hidden"}`}>
           Diagnosis:&nbsp;
           {filter.diagnosis.map((item, i) => (
             <>
@@ -430,7 +430,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.ICDCode.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICDCode.length > 0 ? "" : "hidden"}`}>
           ICD:&nbsp;
           {filter.ICDCode.map((item, i) => (
             <>
@@ -440,6 +440,21 @@ const Content: React.FC = () => {
           ))}
           
         </span>
+      </div>
+
+      <div className="flex flex-row w-full items-center justify-center">
+        <Footer range={range} page={page} setPage={setPage}/>
+
+        <p>Show rows</p>
+        <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={150}>150</option>
+          <option value={200}>200</option>
+          <option value={250}>250</option>
+          <option value={500}>500</option>
+          <option value={1000}>1000</option>
+        </select>
       </div>
 
       <div className="mx-4 my-5">
