@@ -449,7 +449,7 @@ export const sampleRouter = createTRPCRouter({
     //-------------------------//
 
     getDistinct: publicProcedure
-        .input( z.string() )
+        .input( z.string().optional() )
         .query(async ({ ctx, input }) => {
 
             switch (input) {
@@ -457,12 +457,12 @@ export const sampleRouter = createTRPCRouter({
                     const result = await ctx.prisma.samples.findMany({
                         distinct: ['Price'],
                     });
-                    return result.map(item => item.Price);
+                    return result.map(item => item.Price?.toString());
                 case 'Quantity':
                     const result_1 = await ctx.prisma.samples.findMany({
                         distinct: ['Quantity'],
                     });
-                    return result_1.map(item_1 => item_1.Quantity);
+                    return result_1.map(item_1 => item_1.Quantity?.toString());
                 case 'Unit':
                     const result_2 = await ctx.prisma.samples.findMany({
                         distinct: ['Unit'],
@@ -482,7 +482,7 @@ export const sampleRouter = createTRPCRouter({
                     const result_5 = await ctx.prisma.samples.findMany({
                         distinct: ['Freeze_Thaw_Cycles'],
                     });
-                    return result_5.map(item_5 => item_5.Freeze_Thaw_Cycles);
+                    return result_5.map(item_5 => item_5.Freeze_Thaw_Cycles?.toString());
                 case 'Sample_Condition':
                     const result_6 = await ctx.prisma.samples.findMany({
                         distinct: ['Sample_Condition'],
@@ -497,7 +497,7 @@ export const sampleRouter = createTRPCRouter({
                     const result_8 = await ctx.prisma.samples.findMany({
                         distinct: ['Age'],
                     });
-                    return result_8.map(item_8 => item_8.Age);
+                    return result_8.map(item_8 => item_8.Age?.toString());
                 case 'Ethnicity':
                     const result_9 = await ctx.prisma.samples.findMany({
                         distinct: ['Ethnicity'],
@@ -507,7 +507,7 @@ export const sampleRouter = createTRPCRouter({
                     const result_10 = await ctx.prisma.samples.findMany({
                         distinct: ['BMI'],
                     });
-                    return result_10.map(item_10 => item_10.BMI);
+                    return result_10.map(item_10 => item_10.BMI?.toString());
                 case 'Lab_Parameter':
                     const result_11 = await ctx.prisma.samples.findMany({
                         distinct: ['Lab_Parameter'],
@@ -612,7 +612,7 @@ export const sampleRouter = createTRPCRouter({
                     const result_31 = await ctx.prisma.samples.findMany({
                         distinct: ['Date_of_Collection'],
                     });
-                    return result_31.map(item_31 => item_31.Date_of_Collection);
+                    return result_31.map(item_31 => item_31.Date_of_Collection?.toString());
                 case 'Procurement_Type':
                     const result_32 = await ctx.prisma.samples.findMany({
                         distinct: ['Procurement_Type'],
@@ -624,7 +624,7 @@ export const sampleRouter = createTRPCRouter({
                     });
                     return result_33.map(item_33 => item_33.Informed_Consent);
                 default:
-                    throw new Error(`Invalid column name: ${input}`);
+                    return []
             }
         }),
     
