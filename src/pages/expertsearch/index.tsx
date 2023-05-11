@@ -9,6 +9,9 @@ import Header from '~/components/overall/header';
 import Sidebar from '~/components/overall/sidebar';
 import Footer from "~/components/search/footer";
 
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+
 type group= {
     not: boolean,
     link: string,
@@ -143,6 +146,20 @@ function GroupContentEditor(props: {childrenState: State<group[] | undefined>, i
     return <>
         <div className='bg-gray-100 mx-5'>
             <div className='flex flex-row px-5 py-2 font-body font-poppins text-2xl font-thin'>
+              <div className='mr-5'>
+                <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+                  <Popover id="popover-basic">
+                  <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                    <div>
+                      The buttons for AND or OR indicate how the different filters should be connected within the group. <br/>
+                      Underneath you select the column which should be filtered and in which form and then you enter the value.                   
+                    </div>
+                  </Popover.Body>
+                </Popover>
+                }>
+                <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md rounded-lg">help</button>
+                </OverlayTrigger>
+              </div>
                 <div className='bg-gray-300 rounded-sm px-3'>
                     <input type="checkbox" id="not" name="not" value="not" onChange={() => not.set(!not.value)}/><label>NOT</label>
                 </div>
@@ -174,7 +191,7 @@ function GroupListEditor(props: { groups: State<group[] | undefined>, deleteDisa
     const disabled = props.deleteDisabled
 
     return (
-        <div className={`bg-gray-100 mx-5 py-1 border-solid border-black min-w-[1050px] w-fit ${(state.value && state.value.length > 0) ? 'border-2' : 'border-0'}`} style={{ paddingLeft: 20 }}>
+        <div className={`bg-gray-100 mx-5 py-1 border-solid border-black min-w-[1100px] w-fit ${(state.value && state.value.length > 0) ? 'border-2' : 'border-0'}`} style={{ paddingLeft: 20 }}>
             {state.ornull && state.ornull.map((groupState: State<group>, i) =>
                 <div key={i}>
                     <GroupContentEditor linkState={groupState.link} childrenState={groupState.groups} filterState={groupState.filter} groupState={state} index={i} deleteDisabled={disabled} notState={groupState.not}/>
@@ -327,7 +344,7 @@ type props = { filter: State<group[] | undefined> }
 const Table: React.FC<props> = ({filter}) => {
       const [page, setPage] = useState<number>(1)
       const [pagelength, setPagelength] = useState<number>(50)
-      const [search, setSearch] = useState<string | undefined>()
+      const [search, ] = useState<string | undefined>()
       const [range, setRange] = useState<number[]>([])
       const [filterQuery, setFilterQuery] = useState<string>("")
       
@@ -340,7 +357,8 @@ const Table: React.FC<props> = ({filter}) => {
     
       const [show, setShow] = useState<boolean[]>(defaultShow)
 
-      const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery(filterQuery)   
+      //Test
+      const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({query: filterQuery, pages: page , pagelength: pagelength})
       const { data: count } = api.samples.count.useQuery()
       
       useEffect(() => {
@@ -381,10 +399,12 @@ const Table: React.FC<props> = ({filter}) => {
         setPagelength(length);
       };
 
+
     return(
         <>
             <div className="mx-4 my-5">
-              <button onClick={() => {filters.ornull && filters.ornull.map((group: State<group>) => { setFilterQuery(BuildQuery(group))})}}>Apply Filter</button>
+              <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => {filters.ornull && filters.ornull.map((group: State<group>) => { setFilterQuery(BuildQuery(group))})}}>Apply Filter</button>
+              <button className='bg-[rgb(208,165,96)] text-white px-3 rounded-lg' onClick={() => filters.set([{not: false, link: 'AND', filter:[{col: 'CBH_Donor_ID', type: 'equal', values: [],}],}],)}>Reset</button>
                 <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
                 <thead>
                     <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">

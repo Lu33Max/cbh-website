@@ -174,6 +174,251 @@ export const sampleRouter = createTRPCRouter({
             });
         }),
 
+    // Create
+    createMany: publicProcedure
+        .input( z.array(z.object({
+            id:                             z.string().optional(),
+            CBH_Donor_ID:                   z.string().nullable(),
+            CBH_Master_ID:                  z.string().nullable(),
+            CBH_Sample_ID:                  z.string().nullable(),
+            Price:                          z.number().nullable(),
+            Quantity:                       z.number().nullable(),
+            Unit:                           z.string().nullable(),
+            Matrix:                         z.string().nullable(),
+            Storage_Temperature:            z.string().nullable(),
+            Freeze_Thaw_Cycles:             z.number().nullable(),
+            Sample_Condition:               z.string().nullable(),
+            Infectious_Disease_Test_Result: z.string().nullable(),
+            Gender:                         z.string().nullable(),
+            Age:                            z.number().nullable(),
+            Ethnicity:                      z.string().nullable(),
+            BMI:                            z.number().nullable(),
+            Lab_Parameter:                  z.string().nullable(),
+            Result_Interpretation:          z.string().nullable(),
+            Result_Raw:                     z.string().nullable(),
+            Result_Numerical:               z.number().nullable(),
+            Result_Unit:                    z.string().nullable(),
+            Cut_Off_Raw:                    z.string().nullable(),
+            Cut_Off_Numerical:              z.number().nullable(),
+            Test_Method:                    z.string().nullable(),
+            Test_System:                    z.string().nullable(),
+            Test_System_Manufacturer:       z.string().nullable(),
+            Result_Obtained_From:           z.string().nullable(),
+            Diagnosis:                      z.string().nullable(),
+            Diagnosis_Remarks:              z.string().nullable(),
+            ICD_Code:                       z.string().nullable(),
+            Pregnancy_Week:                 z.number().nullable(),
+            Pregnancy_Trimester:            z.string().nullable(),
+            Medication:                     z.string().nullable(),
+            Therapy:                        z.string().nullable(),
+            Histological_Diagnosis:         z.string().nullable(),
+            Organ:                          z.string().nullable(),
+            Disease_Presentation:           z.string().nullable(),
+            TNM_Class_T:                    z.string().nullable(),
+            TNM_Class_N:                    z.string().nullable(),
+            TNM_Class_M:                    z.string().nullable(),
+            Tumour_Grade:                   z.string().nullable(),
+            Tumour_Stage:                   z.string().nullable(),
+            Viable_Cells__per_:             z.string().nullable(),
+            Necrotic_Cells__per_:           z.string().nullable(),
+            Tumour_Cells__per_:             z.string().nullable(),
+            Proliferation_Rate__Ki67_per_:  z.string().nullable(),
+            Estrogen_Receptor:              z.string().nullable(),
+            Progesteron_Receptor:           z.string().nullable(),
+            HER_2_Receptor:                 z.string().nullable(),
+            Other_Gene_Mutations:           z.string().nullable(),
+            Country_of_Collection:          z.string().nullable(),
+            Date_of_Collection:             z.date().nullable(),
+            Procurement_Type:               z.string().nullable(),
+            Informed_Consent:               z.string().nullable(),
+         })))
+        .mutation(({ctx, input}) => {
+            /*
+            for (let i = 0; i < input.length; i++){
+                return ctx.prisma.samples.create({
+                    data: [
+                        { CBH_Donor_ID:                     input[i]?.CBH_Donor_ID,
+                          CBH_Master_ID:                    input[i]?.CBH_Master_ID,
+                          CBH_Sample_ID:                    input[i]?.CBH_Sample_ID,
+                          Price:                            input[i]?.Price,
+                          Quantity:                         input[i]?.Quantity,
+                          Unit:                             input[i]?.Unit,
+                          Matrix:                           input[i]?.Matrix,
+                          Storage_Temperature:              input[i]?.Storage_Temperature,
+                          Freeze_Thaw_Cycles:               input[i]?.Freeze_Thaw_Cycles,
+                          Sample_Condition:                 input[i]?.Sample_Condition,
+                          Infectious_Disease_Test_Result:   input[i]?.Infectious_Disease_Test_Result,
+                          Gender:                           input[i]?.Gender,
+                          Age:                              input[i]?.Age,
+                          Ethnicity:                        input[i]?.Ethnicity,
+                          BMI:                              input[i]?.BMI,
+                          Lab_Parameter:                    input[i]?.Lab_Parameter,
+                          Result_Interpretation:            input[i]?.Result_Interpretation,
+                          Result_Raw:                       input[i]?.Result_Raw,
+                          Result_Numerical:                 input[i]?.Result_Numerical,
+                          Result_Unit:                      input[i]?.Result_Unit,
+                          Cut_Off_Raw:                      input[i]?.Cut_Off_Raw,
+                          Cut_Off_Numerical:                input[i]?.Cut_Off_Numerical,
+                          Test_Method:                      input[i]?.Test_Method,
+                          Test_System:                      input[i]?.Test_System,
+                          Test_System_Manufacturer:         input[i]?.Test_System_Manufacturer,
+                          Result_Obtained_From:             input[i]?.Result_Obtained_From,
+                          Diagnosis:                        input[i]?.Diagnosis,
+                          Diagnosis_Remarks:                input[i]?.Diagnosis_Remarks,
+                          ICD_Code:                         input[i]?.ICD_Code,
+                          Pregnancy_Week:                   input[i]?.Pregnancy_Week,
+                          Pregnancy_Trimester:              input[i]?.Pregnancy_Trimester,
+                          Medication:                       input[i]?.Medication,
+                          Therapy:                          input[i]?.Therapy,
+                          Histological_Diagnosis:           input[i]?.Histological_Diagnosis,
+                          Organ:                            input[i]?.Organ,
+                          Disease_Presentation:             input[i]?.Disease_Presentation,
+                          TNM_Class_T:                      input[i]?.TNM_Class_T,
+                          TNM_Class_N:                      input[i]?.TNM_Class_N,
+                          TNM_Class_M:                      input[i]?.TNM_Class_M,
+                          Tumour_Grade:                     input[i]?.Tumour_Grade,
+                          Tumour_Stage:                     input[i]?.Tumour_Stage,
+                          Viable_Cells__per_:               input[i]?.Viable_Cells__per_,
+                          Necrotic_Cells__per_:             input[i]?.Necrotic_Cells__per_,
+                          Tumour_Cells__per_:               input[i]?.Tumour_Cells__per_,
+                          Proliferation_Rate__Ki67_per_:    input[i]?.Proliferation_Rate__Ki67_per_,
+                          Estrogen_Receptor:                input[i]?.Estrogen_Receptor,
+                          Progesteron_Receptor:             input[i]?.Progesteron_Receptor,
+                          HER_2_Receptor:                   input[i]?.HER_2_Receptor,
+                          Other_Gene_Mutations:             input[i]?.Other_Gene_Mutations,
+                          Country_of_Collection:            input[i]?.Country_of_Collection,
+                          Date_of_Collection:               input[i]?.Date_of_Collection,
+                          Procurement_Type:                 input[i]?.Procurement_Type,
+                          Informed_Consent:                 input[i]?.Informed_Consent,
+                        }
+                    ]
+                }) 
+            }
+            */
+            return ctx.prisma.samples.createMany({ data: input })
+        }),
+
+    //Update
+    update: publicProcedure
+        .input( z.object({
+            id:                             z.string().optional(),
+            CBH_Donor_ID:                   z.string().nullable(),
+            CBH_Master_ID:                  z.string().nullable(),
+            CBH_Sample_ID:                  z.string().nullable(),
+            Price:                          z.number().nullable(),
+            Quantity:                       z.number().nullable(),
+            Unit:                           z.string().nullable(),
+            Matrix:                         z.string().nullable(),
+            Storage_Temperature:            z.string().nullable(),
+            Freeze_Thaw_Cycles:             z.number().nullable(),
+            Sample_Condition:               z.string().nullable(),
+            Infectious_Disease_Test_Result: z.string().nullable(),
+            Gender:                         z.string().nullable(),
+            Age:                            z.number().nullable(),
+            Ethnicity:                      z.string().nullable(),
+            BMI:                            z.number().nullable(),
+            Lab_Parameter:                  z.string().nullable(),
+            Result_Interpretation:          z.string().nullable(),
+            Result_Raw:                     z.string().nullable(),
+            Result_Numerical:               z.number().nullable(),
+            Result_Unit:                    z.string().nullable(),
+            Cut_Off_Raw:                    z.string().nullable(),
+            Cut_Off_Numerical:              z.number().nullable(),
+            Test_Method:                    z.string().nullable(),
+            Test_System:                    z.string().nullable(),
+            Test_System_Manufacturer:       z.string().nullable(),
+            Result_Obtained_From:           z.string().nullable(),
+            Diagnosis:                      z.string().nullable(),
+            Diagnosis_Remarks:              z.string().nullable(),
+            ICD_Code:                       z.string().nullable(),
+            Pregnancy_Week:                 z.number().nullable(),
+            Pregnancy_Trimester:            z.string().nullable(),
+            Medication:                     z.string().nullable(),
+            Therapy:                        z.string().nullable(),
+            Histological_Diagnosis:         z.string().nullable(),
+            Organ:                          z.string().nullable(),
+            Disease_Presentation:           z.string().nullable(),
+            TNM_Class_T:                    z.string().nullable(),
+            TNM_Class_N:                    z.string().nullable(),
+            TNM_Class_M:                    z.string().nullable(),
+            Tumour_Grade:                   z.string().nullable(),
+            Tumour_Stage:                   z.string().nullable(),
+            Viable_Cells__per_:             z.string().nullable(),
+            Necrotic_Cells__per_:           z.string().nullable(),
+            Tumour_Cells__per_:             z.string().nullable(),
+            Proliferation_Rate__Ki67_per_:  z.string().nullable(),
+            Estrogen_Receptor:              z.string().nullable(),
+            Progesteron_Receptor:           z.string().nullable(),
+            HER_2_Receptor:                 z.string().nullable(),
+            Other_Gene_Mutations:           z.string().nullable(),
+            Country_of_Collection:          z.string().nullable(),
+            Date_of_Collection:             z.date().nullable(),
+            Procurement_Type:               z.string().nullable(),
+            Informed_Consent:               z.string().nullable(),
+        }))
+        .mutation(({ctx,input}) => {
+            return ctx.prisma.samples.update({
+                where: {
+                    id: input.id,
+                },
+                data: {
+                    CBH_Donor_ID:                   input.CBH_Donor_ID,
+                    CBH_Master_ID:                  input.CBH_Master_ID,
+                    CBH_Sample_ID:                  input.CBH_Sample_ID,
+                    Price:                          input.Price,
+                    Quantity:                       input.Quantity,
+                    Unit:                           input.Unit,
+                    Matrix:                         input.Matrix,
+                    Storage_Temperature:            input.Storage_Temperature,
+                    Freeze_Thaw_Cycles:             input.Freeze_Thaw_Cycles,
+                    Sample_Condition:               input.Sample_Condition,
+                    Infectious_Disease_Test_Result: input.Infectious_Disease_Test_Result,
+                    Gender:                         input.Gender,
+                    Age:                            input.Age,
+                    Ethnicity:                      input.Ethnicity,
+                    BMI:                            input.BMI,
+                    Lab_Parameter:                  input.Lab_Parameter,
+                    Result_Interpretation:          input.Result_Interpretation,
+                    Result_Raw:                     input.Result_Raw,
+                    Result_Numerical:               input.Result_Numerical,
+                    Result_Unit:                    input.Result_Unit,
+                    Cut_Off_Raw:                    input.Cut_Off_Raw,
+                    Cut_Off_Numerical:              input.Cut_Off_Numerical,
+                    Test_Method:                    input.Test_Method,
+                    Test_System:                    input.Test_System,
+                    Test_System_Manufacturer:       input.Test_System_Manufacturer,
+                    Result_Obtained_From:           input.Result_Obtained_From,
+                    Diagnosis:                      input.Diagnosis,
+                    Diagnosis_Remarks:              input.Diagnosis_Remarks,
+                    ICD_Code:                       input.ICD_Code,
+                    Pregnancy_Week:                 input.Pregnancy_Week,
+                    Pregnancy_Trimester:            input.Pregnancy_Trimester,
+                    Medication:                     input.Medication,
+                    Therapy:                        input.Therapy,
+                    Histological_Diagnosis:         input.Histological_Diagnosis,
+                    Organ:                          input.Organ,
+                    Disease_Presentation:           input.Disease_Presentation,
+                    TNM_Class_T:                    input.TNM_Class_T,
+                    TNM_Class_N:                    input.TNM_Class_N,
+                    TNM_Class_M:                    input.TNM_Class_M,
+                    Tumour_Grade:                   input.Tumour_Grade,
+                    Tumour_Stage:                   input.Tumour_Stage,
+                    Viable_Cells__per_:             input.Viable_Cells__per_,
+                    Necrotic_Cells__per_:           input.Necrotic_Cells__per_,
+                    Tumour_Cells__per_:             input.Tumour_Cells__per_,
+                    Proliferation_Rate__Ki67_per_:  input.Proliferation_Rate__Ki67_per_,
+                    Estrogen_Receptor:              input.Estrogen_Receptor,
+                    Progesteron_Receptor:           input.Progesteron_Receptor,
+                    HER_2_Receptor:                 input.HER_2_Receptor,
+                    Other_Gene_Mutations:           input.Other_Gene_Mutations,
+                    Country_of_Collection:          input.Country_of_Collection,
+                    Date_of_Collection:             input.Date_of_Collection,
+                    Procurement_Type:               input.Procurement_Type,
+                    Informed_Consent:               input.Informed_Consent,
+                },
+            })
+        }),
+
     // Counts all entries in table
     count: publicProcedure
         .query(async ({ctx}) => {
@@ -204,7 +449,7 @@ export const sampleRouter = createTRPCRouter({
     //-------------------------//
 
     getDistinct: publicProcedure
-        .input( z.string() )
+        .input( z.string().optional() )
         .query(async ({ ctx, input }) => {
 
             switch (input) {
@@ -212,12 +457,12 @@ export const sampleRouter = createTRPCRouter({
                     const result = await ctx.prisma.samples.findMany({
                         distinct: ['Price'],
                     });
-                    return result.map(item => item.Price);
+                    return result.map(item => item.Price?.toString());
                 case 'Quantity':
                     const result_1 = await ctx.prisma.samples.findMany({
                         distinct: ['Quantity'],
                     });
-                    return result_1.map(item_1 => item_1.Quantity);
+                    return result_1.map(item_1 => item_1.Quantity?.toString());
                 case 'Unit':
                     const result_2 = await ctx.prisma.samples.findMany({
                         distinct: ['Unit'],
@@ -237,7 +482,7 @@ export const sampleRouter = createTRPCRouter({
                     const result_5 = await ctx.prisma.samples.findMany({
                         distinct: ['Freeze_Thaw_Cycles'],
                     });
-                    return result_5.map(item_5 => item_5.Freeze_Thaw_Cycles);
+                    return result_5.map(item_5 => item_5.Freeze_Thaw_Cycles?.toString());
                 case 'Sample_Condition':
                     const result_6 = await ctx.prisma.samples.findMany({
                         distinct: ['Sample_Condition'],
@@ -252,7 +497,7 @@ export const sampleRouter = createTRPCRouter({
                     const result_8 = await ctx.prisma.samples.findMany({
                         distinct: ['Age'],
                     });
-                    return result_8.map(item_8 => item_8.Age);
+                    return result_8.map(item_8 => item_8.Age?.toString());
                 case 'Ethnicity':
                     const result_9 = await ctx.prisma.samples.findMany({
                         distinct: ['Ethnicity'],
@@ -262,7 +507,7 @@ export const sampleRouter = createTRPCRouter({
                     const result_10 = await ctx.prisma.samples.findMany({
                         distinct: ['BMI'],
                     });
-                    return result_10.map(item_10 => item_10.BMI);
+                    return result_10.map(item_10 => item_10.BMI?.toString());
                 case 'Lab_Parameter':
                     const result_11 = await ctx.prisma.samples.findMany({
                         distinct: ['Lab_Parameter'],
@@ -367,7 +612,7 @@ export const sampleRouter = createTRPCRouter({
                     const result_31 = await ctx.prisma.samples.findMany({
                         distinct: ['Date_of_Collection'],
                     });
-                    return result_31.map(item_31 => item_31.Date_of_Collection);
+                    return result_31.map(item_31 => item_31.Date_of_Collection?.toString());
                 case 'Procurement_Type':
                     const result_32 = await ctx.prisma.samples.findMany({
                         distinct: ['Procurement_Type'],
@@ -379,17 +624,30 @@ export const sampleRouter = createTRPCRouter({
                     });
                     return result_33.map(item_33 => item_33.Informed_Consent);
                 default:
-                    throw new Error(`Invalid column name: ${input}`);
+                    return []
             }
+        }),
+    
+    deleteAll: publicProcedure
+        .mutation(async ({ ctx }) => {
+            return ctx.prisma.samples.deleteMany({})
         }),
 
     applyFilter: publicProcedure
-        .input( z.string() )
+        .input( z.object({ pagelength: z.number(), pages: z.number(), query: z.string() }) )
         .query(async ({ ctx, input }) => {
-            if (input == "") {
-                return ctx.prisma.samples.findMany()
+
+            const offset = (input.pages && input.pagelength) ? (input.pages -1) * input.pagelength : 0
+
+            if (input.query == "") {
+                return ctx.prisma.samples.findMany({                    
+                    take: input.pagelength, 
+                    skip: offset,
+                })
             }
-            return prisma.$queryRawUnsafe<Samples[]>(`SELECT * FROM "Samples" WHERE `+ input +`;`)
+
+            console.log(`SELECT * FROM "Samples" WHERE `, input.query)
+            return prisma.$queryRawUnsafe<Samples[]>(`SELECT * FROM "Samples" WHERE `+ input.query +` LIMIT ` + input.pagelength.toString() + ` OFFSET ` + offset.toString() + `;`)
         }),
 })
 
