@@ -442,8 +442,28 @@ const Content: React.FC = () => {
         </span>
       </div>
 
+
       <div className="flex flex-row w-full items-center justify-center">
-        <Footer range={range} page={page} setPage={setPage}/>
+  {range.map((item, index) => {
+    const isSelected = (currentPage) => {
+      return page === currentPage ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900';
+    };
+    
+
+    return (
+    <button
+     key={index}
+      className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${isSelected(item)}`}
+      onClick={() => setPage(item)}
+      >
+     {item}
+    </button>
+
+    );
+  })}
+
+
+
 
         <p className="ml-4">Show rows</p>
         <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
@@ -539,9 +559,26 @@ const Content: React.FC = () => {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-row w-full items-center justify-center">
-        <Footer range={range} page={page} setPage={setPage}/>
 
+      <div className="flex flex-row w-full items-center justify-center">
+  {range.map((item, index) => {
+    const isSelected = (currentPage) => {
+      return page === currentPage ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900';
+    };
+    
+
+    return (
+    <button
+     key={index}
+      className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${isSelected(item)}`}
+      onClick={() => setPage(item)}
+      >
+     {item}
+    </button>
+
+    );
+  })}
+      
         <p>Show rows</p>
         <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
