@@ -20,7 +20,7 @@ const Header: React.FC = () => {
   }
 
   return (
-  <div className='bg-[rgb(131,182,94)] h-16 flex flex-row px-5 py-2 items-center justify-between font-body font-poppins text-2xl text-white font-thin w-full'>
+  <div className='bg-[rgb(131,182,94)] h-[50px] flex flex-row px-5 py-2 items-center justify-between font-body font-poppins text-2xl text-white font-thin w-full'>
     <h3 className='whitespace-nowrap text-left'>
       Central BioHub <sup>©</sup> - Order Biospecimen Online
     </h3>

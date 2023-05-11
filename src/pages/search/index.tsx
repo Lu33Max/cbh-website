@@ -45,16 +45,14 @@ const Search: NextPage = () => {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       
-      <div className="bg-gray-200 min-h-screen overflow-y-hidden">
-        <Header/>
-        <span className="grid grid-cols-7">
-            <div className="col-span-1">
-              <Sidebar/>
-            </div>
-            <div className="col-span-6 h-[95vh] overflow-y-auto">
-              <Content/>
-            </div>
-        </span>
+      <div className="bg-gray-200 min-h-screen max-h-screen overflow-x-hidden overflow-y-hidden">
+        <div className="flex flex-col">
+          <Header/>
+          <div className="flex flex-row">
+            <Sidebar/>
+            <Content/>
+          </div>
+        </div>
       </div>
     </>
   );
@@ -102,6 +100,7 @@ const Content: React.FC = () => {
 
   const handlePageLengthChange = (length: number) => {
     setPagelength(length);
+    setPage(1)
   };
 
   const [show, setShow] = useState<boolean[]>(defaultShow)
@@ -147,7 +146,7 @@ const Content: React.FC = () => {
 
 
   return(
-    <div className="w-full overflow-x-hidden font-poppins">
+    <div className="max-h-[95vh] overflow-y-auto w-full overflow-x-hidden font-poppins">
       <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Overall Search</b></h1>
 
       <p className="px-5 my-7 text-lg">Explore the Abundance and Find the Perfect <b>Human Biospecimens</b> for You! Expert search is a tailor-made solution to improve your search by understanding the precise needs and search 
@@ -442,28 +441,14 @@ const Content: React.FC = () => {
         </span>
       </div>
 
-
-      <div className="flex flex-row w-full items-center justify-center">
-  {range.map((item, index) => {
-    const isSelected = (currentPage) => {
-      return page === currentPage ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900';
-    };
-    
-
-    return (
-    <button
-     key={index}
-      className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${isSelected(item)}`}
-      onClick={() => setPage(item)}
-      >
-     {item}
-    </button>
-
-    );
-  })}
-
-
-
+      <div className="flex flex-row w-full items-center justify-center mt-5">
+        {range.map((item, index) => {
+          return (
+            <button key={index} className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${page === index+1 ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900'}`} onClick={() => setPage(item)}>
+              {item}
+            </button>
+          );
+        })}
 
         <p className="ml-4">Show rows</p>
         <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
@@ -477,7 +462,7 @@ const Content: React.FC = () => {
         </select>
       </div>
 
-      <div className="mx-4 my-5">
+      <div className="mx-4 my-2">
         <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
           <thead>
             <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
@@ -560,26 +545,16 @@ const Content: React.FC = () => {
         </table>
       </div>
 
-      <div className="flex flex-row w-full items-center justify-center">
-  {range.map((item, index) => {
-    const isSelected = (currentPage) => {
-      return page === currentPage ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900';
-    };
-    
+      <div className="flex flex-row w-full items-center justify-center mt-5">
+        {range.map((item, index) => {
+          return (
+            <button key={index} className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${page === index+1 ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900'}`} onClick={() => setPage(item)}>
+              {item}
+            </button>
+          );
+        })}
 
-    return (
-    <button
-     key={index}
-      className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${isSelected(item)}`}
-      onClick={() => setPage(item)}
-      >
-     {item}
-    </button>
-
-    );
-  })}
-      
-        <p>Show rows</p>
+        <p className="ml-4">Show rows</p>
         <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
           <option value={100}>100</option>

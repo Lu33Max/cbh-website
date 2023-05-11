@@ -15,16 +15,14 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       
-      <main className="bg-gray-200 min-h-screen overflow-x-hidden overflow-y-hidden">
-        <Header/>
-          <span className="grid grid-cols-7">
-            <div className="grid col-span-1">
-              <Sidebar/>  
-            </div>     
-            <div className="grid col-span-6 h-[95vh] overflow-y-auto">
-              <Content/>
-            </div>         
-          </span>
+      <main className="bg-gray-200 min-h-screen max-h-screen overflow-x-hidden overflow-y-hidden">
+        <div className="flex flex-col">
+          <Header/>
+          <div className="flex flex-row">
+            <Sidebar/>
+            <Content/>
+          </div>
+        </div>
       </main>
     </>
   );
@@ -59,7 +57,7 @@ export default Home;
 const Content: React.FC = () => {
 
   return(
-    <div>
+    <div className="max-h-[95vh] overflow-y-auto">
       <div className="flex flex-row w-full items-center justify-center">
         <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>
         <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-2">Welcome to CBH!</h1>

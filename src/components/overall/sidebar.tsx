@@ -18,7 +18,7 @@ const Sidebar: React.FC = () => {
 
   return(
     
-    <div className="w-full h-[95vh] bg-white flex flex-1 flex-col items-center justify-start py-5 px-5 overflow-y-show overflow-x-hidden order-1 xl:w-1/2">
+    <div className="min-w-[250px] max-w-[250px] h-[95vh] bg-white flex flex-1 flex-col items-center justify-start py-5 px-5 overflow-y-auto overflow-x-hidden">
       <div>
         <Image src="/CBH Logo.png" alt="Logo" width={200} height={200}/>
       </div>
@@ -39,7 +39,7 @@ const Sidebar: React.FC = () => {
         <button className="button-contact"></button>
       </div>
       <div>
-        <Image src="/social media.png" alt="social media" width={260} height={300} className="mt-5"/>
+        <Image src="/social media.png" alt="social media" width={260} height={300} className="mt-5 mb-2"/>
       </div>
     </div>
   )
