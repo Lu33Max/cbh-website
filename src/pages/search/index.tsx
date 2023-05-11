@@ -445,7 +445,7 @@ const Content: React.FC = () => {
       <div className="flex flex-row w-full items-center justify-center">
         <Footer range={range} page={page} setPage={setPage}/>
 
-        <p>Show rows</p>
+        <p className="ml-4">Show rows</p>
         <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
           <option value={100}>100</option>
