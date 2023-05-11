@@ -12,8 +12,9 @@ import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
+import Autofill from "~/components/search/autofill";
 
-type Filter = {
+export type Filter = {
   cbhMasterID: string | undefined,
   cbhDonorID: string | undefined,
   cbhSampleID: string | undefined,
@@ -45,16 +46,14 @@ const Search: NextPage = () => {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       
-      <div className="bg-gray-200 min-h-screen overflow-y-hidden">
-        <Header/>
-        <span className="grid grid-cols-7">
-            <div className="col-span-1">
-              <Sidebar/>
-            </div>
-            <div className="col-span-6 h-[95vh] overflow-y-auto">
-              <Content/>
-            </div>
-        </span>
+      <div className="bg-gray-200 min-h-screen max-h-screen overflow-x-hidden overflow-y-hidden">
+        <div className="flex flex-col">
+          <Header/>
+          <div className="flex flex-row">
+            <Sidebar/>
+            <Content/>
+          </div>
+        </div>
       </div>
     </>
   );
@@ -83,6 +82,7 @@ const Content: React.FC = () => {
     diagnosis: [],
     ICDCode: []
   }
+
   const defaultShow: boolean[] = []
 
   /*Search Bar function */
@@ -102,6 +102,7 @@ const Content: React.FC = () => {
 
   const handlePageLengthChange = (length: number) => {
     setPagelength(length);
+    setPage(1)
   };
 
   const [show, setShow] = useState<boolean[]>(defaultShow)
@@ -109,7 +110,6 @@ const Content: React.FC = () => {
   const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
     { pages: page, lines: pagelength, search: search, filter: filter }
   )
-
   const { data: count } = api.samples.count.useQuery()
   
   useEffect(() => {
@@ -145,9 +145,64 @@ const Content: React.FC = () => {
     setShow(newArray)
   } 
 
+  function handleFilterChange(value: string, column:string): void {
+    switch(column){
+      case "Matrix":
+        if(!filter.matrix.includes(value)){
+          const temp1 = filter.matrix
+          temp1.push(value)
+          setFilter(filter => ({...filter, matrix: temp1}))
+        }
+        break;
+      case "Unit":
+        if(!filter.unit.includes(value)){
+          const temp2 = filter.unit
+          temp2.push(value)
+          setFilter(filter => ({...filter, unit: temp2}))
+        }
+        break;
+      case "Lab_Parameter":
+        if(!filter.labParameter.includes(value)){
+          const temp3 = filter.labParameter
+          temp3.push(value)
+          setFilter(filter => ({...filter, labParameter: temp3}))
+        }
+        break;
+      case "Result_Interpretation":
+        if(!filter.resultInterpretation.includes(value)){
+          const temp4 = filter.resultInterpretation
+          temp4.push(value)
+          setFilter(filter => ({...filter, resultInterpretation: temp4}))
+        }
+        break;
+      case "Result_Unit":
+        if(!filter.resultUnit.includes(value)){
+          const temp5 = filter.resultUnit
+          temp5.push(value)
+          setFilter(filter => ({...filter, resultUnit: temp5}))
+        }
+        break;
+      case "Diagnosis":
+        if(!filter.diagnosis.includes(value)){
+          const temp6 = filter.diagnosis
+          temp6.push(value)
+          setFilter(filter => ({...filter, diagnosis: temp6}))
+        }
+        break;
+      case "ICD_Code":
+        if(!filter.ICDCode.includes(value)){
+          const temp7 = filter.ICDCode
+          temp7.push(value)
+          setFilter(filter => ({...filter, ICDCode: temp7}))
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   return(
-    <div className="w-full overflow-x-hidden font-poppins">
+    <div className="max-h-[95vh] overflow-y-auto w-full overflow-x-hidden font-poppins">
       <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Overall Search</b></h1>
 
       <p className="px-5 my-7 text-lg">Explore the Abundance and Find the Perfect <b>Human Biospecimens</b> for You! Expert search is a tailor-made solution to improve your search by understanding the precise needs and search 
@@ -191,11 +246,11 @@ const Content: React.FC = () => {
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
               <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
                 <Popover.Body>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1">
                       Min:
                     </div>
-                    <input type="number" value={filter.price.min} className="text-center col-span-3" placeholder="Min price" onChange={e => {
+                    <input type="number" value={filter.price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min price" onChange={e => {
                       const temp = filter.price
                       temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
                       setFilter(filter => ({...filter, price: temp}))
@@ -203,7 +258,7 @@ const Content: React.FC = () => {
                     <div className="col-span-1">
                       Max:
                     </div>
-                    <input type="number" value={filter.price.max} className="text-center col-span-3" placeholder="Max price" onChange={e => {
+                    <input type="number" value={filter.price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max price" onChange={e => {
                       const temp = filter.price
                       temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
                       setFilter(filter => ({...filter, price: temp}))
@@ -222,18 +277,13 @@ const Content: React.FC = () => {
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
               <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                 <Popover.Body>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1">
                       Matrix:
                     </div>
-                    <input type="text" className="col-span-3 text-center" placeholder="Matrix" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.matrix
-                        temp.push(e.currentTarget.value)
-                        setFilter(filter => ({...filter, matrix: temp}))
-                        e.currentTarget.value = ""
-                      }
-                    }}/>
+                    <div className="col-span-1">
+                      <Autofill value="Matrix" callback={handleFilterChange}/>
+                    </div>
                   </div>
                 </Popover.Body>
               </Popover>
@@ -246,11 +296,11 @@ const Content: React.FC = () => {
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
               <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                 <Popover.Body>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1">
                       Min:
                     </div>
-                    <input type="number" value={filter.quantity.min} className="col-span-3 text-center" placeholder="Min quantity" onChange={e => {
+                    <input type="number" value={filter.quantity.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min quantity" onChange={e => {
                       const temp = filter.quantity
                       temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
                       setFilter(filter => ({...filter, quantity: temp}))
@@ -258,7 +308,7 @@ const Content: React.FC = () => {
                     <div className="col-span-1">
                       Max:
                     </div>
-                    <input type="number" value={filter.quantity.max} className="col-span-3 text-center" placeholder="Max quantity" onChange={e => {
+                    <input type="number" value={filter.quantity.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max quantity" onChange={e => {
                       const temp = filter.quantity
                       temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
                       setFilter(filter => ({...filter, quantity: temp}))
@@ -266,14 +316,9 @@ const Content: React.FC = () => {
                     <div className="col-span-1">
                       Unit:
                     </div>
-                    <input type="text" className="col-span-3 text-center" placeholder="Unit" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.unit
-                        temp.push(e.currentTarget.value)
-                        setFilter(filter => ({...filter, unit: temp}))
-                        e.currentTarget.value = ""
-                      }
-                    }}/>
+                    <div className="col-span-1">
+                      <Autofill value="Unit" callback={handleFilterChange}/>
+                    </div>
                   </div>
                 </Popover.Body>
               </Popover>
@@ -286,40 +331,25 @@ const Content: React.FC = () => {
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
               <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                 <Popover.Body>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1 text-right">
                       Parameter:
                     </div>
-                    <input type="text" className="col-span-2 text-center" placeholder="LabParameter" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.labParameter
-                        temp.push(e.currentTarget.value)
-                        setFilter(filter => ({...filter, labParameter: temp}))
-                        e.currentTarget.value = ""
-                      }
-                    }}/>
+                    <div className="col-span-1">
+                      <Autofill value="Lab_Parameter" callback={handleFilterChange}/>
+                    </div>
                     <div className="col-span-1 text-right">
                       Result Interpretation:
                     </div>
-                    <input type="text" className="col-span-2 text-center" placeholder="Result Interpretation" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.resultInterpretation
-                        temp.push(e.currentTarget.value)
-                        setFilter(filter => ({...filter, resultInterpretation: temp}))
-                        e.currentTarget.value = ""
-                      }
-                    }}/>
+                    <div className="col-span-1">
+                      <Autofill value="Result_Interpretation" callback={handleFilterChange}/>
+                    </div>
                     <div className="col-span-1 text-right">
                       Unit:
                     </div>
-                    <input type="text" className="col-span-2 text-center" placeholder="Result Unit" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.resultUnit
-                        temp.push(e.currentTarget.value)
-                        setFilter(filter => ({...filter, resultUnit: temp}))
-                        e.currentTarget.value = ""
-                      }
-                    }}/>
+                    <div className="col-span-1">
+                      <Autofill value="Result_Unit" callback={handleFilterChange}/>
+                    </div>
                   </div>
                 </Popover.Body>
               </Popover>
@@ -332,29 +362,19 @@ const Content: React.FC = () => {
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
               <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                 <Popover.Body>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1">
                       Diagnosis:
                     </div>
-                    <input type="text" className="col-span-3 text-center" placeholder="Diagnosis" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.diagnosis
-                        temp.push(e.currentTarget.value)
-                        setFilter(filter => ({...filter, diagnosis: temp}))
-                        e.currentTarget.value = ""
-                      }
-                    }}/>
+                    <div className="col-span-1">
+                      <Autofill value="Diagnosis" callback={handleFilterChange}/>
+                    </div>
                     <div className="col-span-1">
                       ICD Code:
                     </div>
-                    <input type="text" className="col-span-3 text-center" placeholder="ICD Code" onKeyDown={e => {
-                      if(e.key === "Enter"){
-                        const temp = filter.ICDCode
-                        temp.push(e.currentTarget.value)
-                        setFilter(filter => ({...filter, ICDCode: temp}))
-                        e.currentTarget.value = ""
-                      }
-                    }}/>
+                    <div className="col-span-1">
+                      <Autofill value="ICD_Code" callback={handleFilterChange}/>
+                    </div>
                   </div>
                 </Popover.Body>
               </Popover>
@@ -366,8 +386,8 @@ const Content: React.FC = () => {
       </div>
 
       {/* Displaying active filters */}
-      <div className="flex flex-row mx-5 max-w-full overflow-x-auto overflow-y-hidden whitespace-nowrap">
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${search ? "" : "hidden"}`}>
+      <div className="flex flex-col mx-5 max-w-10xl overflow-x-auto overflow-y-hidden whitespace-normal">
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
           Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.matrix.length > 0 ? "" : "hidden"}`}>
@@ -380,7 +400,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.unit.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.unit.length > 0 ? "" : "hidden"}`}>
           Unit:&nbsp;
           {filter.unit.map((item, i) => (
             <>
@@ -390,7 +410,7 @@ const Content: React.FC = () => {
             
           ))}
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.labParameter.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.labParameter.length > 0 ? "" : "hidden"}`}>
           Parameter:&nbsp;
           {filter.labParameter.map((item, i) => (
             <>
@@ -400,7 +420,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.resultInterpretation.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.length > 0 ? "" : "hidden"}`}>
           Res.Interpretation:&nbsp;
           {filter.resultInterpretation.map((item, i) => (
             <>
@@ -410,7 +430,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.resultUnit.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultUnit.length > 0 ? "" : "hidden"}`}>
           Res.Unit:&nbsp;
           {filter.resultUnit.map((item, i) => (
             <>
@@ -420,7 +440,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.diagnosis.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.diagnosis.length > 0 ? "" : "hidden"}`}>
           Diagnosis:&nbsp;
           {filter.diagnosis.map((item, i) => (
             <>
@@ -430,7 +450,7 @@ const Content: React.FC = () => {
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.ICDCode.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICDCode.length > 0 ? "" : "hidden"}`}>
           ICD:&nbsp;
           {filter.ICDCode.map((item, i) => (
             <>
@@ -442,7 +462,28 @@ const Content: React.FC = () => {
         </span>
       </div>
 
-      <div className="mx-4 my-5">
+      <div className="flex flex-row w-full items-center justify-center mt-5">
+        {range.map((item, index) => {
+          return (
+            <button key={index} className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${page === index+1 ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900'}`} onClick={() => setPage(item)}>
+              {item}
+            </button>
+          );
+        })}
+
+        <p className="ml-4">Show rows</p>
+        <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={150}>150</option>
+          <option value={200}>200</option>
+          <option value={250}>250</option>
+          <option value={500}>500</option>
+          <option value={1000}>1000</option>
+        </select>
+      </div>
+
+      <div className="mx-4 my-2">
         <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
           <thead>
             <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
@@ -524,10 +565,17 @@ const Content: React.FC = () => {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-row w-full items-center justify-center">
-        <Footer range={range} page={page} setPage={setPage}/>
 
-        <p>Show rows</p>
+      <div className="flex flex-row w-full items-center justify-center mt-5">
+        {range.map((item, index) => {
+          return (
+            <button key={index} className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${page === index+1 ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900'}`} onClick={() => setPage(item)}>
+              {item}
+            </button>
+          );
+        })}
+
+        <p className="ml-4">Show rows</p>
         <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
           <option value={100}>100</option>
