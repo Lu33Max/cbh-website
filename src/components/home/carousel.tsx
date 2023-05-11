@@ -14,7 +14,7 @@ export default function SimpleSlider() {
     slidesToScroll: 1,   
   };
   return (
-    <div className="h-[20vh] w-[80vw] mx-10">
+    <div className="h-[20vh] w-[100vw] mx-10">
       <Slider {...settings} className="items-center justify-center text-center">
         <div>
           <Image src="/erstens1.png" alt="Logo" width={150} height={150} className="m-auto"/>

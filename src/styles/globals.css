@@ -63,3 +63,16 @@
   height: auto;
   text-align: center;
 }
+
+.parallax{
+  background-image: url("/public/banner.png");
+
+  /* Full height */
+  height: 300px;
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
