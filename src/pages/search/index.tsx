@@ -110,7 +110,7 @@ const Content: React.FC = () => {
   const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
     { pages: page, lines: pagelength, search: search, filter: filter }
   )
-  const { data: count } = api.samples.count.useQuery()
+  const { data: count } = api.samples.countNormal.useQuery({ search: search, filter: filter })
   
   useEffect(() => {
     void refetchSamples()

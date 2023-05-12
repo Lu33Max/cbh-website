@@ -420,9 +420,183 @@ export const sampleRouter = createTRPCRouter({
         }),
 
     // Counts all entries in table
-    count: publicProcedure
-        .query(async ({ctx}) => {
-            return ctx.prisma.samples.count()
+    countExpert: publicProcedure
+        .input( z.object({ query: z.string() }) )
+        .query(async ({ctx, input}) => {
+
+            console.log(`input: ` + input.query +`;`)
+
+            if (!(input.query == null || input.query == undefined || input.query == "")) {
+                const result = await prisma.$queryRawUnsafe<{ _count: number }[]>(`SELECT COUNT(*)::integer as "_count" FROM "Samples" WHERE `+ input.query +`;`)
+                //const count = Number(result._count)
+                return result[0]?._count;
+            } else {
+                console.log(`no query given`)
+                return ctx.prisma.samples.count()
+            }            
+        }),
+
+    countNormal: publicProcedure
+        .input(z.object({ 
+        search: z.string().optional(), 
+        filter: z.object({
+            cbhMasterID: z.string().optional(), 
+            cbhDonorID: z.string().optional(), 
+            cbhSampleID: z.string().optional(), 
+            price: z.object({
+                min: z.number().optional(), 
+                max: z.number().optional() 
+            }), 
+            matrix: z.array(z.string()), 
+            quantity: z.object({
+                min: z.number().optional(), 
+                max: z.number().optional() 
+            }), 
+            unit: z.array(z.string()), 
+            labParameter: z.array(z.string()), 
+            resultInterpretation: z.array(z.string()), 
+            resultUnit: z.array(z.string()), 
+            diagnosis: z.array(z.string()), 
+            ICDCode: z.array(z.string()),
+        }) 
+        }))
+        .query(async ({ctx, input}) => {
+            return ctx.prisma.samples.count({
+                where: {
+                    AND: [
+                        { 
+                            CBH_Master_ID: { 
+                                contains: input.filter.cbhMasterID, 
+                                mode: 'insensitive',
+                            } 
+                        },
+                        { 
+                            CBH_Donor_ID: { 
+                                contains: input.filter.cbhDonorID, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            CBH_Sample_ID: { 
+                                contains: input.filter.cbhSampleID, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Price: { 
+                                lte: input.filter.price.max, 
+                                gte: input.filter.price.min 
+                            } 
+                        },
+                        { 
+                            Matrix: { 
+                                in: input.filter.matrix?.length > 0 ? input.filter.matrix : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Quantity: { 
+                                lte: input.filter.quantity.max, 
+                                gte: input.filter.quantity.min 
+                            } 
+                        },
+                        { 
+                            Unit: { 
+                                in: input.filter.unit?.length > 0 ? input.filter.unit : undefined,
+                                mode: 'insensitive'
+                            } 
+                        },
+                        { 
+                            Lab_Parameter: { 
+                                in: input.filter.labParameter?.length > 0 ? input.filter.labParameter : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Interpretation: { 
+                                in: input.filter.resultInterpretation?.length > 0 ? input.filter.resultInterpretation : undefined,
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Unit: { 
+                                in: input.filter.resultUnit?.length > 0 ? input.filter.resultUnit : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Diagnosis: { 
+                                in: input.filter.diagnosis?.length > 0 ? input.filter.diagnosis : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            ICD_Code: { 
+                                in: input.filter.ICDCode?.length > 0 ? input.filter.ICDCode : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        {
+                            OR: [
+                                { 
+                                    CBH_Master_ID: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive',
+                                    } 
+                                },
+                                { 
+                                    CBH_Donor_ID: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    CBH_Sample_ID: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Matrix: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Lab_Parameter: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Result_Interpretation: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Result_Unit: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Diagnosis: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    ICD_Code: { 
+                                        contains: input.search,
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                            ]
+                        }
+                    ]
+                },
+            });         
         }),
 
     // Delete
@@ -646,7 +820,7 @@ export const sampleRouter = createTRPCRouter({
                 })
             }
 
-            console.log(`SELECT * FROM "Samples" WHERE `, input.query)
+            //console.log(`SELECT COUNT(*) FROM "Samples" WHERE `+ input.query +`;`)
             return prisma.$queryRawUnsafe<Samples[]>(`SELECT * FROM "Samples" WHERE `+ input.query +` LIMIT ` + input.pagelength.toString() + ` OFFSET ` + offset.toString() + `;`)
         }),
 })
