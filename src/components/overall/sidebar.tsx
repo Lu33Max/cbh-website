@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const buttonsSidebar = [
-  { name: 'Home', link: '/newHomeLayout' },
+  { name: 'Home', link: '/' },
   { name: 'Explore', link: '/search' },
   { name: 'Expert Search', link: '/expertsearch' },
   { name: 'Cart', link: '/Cart' },
