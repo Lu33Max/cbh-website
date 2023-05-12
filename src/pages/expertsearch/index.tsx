@@ -11,7 +11,6 @@ import Footer from "~/components/search/footer";
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import { json } from 'node:stream/consumers';
 
 type group= {
     not: boolean,
@@ -360,7 +359,7 @@ const Table: React.FC<props> = ({filter}) => {
 
       //Test
       const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({query: filterQuery, pages: page , pagelength: pagelength})
-      const { data: count } = api.samples.count.useQuery({query: filterQuery})
+      const { data: count } = api.samples.countExpert.useQuery({query: filterQuery})
 
       useEffect(() => {
         void refetchSamples()
