@@ -13,6 +13,7 @@ import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import Autofill from "~/components/search/autofill";
+import { type } from "os";
 
 export type Filter = {
   cbhMasterID: string | undefined,
@@ -34,6 +35,63 @@ export type Filter = {
   resultUnit: string[],
   diagnosis: string[],
   ICDCode: string[]
+}
+
+export type TableSamples = {
+    id:                                      string 
+    CBH_Donor_ID?:                           string,
+    CBH_Master_ID?:                          string,
+    CBH_Sample_ID?:                          string,
+    Price?:                                  number,
+    Quantity?:                               number,
+    Unit?:                                   string,
+    Matrix?:                                 string,
+    Storage_Temperature?:                    string,
+    Freeze_Thaw_Cycles?:                     number,
+    Sample_Condition?:                       string,
+    Infectious_Disease_Test_Result?:         string,
+    Gender?:                                 string,
+    Age?:                                    number,
+    Ethnicity?:                              string,
+    BMI?:                                    number,
+    Lab_Parameter?:                          string[],
+    Result_Interpretation?:                  string[],
+    Result_Raw?:                             string[],
+    Result_Numerical?:                       number[],
+    Result_Unit?:                            string[],
+    Cut_Off_Raw?:                            string[],
+    Cut_Off_Numerical?:                      number[],
+    Test_Method?:                            string[],
+    Test_System?:                            string[],
+    Test_System_Manufacturer?:               string[],
+    Result_Obtained_From?:                   string[],
+    Diagnosis?:                              string[],
+    Diagnosis_Remarks?:                      string[],
+    ICD_Code?:                               string[],
+    Pregnancy_Week?:                         number,
+    Pregnancy_Trimester?:                    string,
+    Medication?:                             string[],
+    Therapy?:                                string[],
+    Histological_Diagnosis?:                 string[],
+    Organ?:                                  string,
+    Disease_Presentation?:                   string,
+    TNM_Class_T?:                            string,
+    TNM_Class_N?:                            string,
+    TNM_Class_M?:                            string,
+    Tumour_Grade?:                           string,
+    Tumour_Stage?:                           string,
+    Viable_Cells__per_?:                     string,
+    Necrotic_Cells__per_?:                   string,
+    Tumour_Cells__per_ ?:                    string,
+    Proliferation_Rate__Ki67_per_?:          string,
+    Estrogen_Receptor?:                      string,
+    Progesteron_Receptor?:                   string,
+    HER_2_Receptor?:                         string,
+    Other_Gene_Mutations?:                   string[],
+    Country_of_Collection?:                  string,
+    Date_of_Collection?:                     Date,
+    Procurement_Type?:                       string,
+    Informed_Consent?:                       string,
 }
 
 const Search: NextPage = () => {
@@ -95,6 +153,7 @@ const Content: React.FC = () => {
   const [search, setSearch] = useState<string | undefined>(encodedSearchQuery)
   const [filter, setFilter] = useState<Filter>(defaultFilter)
   const [range, setRange] = useState<number[]>([])
+  const [tableSamples, setTableSamples] = useState<TableSamples[]>([])
 
   for(let i = 0; i < pagelength; i++){
     defaultShow.push(false)
@@ -134,6 +193,153 @@ const Content: React.FC = () => {
     setRange(newRange);
   }, [count, pagelength])
 
+  useEffect(() => {
+    const newArray: TableSamples[] = []
+    if(samples!== undefined){
+      for(let i = 0; i<samples?.length; i++){
+        if(newArray.find(sample => sample.CBH_Sample_ID === samples[i]?.CBH_Sample_ID)){
+          let sampleIndex = newArray.findIndex(sample => sample.CBH_Sample_ID === samples[i]?.CBH_Sample_ID)
+          if(samples[i]?.Lab_Parameter) newArray[sampleIndex]?.Lab_Parameter?.push(samples[i]?.Lab_Parameter ?? "")
+          if(samples[i]?.Result_Interpretation) newArray[sampleIndex]?.Result_Interpretation?.push(samples[i]?.Result_Interpretation ?? "")
+          if(samples[i]?.Result_Raw) newArray[sampleIndex]?.Result_Raw?.push(samples[i]?.Result_Raw ?? "")
+          if(samples[i]?.Result_Numerical) newArray[sampleIndex]?.Result_Numerical?.push(samples[i]?.Result_Numerical ?? 0)
+          if(samples[i]?.Result_Unit) newArray[sampleIndex]?.Result_Unit?.push(samples[i]?.Result_Unit ?? "")
+          if(samples[i]?.Cut_Off_Raw) newArray[sampleIndex]?.Cut_Off_Raw?.push(samples[i]?.Cut_Off_Raw ?? "")
+          if(samples[i]?.Cut_Off_Numerical) newArray[sampleIndex]?.Cut_Off_Numerical?.push(samples[i]?.Cut_Off_Numerical ?? 0)
+          if(samples[i]?.Test_Method) newArray[sampleIndex]?.Test_Method?.push(samples[i]?.Test_Method ?? "")
+          if(samples[i]?.Test_System) newArray[sampleIndex]?.Test_System?.push(samples[i]?.Test_System ?? "")
+          if(samples[i]?.Test_System_Manufacturer) newArray[sampleIndex]?.Test_System_Manufacturer?.push(samples[i]?.Test_System_Manufacturer ?? "")
+          if(samples[i]?.Result_Obtained_From) newArray[sampleIndex]?.Result_Obtained_From?.push(samples[i]?.Result_Obtained_From ?? "")
+          if(samples[i]?.Diagnosis) newArray[sampleIndex]?.Diagnosis?.push(samples[i]?.Diagnosis ?? "")
+          if(samples[i]?.Diagnosis_Remarks) newArray[sampleIndex]?.Diagnosis_Remarks?.push(samples[i]?.Diagnosis_Remarks ?? "")
+          if(samples[i]?.ICD_Code) newArray[sampleIndex]?.ICD_Code?.push(samples[i]?.ICD_Code ?? "")
+          if(samples[i]?.Medication) newArray[sampleIndex]?.Medication?.push(samples[i]?.Medication ?? "")
+          if(samples[i]?.Therapy) newArray[sampleIndex]?.Therapy?.push(samples[i]?.Therapy ?? "")
+          if(samples[i]?.Histological_Diagnosis) newArray[sampleIndex]?.Histological_Diagnosis?.push(samples[i]?.Histological_Diagnosis ?? "")
+          if(samples[i]?.Other_Gene_Mutations) newArray[sampleIndex]?.Other_Gene_Mutations?.push(samples[i]?.Other_Gene_Mutations ?? "")
+        } else{
+          newArray.push(
+            { id:                               samples[i]?.id ?? "",
+              CBH_Donor_ID:                     samples[i]?.CBH_Donor_ID ?? undefined,
+              CBH_Master_ID:                    samples[i]?.CBH_Master_ID ?? undefined,
+              CBH_Sample_ID:                    samples[i]?.CBH_Sample_ID ?? undefined,
+              Price:                            samples[i]?.Price ?? undefined,
+              Quantity:                         samples[i]?.Quantity ?? undefined,
+              Unit:                             samples[i]?.Unit ?? undefined,
+              Matrix:                           samples[i]?.Matrix ?? undefined,
+              Storage_Temperature:              samples[i]?.Storage_Temperature ?? undefined,
+              Freeze_Thaw_Cycles:               samples[i]?.Freeze_Thaw_Cycles ?? undefined,
+              Sample_Condition:                 samples[i]?.Sample_Condition ?? undefined,
+              Infectious_Disease_Test_Result:   samples[i]?.Infectious_Disease_Test_Result ?? undefined,
+              Gender:                           samples[i]?.Gender ?? undefined,
+              Age:                              samples[i]?.Age ?? undefined,
+              Ethnicity:                        samples[i]?.Ethnicity ?? undefined,
+              BMI:                              samples[i]?.BMI ?? undefined,
+              Lab_Parameter:                    [samples[i]?.Lab_Parameter ?? ""],
+              Result_Interpretation:            [samples[i]?.Result_Interpretation ?? ""],
+              Result_Raw:                       [samples[i]?.Result_Raw ?? ""],
+              Result_Numerical:                 [samples[i]?.Result_Numerical ?? 0],
+              Result_Unit:                      [samples[i]?.Result_Unit ?? ""],
+              Cut_Off_Raw:                      [samples[i]?.Cut_Off_Raw ?? ""],
+              Cut_Off_Numerical:                [samples[i]?.Cut_Off_Numerical ?? 0],
+              Test_Method:                      [samples[i]?.Test_Method ?? ""],
+              Test_System:                      [samples[i]?.Test_System ?? ""],
+              Test_System_Manufacturer:         [samples[i]?.Test_System_Manufacturer ?? ""],
+              Result_Obtained_From:             [samples[i]?.Result_Obtained_From ?? ""],
+              Diagnosis:                        [samples[i]?.Diagnosis ?? ""],
+              Diagnosis_Remarks:                [samples[i]?.Diagnosis_Remarks ?? ""],
+              ICD_Code:                         [samples[i]?.ICD_Code ?? ""],
+              Pregnancy_Week:                   samples[i]?.Pregnancy_Week ?? undefined,
+              Pregnancy_Trimester:              samples[i]?.Pregnancy_Trimester ?? undefined,
+              Medication:                       [samples[i]?.Medication ?? ""],
+              Therapy:                          [samples[i]?.Therapy ?? ""],
+              Histological_Diagnosis:           [samples[i]?.Histological_Diagnosis ?? ""],
+              Organ:                            samples[i]?.Organ ?? undefined,
+              Disease_Presentation:             samples[i]?.Disease_Presentation ?? undefined,
+              TNM_Class_T:                      samples[i]?.TNM_Class_T ?? undefined,
+              TNM_Class_N:                      samples[i]?.TNM_Class_N ?? undefined,
+              TNM_Class_M:                      samples[i]?.TNM_Class_M ?? undefined,
+              Tumour_Grade:                     samples[i]?.Tumour_Grade ?? undefined,
+              Tumour_Stage:                     samples[i]?.Tumour_Stage ?? undefined,
+              Viable_Cells__per_:               samples[i]?.Viable_Cells__per_ ?? undefined,
+              Necrotic_Cells__per_:             samples[i]?.Necrotic_Cells__per_ ?? undefined,
+              Tumour_Cells__per_:               samples[i]?.Tumour_Cells__per_ ?? undefined,
+              Proliferation_Rate__Ki67_per_:    samples[i]?.Proliferation_Rate__Ki67_per_ ?? undefined,
+              Estrogen_Receptor:                samples[i]?.Estrogen_Receptor ?? undefined,
+              Progesteron_Receptor:             samples[i]?.Progesteron_Receptor ?? undefined,
+              HER_2_Receptor:                   samples[i]?.HER_2_Receptor ?? undefined,
+              Other_Gene_Mutations:             [samples[i]?.Other_Gene_Mutations ?? ""],
+              Country_of_Collection:            samples[i]?.Country_of_Collection ?? undefined,
+              Date_of_Collection:               samples[i]?.Date_of_Collection ?? undefined,
+              Procurement_Type:                 samples[i]?.Procurement_Type ?? undefined,
+              Informed_Consent:                 samples[i]?.Informed_Consent ?? undefined,
+            }
+          )
+        }
+      }
+    }
+    
+    setTableSamples(newArray)
+
+  }, [samples])
+
+  /*export type TableSamples = {
+    id=                                      string 
+    CBH_Donor_ID?:                           string,
+    CBH_Master_ID?:                          string,
+    CBH_Sample_ID?:                          string,
+    Price?:                                  number,
+    Quantity?:                               number,
+    Unit?:                                   string,
+    Matrix?:                                 string,
+    Storage_Temperature?:                    string,
+    Freeze_Thaw_Cycles?:                     number,
+    Sample_Condition?:                       string,
+    Infectious_Disease_Test_Result?:         string,
+    Gender?:                                 string,
+    Age?:                                    number,
+    Ethnicity?:                              string,
+    BMI?:                                    number,
+    Lab_Parameter?:                          string[],
+    Result_Interpretation?:                  string[],
+    Result_Raw?:                             string[],
+    Result_Numerical?:                       number[],
+    Result_Unit?:                            string[],
+    Cut_Off_Raw?:                            string[],
+    Cut_Off_Numerical?:                      number[],
+    Test_Method?:                            string[],
+    Test_System?:                            string[],
+    Test_System_Manufacturer?:               string[],
+    Result_Obtained_From?:                   string[],
+    Diagnosis?:                              string[],
+    Diagnosis_Remarks?:                      string[],
+    ICD_Code?:                               string[],
+    Pregnancy_Week?:                         number,
+    Pregnancy_Trimester?:                    string,
+    Medication?:                             string[],
+    Therapy?:                                string[],
+    Histological_Diagnosis?:                 string[],
+    Organ?:                                  string,
+    Disease_Presentation?:                   string,
+    TNM_Class_T?:                            string,
+    TNM_Class_N?:                            string,
+    TNM_Class_M?:                            string,
+    Tumour_Grade?:                           string,
+    Tumour_Stage?:                           string,
+    Viable_Cells__per_?:                     string,
+    Necrotic_Cells__per_?:                   string,
+    Tumour_Cells__per_ ?:                    string,
+    Proliferation_Rate__Ki67_per_?:          string,
+    Estrogen_Receptor?:                      string,
+    Progesteron_Receptor?:                   string,
+    HER_2_Receptor?:                         string,
+    Other_Gene_Mutations?:                   string[],
+    Country_of_Collection?:                  string,
+    Date_of_Collection?:                     Date,
+    Procurement_Type?:                       string,
+    Informed_Consent?:                       string,
+}*/
+
   const updateState = (index: number) => {
     const newArray = show.map((item, i) => {
       if(index === i){
@@ -168,7 +374,7 @@ const Content: React.FC = () => {
           setFilter(filter => ({...filter, labParameter: temp3}))
         }
         break;
-      case "Result_Interpretation":
+      case "Result_numbererpretation":
         if(!filter.resultInterpretation.includes(value)){
           const temp4 = filter.resultInterpretation
           temp4.push(value)
@@ -206,7 +412,7 @@ const Content: React.FC = () => {
       <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Overall Search</b></h1>
 
       <p className="px-5 my-7 text-lg">Explore the Abundance and Find the Perfect <b>Human Biospecimens</b> for You! Expert search is a tailor-made solution to improve your search by understanding the precise needs and search 
-        behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
+        behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper numbero our bio inventory 
         to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
         human tissue samples, and more for research purposes. Explore advanced search options to order human biospecimens online by clicking <b>CLINICAL DIAGNOSIS, ICD 10-CM CODES,</b> and <b>LABORATORY 
         PARAMETERS</b>.</p>
@@ -339,10 +545,10 @@ const Content: React.FC = () => {
                       <Autofill value="Lab_Parameter" callback={handleFilterChange}/>
                     </div>
                     <div className="col-span-1 text-right">
-                      Result Interpretation:
+                      Result numbererpretation:
                     </div>
                     <div className="col-span-1">
-                      <Autofill value="Result_Interpretation" callback={handleFilterChange}/>
+                      <Autofill value="Result_numbererpretation" callback={handleFilterChange}/>
                     </div>
                     <div className="col-span-1 text-right">
                       Unit:
@@ -421,7 +627,7 @@ const Content: React.FC = () => {
           
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.length > 0 ? "" : "hidden"}`}>
-          Res.Interpretation:&nbsp;
+          Res.numbererpretation:&nbsp;
           {filter.resultInterpretation.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
@@ -500,7 +706,8 @@ const Content: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {samples?.map((sample, index) => (
+
+              {tableSamples?.map((sample, index) => (
               <>
                 <tr key={index} className="text-center">
                   <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button><BiCartAdd className="relative top-1"/></button></td>
@@ -538,22 +745,22 @@ const Content: React.FC = () => {
                   <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
                     <div className="grid grid-cols-2">
                       <strong className="col-span-2">Laboratory</strong>
-                      <span>Lab Parameter</span> {sample.Lab_Parameter ?? "NaN"}
-                      <span>Result Raw:</span> {sample.Result_Raw ?? "NaN"}
-                      <span>Result Unit:</span> {sample.Result_Unit ?? "NaN"}
-                      <span>Interpretation:</span> {sample.Result_Interpretation ?? "NaN"}
-                      <span>Cut Off Raw:</span> {sample.Cut_Off_Raw ?? "NaN"}
-                      <span>Cut Off Unit:</span> {sample.Result_Unit ?? "NaN"}
-                      <span>Test Method:</span> {sample.Test_Method ?? "NaN"}
-                      <span>Test System:</span> {sample.Test_System ?? "NaN"}
-                      <span>Test System Manuf.:</span> {sample.Test_System_Manufacturer ?? "NaN"}
+                      <span>Lab Parameter</span> {sample.Lab_Parameter ? sample.Lab_Parameter.join(", "): "NaN"}
+                      <span>Result Raw:</span> {sample.Result_Raw ? sample.Result_Raw.join(", "): "NaN"}
+                      <span>Result Unit:</span> {sample.Result_Unit ? sample.Result_Unit.join(", "): "NaN"}
+                      <span>Interpretation:</span> {sample.Result_Interpretation ? sample.Result_Interpretation.join(", "): "NaN"}
+                      <span>Cut Off Raw:</span> {sample.Cut_Off_Raw ? sample.Cut_Off_Raw.join(", "): "NaN"}
+                      <span>Test Method:</span> {sample.Test_Method ? sample.Test_Method.join(", "): "NaN"}
+                      <span>Test System:</span> {sample.Test_System ? sample.Test_System.join(", "): "NaN"}
+                      <span>Test System Manuf.:</span> {sample.Test_System_Manufacturer ? sample.Test_System_Manufacturer.join(", "): "NaN"}
                     </div>
                   </td>
                   <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={4}>
                     <div className="grid grid-cols-2">
                       <strong className="col-span-2">Clinical Diagnosis</strong>
-                      <span>Diagnosis:</span> {(sample.Diagnosis !== null && sample.Diagnosis !== "") ? sample.Diagnosis : "NaN"}
-                      <span>Diagnosis Remarks:</span> {(sample.Diagnosis_Remarks !== null && sample.Diagnosis_Remarks !== "") ? sample.Diagnosis_Remarks : "NaN"}
+                      <span>Diagnosis:</span> {sample.Diagnosis ? sample.Diagnosis.join(", "): "NaN"}
+                      <span>Diagnosis Remarks:</span> {sample.Diagnosis_Remarks ? sample.Diagnosis_Remarks.join(", "): "NaN"}
+                      <span>ICD:</span> {sample.ICD_Code ? sample.ICD_Code.join(", "): "NaN"}
                       <strong className="col-span-2 mt-2">Preanalytics</strong>
                       <span>Collection Country:</span> {sample.Country_of_Collection ?? "NaN"}
                       <span>Collection Date:</span> {sample.Date_of_Collection?.toDateString() ?? "NaN"}
