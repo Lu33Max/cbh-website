@@ -25,7 +25,7 @@ const Header: React.FC = () => {
       Central BioHub <sup>©</sup> - Order Biospecimen Online
     </h3>
     <span className='relative block w-[100%] max-w-[800px] mx-[7%]'>
-        <form onSubmit={onSearch}>
+      <form onSubmit={onSearch}>
         <input 
          value={searchQuery} 
          onChange={event => setSearchQuery(event.target.value)} 

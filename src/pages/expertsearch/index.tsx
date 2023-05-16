@@ -36,7 +36,7 @@ function BuildQuery(group: State<group>): string {
       });
     }
 
-    if(sql !== "" && group.groups.value && group.groups.value?.length > 0){
+    if(sql !== "" && group.filter.value && group.filter.value?.length > 0){
       sql += ` ${group.link.value.toUpperCase()} `;
     }
   

@@ -5,6 +5,7 @@ import HeaderNEW from "~/components/overall/headerNEW";
 import SimpleSlider from "~/components/home/carousel"
 import Testimonials from "~/components/home/testimonials";
 import HoverImages from "~/components/overall/hoverImages";
+import Image from "next/image";
 
 const Home: NextPage = () => {
   return (
@@ -15,10 +16,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       
-      <main className="bg-gray-200 min-h-screen overflow-x-hidden overflow-y-hidden">
+      <div className="bg-gray-200 min-h-screen overflow-hidden">
         <HeaderNEW/>
-          <Content/>
-      </main>
+        <Content/>
+      </div>
     </>
   );
 };
@@ -28,12 +29,12 @@ export default Home;
 const Content: React.FC = () => {
 
   return(
-    <div>
-      <img src="/ExploreSamples.png" alt="Banner" className="m-auto w-full mb-[-2%]"/>
-      <div className="text-center">
+    <div className="max-h-[calc(100vh-100px)] overflow-y-auto overflow-x-hidden">
+      <Image src="/home/banner.png" alt="Banner" width={1920} height={350} className=" w-full"/>
+      <div className="text-center relative bottom-16">
         <button className="bg-gray-500 px-2 rounded text-lg">Click here!</button>
       </div>
-      <div className="flex flex-row w-full items-center justify-center mt-5">
+      <div className="flex flex-row w-full items-center justify-center mt-0">
         <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>
         <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-2">Welcome to CBH! HEADLINE</h1>
         <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>
