@@ -29,23 +29,51 @@ export default Home;
 const Content: React.FC = () => {
 
   return(
-    <div className="max-h-[calc(100vh-100px)] overflow-y-auto overflow-x-hidden">
-      <Image src="/home/banner.png" alt="Banner" width={1920} height={350} className=" w-full"/>
-      <div className="text-center relative bottom-16">
-        <button className="bg-gray-500 px-2 rounded text-lg">Click here!</button>
+<div className="relative">
+  <Image src="/home/BannerNoFont.png" alt="Banner" width={1920} height={350} className="w-full filter blur-sm" />
+  <div className="absolute inset-20 pb-20 flex justify-center ">
+        <div className="text-center">
+
+          <h1 className="text-white text-6xl font-bold">
+          <span style={{ textShadow: '0px 0px 4px rgba(0, 0, 0, 0.2)', WebkitTextStroke: '0.4px black' }}>
+          Explore the Abundance
+          </span>
+          </h1>
+
+          <p className="text-white text-2xl font-bold mt-4">
+          <span style={{ textShadow: '0px 0px 4px rgba(0, 0, 0, 0.2)', WebkitTextStroke: '0.4px black' }}>
+          Find the perfect human biospecmens for you.
+          </span>
+          </p>
+
+          <div className="text-center justify-center">
+            <div className="px-4 py-2 rounded flex items-center justify-center mt-10">
+              <input type="text" className="text-lg font-semibold bg-white bg-opacity-60 placeholder-[#164A41] text-[#164A41] border-l border-t border-b border-solid border-white rounded-l-lg flex-grow-1" placeholder="Start exploring" />
+              <button className="bg-[#164A41] px-2 rounded-tr-lg rounded-br-lg text-lg px-4 py-1">
+                <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
+                  <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div className="flex flex-row w-full items-center justify-center mt-0">
-        <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>
-        <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-2">Welcome to CBH! HEADLINE</h1>
-        <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>
+    
+
+      <div className="flex flex-row w-full items-center justify-center mt-10">
+        <div className="w-full  h-3 border-gray-400 rounded-3xl m-5"></div>
+        <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-2">Welcome to Central Biohub</h1>
+        <div className="w-full  h-3 border-gray-400 rounded-3xl m-5"></div>
       </div>
       <div className="flex flex-row w-full items-center justify-center">
-        <h1 className="text-xl whitespace-nowrap mx-20 mb-2">Welcome to CBH! subheader</h1>
+        <h1 className="text-xl whitespace-nowrap mx-20 mb-2">the world`s smartest biospecimen marketplace</h1>
       </div>
       <div className="mt-5 pt-5">
         <SimpleSlider/>
       </div>
-      <div className="flex flex-row w-full items-center justify-center mt-5 gap-96 mb-10">
+      <div className="flex flex-row w-full items-center justify-center mt-5 gap-96 mb-10 border border-solid border-[#164A41]">
         <img src="/drittens.png" alt="" className="w-1/3 mx-10" width={260} height={300}/>
         <img src="/drittens.png" alt="" className="w-1/3 mx-10" width={260} height={300}/>
         <img src="/drittens.png" alt="" className="w-1/3 mx-10" width={260} height={300}/>
