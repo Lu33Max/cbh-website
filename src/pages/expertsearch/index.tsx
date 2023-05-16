@@ -8,6 +8,7 @@ import Head from 'next/head';
 import Header from '~/components/overall/header';
 import Sidebar from '~/components/overall/sidebar';
 import Footer from "~/components/search/footer";
+import Autofill from '~/components/search/autofill';
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
@@ -145,16 +146,22 @@ const ExpertSearch: NextPage = () => {
 }
 export default ExpertSearch;
 
-function GroupContentEditor(props: { childrenState: State<group[] | undefined>, index: number, deleteDisabled: boolean, groupState: State<group[] | undefined>, linkState: State<string>, activatedState: State<boolean>, notState: State<boolean>, filterState: State<{ col: string, type: string, values: string[], activated: boolean }[]> }) {
+function GroupContentEditor(props: { childrenState: State<group[] | undefined>, selfState: State<group>, index: number, deleteDisabled: boolean, groupState: State<group[] | undefined>, linkState: State<string>, activatedState: State<boolean>, notState: State<boolean>, filterState: State<{ col: string, type: string, values: string[], activated: boolean }[]> }) {
   const link = useHookstate(props.linkState);
   const filter = useHookstate(props.filterState);
   const group = useHookstate(props.groupState);
   const not = useHookstate(props.notState);
   const children = useHookstate(props.childrenState);
   const activated = useHookstate(props.activatedState);
+  const selfState = useHookstate(props.selfState);
 
   const i = props.index;
   const disabled = props.deleteDisabled
+
+  function SetActivated(groupState: State<group>, activated: boolean): void{
+    groupState.activated.set(activated)
+    groupState.groups.ornull?.map((group1: State<group>) => {SetActivated(group1, activated)})    
+  }
 
   return <>
     <div className='bg-gray-100 mx-5'>
@@ -183,7 +190,7 @@ function GroupContentEditor(props: { childrenState: State<group[] | undefined>, 
         <div className='ml-96'>
           <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => children.set(groups => (groups || []).concat([{ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true}] }]))}>new Group</button>
           <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true}]))}>new Rule</button>
-          <button className={`bg-orange-400 text-white mx-2 px-2 rounded-sm `} onClick={() => activated.set(!activated.value)}>{activated.value ? "deactivate": "activate"}</button>
+          <button className={`bg-orange-400 text-white mx-2 px-2 rounded-sm `} onClick={() => {SetActivated(selfState, !activated.value)}}>{activated.value ? "deactivate": "activate"}</button>
           <button className={`bg-red-500 text-white mx-2 px-2 rounded-sm ${disabled ? 'hidden' : ''}`} onClick={() => group.set((group) => group?.filter((_, index) => index !== i))} >delete</button>
         </div>
       </div>
@@ -199,7 +206,7 @@ function GroupContentEditor(props: { childrenState: State<group[] | undefined>, 
 
           <button className='bg-orange-400 text-white mx-2 px-2 rounded-sm' onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "deactivate": "activate"}</button>
           <button className='bg-red-500 text-white mx-2 px-2 rounded-sm' onClick={() => filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
-          <ChooseValues type={filterState.type} values={filterState.values} activated={activated} filterActivated={filterState.activated}/>
+          <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={activated} filterActivated={filterState.activated}/>
         </div>
       )}
     </div>
@@ -214,7 +221,7 @@ function GroupListEditor(props: { groups: State<group[] | undefined>, deleteDisa
     <div className={`bg-gray-100 mx-5 py-1 border-solid border-black min-w-[1100px] w-fit ${(state.value && state.value.length > 0) ? 'border-2' : 'border-0'}`} style={{ paddingLeft: 20 }}>
       {state.ornull && state.ornull.map((groupState: State<group>, i) =>
         <div key={i}>
-          <GroupContentEditor linkState={groupState.link} activatedState={groupState.activated} childrenState={groupState.groups} filterState={groupState.filter} groupState={state} index={i} deleteDisabled={disabled} notState={groupState.not} />
+          <GroupContentEditor selfState={groupState} linkState={groupState.link} activatedState={groupState.activated} childrenState={groupState.groups} filterState={groupState.filter} groupState={state} index={i} deleteDisabled={disabled} notState={groupState.not} />
           <GroupListEditor groups={groupState.groups} deleteDisabled={false} />
         </div>
       )}
@@ -314,43 +321,66 @@ function TypeSelect(props: { type: State<string>, values: State<string[]>, activ
   )
 }
 
-function ChooseValues(props: { values: State<string[]>, type: State<string>, activated: State<boolean>, filterActivated: State<boolean>}) {
+function ChooseValues(props: { values: State<string[]>, type: State<string>, col: State<string>, activated: State<boolean>, filterActivated: State<boolean>}) {
   const type = useHookstate(props.type);
   const values = useHookstate(props.values);
+  const col = useHookstate(props.col);
   const activated = useHookstate(props.activated);
   const filterActivated = useHookstate(props.filterActivated);
+
+  function SetValues(value: string, col: string):void{
+    values.set([value])
+  }
+
+  function SetValuesBetween1(value: string, col: string):void{
+    values.set(a => [value, a[1] ?? ''])
+  }
+
+  function SetValuesBetween2(value: string, col: string):void{
+    values.set(a => [a[0] ?? '', value])
+  }
+
+  function In(value: string, col: string):void{
+    values.set(v => (v || []).concat([value]))
+  }
 
   return (
     <>
       {(type.value !== 'between' && type.value !== 'in') && (
-        <input className='border-solid border-black border-2 mx-2' value={values[0]?.value ?? ''} onChange={(e) => values.set([e.target.value])} disabled = {!(activated.value && filterActivated.value)}></input>
+        <>
+        {/*<input className='border-solid border-black border-2 mx-2' value={values[0]?.value ?? ''} onChange={(e) => values.set([e.target.value])} disabled = {!(activated.value && filterActivated.value)}></input>*/}
+        <Autofill value={col.value} callback={SetValues}/>
+        </>
       )}
       {(type.value === 'between') && (
         <>
-          <input className='border-solid border-black border-2 mx-2' value={values[0]?.value ?? ''} onChange={(e) => {
+          {/*<input className='border-solid border-black border-2 mx-2' value={values[0]?.value ?? ''} onChange={(e) => {
             if (values.length < 2) {
               values.set([e.target.value])
             } else {
               values.set(a => [e.target.value, a[1] ?? ''])
             }
-          }} disabled = {!(activated.value && filterActivated.value)}></input>
-          <input className='border-solid border-black border-2 mx-2' value={values[1]?.value ?? ''} onChange={(e) => {
+          }} disabled = {!(activated.value && filterActivated.value)}></input>*/}
+          <Autofill value={col.value} callback={SetValuesBetween1}/>
+          {/*<input className='border-solid border-black border-2 mx-2' value={values[1]?.value ?? ''} onChange={(e) => {
             if (values.length === 0) {
               values.set(['', e.target.value])
             } else {
               values.set(a => [a[0] ?? '', e.target.value])
             }
-          }} disabled = {!(activated.value && filterActivated.value)}></input>
+          }} disabled = {!(activated.value && filterActivated.value)}></input>*/}
+          <Autofill value={col.value} callback={SetValuesBetween2}/>          
         </>
       )}
       {(type.value === 'in') && (
         <>
-          <input className='border-solid border-black border-2 mx-2' onKeyDown={e => {
+          {/*<input className='border-solid border-black border-2 mx-2' onKeyDown={e => {
             if (e.key === "Enter") {
               values.set(v => (v || []).concat([e.currentTarget.value]))
               e.currentTarget.value = ""
             }
-          }} disabled = {!(activated.value && filterActivated.value)}></input>
+          }} disabled = {!(activated.value && filterActivated.value)}></input>*/}
+          <Autofill value={col.value} callback={In}/>
 
           {values.value.map((value: string, i) => {
             return (
