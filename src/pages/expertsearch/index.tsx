@@ -26,7 +26,7 @@ type group = {
 }
 
 export type TableSamples = {
-  id:                                      string 
+  id:                                      string,
   CBH_Donor_ID?:                           string,
   CBH_Master_ID?:                          string,
   CBH_Sample_ID?:                          string,
@@ -286,7 +286,6 @@ function ColSelect(props: { col: State<string>, activated: State<boolean>, filte
   const activated = useHookstate(props.activated);
   const filterActivated = useHookstate(props.filterActivated);
 
-
   return (
     <select name="col" id="col" onChange={(e) => col.set(e.target.value)} disabled = {!(activated.value && filterActivated.value)}>
       <option value={'CBH_Donor_ID'}>CBH_Donor_ID</option>
@@ -467,10 +466,10 @@ const Table: React.FC<props> = ({ filter }) => {
 
   useEffect(() => {
     const newArray: TableSamples[] = []
-    if(samples!== undefined){
+    if(samples !== undefined){
       for(let i = 0; i<samples?.length; i++){
         if(newArray.find(sample => sample.CBH_Sample_ID === samples[i]?.CBH_Sample_ID)){
-          let sampleIndex = newArray.findIndex(sample => sample.CBH_Sample_ID === samples[i]?.CBH_Sample_ID)
+          const sampleIndex = newArray.findIndex(sample => sample.CBH_Sample_ID === samples[i]?.CBH_Sample_ID)
           if(samples[i]?.Lab_Parameter) newArray[sampleIndex]?.Lab_Parameter?.push(samples[i]?.Lab_Parameter ?? "")
           if(samples[i]?.Result_Interpretation) newArray[sampleIndex]?.Result_Interpretation?.push(samples[i]?.Result_Interpretation ?? "")
           if(samples[i]?.Result_Raw) newArray[sampleIndex]?.Result_Raw?.push(samples[i]?.Result_Raw ?? "")
@@ -507,25 +506,25 @@ const Table: React.FC<props> = ({ filter }) => {
               Age:                              samples[i]?.Age ?? undefined,
               Ethnicity:                        samples[i]?.Ethnicity ?? undefined,
               BMI:                              samples[i]?.BMI ?? undefined,
-              Lab_Parameter:                    [samples[i]?.Lab_Parameter ?? ""],
-              Result_Interpretation:            [samples[i]?.Result_Interpretation ?? ""],
-              Result_Raw:                       [samples[i]?.Result_Raw ?? ""],
-              Result_Numerical:                 [samples[i]?.Result_Numerical ?? 0],
-              Result_Unit:                      [samples[i]?.Result_Unit ?? ""],
-              Cut_Off_Raw:                      [samples[i]?.Cut_Off_Raw ?? ""],
-              Cut_Off_Numerical:                [samples[i]?.Cut_Off_Numerical ?? 0],
-              Test_Method:                      [samples[i]?.Test_Method ?? ""],
-              Test_System:                      [samples[i]?.Test_System ?? ""],
-              Test_System_Manufacturer:         [samples[i]?.Test_System_Manufacturer ?? ""],
-              Result_Obtained_From:             [samples[i]?.Result_Obtained_From ?? ""],
-              Diagnosis:                        [samples[i]?.Diagnosis ?? ""],
-              Diagnosis_Remarks:                [samples[i]?.Diagnosis_Remarks ?? ""],
-              ICD_Code:                         [samples[i]?.ICD_Code ?? ""],
+              Lab_Parameter:                    samples[i]?.Lab_Parameter ? [samples[i]?.Lab_Parameter ?? ""] : [],
+              Result_Interpretation:            samples[i]?.Result_Interpretation ? [samples[i]?.Result_Interpretation ?? ""] : [],
+              Result_Raw:                       samples[i]?.Result_Raw ? [samples[i]?.Result_Raw ?? ""] : [],
+              Result_Numerical:                 samples[i]?.Result_Numerical ? [samples[i]?.Result_Numerical ?? 0] : [],
+              Result_Unit:                      samples[i]?.Result_Unit ? [samples[i]?.Result_Unit ?? ""] : [],
+              Cut_Off_Raw:                      samples[i]?.Cut_Off_Raw ? [samples[i]?.Cut_Off_Raw ?? ""] : [],
+              Cut_Off_Numerical:                samples[i]?.Cut_Off_Numerical ? [samples[i]?.Cut_Off_Numerical ?? 0] : [],
+              Test_Method:                      samples[i]?.Test_Method ? [samples[i]?.Test_Method ?? ""] : [],
+              Test_System:                      samples[i]?.Test_System ? [samples[i]?.Test_System ?? ""] : [],
+              Test_System_Manufacturer:         samples[i]?.Test_System_Manufacturer ? [samples[i]?.Test_System_Manufacturer ?? ""] : [],
+              Result_Obtained_From:             samples[i]?.Result_Obtained_From ? [samples[i]?.Result_Obtained_From ?? ""] : [],
+              Diagnosis:                        samples[i]?.Diagnosis ? [samples[i]?.Diagnosis ?? ""] : [],
+              Diagnosis_Remarks:                samples[i]?.Diagnosis_Remarks ? [samples[i]?.Diagnosis_Remarks ?? ""] : [],
+              ICD_Code:                         samples[i]?.ICD_Code ? [samples[i]?.ICD_Code ?? ""] : [],
               Pregnancy_Week:                   samples[i]?.Pregnancy_Week ?? undefined,
               Pregnancy_Trimester:              samples[i]?.Pregnancy_Trimester ?? undefined,
-              Medication:                       [samples[i]?.Medication ?? ""],
-              Therapy:                          [samples[i]?.Therapy ?? ""],
-              Histological_Diagnosis:           [samples[i]?.Histological_Diagnosis ?? ""],
+              Medication:                       samples[i]?.Medication ? [samples[i]?.Medication ?? ""] : [],
+              Therapy:                          samples[i]?.Therapy ? [samples[i]?.Therapy ?? ""] : [],
+              Histological_Diagnosis:           samples[i]?.Histological_Diagnosis ? [samples[i]?.Histological_Diagnosis ?? ""] : [],
               Organ:                            samples[i]?.Organ ?? undefined,
               Disease_Presentation:             samples[i]?.Disease_Presentation ?? undefined,
               TNM_Class_T:                      samples[i]?.TNM_Class_T ?? undefined,
@@ -540,7 +539,7 @@ const Table: React.FC<props> = ({ filter }) => {
               Estrogen_Receptor:                samples[i]?.Estrogen_Receptor ?? undefined,
               Progesteron_Receptor:             samples[i]?.Progesteron_Receptor ?? undefined,
               HER_2_Receptor:                   samples[i]?.HER_2_Receptor ?? undefined,
-              Other_Gene_Mutations:             [samples[i]?.Other_Gene_Mutations ?? ""],
+              Other_Gene_Mutations:             samples[i]?.Other_Gene_Mutations ? [samples[i]?.Other_Gene_Mutations ?? ""] : [],
               Country_of_Collection:            samples[i]?.Country_of_Collection ?? undefined,
               Date_of_Collection:               samples[i]?.Date_of_Collection ?? undefined,
               Procurement_Type:                 samples[i]?.Procurement_Type ?? undefined,
@@ -630,26 +629,26 @@ const Table: React.FC<props> = ({ filter }) => {
                   <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
                     <div className="grid grid-cols-2">
                     <strong className="col-span-2">Laboratory</strong>
-                      <span>Lab Parameter</span> {sample.Lab_Parameter ? sample.Lab_Parameter.join(", "): "NaN"}
-                      <span>Result Raw:</span> {sample.Result_Raw ? sample.Result_Raw.join(", "): "NaN"}
-                      <span>Result Unit:</span> {sample.Result_Unit ? sample.Result_Unit.join(", "): "NaN"}
-                      <span>Interpretation:</span> {sample.Result_Interpretation ? sample.Result_Interpretation.join(", "): "NaN"}
+                      <span>Lab Parameter</span> {(sample.Lab_Parameter && sample.Lab_Parameter.length > 0) ? sample.Lab_Parameter.join(", "): "NaN"}
+                      <span>Result Raw:</span> {(sample.Result_Raw && sample.Result_Raw.length > 0) ? sample.Result_Raw.join(", "): "NaN"}
+                      <span>Result Unit:</span> {(sample.Result_Unit && sample.Result_Unit.length > 0) ? sample.Result_Unit.join(", "): "NaN"}
+                      <span>Interpretation:</span> {(sample.Result_Interpretation && sample.Result_Interpretation.length > 0) ? sample.Result_Interpretation.join(", "): "NaN"}
                       <span>Cut Off Raw:</span> {sample.Cut_Off_Raw ? sample.Cut_Off_Raw.join(", "): "NaN"}
-                      <span>Test Method:</span> {sample.Test_Method ? sample.Test_Method.join(", "): "NaN"}
-                      <span>Test System:</span> {sample.Test_System ? sample.Test_System.join(", "): "NaN"}
-                      <span>Test System Manuf.:</span> {sample.Test_System_Manufacturer ? sample.Test_System_Manufacturer.join(", "): "NaN"}
+                      <span>Test Method:</span> {(sample.Test_Method && sample.Test_Method.length > 0) ? sample.Test_Method.join(", "): "NaN"}
+                      <span>Test System:</span> {(sample.Test_System && sample.Test_System.length > 0) ? sample.Test_System.join(", "): "NaN"}
+                      <span>Test System Manuf.:</span> {(sample.Test_System_Manufacturer && sample.Test_System_Manufacturer.length > 0) ? sample.Test_System_Manufacturer.join(", "): "NaN"}
                     </div>
                   </td>
                   <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={4}>
                     <div className="grid grid-cols-2">
                       <strong className="col-span-2">Clinical Diagnosis</strong>
-                      <span>Diagnosis:</span> {sample.Diagnosis ? sample.Diagnosis.join(", "): "NaN"}
-                      <span>Diagnosis Remarks:</span> {sample.Diagnosis_Remarks ? sample.Diagnosis_Remarks.join(", "): "NaN"}
-                      <span>ICD:</span> {sample.ICD_Code ? sample.ICD_Code.join(", "): "NaN"}
+                      <span>Diagnosis:</span> {(sample.Diagnosis && sample.Diagnosis.length > 0) ? sample.Diagnosis.join(", "): "NaN"}
+                      <span>Diagnosis Remarks:</span> {(sample.Diagnosis_Remarks && sample.Diagnosis_Remarks.length > 0) ? sample.Diagnosis_Remarks.join(", "): "NaN"}
+                      <span>ICD:</span> {(sample.ICD_Code && sample.ICD_Code.length > 0) ? sample.ICD_Code.join(", ") : "NaN"}
                       <strong className="col-span-2 mt-2">Preanalytics</strong>
                       <span>Collection Country:</span> {sample.Country_of_Collection ?? "NaN"}
                       <span>Collection Date:</span> {sample.Date_of_Collection?.toDateString() ?? "NaN"}
-                      </div>
+                    </div>
                   </td>
                 </tr>
               </>
