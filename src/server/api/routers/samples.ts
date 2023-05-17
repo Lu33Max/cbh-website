@@ -427,147 +427,9 @@ export const sampleRouter = createTRPCRouter({
             
             return ctx.prisma.samples.findMany({ 
                 where: {
-                    OR: [
-                        {
-                            CBH_Sample_ID: {
-                                in: returnLength
-                            }
-                        },
-                        {
-                            AND: [
-                                { 
-                                    CBH_Master_ID: { 
-                                        contains: input.filter.cbhMasterID, 
-                                        mode: 'insensitive',
-                                    } 
-                                },
-                                { 
-                                    CBH_Donor_ID: { 
-                                        contains: input.filter.cbhDonorID, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    CBH_Sample_ID: { 
-                                        contains: input.filter.cbhSampleID, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Price: { 
-                                        lte: input.filter.price.max, 
-                                        gte: input.filter.price.min 
-                                    } 
-                                },
-                                { 
-                                    Matrix: { 
-                                        in: input.filter.matrix?.length > 0 ? input.filter.matrix : undefined, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Quantity: { 
-                                        lte: input.filter.quantity.max, 
-                                        gte: input.filter.quantity.min 
-                                    } 
-                                },
-                                { 
-                                    Unit: { 
-                                        in: input.filter.unit?.length > 0 ? input.filter.unit : undefined,
-                                        mode: 'insensitive'
-                                    } 
-                                },
-                                { 
-                                    Lab_Parameter: { 
-                                        in: input.filter.labParameter?.length > 0 ? input.filter.labParameter : undefined, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Result_Interpretation: { 
-                                        in: input.filter.resultInterpretation?.length > 0 ? input.filter.resultInterpretation : undefined,
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Result_Unit: { 
-                                        in: input.filter.resultUnit?.length > 0 ? input.filter.resultUnit : undefined, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Diagnosis: { 
-                                        in: input.filter.diagnosis?.length > 0 ? input.filter.diagnosis : undefined, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    ICD_Code: { 
-                                        in: input.filter.ICDCode?.length > 0 ? input.filter.ICDCode : undefined, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                {
-                                    OR: [
-                                        { 
-                                            CBH_Master_ID: { 
-                                                contains: input.search, 
-                                                mode: 'insensitive',
-                                            } 
-                                        },
-                                        { 
-                                            CBH_Donor_ID: { 
-                                                contains: input.search, 
-                                                mode: 'insensitive' 
-                                            } 
-                                        },
-                                        { 
-                                            CBH_Sample_ID: { 
-                                                contains: input.search, 
-                                                mode: 'insensitive' 
-                                            } 
-                                        },
-                                        { 
-                                            Matrix: { 
-                                                contains: input.search, 
-                                                mode: 'insensitive' 
-                                            } 
-                                        },
-                                        { 
-                                            Lab_Parameter: { 
-                                                contains: input.search, 
-                                                mode: 'insensitive' 
-                                            } 
-                                        },
-                                        { 
-                                            Result_Interpretation: { 
-                                                contains: input.search, 
-                                                mode: 'insensitive' 
-                                            } 
-                                        },
-                                        { 
-                                            Result_Unit: { 
-                                                contains: input.search, 
-                                                mode: 'insensitive' 
-                                            } 
-                                        },
-                                        { 
-                                            Diagnosis: { 
-                                                contains: input.search, 
-                                                mode: 'insensitive' 
-                                            } 
-                                        },
-                                        { 
-                                            ICD_Code: { 
-                                                contains: input.search,
-                                                mode: 'insensitive' 
-                                            } 
-                                        },
-                                    ]
-                                }
-                            ]
-                        },
-                    ]
+                    CBH_Sample_ID: {
+                        in: returnLength
+                    }
                 },
                 orderBy: {
                     CBH_Sample_ID: 'desc',
@@ -903,6 +765,9 @@ export const sampleRouter = createTRPCRouter({
                 return ctx.prisma.samples.findMany({                    
                     take: input.pagelength, 
                     skip: offset,
+                    orderBy: {
+                        CBH_Sample_ID: 'desc',
+                    },
                 })
             } 
             else 
@@ -910,7 +775,16 @@ export const sampleRouter = createTRPCRouter({
                 const uniqueEntries = await prisma.$queryRawUnsafe<{ CBH_Sample_ID : string }[]>('SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ' + input.query + ' ORDER BY "CBH_Sample_ID" ASC LIMIT ' + input.pagelength.toString() + ' OFFSET ' + offset.toString() + ';')
                 const returnLength : string[] = uniqueEntries.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [] ;
     
-                return prisma.$queryRawUnsafe<Samples[]>(`SELECT * FROM "Samples" WHERE `+ input.query +` AND "CBH_Sample_ID" BETWEEN '${returnLength[0]?.toString() ?? ""}' AND '${returnLength[returnLength.length-1]?.toString() ?? ""}';`)
+                return ctx.prisma.samples.findMany({ 
+                    where: {
+                        CBH_Sample_ID: {
+                            in: returnLength
+                        }
+                    },
+                    orderBy: {
+                        CBH_Sample_ID: 'desc',
+                    },
+                });
             }
          }),
 })

@@ -107,20 +107,26 @@ function BuildQuery(group: State<group>): string {
     let filterCount = 0;
     if (group.filter.length > 0) {
       for (let i = 0; i < group.filter.length; i++) {
-        if (group.filter[i] && group.filter[i]?.col && group.filter[i]?.type && group.filter[i]?.values && group.filter[i]?.values.length !== 0 && group.filter[i]?.activated.value === true) {
-          if (filterCount != 0) {
-            sql += ` ${group.link.value?.toUpperCase()} `;
-          }
-          if (group.filter[i]?.type.value !== "between" && group.filter[i]?.type.value !== "in" && group.filter[i]?.values[0]) {
-            sql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} '${group.filter[i]?.values[0]?.value ?? ""}'`;
+        if (group.filter[i] && group.filter[i]?.col && group.filter[i]?.type && group.filter[i]?.values && group.filter[i]?.values.length !== 0 && (getOperator(group.filter[i]?.type.value ?? 'invalid')) !== 'invalid' && group.filter[i]?.activated.value === true) {
+          let tempSql = ""
+          
+          if (group.filter[i]?.type.value !== "between" && group.filter[i]?.type.value !== "in" && group.filter[i]?.values[0] && group.filter[i]?.values[0]?.value !== "") {
+            tempSql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} '${group.filter[i]?.values[0]?.value ?? ""}'`;
           } else {
-            if (group.filter[i]?.type.value === "between" && group.filter[i]?.values[0] !== undefined && group.filter[i]?.values[1] !== undefined) {
-              sql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} ${group.filter[i]?.values.value.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+            if (group.filter[i]?.type.value === "between" && group.filter[i]?.values[0] !== undefined && group.filter[i]?.values[0]?.value !== "" && group.filter[i]?.values[1] !== undefined && group.filter[i]?.values[1]?.value !== "") {
+              tempSql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} ${group.filter[i]?.values.value.map(v => `'${v}'`).join(' AND ') ?? ""}`;
             } else if (group.filter[i]?.type.value === "in" && group.filter[i]?.values[0] !== undefined) {
-              sql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} (${group.filter[i]?.values.value.map(v => `'${v}'`).join(', ') ?? ""})`;
+              tempSql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} (${group.filter[i]?.values.value.map(v => `'${v}'`).join(', ') ?? ""})`;
             }
           }
-          filterCount++;
+
+          if(tempSql !== ""){
+            if (filterCount !== 0 ) {
+              tempSql = `${group.link.value?.toUpperCase()}` + tempSql;
+            }
+            sql += tempSql
+            filterCount++;
+          }
         }
       }
     }
@@ -153,7 +159,7 @@ function getOperator(type: string): string {
     case 'between':
       return 'BETWEEN';
     default:
-      throw new Error(`Invalid filter type: ${type}`);
+      return 'invalid';
   }
 }
 
@@ -364,7 +370,7 @@ function ChooseValues(props: { values: State<string[]>, type: State<string>, act
   return (
     <>
       {(type.value !== 'between' && type.value !== 'in') && (
-        <input className='border-solid border-black border-2 mx-2' value={values[0]?.value ?? ''} onChange={(e) => values.set([e.target.value])} disabled = {!(activated.value && filterActivated.value)}></input>
+        <input className='border-solid border-black border-2 mx-2' value={values[0]?.value ?? ''} onChange={(e) => {e.target.value !== "" ? values.set([e.target.value]) : values.set([])}} disabled = {!(activated.value && filterActivated.value)}></input>
       )}
       {(type.value === 'between') && (
         <>
@@ -387,7 +393,7 @@ function ChooseValues(props: { values: State<string[]>, type: State<string>, act
       {(type.value === 'in') && (
         <>
           <input className='border-solid border-black border-2 mx-2' onKeyDown={e => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && e.currentTarget.value !== "") {
               values.set(v => (v || []).concat([e.currentTarget.value]))
               e.currentTarget.value = ""
             }
@@ -438,7 +444,6 @@ const Table: React.FC<props> = ({ filter }) => {
   useEffect(() => {
     const newRange = [];
     if (count !== undefined && count !== null) {
-      console.log("count:" + JSON.stringify(count))
       const num = Math.ceil(count / pagelength);
       for (let i = 1; i <= num; i++) {
         newRange.push(i);
