@@ -8,13 +8,13 @@ export default function SimpleSlider() {
 
   const goToPreviousSlide = () => {
     if (sliderRef.current) {
-      sliderRef.current.slickPrev();
+      //sliderRef.current.slickPrev();
     }
   };
 
   const goToNextSlide = () => {
     if (sliderRef.current) {
-      sliderRef.current.slickNext();
+      //sliderRef.current.slickNext();
     }
   };
 
