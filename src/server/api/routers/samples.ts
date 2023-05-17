@@ -6,174 +6,6 @@ import { prisma } from "~/server/db";
 
 export const sampleRouter = createTRPCRouter({
 
-    // Get All or Filtered
-    getAll: publicProcedure
-        .input(z.object({ 
-            pages: z.number().optional(), 
-            lines: z.number().optional(), 
-            search: z.string().optional(), 
-            filter: z.object({
-                cbhMasterID: z.string().optional(), 
-                cbhDonorID: z.string().optional(), 
-                cbhSampleID: z.string().optional(), 
-                price: z.object({
-                    min: z.number().optional(), 
-                    max: z.number().optional() 
-                }), 
-                matrix: z.array(z.string()), 
-                quantity: z.object({
-                    min: z.number().optional(), 
-                    max: z.number().optional() 
-                }), 
-                unit: z.array(z.string()), 
-                labParameter: z.array(z.string()), 
-                resultInterpretation: z.array(z.string()), 
-                resultUnit: z.array(z.string()), 
-                diagnosis: z.array(z.string()), 
-                ICDCode: z.array(z.string()),
-            }) 
-        }))
-        .query(async ({ ctx, input }) => {
-            return ctx.prisma.samples.findMany({ 
-                take: input.lines, 
-                skip: (input.pages && input.lines) ? (input.pages -1) * input.lines : 0,
-                where: {
-                    AND: [
-                        { 
-                            CBH_Master_ID: { 
-                                contains: input.filter.cbhMasterID, 
-                                mode: 'insensitive',
-                            } 
-                        },
-                        { 
-                            CBH_Donor_ID: { 
-                                contains: input.filter.cbhDonorID, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            CBH_Sample_ID: { 
-                                contains: input.filter.cbhSampleID, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Price: { 
-                                lte: input.filter.price.max, 
-                                gte: input.filter.price.min 
-                            } 
-                        },
-                        { 
-                            Matrix: { 
-                                in: input.filter.matrix?.length > 0 ? input.filter.matrix : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Quantity: { 
-                                lte: input.filter.quantity.max, 
-                                gte: input.filter.quantity.min 
-                            } 
-                        },
-                        { 
-                            Unit: { 
-                                in: input.filter.unit?.length > 0 ? input.filter.unit : undefined,
-                                mode: 'insensitive'
-                            } 
-                        },
-                        { 
-                            Lab_Parameter: { 
-                                in: input.filter.labParameter?.length > 0 ? input.filter.labParameter : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Interpretation: { 
-                                in: input.filter.resultInterpretation?.length > 0 ? input.filter.resultInterpretation : undefined,
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Unit: { 
-                                in: input.filter.resultUnit?.length > 0 ? input.filter.resultUnit : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Diagnosis: { 
-                                in: input.filter.diagnosis?.length > 0 ? input.filter.diagnosis : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            ICD_Code: { 
-                                in: input.filter.ICDCode?.length > 0 ? input.filter.ICDCode : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        {
-                            OR: [
-                                { 
-                                    CBH_Master_ID: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive',
-                                    } 
-                                },
-                                { 
-                                    CBH_Donor_ID: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    CBH_Sample_ID: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Matrix: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Lab_Parameter: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Result_Interpretation: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Result_Unit: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Diagnosis: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    ICD_Code: { 
-                                        contains: input.search,
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                            ]
-                        }
-                    ]
-                },
-            });
-        }),
-
     // Create
     createMany: publicProcedure
         .input( z.array(z.object({
@@ -233,399 +65,14 @@ export const sampleRouter = createTRPCRouter({
             Informed_Consent:               z.string().nullable(),
          })))
         .mutation(({ctx, input}) => {
-            /*
-            for (let i = 0; i < input.length; i++){
-                return ctx.prisma.samples.create({
-                    data: [
-                        { CBH_Donor_ID:                     input[i]?.CBH_Donor_ID,
-                          CBH_Master_ID:                    input[i]?.CBH_Master_ID,
-                          CBH_Sample_ID:                    input[i]?.CBH_Sample_ID,
-                          Price:                            input[i]?.Price,
-                          Quantity:                         input[i]?.Quantity,
-                          Unit:                             input[i]?.Unit,
-                          Matrix:                           input[i]?.Matrix,
-                          Storage_Temperature:              input[i]?.Storage_Temperature,
-                          Freeze_Thaw_Cycles:               input[i]?.Freeze_Thaw_Cycles,
-                          Sample_Condition:                 input[i]?.Sample_Condition,
-                          Infectious_Disease_Test_Result:   input[i]?.Infectious_Disease_Test_Result,
-                          Gender:                           input[i]?.Gender,
-                          Age:                              input[i]?.Age,
-                          Ethnicity:                        input[i]?.Ethnicity,
-                          BMI:                              input[i]?.BMI,
-                          Lab_Parameter:                    input[i]?.Lab_Parameter,
-                          Result_Interpretation:            input[i]?.Result_Interpretation,
-                          Result_Raw:                       input[i]?.Result_Raw,
-                          Result_Numerical:                 input[i]?.Result_Numerical,
-                          Result_Unit:                      input[i]?.Result_Unit,
-                          Cut_Off_Raw:                      input[i]?.Cut_Off_Raw,
-                          Cut_Off_Numerical:                input[i]?.Cut_Off_Numerical,
-                          Test_Method:                      input[i]?.Test_Method,
-                          Test_System:                      input[i]?.Test_System,
-                          Test_System_Manufacturer:         input[i]?.Test_System_Manufacturer,
-                          Result_Obtained_From:             input[i]?.Result_Obtained_From,
-                          Diagnosis:                        input[i]?.Diagnosis,
-                          Diagnosis_Remarks:                input[i]?.Diagnosis_Remarks,
-                          ICD_Code:                         input[i]?.ICD_Code,
-                          Pregnancy_Week:                   input[i]?.Pregnancy_Week,
-                          Pregnancy_Trimester:              input[i]?.Pregnancy_Trimester,
-                          Medication:                       input[i]?.Medication,
-                          Therapy:                          input[i]?.Therapy,
-                          Histological_Diagnosis:           input[i]?.Histological_Diagnosis,
-                          Organ:                            input[i]?.Organ,
-                          Disease_Presentation:             input[i]?.Disease_Presentation,
-                          TNM_Class_T:                      input[i]?.TNM_Class_T,
-                          TNM_Class_N:                      input[i]?.TNM_Class_N,
-                          TNM_Class_M:                      input[i]?.TNM_Class_M,
-                          Tumour_Grade:                     input[i]?.Tumour_Grade,
-                          Tumour_Stage:                     input[i]?.Tumour_Stage,
-                          Viable_Cells__per_:               input[i]?.Viable_Cells__per_,
-                          Necrotic_Cells__per_:             input[i]?.Necrotic_Cells__per_,
-                          Tumour_Cells__per_:               input[i]?.Tumour_Cells__per_,
-                          Proliferation_Rate__Ki67_per_:    input[i]?.Proliferation_Rate__Ki67_per_,
-                          Estrogen_Receptor:                input[i]?.Estrogen_Receptor,
-                          Progesteron_Receptor:             input[i]?.Progesteron_Receptor,
-                          HER_2_Receptor:                   input[i]?.HER_2_Receptor,
-                          Other_Gene_Mutations:             input[i]?.Other_Gene_Mutations,
-                          Country_of_Collection:            input[i]?.Country_of_Collection,
-                          Date_of_Collection:               input[i]?.Date_of_Collection,
-                          Procurement_Type:                 input[i]?.Procurement_Type,
-                          Informed_Consent:                 input[i]?.Informed_Consent,
-                        }
-                    ]
-                }) 
-            }
-            */
             return ctx.prisma.samples.createMany({ data: input })
         }),
 
-    //Update
-    update: publicProcedure
-        .input( z.object({
-            id:                             z.string().optional(),
-            CBH_Donor_ID:                   z.string().nullable(),
-            CBH_Master_ID:                  z.string().nullable(),
-            CBH_Sample_ID:                  z.string().nullable(),
-            Price:                          z.number().nullable(),
-            Quantity:                       z.number().nullable(),
-            Unit:                           z.string().nullable(),
-            Matrix:                         z.string().nullable(),
-            Storage_Temperature:            z.string().nullable(),
-            Freeze_Thaw_Cycles:             z.number().nullable(),
-            Sample_Condition:               z.string().nullable(),
-            Infectious_Disease_Test_Result: z.string().nullable(),
-            Gender:                         z.string().nullable(),
-            Age:                            z.number().nullable(),
-            Ethnicity:                      z.string().nullable(),
-            BMI:                            z.number().nullable(),
-            Lab_Parameter:                  z.string().nullable(),
-            Result_Interpretation:          z.string().nullable(),
-            Result_Raw:                     z.string().nullable(),
-            Result_Numerical:               z.number().nullable(),
-            Result_Unit:                    z.string().nullable(),
-            Cut_Off_Raw:                    z.string().nullable(),
-            Cut_Off_Numerical:              z.number().nullable(),
-            Test_Method:                    z.string().nullable(),
-            Test_System:                    z.string().nullable(),
-            Test_System_Manufacturer:       z.string().nullable(),
-            Result_Obtained_From:           z.string().nullable(),
-            Diagnosis:                      z.string().nullable(),
-            Diagnosis_Remarks:              z.string().nullable(),
-            ICD_Code:                       z.string().nullable(),
-            Pregnancy_Week:                 z.number().nullable(),
-            Pregnancy_Trimester:            z.string().nullable(),
-            Medication:                     z.string().nullable(),
-            Therapy:                        z.string().nullable(),
-            Histological_Diagnosis:         z.string().nullable(),
-            Organ:                          z.string().nullable(),
-            Disease_Presentation:           z.string().nullable(),
-            TNM_Class_T:                    z.string().nullable(),
-            TNM_Class_N:                    z.string().nullable(),
-            TNM_Class_M:                    z.string().nullable(),
-            Tumour_Grade:                   z.string().nullable(),
-            Tumour_Stage:                   z.string().nullable(),
-            Viable_Cells__per_:             z.string().nullable(),
-            Necrotic_Cells__per_:           z.string().nullable(),
-            Tumour_Cells__per_:             z.string().nullable(),
-            Proliferation_Rate__Ki67_per_:  z.string().nullable(),
-            Estrogen_Receptor:              z.string().nullable(),
-            Progesteron_Receptor:           z.string().nullable(),
-            HER_2_Receptor:                 z.string().nullable(),
-            Other_Gene_Mutations:           z.string().nullable(),
-            Country_of_Collection:          z.string().nullable(),
-            Date_of_Collection:             z.date().nullable(),
-            Procurement_Type:               z.string().nullable(),
-            Informed_Consent:               z.string().nullable(),
-        }))
-        .mutation(({ctx,input}) => {
-            return ctx.prisma.samples.update({
-                where: {
-                    id: input.id,
-                },
-                data: {
-                    CBH_Donor_ID:                   input.CBH_Donor_ID,
-                    CBH_Master_ID:                  input.CBH_Master_ID,
-                    CBH_Sample_ID:                  input.CBH_Sample_ID,
-                    Price:                          input.Price,
-                    Quantity:                       input.Quantity,
-                    Unit:                           input.Unit,
-                    Matrix:                         input.Matrix,
-                    Storage_Temperature:            input.Storage_Temperature,
-                    Freeze_Thaw_Cycles:             input.Freeze_Thaw_Cycles,
-                    Sample_Condition:               input.Sample_Condition,
-                    Infectious_Disease_Test_Result: input.Infectious_Disease_Test_Result,
-                    Gender:                         input.Gender,
-                    Age:                            input.Age,
-                    Ethnicity:                      input.Ethnicity,
-                    BMI:                            input.BMI,
-                    Lab_Parameter:                  input.Lab_Parameter,
-                    Result_Interpretation:          input.Result_Interpretation,
-                    Result_Raw:                     input.Result_Raw,
-                    Result_Numerical:               input.Result_Numerical,
-                    Result_Unit:                    input.Result_Unit,
-                    Cut_Off_Raw:                    input.Cut_Off_Raw,
-                    Cut_Off_Numerical:              input.Cut_Off_Numerical,
-                    Test_Method:                    input.Test_Method,
-                    Test_System:                    input.Test_System,
-                    Test_System_Manufacturer:       input.Test_System_Manufacturer,
-                    Result_Obtained_From:           input.Result_Obtained_From,
-                    Diagnosis:                      input.Diagnosis,
-                    Diagnosis_Remarks:              input.Diagnosis_Remarks,
-                    ICD_Code:                       input.ICD_Code,
-                    Pregnancy_Week:                 input.Pregnancy_Week,
-                    Pregnancy_Trimester:            input.Pregnancy_Trimester,
-                    Medication:                     input.Medication,
-                    Therapy:                        input.Therapy,
-                    Histological_Diagnosis:         input.Histological_Diagnosis,
-                    Organ:                          input.Organ,
-                    Disease_Presentation:           input.Disease_Presentation,
-                    TNM_Class_T:                    input.TNM_Class_T,
-                    TNM_Class_N:                    input.TNM_Class_N,
-                    TNM_Class_M:                    input.TNM_Class_M,
-                    Tumour_Grade:                   input.Tumour_Grade,
-                    Tumour_Stage:                   input.Tumour_Stage,
-                    Viable_Cells__per_:             input.Viable_Cells__per_,
-                    Necrotic_Cells__per_:           input.Necrotic_Cells__per_,
-                    Tumour_Cells__per_:             input.Tumour_Cells__per_,
-                    Proliferation_Rate__Ki67_per_:  input.Proliferation_Rate__Ki67_per_,
-                    Estrogen_Receptor:              input.Estrogen_Receptor,
-                    Progesteron_Receptor:           input.Progesteron_Receptor,
-                    HER_2_Receptor:                 input.HER_2_Receptor,
-                    Other_Gene_Mutations:           input.Other_Gene_Mutations,
-                    Country_of_Collection:          input.Country_of_Collection,
-                    Date_of_Collection:             input.Date_of_Collection,
-                    Procurement_Type:               input.Procurement_Type,
-                    Informed_Consent:               input.Informed_Consent,
-                },
-            })
-        }),
-
-    // Counts all entries in table
-    countExpert: publicProcedure
-        .input( z.object({ query: z.string() }) )
-        .query(async ({ctx, input}) => {
-
-            console.log(`input: ` + input.query +`;`)
-
-            if (!(input.query == null || input.query == undefined || input.query == "")) {
-                const result = await prisma.$queryRawUnsafe<{ _count: number }[]>(`SELECT COUNT(*)::integer as "_count" FROM "Samples" WHERE `+ input.query +`;`)
-                //const count = Number(result._count)
-                return result[0]?._count;
-            } else {
-                console.log(`no query given`)
-                return ctx.prisma.samples.count()
-            }            
-        }),
-
-    countNormal: publicProcedure
-        .input(z.object({ 
-        search: z.string().optional(), 
-        filter: z.object({
-            cbhMasterID: z.string().optional(), 
-            cbhDonorID: z.string().optional(), 
-            cbhSampleID: z.string().optional(), 
-            price: z.object({
-                min: z.number().optional(), 
-                max: z.number().optional() 
-            }), 
-            matrix: z.array(z.string()), 
-            quantity: z.object({
-                min: z.number().optional(), 
-                max: z.number().optional() 
-            }), 
-            unit: z.array(z.string()), 
-            labParameter: z.array(z.string()), 
-            resultInterpretation: z.array(z.string()), 
-            resultUnit: z.array(z.string()), 
-            diagnosis: z.array(z.string()), 
-            ICDCode: z.array(z.string()),
-        }) 
-        }))
-        .query(async ({ctx, input}) => {
-            return ctx.prisma.samples.count({
-                where: {
-                    AND: [
-                        { 
-                            CBH_Master_ID: { 
-                                contains: input.filter.cbhMasterID, 
-                                mode: 'insensitive',
-                            } 
-                        },
-                        { 
-                            CBH_Donor_ID: { 
-                                contains: input.filter.cbhDonorID, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            CBH_Sample_ID: { 
-                                contains: input.filter.cbhSampleID, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Price: { 
-                                lte: input.filter.price.max, 
-                                gte: input.filter.price.min 
-                            } 
-                        },
-                        { 
-                            Matrix: { 
-                                in: input.filter.matrix?.length > 0 ? input.filter.matrix : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Quantity: { 
-                                lte: input.filter.quantity.max, 
-                                gte: input.filter.quantity.min 
-                            } 
-                        },
-                        { 
-                            Unit: { 
-                                in: input.filter.unit?.length > 0 ? input.filter.unit : undefined,
-                                mode: 'insensitive'
-                            } 
-                        },
-                        { 
-                            Lab_Parameter: { 
-                                in: input.filter.labParameter?.length > 0 ? input.filter.labParameter : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Interpretation: { 
-                                in: input.filter.resultInterpretation?.length > 0 ? input.filter.resultInterpretation : undefined,
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Unit: { 
-                                in: input.filter.resultUnit?.length > 0 ? input.filter.resultUnit : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Diagnosis: { 
-                                in: input.filter.diagnosis?.length > 0 ? input.filter.diagnosis : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            ICD_Code: { 
-                                in: input.filter.ICDCode?.length > 0 ? input.filter.ICDCode : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        {
-                            OR: [
-                                { 
-                                    CBH_Master_ID: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive',
-                                    } 
-                                },
-                                { 
-                                    CBH_Donor_ID: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    CBH_Sample_ID: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Matrix: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Lab_Parameter: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Result_Interpretation: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Result_Unit: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Diagnosis: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    ICD_Code: { 
-                                        contains: input.search,
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                            ]
-                        }
-                    ]
-                },
-            });         
-        }),
-
-    // Delete
-    delete: publicProcedure
-        .input(z.object({ id: z.string() }))
-        .mutation(async ({ ctx, input}) => {
-            return ctx.prisma.samples.delete({
-                where: {
-                    id: input.id,
-                },
-            });
-        }),
-
-    //--- Test purpose only ----//
-    /*
-    test: publicProcedure
-        .input(z.object({ obj: z.string().or(z.number()).optional()}))
-        .query(({ ctx, input }) => {
-            return ctx.prisma.$queryRaw<Samples[]>`SELECT * FROM "Samples" ${
-                input.obj ? Prisma.sql`WHERE "cbhDonorID" = ${getValue(input.obj)}` : Prisma.empty
-            }`
-        }),
-    */
-    //-------------------------//
+    // Read
 
     getDistinct: publicProcedure
         .input( z.string().optional() )
         .query(async ({ ctx, input }) => {
-
             switch (input) {
                 case 'Price':
                     const result = await ctx.prisma.samples.findMany({
@@ -801,10 +248,648 @@ export const sampleRouter = createTRPCRouter({
                     return []
             }
         }),
+
+    getAll: publicProcedure
+        .input(z.object({ 
+            pages: z.number().optional(), 
+            lines: z.number().optional(), 
+            search: z.string().optional(), 
+            filter: z.object({
+                cbhMasterID: z.string().optional(), 
+                cbhDonorID: z.string().optional(), 
+                cbhSampleID: z.string().optional(), 
+                price: z.object({
+                    min: z.number().optional(), 
+                    max: z.number().optional() 
+                }), 
+                matrix: z.array(z.string()), 
+                quantity: z.object({
+                    min: z.number().optional(), 
+                    max: z.number().optional() 
+                }), 
+                unit: z.array(z.string()), 
+                labParameter: z.array(z.string()), 
+                resultInterpretation: z.array(z.string()), 
+                resultUnit: z.array(z.string()), 
+                diagnosis: z.array(z.string()), 
+                ICDCode: z.array(z.string()),
+            }) 
+        }))
+        .query(async ({ ctx, input }) => {
+
+            const uniqueEntries = await ctx.prisma.samples.findMany({
+                distinct: ['CBH_Sample_ID'],
+                take: input.lines, 
+                skip: (input.pages && input.lines) ? (input.pages -1) * input.lines : 0,
+                where: {
+                    AND: [
+                        { 
+                            CBH_Master_ID: { 
+                                contains: input.filter.cbhMasterID, 
+                                mode: 'insensitive',
+                            } 
+                        },
+                        { 
+                            CBH_Donor_ID: { 
+                                contains: input.filter.cbhDonorID, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            CBH_Sample_ID: { 
+                                contains: input.filter.cbhSampleID, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Price: { 
+                                lte: input.filter.price.max, 
+                                gte: input.filter.price.min 
+                            } 
+                        },
+                        { 
+                            Matrix: { 
+                                in: input.filter.matrix?.length > 0 ? input.filter.matrix : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Quantity: { 
+                                lte: input.filter.quantity.max, 
+                                gte: input.filter.quantity.min 
+                            } 
+                        },
+                        { 
+                            Unit: { 
+                                in: input.filter.unit?.length > 0 ? input.filter.unit : undefined,
+                                mode: 'insensitive'
+                            } 
+                        },
+                        { 
+                            Lab_Parameter: { 
+                                in: input.filter.labParameter?.length > 0 ? input.filter.labParameter : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Interpretation: { 
+                                in: input.filter.resultInterpretation?.length > 0 ? input.filter.resultInterpretation : undefined,
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Unit: { 
+                                in: input.filter.resultUnit?.length > 0 ? input.filter.resultUnit : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Diagnosis: { 
+                                in: input.filter.diagnosis?.length > 0 ? input.filter.diagnosis : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            ICD_Code: { 
+                                in: input.filter.ICDCode?.length > 0 ? input.filter.ICDCode : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        {
+                            OR: [
+                                { 
+                                    CBH_Master_ID: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive',
+                                    } 
+                                },
+                                { 
+                                    CBH_Donor_ID: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    CBH_Sample_ID: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Matrix: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Lab_Parameter: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Result_Interpretation: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Result_Unit: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Diagnosis: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    ICD_Code: { 
+                                        contains: input.search,
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                            ]
+                        }
+                    ]
+                },
+                orderBy: {
+                    CBH_Sample_ID: 'desc',
+                },
+                select: {
+                    CBH_Sample_ID: true
+                }
+            });
+
+            const returnLength : string[] = uniqueEntries.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
+            
+            return ctx.prisma.samples.findMany({ 
+                where: {
+                    OR: [
+                        {
+                            CBH_Sample_ID: {
+                                in: returnLength
+                            }
+                        },
+                        {
+                            AND: [
+                                { 
+                                    CBH_Master_ID: { 
+                                        contains: input.filter.cbhMasterID, 
+                                        mode: 'insensitive',
+                                    } 
+                                },
+                                { 
+                                    CBH_Donor_ID: { 
+                                        contains: input.filter.cbhDonorID, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    CBH_Sample_ID: { 
+                                        contains: input.filter.cbhSampleID, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Price: { 
+                                        lte: input.filter.price.max, 
+                                        gte: input.filter.price.min 
+                                    } 
+                                },
+                                { 
+                                    Matrix: { 
+                                        in: input.filter.matrix?.length > 0 ? input.filter.matrix : undefined, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Quantity: { 
+                                        lte: input.filter.quantity.max, 
+                                        gte: input.filter.quantity.min 
+                                    } 
+                                },
+                                { 
+                                    Unit: { 
+                                        in: input.filter.unit?.length > 0 ? input.filter.unit : undefined,
+                                        mode: 'insensitive'
+                                    } 
+                                },
+                                { 
+                                    Lab_Parameter: { 
+                                        in: input.filter.labParameter?.length > 0 ? input.filter.labParameter : undefined, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Result_Interpretation: { 
+                                        in: input.filter.resultInterpretation?.length > 0 ? input.filter.resultInterpretation : undefined,
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Result_Unit: { 
+                                        in: input.filter.resultUnit?.length > 0 ? input.filter.resultUnit : undefined, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Diagnosis: { 
+                                        in: input.filter.diagnosis?.length > 0 ? input.filter.diagnosis : undefined, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    ICD_Code: { 
+                                        in: input.filter.ICDCode?.length > 0 ? input.filter.ICDCode : undefined, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                {
+                                    OR: [
+                                        { 
+                                            CBH_Master_ID: { 
+                                                contains: input.search, 
+                                                mode: 'insensitive',
+                                            } 
+                                        },
+                                        { 
+                                            CBH_Donor_ID: { 
+                                                contains: input.search, 
+                                                mode: 'insensitive' 
+                                            } 
+                                        },
+                                        { 
+                                            CBH_Sample_ID: { 
+                                                contains: input.search, 
+                                                mode: 'insensitive' 
+                                            } 
+                                        },
+                                        { 
+                                            Matrix: { 
+                                                contains: input.search, 
+                                                mode: 'insensitive' 
+                                            } 
+                                        },
+                                        { 
+                                            Lab_Parameter: { 
+                                                contains: input.search, 
+                                                mode: 'insensitive' 
+                                            } 
+                                        },
+                                        { 
+                                            Result_Interpretation: { 
+                                                contains: input.search, 
+                                                mode: 'insensitive' 
+                                            } 
+                                        },
+                                        { 
+                                            Result_Unit: { 
+                                                contains: input.search, 
+                                                mode: 'insensitive' 
+                                            } 
+                                        },
+                                        { 
+                                            Diagnosis: { 
+                                                contains: input.search, 
+                                                mode: 'insensitive' 
+                                            } 
+                                        },
+                                        { 
+                                            ICD_Code: { 
+                                                contains: input.search,
+                                                mode: 'insensitive' 
+                                            } 
+                                        },
+                                    ]
+                                }
+                            ]
+                        },
+                    ]
+                },
+                orderBy: {
+                    CBH_Sample_ID: 'desc',
+                },
+            });
+        }),
+
+    // Update
+    update: publicProcedure
+        .input( z.object({
+            id:                             z.string().optional(),
+            CBH_Donor_ID:                   z.string().nullable(),
+            CBH_Master_ID:                  z.string().nullable(),
+            CBH_Sample_ID:                  z.string().nullable(),
+            Price:                          z.number().nullable(),
+            Quantity:                       z.number().nullable(),
+            Unit:                           z.string().nullable(),
+            Matrix:                         z.string().nullable(),
+            Storage_Temperature:            z.string().nullable(),
+            Freeze_Thaw_Cycles:             z.number().nullable(),
+            Sample_Condition:               z.string().nullable(),
+            Infectious_Disease_Test_Result: z.string().nullable(),
+            Gender:                         z.string().nullable(),
+            Age:                            z.number().nullable(),
+            Ethnicity:                      z.string().nullable(),
+            BMI:                            z.number().nullable(),
+            Lab_Parameter:                  z.string().nullable(),
+            Result_Interpretation:          z.string().nullable(),
+            Result_Raw:                     z.string().nullable(),
+            Result_Numerical:               z.number().nullable(),
+            Result_Unit:                    z.string().nullable(),
+            Cut_Off_Raw:                    z.string().nullable(),
+            Cut_Off_Numerical:              z.number().nullable(),
+            Test_Method:                    z.string().nullable(),
+            Test_System:                    z.string().nullable(),
+            Test_System_Manufacturer:       z.string().nullable(),
+            Result_Obtained_From:           z.string().nullable(),
+            Diagnosis:                      z.string().nullable(),
+            Diagnosis_Remarks:              z.string().nullable(),
+            ICD_Code:                       z.string().nullable(),
+            Pregnancy_Week:                 z.number().nullable(),
+            Pregnancy_Trimester:            z.string().nullable(),
+            Medication:                     z.string().nullable(),
+            Therapy:                        z.string().nullable(),
+            Histological_Diagnosis:         z.string().nullable(),
+            Organ:                          z.string().nullable(),
+            Disease_Presentation:           z.string().nullable(),
+            TNM_Class_T:                    z.string().nullable(),
+            TNM_Class_N:                    z.string().nullable(),
+            TNM_Class_M:                    z.string().nullable(),
+            Tumour_Grade:                   z.string().nullable(),
+            Tumour_Stage:                   z.string().nullable(),
+            Viable_Cells__per_:             z.string().nullable(),
+            Necrotic_Cells__per_:           z.string().nullable(),
+            Tumour_Cells__per_:             z.string().nullable(),
+            Proliferation_Rate__Ki67_per_:  z.string().nullable(),
+            Estrogen_Receptor:              z.string().nullable(),
+            Progesteron_Receptor:           z.string().nullable(),
+            HER_2_Receptor:                 z.string().nullable(),
+            Other_Gene_Mutations:           z.string().nullable(),
+            Country_of_Collection:          z.string().nullable(),
+            Date_of_Collection:             z.date().nullable(),
+            Procurement_Type:               z.string().nullable(),
+            Informed_Consent:               z.string().nullable(),
+        }))
+        .mutation(({ctx,input}) => {
+            return ctx.prisma.samples.update({
+                where: {
+                    id: input.id,
+                },
+                data: {
+                    CBH_Donor_ID:                   input.CBH_Donor_ID,
+                    CBH_Master_ID:                  input.CBH_Master_ID,
+                    CBH_Sample_ID:                  input.CBH_Sample_ID,
+                    Price:                          input.Price,
+                    Quantity:                       input.Quantity,
+                    Unit:                           input.Unit,
+                    Matrix:                         input.Matrix,
+                    Storage_Temperature:            input.Storage_Temperature,
+                    Freeze_Thaw_Cycles:             input.Freeze_Thaw_Cycles,
+                    Sample_Condition:               input.Sample_Condition,
+                    Infectious_Disease_Test_Result: input.Infectious_Disease_Test_Result,
+                    Gender:                         input.Gender,
+                    Age:                            input.Age,
+                    Ethnicity:                      input.Ethnicity,
+                    BMI:                            input.BMI,
+                    Lab_Parameter:                  input.Lab_Parameter,
+                    Result_Interpretation:          input.Result_Interpretation,
+                    Result_Raw:                     input.Result_Raw,
+                    Result_Numerical:               input.Result_Numerical,
+                    Result_Unit:                    input.Result_Unit,
+                    Cut_Off_Raw:                    input.Cut_Off_Raw,
+                    Cut_Off_Numerical:              input.Cut_Off_Numerical,
+                    Test_Method:                    input.Test_Method,
+                    Test_System:                    input.Test_System,
+                    Test_System_Manufacturer:       input.Test_System_Manufacturer,
+                    Result_Obtained_From:           input.Result_Obtained_From,
+                    Diagnosis:                      input.Diagnosis,
+                    Diagnosis_Remarks:              input.Diagnosis_Remarks,
+                    ICD_Code:                       input.ICD_Code,
+                    Pregnancy_Week:                 input.Pregnancy_Week,
+                    Pregnancy_Trimester:            input.Pregnancy_Trimester,
+                    Medication:                     input.Medication,
+                    Therapy:                        input.Therapy,
+                    Histological_Diagnosis:         input.Histological_Diagnosis,
+                    Organ:                          input.Organ,
+                    Disease_Presentation:           input.Disease_Presentation,
+                    TNM_Class_T:                    input.TNM_Class_T,
+                    TNM_Class_N:                    input.TNM_Class_N,
+                    TNM_Class_M:                    input.TNM_Class_M,
+                    Tumour_Grade:                   input.Tumour_Grade,
+                    Tumour_Stage:                   input.Tumour_Stage,
+                    Viable_Cells__per_:             input.Viable_Cells__per_,
+                    Necrotic_Cells__per_:           input.Necrotic_Cells__per_,
+                    Tumour_Cells__per_:             input.Tumour_Cells__per_,
+                    Proliferation_Rate__Ki67_per_:  input.Proliferation_Rate__Ki67_per_,
+                    Estrogen_Receptor:              input.Estrogen_Receptor,
+                    Progesteron_Receptor:           input.Progesteron_Receptor,
+                    HER_2_Receptor:                 input.HER_2_Receptor,
+                    Other_Gene_Mutations:           input.Other_Gene_Mutations,
+                    Country_of_Collection:          input.Country_of_Collection,
+                    Date_of_Collection:             input.Date_of_Collection,
+                    Procurement_Type:               input.Procurement_Type,
+                    Informed_Consent:               input.Informed_Consent,
+                },
+            })
+        }),
+
+    // Delete
+    delete: publicProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ ctx, input}) => {
+            return ctx.prisma.samples.delete({
+                where: {
+                    id: input.id,
+                },
+            });
+        }),
     
     deleteAll: publicProcedure
         .mutation(async ({ ctx }) => {
             return ctx.prisma.samples.deleteMany({})
+        }),
+
+    // Counts all entries in table
+    countExpert: publicProcedure
+        .input( z.object({ query: z.string() }) )
+        .query(async ({input}) => {
+
+            if (!(input.query === null || input.query === undefined || input.query === "")) {
+                const result = await prisma.$queryRawUnsafe<{ _count: number }[]>(`SELECT COUNT(DISTINCT "CBH_Sample_ID")::integer as "_count" FROM "Samples" WHERE `+ input.query +`;`)
+                return result[0]?._count;
+            } else {
+                const result = await prisma.$queryRawUnsafe<{ _count: number }[]>(`SELECT COUNT(DISTINCT "CBH_Sample_ID")::integer as "_count" FROM "Samples";`)
+                return result[0]?._count;
+            }            
+        }),
+
+    countNormal: publicProcedure
+        .input(z.object({ 
+            search: z.string().optional(), 
+            filter: z.object({
+                cbhMasterID: z.string().optional(), 
+                cbhDonorID: z.string().optional(), 
+                cbhSampleID: z.string().optional(), 
+                price: z.object({
+                    min: z.number().optional(), 
+                    max: z.number().optional() 
+                }), 
+                matrix: z.array(z.string()), 
+                quantity: z.object({
+                    min: z.number().optional(), 
+                    max: z.number().optional() 
+                }), 
+                unit: z.array(z.string()), 
+                labParameter: z.array(z.string()), 
+                resultInterpretation: z.array(z.string()), 
+                resultUnit: z.array(z.string()), 
+                diagnosis: z.array(z.string()), 
+                ICDCode: z.array(z.string()),
+            }) 
+        }))
+        .query(async ({ctx, input}) => {
+            const result = await ctx.prisma.samples.findMany({
+                distinct: ['CBH_Sample_ID'],
+                where: {
+                    AND: [
+                        { 
+                            CBH_Master_ID: { 
+                                contains: input.filter.cbhMasterID, 
+                                mode: 'insensitive',
+                            } 
+                        },
+                        { 
+                            CBH_Donor_ID: { 
+                                contains: input.filter.cbhDonorID, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            CBH_Sample_ID: { 
+                                contains: input.filter.cbhSampleID, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Price: { 
+                                lte: input.filter.price.max, 
+                                gte: input.filter.price.min 
+                            } 
+                        },
+                        { 
+                            Matrix: { 
+                                in: input.filter.matrix?.length > 0 ? input.filter.matrix : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Quantity: { 
+                                lte: input.filter.quantity.max, 
+                                gte: input.filter.quantity.min 
+                            } 
+                        },
+                        { 
+                            Unit: { 
+                                in: input.filter.unit?.length > 0 ? input.filter.unit : undefined,
+                                mode: 'insensitive'
+                            } 
+                        },
+                        { 
+                            Lab_Parameter: { 
+                                in: input.filter.labParameter?.length > 0 ? input.filter.labParameter : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Interpretation: { 
+                                in: input.filter.resultInterpretation?.length > 0 ? input.filter.resultInterpretation : undefined,
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Unit: { 
+                                in: input.filter.resultUnit?.length > 0 ? input.filter.resultUnit : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Diagnosis: { 
+                                in: input.filter.diagnosis?.length > 0 ? input.filter.diagnosis : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            ICD_Code: { 
+                                in: input.filter.ICDCode?.length > 0 ? input.filter.ICDCode : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        {
+                            OR: [
+                                { 
+                                    CBH_Master_ID: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive',
+                                    } 
+                                },
+                                { 
+                                    CBH_Donor_ID: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    CBH_Sample_ID: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Matrix: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Lab_Parameter: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Result_Interpretation: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Result_Unit: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Diagnosis: { 
+                                        contains: input.search, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    ICD_Code: { 
+                                        contains: input.search,
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                            ]
+                        }
+                    ]
+                },
+            });   
+            
+            return result.length
         }),
 
     applyFilter: publicProcedure
@@ -813,18 +898,19 @@ export const sampleRouter = createTRPCRouter({
 
             const offset = (input.pages && input.pagelength) ? (input.pages -1) * input.pagelength : 0
 
-            if (input.query == "") {
+            if (input.query == "") 
+            {
                 return ctx.prisma.samples.findMany({                    
                     take: input.pagelength, 
                     skip: offset,
                 })
+            } 
+            else 
+            {
+                const uniqueEntries = await prisma.$queryRawUnsafe<{ CBH_Sample_ID : string }[]>('SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ' + input.query + ' ORDER BY "CBH_Sample_ID" ASC LIMIT ' + input.pagelength.toString() + ' OFFSET ' + offset.toString() + ';')
+                const returnLength : string[] = uniqueEntries.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [] ;
+    
+                return prisma.$queryRawUnsafe<Samples[]>(`SELECT * FROM "Samples" WHERE `+ input.query +` AND "CBH_Sample_ID" BETWEEN '${returnLength[0]?.toString() ?? ""}' AND '${returnLength[returnLength.length-1]?.toString() ?? ""}';`)
             }
-
-            //console.log(`SELECT COUNT(*) FROM "Samples" WHERE `+ input.query +`;`)
-            return prisma.$queryRawUnsafe<Samples[]>(`SELECT * FROM "Samples" WHERE `+ input.query +` LIMIT ` + input.pagelength.toString() + ` OFFSET ` + offset.toString() + `;`)
-        }),
+         }),
 })
-
-// function getValue(obj: string | number): Prisma.Sql {
-//     return Prisma.sql`${obj}`
-// }
