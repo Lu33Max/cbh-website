@@ -195,7 +195,6 @@ const ExpertSearch: NextPage = () => {
           </div>
         </div>
       </div>
-      {/*<JsonDump state={state} />*/}
     </>
   )
 }
@@ -271,14 +270,6 @@ function GroupListEditor(props: { groups: State<group[] | undefined>, deleteDisa
       )}
     </div>
   )
-}
-
-function JsonDump(props: { state: State<group[] | undefined> }) {
-  const state = useHookstate(props.state);
-
-  return <p>
-    Current state: {JSON.stringify(state.value)} <br />
-  </p>
 }
 
 function ColSelect(props: { col: State<string>, activated: State<boolean>, filterActivated: State<boolean>}) {
@@ -572,9 +563,26 @@ const Table: React.FC<props> = ({ filter }) => {
 
   return (
     <>
+      
       <div className="mx-4 my-5">
         <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => { filters.ornull && filters.ornull.map((group: State<group>) => { setFilterQuery(BuildQuery(group)) }) }}>Apply Filter</button>
         <button className='bg-[rgb(208,165,96)] text-white px-3 rounded-lg' onClick={() => filters.set([{ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], }],)}>Reset</button>
+
+        <div className="flex flex-row w-full items-center justify-center mt-5">
+          <Footer range={range} page={page} setPage={setPage} />
+
+          <p className="ml-4">Show rows</p>
+          <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+            <option value={150}>150</option>
+            <option value={200}>200</option>
+            <option value={250}>250</option>
+            <option value={500}>500</option>
+            <option value={1000}>1000</option>
+          </select>
+        </div>
+
         <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
           <thead>
             <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">

@@ -13,7 +13,6 @@ import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import Autofill from "~/components/search/autofill";
-import { type } from "os";
 
 export type Filter = {
   cbhMasterID: string | undefined,
@@ -317,7 +316,7 @@ const Content: React.FC = () => {
           setFilter(filter => ({...filter, labParameter: temp3}))
         }
         break;
-      case "Result_numbererpretation":
+      case "Result_Interpretation":
         if(!filter.resultInterpretation.includes(value)){
           const temp4 = filter.resultInterpretation
           temp4.push(value)
@@ -351,11 +350,11 @@ const Content: React.FC = () => {
   }
 
   return(
-    <div className="max-h-[95vh] overflow-y-auto w-full overflow-x-hidden font-poppins">
+    <div className="max-h-[95vh] overflow-y-scroll w-full overflow-x-hidden font-poppins">
       <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Overall Search</b></h1>
 
       <p className="px-5 my-7 text-lg">Explore the Abundance and Find the Perfect <b>Human Biospecimens</b> for You! Expert search is a tailor-made solution to improve your search by understanding the precise needs and search 
-        behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper numbero our bio inventory 
+        behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
         to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
         human tissue samples, and more for research purposes. Explore advanced search options to order human biospecimens online by clicking <b>CLINICAL DIAGNOSIS, ICD 10-CM CODES,</b> and <b>LABORATORY 
         PARAMETERS</b>.</p>
@@ -488,10 +487,10 @@ const Content: React.FC = () => {
                       <Autofill value="Lab_Parameter" callback={handleFilterChange}/>
                     </div>
                     <div className="col-span-1 text-right">
-                      Result numbererpretation:
+                      Result Interpretation:
                     </div>
                     <div className="col-span-1">
-                      <Autofill value="Result_numbererpretation" callback={handleFilterChange}/>
+                      <Autofill value="Result_Interpretation" callback={handleFilterChange}/>
                     </div>
                     <div className="col-span-1 text-right">
                       Unit:
@@ -570,7 +569,7 @@ const Content: React.FC = () => {
           
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.length > 0 ? "" : "hidden"}`}>
-          Res.numbererpretation:&nbsp;
+          Res.Interpretation:&nbsp;
           {filter.resultInterpretation.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
@@ -612,13 +611,7 @@ const Content: React.FC = () => {
       </div>
 
       <div className="flex flex-row w-full items-center justify-center mt-5">
-        {range.map((item, index) => {
-          return (
-            <button key={index} className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${page === index+1 ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900'}`} onClick={() => setPage(item)}>
-              {item}
-            </button>
-          );
-        })}
+        <Footer range={range} page={page} setPage={setPage} />
 
         <p className="ml-4">Show rows</p>
         <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
@@ -717,13 +710,7 @@ const Content: React.FC = () => {
       </div>
 
       <div className="flex flex-row w-full items-center justify-center mt-5">
-        {range.map((item, index) => {
-          return (
-            <button key={index} className={`justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${page === index+1 ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900'}`} onClick={() => setPage(item)}>
-              {item}
-            </button>
-          );
-        })}
+        <Footer range={range} page={page} setPage={setPage} />
 
         <p className="ml-4">Show rows</p>
         <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
