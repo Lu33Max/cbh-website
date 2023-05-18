@@ -8,11 +8,14 @@ import Head from 'next/head';
 import Header from '~/components/overall/header';
 import Sidebar from '~/components/overall/sidebar';
 import Footer from "~/components/search/footer";
+import ModalSave from '~/components/overall/modalSave';
+import ModalLoad from '~/components/overall/modalLoad';
+
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 
-type group = {
+export type group = {
   not: boolean,
   link: string,
   activated: boolean,
@@ -372,6 +375,21 @@ const Table: React.FC<props> = ({ filter }) => {
   const filters = useHookstate(filter)
   const defaultShow: boolean[] = []
 
+  const [showModal, setShowModal] = useState(false);
+  const [showModalLoad, setShowModalLoad] = useState(false);
+  const openModal = () => {
+    setShowModal(true);
+  };
+  const closeModal = () => {
+    setShowModal(false);
+  };
+  const openModalLoad = () => {
+    setShowModalLoad(true);
+  };
+  const closeModalLoad = () => {
+    setShowModalLoad(false);
+  };
+
   for (let i = 0; i < pagelength; i++) {
     defaultShow.push(false)
   }
@@ -425,8 +443,14 @@ const Table: React.FC<props> = ({ filter }) => {
   return (
     <>
       <div className="mx-4 my-5">
-        <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => { filters.ornull && filters.ornull.map((group: State<group>) => { setFilterQuery(BuildQuery(group)) }) }}>Apply Filter</button>
-        <button className='bg-[rgb(208,165,96)] text-white px-3 rounded-lg' onClick={() => filters.set([{ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], }],)}>Reset</button>
+        <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg mx-2' onClick={() => { filters.ornull && filters.ornull.map((group: State<group>) => { setFilterQuery(BuildQuery(group)) }) }}>Apply Filter</button>
+        <button className='bg-[rgb(208,165,96)] text-white px-3 rounded-lg mx-2' onClick={() => filters.set([{ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], }],)}>Reset</button>
+        <button className='bg-violet-600 text-white px-3 rounded-lg mx-2' onClick={openModalLoad}>Load Filter</button>
+        <ModalLoad showModal={showModalLoad} onCloseModal={closeModalLoad} filter={filters} />
+
+        <button className='bg-green-300 text-black px-3 rounded-lg mx-2' onClick={openModal}>Save Filter</button>
+        <ModalSave showModal={showModal} onCloseModal={closeModal} filter={filters} />
+
         <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
           <thead>
             <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
