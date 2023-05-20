@@ -8,6 +8,7 @@ import Head from 'next/head';
 import Header from '~/components/overall/header';
 import Sidebar from '~/components/overall/sidebar';
 import Footer from "~/components/search/footer";
+import AutofillExpert from '~/components/search/autofill_expert';
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
@@ -22,7 +23,7 @@ type group = {
     values: string[],
     activated: boolean,
   }[],
-  groups?: group[],
+  groups: group[],
 }
 
 export type TableSamples = {
@@ -85,6 +86,27 @@ export type TableSamples = {
 function BuildQuery(group: State<group>): string {
   let sql = '';
 
+  function getOperator(type: string): string {
+    switch (type) {
+      case 'equal':
+        return '=';
+      case 'in':
+        return 'IN';
+      case 'less':
+        return '<';
+      case 'lessequal':
+        return '<=';
+      case 'more':
+        return '>';
+      case 'moreequal':
+        return '>=';
+      case 'between':
+        return 'BETWEEN';
+      default:
+        throw new Error(`Invalid filter type: ${type}`);
+    }
+  }
+
   if (group !== undefined && group.activated.value === true) {
     if (group.groups.value && group.groups.value.length > 0) {
       group.groups.ornull?.map((g, i) => {
@@ -142,29 +164,8 @@ function BuildQuery(group: State<group>): string {
   return sql;
 }
 
-function getOperator(type: string): string {
-  switch (type) {
-    case 'equal':
-      return '=';
-    case 'in':
-      return 'IN';
-    case 'less':
-      return '<';
-    case 'lessequal':
-      return '<=';
-    case 'more':
-      return '>';
-    case 'moreequal':
-      return '>=';
-    case 'between':
-      return 'BETWEEN';
-    default:
-      return 'invalid';
-  }
-}
-
 const ExpertSearch: NextPage = () => {
-  const state = useHookstate<group[] | undefined>([
+  const state = useHookstate<group>(
     {
       not: false,
       link: 'AND',
@@ -175,8 +176,9 @@ const ExpertSearch: NextPage = () => {
         values: [],
         activated: true,
       }],
+      groups: []
     },
-  ]);
+  );
 
   return (
     <>
@@ -192,9 +194,9 @@ const ExpertSearch: NextPage = () => {
           <div className="flex flex-row">
             <Sidebar />
             <div className="col-span-6 h-[95vh] overflow-y-auto w-full overflow-x-hidden font-poppins">
-              <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900">Expert Search</h1>
-              <div className='max-h-[600px] mx-3 overflow-x-auto overflow-y-auto'>
-                <GroupListEditor groups={state} deleteDisabled={true} />
+              <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Expert Search</b></h1>
+              <div className='mx-3'>
+                <InitialContentEditor self={state}/>
               </div>
               <Table filter={state} />
             </div>
@@ -206,23 +208,24 @@ const ExpertSearch: NextPage = () => {
 }
 export default ExpertSearch;
 
-function GroupContentEditor(props: { childrenState: State<group[] | undefined>, index: number, deleteDisabled: boolean, groupState: State<group[] | undefined>, linkState: State<string>, activatedState: State<boolean>, notState: State<boolean>, filterState: State<{ col: string, type: string, values: string[], activated: boolean }[]> }) {
-  const link = useHookstate(props.linkState);
-  const filter = useHookstate(props.filterState);
-  const group = useHookstate(props.groupState);
-  const not = useHookstate(props.notState);
-  const children = useHookstate(props.childrenState);
-  const activated = useHookstate(props.activatedState);
+function InitialContentEditor(props: { self: State<group> }) {
+  const self = useHookstate(props.self)
 
-  const i = props.index;
-  const disabled = props.deleteDisabled
+  function SetActivated(groupState: State<group>, activated: boolean): void{
+    groupState.activated.set(activated)
+    groupState.groups.map((group: State<group>) => {SetActivated(group, activated)})    
+  }
 
   return <>
-    <div className='bg-gray-100 mx-5'>
+    <div className="w-full py-1 text-lg rounded-3xl mt-3 from-[#164A41] to-[#4D774E] bg-gradient-to-r">
       <div className='flex flex-row px-5 py-2 font-body font-poppins text-2xl font-thin'>
-        <div className='mr-5'>
+        <div className='flex flex-row justify-start items-center w-[50%]'>
+          <button className={`ml-5 w-[6rem] px-4 py-1 text-lg text-center rounded-l-2xl border-solid border-2 border-[#F1B24A] ${self.not.value === true ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"} `} onClick={() => self.not.set(!self.not.value)}>NOT</button>
+          <button className={`w-[6rem] px-4 py-1 text-lg text-center border-solid border-y-2 border-[#F1B24A] ${self.link.value === "AND" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('AND')}>AND</button>
+          <button className={`w-[6rem] px-4 py-1 text-lg text-center rounded-r-2xl border-solid border-2 border-[#F1B24A] ${self.link.value === "OR" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('OR')}>OR</button>
+
           <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
-            <Popover id="popover-basic">
+            <Popover id="popover-basic" className='z-30'>
               <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
                 <div>
                   The buttons for AND or OR indicate how the different filters should be connected within the group. <br />
@@ -231,50 +234,91 @@ function GroupContentEditor(props: { childrenState: State<group[] | undefined>, 
               </Popover.Body>
             </Popover>
           }>
-            <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md rounded-lg">help</button>
+            <button className="ml-5 bg-[#9DC88D] rounded-full border-2 border-solid border-green-900 py-1 px-1 text-white text-lg w-[2.5rem] shadow-md">?</button>
           </OverlayTrigger>
         </div>
-        <div className='bg-gray-300 rounded-sm px-3'>
-          <input type="checkbox" id="not" name="not" value="not" onChange={() => not.set(!not.value)} /><label>NOT</label>
-        </div>
-
-        <button className={`${link.value === "AND" ? "bg-blue-700" : "bg-blue-400"} text-white px-3 rounded-sm`} onClick={() => link.set('AND')}>AND</button>
-        <button className={`${link.value === "OR" ? "bg-blue-700" : "bg-blue-400"} text-white px-3 rounded-sm`} onClick={() => link.set('OR')}>OR</button>
-
-        <div className='ml-96'>
-          <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => children.set(groups => (groups || []).concat([{ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true}] }]))}>new Group</button>
-          <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true}]))}>new Rule</button>
-          <button className={`bg-orange-400 text-white mx-2 px-2 rounded-sm `} onClick={() => activated.set(!activated.value)}>{activated.value ? "deactivate": "activate"}</button>
-          <button className={`bg-red-500 text-white mx-2 px-2 rounded-sm ${disabled ? 'hidden' : ''}`} onClick={() => group.set((group) => group?.filter((_, index) => index !== i))} >delete</button>
+        <div className='flex flex-row justify-end items-center w-[50%] pr-3'>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true}], groups: [] }))}>New Group</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true}]))}>New Rule</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-400 border-orange-400' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "deactivate": "activate"}</button>
         </div>
       </div>
 
-      {filter.ornull && filter.ornull.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean }>, i) =>
-        <div key={i}>
-          <ColSelect col={filterState.col} activated={activated} filterActivated={filterState.activated}/>
-          <TypeSelect type={filterState.type} values={filterState.values} activated={activated} filterActivated={filterState.activated}/>
-          <button className='bg-orange-400 text-white mx-2 px-2 rounded-sm' onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "deactivate": "activate"}</button>
-          <button className='bg-red-500 text-white mx-2 px-2 rounded-sm' onClick={() => filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
-          <ChooseValues type={filterState.type} values={filterState.values} activated={activated} filterActivated={filterState.activated}/>
+      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean }>, i) =>
+        <div key={i}>  
+          <div className='flex flex-row ml-5 my-1'>
+            <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
+            <TypeSelect type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
+            <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
+            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "deactivate": "activate"}</button>
+            <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
+          </div>  
+        </div>
+      )}
+
+      <GroupListEditor groups={self} />
+    </div>
+  </>
+}
+
+function GroupContentEditor(props: { self: State<group>, parent: State<group>, index: number }) {
+  const self = useHookstate(props.self)
+  const parent = useHookstate(props.parent)
+
+  const i = props.index;
+
+  function SetActivated(groupState: State<group>, activated: boolean): void{
+    groupState.activated.set(activated)
+    groupState.groups.map((group: State<group>) => {SetActivated(group, activated)})    
+  }
+
+  return <>
+    <div className="w-full py-1 text-lg rounded-3xl mt-1 bg-[rgb(131,182,94)] to-[#4D774E] bg-gradient-to-r">
+      <div className='flex flex-row px-5 py-2 font-body font-poppins text-2xl font-thin'>
+        <div className='flex flex-row justify-start items-center w-[50%]'>
+          <button className={`ml-5 w-[6rem] px-4 py-1 text-lg text-center rounded-l-2xl border-solid border-2 border-[#F1B24A] ${self.not.value === true ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"} `} onClick={() => self.not.set(!self.not.value)}>NOT</button>
+          <button className={`w-[6rem] px-4 py-1 text-lg text-center border-solid border-y-2 border-[#F1B24A] ${self.link.value === "AND" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('AND')}>AND</button>
+          <button className={`w-[6rem] px-4 py-1 text-lg text-center rounded-r-2xl border-solid border-2 border-[#F1B24A] ${self.link.value === "OR" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('OR')}>OR</button>
+        </div>
+        <div className='flex flex-row justify-end items-center w-[50%] pr-3'>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true}], groups: [] }))}>New Group</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true}]))}>New Rule</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-orange-400 border-y-orange-400 border-l-orange-400' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "Deactivate": "Activate"}</button>
+          <button className="w-[6rem] border-2 bg-red-500 hover:bg-red-400 border-red-500 hover:border-red-400 text-white py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => parent.groups.set((group) => group.filter((_, index) => index !== i))} >Delete</button>
+        </div>
+      </div>
+
+      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean }>, i) =>
+        <div key={i}>  
+          <div className='flex flex-row ml-5 my-1'>
+            <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
+            <TypeSelect type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
+            <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
+            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "Deactivate": "Dctivate"}</button>
+            <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))}>Delete</button>
+          </div>  
         </div>
       )}
     </div>
   </>
 }
 
-function GroupListEditor(props: { groups: State<group[] | undefined>, deleteDisabled: boolean, }) {
+function GroupListEditor(props: { groups: State<group> }) {
   const state = useHookstate(props.groups);
-  const disabled = props.deleteDisabled
 
   return (
-    <div className={`bg-gray-100 mx-5 py-1 border-solid border-black min-w-[1100px] w-fit ${(state.value && state.value.length > 0) ? 'border-2' : 'border-0'}`} style={{ paddingLeft: 20 }}>
-      {state.ornull && state.ornull.map((groupState: State<group>, i) =>
-        <div key={i}>
-          <GroupContentEditor linkState={groupState.link} activatedState={groupState.activated} childrenState={groupState.groups} filterState={groupState.filter} groupState={state} index={i} deleteDisabled={disabled} notState={groupState.not} />
-          <GroupListEditor groups={groupState.groups} deleteDisabled={false} />
+    <>
+      {(state.groups.length > 0) && (
+        <div className='border-4 mx-2 mb-1 rounded-3xl'>
+          {state.groups.map((groupState: State<group>, i) =>
+            <div key={i}>
+              <GroupContentEditor self={groupState} parent={state} index={i}/>
+              <GroupListEditor groups={groupState}/>
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   )
 }
 
@@ -284,7 +328,7 @@ function ColSelect(props: { col: State<string>, activated: State<boolean>, filte
   const filterActivated = useHookstate(props.filterActivated);
 
   return (
-    <select name="col" id="col" onChange={(e) => col.set(e.target.value)} disabled = {!(activated.value && filterActivated.value)}>
+    <select name="col" id="col" className="w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" onChange={(e) => col.set(e.target.value)} disabled = {!(activated.value && filterActivated.value)}>
       <option value={'CBH_Donor_ID'}>CBH_Donor_ID</option>
       <option value={'CBH_Master_ID'}>CBH_Master_ID</option>
       <option value={'CBH_Sample_ID'}>CBH_Sample_ID</option>
@@ -349,55 +393,59 @@ function TypeSelect(props: { type: State<string>, values: State<string[]>, activ
   const filterActivated = useHookstate(props.filterActivated);
 
   return (
-    <select className='mr-10' onChange={(e) => { values.set([]); type.set(e.target.value); }} disabled = {!(activated.value && filterActivated.value)}>
-      <option value={'equal'}>equal to</option>
-      <option value={'in'}>in</option>
-      <option value={'less'}>less than</option>
-      <option value={'lessequal'}>less than or equal to</option>
-      <option value={'more'}>greater than</option>
-      <option value={'moreequal'}>greater than or equal to</option>
-      <option value={'between'}>between</option>
+    <select className="w-fit z-20 px-3 py-1 text-lg text-center border-y-2 border-gray-500 focus:border-gray-700 outline-none transition" onChange={(e) => { values.set([]); type.set(e.target.value); }} disabled = {!(activated.value && filterActivated.value)}>
+      <option className='text-left' value={'equal'}>=</option>
+      <option className='text-left' value={'in'}>in</option>
+      <option className='text-left' value={'less'}>&lt;</option>
+      <option className='text-left' value={'lessequal'}>&lt;=</option>
+      <option className='text-left' value={'more'}>&gt;</option>
+      <option className='text-left' value={'moreequal'}>&gt;=</option>
+      <option className='text-left' value={'between'}>&lt;x&lt;</option>
     </select>
   )
 }
 
-function ChooseValues(props: { values: State<string[]>, type: State<string>, activated: State<boolean>, filterActivated: State<boolean>}) {
+function ChooseValues(props: { values: State<string[]>, type: State<string>, col: State<string>, activated: State<boolean>, filterActivated: State<boolean>}) {
   const type = useHookstate(props.type);
   const values = useHookstate(props.values);
-  const activated = useHookstate(props.activated);
-  const filterActivated = useHookstate(props.filterActivated);
+  const col = useHookstate(props.col);
+
+  function SetValues(value: string):void{
+    values.set([value])
+  }
+
+  function SetValuesBetween1(value: string):void{
+    values.set(a => [value, a[1] ?? ''])
+  }
+
+  function SetValuesBetween2(value: string):void{
+    values.set(a => [a[0] ?? '', value])
+  }
+
+  function In(value: string):void{
+    values.set(v => (v || []).concat([value]))
+  }
 
   return (
-    <>
+    <div className='w-full'>
       {(type.value !== 'between' && type.value !== 'in') && (
-        <input className='border-solid border-black border-2 mx-2' value={values[0]?.value ?? ''} onChange={(e) => {e.target.value !== "" ? values.set([e.target.value]) : values.set([])}} disabled = {!(activated.value && filterActivated.value)}></input>
+        <>
+          <AutofillExpert col={col.value} callback={SetValues} value={values[0]} rounded={true}/>
+        </>
       )}
       {(type.value === 'between') && (
-        <>
-          <input className='border-solid border-black border-2 mx-2' value={values[0]?.value ?? ''} onChange={(e) => {
-            if (values.length < 2) {
-              values.set([e.target.value])
-            } else {
-              values.set(a => [e.target.value, a[1] ?? ''])
-            }
-          }} disabled = {!(activated.value && filterActivated.value)}></input>
-          <input className='border-solid border-black border-2 mx-2' value={values[1]?.value ?? ''} onChange={(e) => {
-            if (values.length === 0) {
-              values.set(['', e.target.value])
-            } else {
-              values.set(a => [a[0] ?? '', e.target.value])
-            }
-          }} disabled = {!(activated.value && filterActivated.value)}></input>
-        </>
+        <div className='flex flex-row'>
+          <div className='w-full'>
+            <AutofillExpert col={col.value} callback={SetValuesBetween1} value={values[0]} rounded={false}/>  
+          </div>
+          <div className='w-full'>
+            <AutofillExpert col={col.value} callback={SetValuesBetween2} value={values[1]} rounded={true}/> 
+          </div>  
+        </div>
       )}
       {(type.value === 'in') && (
         <>
-          <input className='border-solid border-black border-2 mx-2' onKeyDown={e => {
-            if (e.key === "Enter" && e.currentTarget.value !== "") {
-              values.set(v => (v || []).concat([e.currentTarget.value]))
-              e.currentTarget.value = ""
-            }
-          }} disabled = {!(activated.value && filterActivated.value)}></input>
+          <AutofillExpert col={col.value} callback={In} value={values[values.length]} rounded={true}/>
 
           {values.value.map((value: string, i) => {
             return (
@@ -409,11 +457,11 @@ function ChooseValues(props: { values: State<string[]>, type: State<string>, act
           })}
         </>
       )}
-    </>
+    </div>
   )
 }
 
-type props = { filter: State<group[] | undefined> }
+type props = { filter: State<group> }
 
 const Table: React.FC<props> = ({ filter }) => {
   const [page, setPage] = useState<number>(1)
@@ -570,8 +618,8 @@ const Table: React.FC<props> = ({ filter }) => {
     <>
       
       <div className="mx-4 my-5">
-        <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => { filters.ornull && filters.ornull.map((group: State<group>) => { setFilterQuery(BuildQuery(group)) }) }}>Apply Filter</button>
-        <button className='bg-[rgb(208,165,96)] text-white px-3 rounded-lg' onClick={() => filters.set([{ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], }],)}>Reset</button>
+        <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => setFilterQuery(BuildQuery(filters))}>Apply Filter</button>
+        <button className='bg-[rgb(208,165,96)] text-white px-3 rounded-lg' onClick={() => filters.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
 
         <div className="flex flex-row w-full items-center justify-center mt-5">
           <Footer range={range} page={page} setPage={setPage} />
