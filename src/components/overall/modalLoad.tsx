@@ -14,16 +14,22 @@ type Filter = {
   filter: ImmutableObject<group>;
 };
 
-const ModalLoad: React.FC<CustomModalProps> = ({ showModal, onCloseModal, filter }) => {
+const ModalLoad: React.FC<CustomModalProps> = ({ showModal, onCloseModal, filter}) => {
   if (!showModal) {
     return null;
   }
 
+  const filters = useHookstate(filter)
+
   const storageFilter = localStorage.getItem("Filter")
   const storageFilter2: Filter[] = []
+  let parseFilter: Filter[] = []
+  if (typeof storageFilter === 'string'){
+    parseFilter = JSON.parse(storageFilter)
+  }
 
   function LoadFilter() {
-    console.log(localStorage.getItem("Filter"))
+    
   }
 
   return (
@@ -48,7 +54,11 @@ const ModalLoad: React.FC<CustomModalProps> = ({ showModal, onCloseModal, filter
             </div>
             <table>
               <tr className="text-center items-center">
-                <button>test</button>
+              <div>
+                {parseFilter.map((filter, index) => (
+                  <button key={index} onClick={() => filters.set(parseFilter[index]?.filter)}>{filter.name}</button>
+                ))}
+              </div>
               </tr>
             </table>
             {/*footer*/}
