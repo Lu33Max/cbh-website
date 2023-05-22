@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { group } from "~/pages/expertsearch";
 import { useHookstate, type State, type ImmutableObject } from '@hookstate/core';
 
@@ -6,7 +6,7 @@ import { useHookstate, type State, type ImmutableObject } from '@hookstate/core'
 type CustomModalProps = {
   showModal: boolean;
   onCloseModal: () => void;
-  filter: State<group[] | undefined>;
+  filter: State<group>;
 };
 
 type Filter = {
@@ -20,6 +20,7 @@ const ModalLoad: React.FC<CustomModalProps> = ({ showModal, onCloseModal, filter
   }
 
   const filters = useHookstate(filter)
+  const [index,setIndex] = useState<number>()
 
   const storageFilter = localStorage.getItem("Filter")
   const storageFilter2: Filter[] = []
@@ -29,7 +30,11 @@ const ModalLoad: React.FC<CustomModalProps> = ({ showModal, onCloseModal, filter
   }
 
   function LoadFilter() {
-    
+    if (index !== undefined){
+      filters.set(parseFilter[index]?.filter ?? {not: false, link: 'AND', activated: true, filter: [{col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true,}], groups: []})
+    } else{
+      alert("Choose a filter!")
+    }
   }
 
   return (
@@ -54,10 +59,11 @@ const ModalLoad: React.FC<CustomModalProps> = ({ showModal, onCloseModal, filter
             </div>
             <table>
               <tr className="text-center items-center">
-              <div>
-                {parseFilter.map((filter, index) => (
-                  <button key={index} onClick={() => filters.set(parseFilter[index]?.filter)}>{filter.name}</button>
-                ))}
+              <div className="flex flex-col mx-5 ">
+
+                {parseFilter.length > 0 ? parseFilter.map((filter, i) => (
+                  <button key={i} onClick={() => setIndex(i)} className={`${i===index ? "bg-purple-500": "bg-slate-400"}`}>{filter.name}</button>
+                )): <label>No filter found.</label>}
               </div>
               </tr>
             </table>

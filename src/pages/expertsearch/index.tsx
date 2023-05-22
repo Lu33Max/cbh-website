@@ -331,7 +331,7 @@ function ColSelect(props: { col: State<string>, activated: State<boolean>, filte
   const filterActivated = useHookstate(props.filterActivated);
 
   return (
-    <select name="col" id="col" className="w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" onChange={(e) => col.set(e.target.value)} disabled = {!(activated.value && filterActivated.value)}>
+    <select name="col" id="col" className="w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" value={col.value} onChange={(e) => col.set(e.target.value)} disabled = {!(activated.value && filterActivated.value)}>
       <option value={'CBH_Donor_ID'}>CBH_Donor_ID</option>
       <option value={'CBH_Master_ID'}>CBH_Master_ID</option>
       <option value={'CBH_Sample_ID'}>CBH_Sample_ID</option>
@@ -395,8 +395,30 @@ function TypeSelect(props: { type: State<string>, values: State<string[]>, activ
   const activated = useHookstate(props.activated);
   const filterActivated = useHookstate(props.filterActivated);
 
+  function getOperator(type: string): string {
+    console.log(type)
+    switch (type) {
+      case 'equal':
+        return '=';
+      case 'in':
+        return 'in';
+      case 'less':
+        return '<';
+      case 'lessequal':
+        return '<=';
+      case 'more':
+        return '>';
+      case 'moreequal':
+        return '>=';
+      case 'between':
+        return '<x<';
+      default:
+        throw new Error(`Invalid filter type: ${type}`);
+    }
+  }
+
   return (
-    <select className="w-fit z-20 px-3 py-1 text-lg text-center border-y-2 border-gray-500 focus:border-gray-700 outline-none transition" onChange={(e) => { values.set([]); type.set(e.target.value); }} disabled = {!(activated.value && filterActivated.value)}>
+    <select className="w-fit z-20 px-3 py-1 text-lg text-center border-y-2 border-gray-500 focus:border-gray-700 outline-none transition" value={type.value} onChange={(e) => { values.set([]); type.set(e.target.value); console.log(getOperator(type.value)) }} disabled = {!(activated.value && filterActivated.value)}>
       <option className='text-left' value={'equal'}>=</option>
       <option className='text-left' value={'in'}>in</option>
       <option className='text-left' value={'less'}>&lt;</option>

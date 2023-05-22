@@ -6,7 +6,7 @@ import { useHookstate, type State, type ImmutableObject } from '@hookstate/core'
 type CustomModalProps = {
   showModal: boolean;
   onCloseModal: () => void;
-  filter: State<group[] | undefined>;
+  filter: State<group>;
 };
 
 type Filter = {
@@ -21,8 +21,9 @@ const ModalSave: React.FC<CustomModalProps> = ({ showModal, onCloseModal , filte
   }
   const [filtername, setFiltername] = useState<string>('')
 
+  localStorage.clear();
+
   function SaveFilter(filtername: string) {
-    //localStorage.clear();
 
     const storageFilter = localStorage.getItem("Filter")
     const storageFilter2: Filter[] = []
@@ -35,7 +36,7 @@ const ModalSave: React.FC<CustomModalProps> = ({ showModal, onCloseModal , filte
     if (storageFilter2.find(element => element.name === filtername) === undefined) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      storageFilter2.push({filter: filter[0].value, name: filtername})
+      storageFilter2.push({filter: filter.value, name: filtername})
       localStorage.setItem("Filter", JSON.stringify(storageFilter2))
     } else {
       alert("Name already exists")
