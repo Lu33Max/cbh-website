@@ -76,3 +76,7 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.custom-shadow {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
