@@ -6,6 +6,8 @@ import SimpleSlider from "~/components/home/carousel"
 import Testimonials from "~/components/home/testimonials";
 import HoverImages from "~/components/overall/hoverImages";
 import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {
   return (
@@ -27,6 +29,15 @@ const Home: NextPage = () => {
 export default Home;
 
 const Content: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const router = useRouter();
+
+  const onSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const encodedSearchQuery = encodeURI(searchQuery);
+    void router.push(`/search?q=${encodedSearchQuery}`);
+  }
 
   return(
 <div className="relative">
@@ -48,7 +59,14 @@ const Content: React.FC = () => {
 
           <div className="text-center justify-center">
             <div className="px-4 py-2 rounded flex items-center justify-center mt-10">
-              <input type="text" className="text-lg font-semibold bg-white bg-opacity-60 placeholder-[#164A41] text-[#164A41] border-l border-t border-b border-solid border-white rounded-l-lg flex-grow-1" placeholder="Start exploring" />
+              <form onSubmit={onSearch}>
+                <input 
+                  value={searchQuery} 
+                  onChange={event => setSearchQuery(event.target.value)} 
+                  className="text-lg font-semibold bg-white bg-opacity-60 placeholder-[#164A41] text-[#164A41] border-l border-t border-b border-solid border-white rounded-l-lg flex-grow-1" 
+                  placeholder='Start exploring'>
+                </input>
+              </form>
               <button className="bg-[#164A41] px-2 rounded-tr-lg rounded-br-lg text-lg px-4 py-1">
                 <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>

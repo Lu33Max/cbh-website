@@ -61,7 +61,7 @@ const HeaderNEW: React.FC = () => {
               className='bg-[#9DC88D] w-[100%] bg-opacity-20 text-black pl-10 pr-5 py-1 text-lg rounded-m placeholder:italic placeholder:text-gray-700 placeholder-center focus:outline-none my-1 drop-shadow-lg ' 
               placeholder='Search for specimen...'>
             </input>
-          </form>  
+          </form>
           <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
             <BiSearch color='#555555'/>
           </div>
