@@ -669,7 +669,7 @@ const Table: React.FC<props> = ({ filter }) => {
           <Footer range={range} page={page} setPage={setPage} />
 
           <p className="ml-4">Show rows</p>
-          <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+          <select name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
             <option value={50}>50</option>
             <option value={100}>100</option>
             <option value={150}>150</option>
@@ -765,7 +765,7 @@ const Table: React.FC<props> = ({ filter }) => {
         <Footer range={range} page={page} setPage={setPage} />
 
         <p>Show rows</p>
-        <select name="pagelength" id="pagelength" onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+        <select name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
           <option value={100}>100</option>
           <option value={150}>150</option>
