@@ -73,22 +73,79 @@ const Content: React.FC = () => {
       <div className="mt-5 pt-5">
         <SimpleSlider/>
       </div>
-      <div className="flex flex-row w-full items-center justify-center mt-5 gap-96 mb-10 border border-solid border-[#164A41]">
-        <img src="/drittens.png" alt="" className="w-1/3 mx-10" width={260} height={300}/>
-        <img src="/drittens.png" alt="" className="w-1/3 mx-10" width={260} height={300}/>
-        <img src="/drittens.png" alt="" className="w-1/3 mx-10" width={260} height={300}/>
+      <div className="flex flex-row w-full items-center justify-center mt-10">
+        <h1 className="relative">
+          <span className="inline-block font-poppins headline">lorem ipsum</span>
+          <span className="rounded-full absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-[2px] w-20 bg-[#164A41]"></span>
+        </h1>
+      </div>
+      <div className="grid grid-cols-3 w-full items-center justify-center mt-5 ml-[128px] mb-10">
+        <div>
+          <img src="/placeholderTest.jpg" alt="" className="border-b-2 border-[#164A41] custom-shadow w-max object-contain mx-16" width={225} height={210}/>
+          <div className="w-[225px] bg-white p-6 mx-16 flex flex-col"><div className="text-center font-poppins items-start h-full">lorem ipsum</div></div>
+        </div> 
+        <div>
+          <img src="/placeholderTest.jpg" alt="" className="border-b-2 border-[#164A41] custom-shadow w-max object-contain mx-16" width={225} height={210}/>
+          <div className="w-[225px] bg-white p-6 mx-16 flex flex-col"><div className="text-center font-poppins items-start h-full">lorem ipsum</div></div>
+        </div> 
+        <div>
+          <img src="/placeholderTest.jpg" alt="" className="border-b-2 border-[#164A41] custom-shadow w-fit object-contain mx-16" width={225} height={210}/>
+          <div className="w-[225px] bg-white p-6 mx-16 flex flex-col"><div className="text-center font-poppins items-start h-full">lorem ipsum</div></div>
+        </div> 
+      </div>
+      <div className="flex flex-row w-full items-center justify-center my-10">
+        <h1 className="relative">
+          <span className="inline-block font-poppins headline">Our Partners - Your Suppliers</span>
+          <span className="rounded-full absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-[2px] w-20 bg-[#164A41]"></span>
+        </h1>
+      </div>
+      <div>
+        <div className="flex flex-row w-full h-fit items-center justify-center my-6">
+          <img src="/placeholdergreen.png" alt="" className="custom-shadow opacity-50" width={1920} height={280}/>
+        </div>
+      </div>
+      <div className="flex items-center justify-center mt-5 m-auto mb-10">
+        <div className="text-center font-poppins headline text-[#164A41] mx-4">
+          <div className="inline-block px-32">Follow Our Journey!</div>
+            <div className="border-2 border-[#164A41] p-4 rounded-lg mt-2 w-full flex flex-wrap">
+              <img src="facebook.png" alt="" className="mx-4" />
+              <img src="twitter.png" alt="" className="mx-4" />
+              <img src="youtube.png" alt="" className="mx-4" />
+              <img src="instagram.png" alt="" className="mx-4" />
+              <img src="linkedin.png" alt="" className="mx-4" />
+            </div>
+        </div>
+        <div className="text-center font-poppins headline text-[#164A41] mx-16">
+          <div className="inline-block px-[140px] ">Testimonials</div>
+            <div className="border-2 border-[#164A41] rounded-lg mt-2 w-full flex justify-end">
+              <div className="text-center font-semibold flex-1 flex flex-col justify-center font-poppins text-2xl">
+                <div>Look What People</div>
+                <div>Say About Us!</div>
+              </div>
+            <button className="bg-[#F1B24A] border-[#F1B24A] rounded-tr-lg rounded-br-lg text-lg px-8 py-[32px] flex h-full">
+                <svg width="19" height="32" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full">
+                  <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="#164A41"/>
+                  <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="#164A41"/>
+                </svg>
+              </button>
+            </div>
+         </div>
+        <div className="text-center font-poppins headline text-[#164A41] mx-4">
+          <div className="inline-block px-[140px]">Payment Methods</div>
+            <div className="border-2 border-[#164A41] mt-2 rounded-lg p-4 w-full flex flex-wrap">
+              <img src="paypal.png" alt="" className="mr-6 ml-4" />
+              <img src="amex.png" alt="" className="mx-6" />
+              <img src="visa.png" alt="" className="mx-6" />
+              <img src="mastercard.png" alt="" className="ml-6 mr-4" />
+          </div>
+        </div>
       </div>
       <HoverImages/>
-      <div className="flex flex-row w-full items-center justify-center mt-5 gap-72 my-10 bg-white">
-        <img src="/social media.png" alt=""></img>
-        <button className="bg-gray-500 rounded px-5 py-2">What People say about us</button>
-        <img src="/paymentsnew.png" alt="" width={260} height={300}></img>
-      </div>
-      <div className="w-full border-2 border-solid h-0 border-gray-400 rounded-3xl m-5"></div>
+      <div className="w-full border-2 border-solid h-0 border-gray-400 rounded-3xl my-5"></div>
       <div className="text-center">
-        <h1 className="text-4xl">Impressum</h1>
+        <h1 className="text-2xl mb-2 font-poppins text-[#164A41]">Central BioHub GmbH, Neuendorfstrasse 17, 16761 Hennigsdorf, Germany | Call: +49 3302 230 91 66 | Email: info@centralbiohub.com</h1>
+        <h1 className="text-2xl mb-2 font-poppins text-[#164A41]">© 2023 www.centralbiohub.de All Rights Reserved - Link to Imprint here</h1>
       </div>
-
     </div>
   )
 }
