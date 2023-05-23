@@ -63,7 +63,7 @@ const ModalLoad: React.FC<CustomModalProps> = ({ showModal, onCloseModal, filter
               <div className="flex flex-col mx-5 ">
 
                 {parseFilter.length > 0 ? parseFilter.map((filter, i) => (
-                  <button key={i} onClick={() => setIndex(i)} className={`${i===index ? "bg-purple-500": "bg-slate-400"}`}>{filter.name}</button>
+                  <button key={i} onClick={() => setIndex(i)} className={`py-1 rounded-2xl ${i===index ? "bg-[#9DC88D]": "bg-slate-100"}`}>{filter.name}</button>
                 )): <label>No filter found.</label>}
               </div>
               </tr>
