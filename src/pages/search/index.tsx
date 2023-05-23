@@ -424,7 +424,7 @@ const Content: React.FC = () => {
           {/* General Data */}
           <div className="items-center text-center">
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                 <Popover.Body>
                   <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1">
@@ -443,7 +443,7 @@ const Content: React.FC = () => {
           {/* Quantity Information */}
           <div className="items-center text-center">
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                 <Popover.Body>
                   <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1">
@@ -612,7 +612,7 @@ const Content: React.FC = () => {
       </div>
 
       <div className="flex flex-row w-full items-center mt-5 px-5">
-        <div className="ml-4 w-fit z-20 px-3 py-1 text-lg rounded-full border-2 border-gray-500">
+        <div className="w-fit z-20 px-3 py-1 text-lg rounded-full border-2 border-gray-500">
           Search Results: {count}
         </div>
 

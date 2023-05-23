@@ -656,7 +656,6 @@ const Table: React.FC<props> = ({ filter }) => {
   return (
     <> 
       <div className="mx-4 my-5">
-
         <div className='flex flex-row'>
           <div className='flex flex-row w-[50%] justify-start'>
             <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setFilterQuery(BuildQuery(filters))}>Apply Filter</button>
@@ -672,7 +671,7 @@ const Table: React.FC<props> = ({ filter }) => {
         <ModalLoad showModal={showModalLoad} onCloseModal={closeModalLoad} filter={filters} />
 
         <div className="flex flex-row w-full items-center mt-5">
-          <div className="w-fit z-20 px-3 py-1 text-lg rounded-full border-2 border-gray-500">
+          <div className="w-fit px-3 py-1 text-lg rounded-full border-2 border-gray-500">
             Search Results: {count ?? "0"}
           </div>
 
@@ -680,8 +679,8 @@ const Table: React.FC<props> = ({ filter }) => {
             <Footer range={range} page={page} setPage={setPage} />
           </div>
 
-          <div className="ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</div>
-          <select className="w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+          <div className="ml-4 w-fit px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</div>
+          <select className="w-fit px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
             <option value={50}>50</option>
             <option value={100}>100</option>
             <option value={150}>150</option>
