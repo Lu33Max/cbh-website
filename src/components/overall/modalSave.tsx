@@ -1,7 +1,6 @@
+import { type group } from "~/pages/expertsearch";
 import React, { useState } from "react";
-import { group } from "~/pages/expertsearch";
-import { useHookstate, type State, type ImmutableObject } from '@hookstate/core';
-
+import { type State, type ImmutableObject } from '@hookstate/core';
 
 type CustomModalProps = {
   showModal: boolean;
@@ -15,27 +14,24 @@ type Filter = {
 };
 
 const ModalSave: React.FC<CustomModalProps> = ({ showModal, onCloseModal , filter}) => {
+  const [filtername, setFiltername] = useState<string>('')
 
   if (!showModal) {
     return null;
   }
-  const [filtername, setFiltername] = useState<string>('')
-
-  localStorage.clear();
 
   function SaveFilter(filtername: string) {
 
     const storageFilter = localStorage.getItem("Filter")
     const storageFilter2: Filter[] = []
+
     if (typeof storageFilter === 'string'){
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const parseFilter: Filter[] = JSON.parse(storageFilter)
       parseFilter.forEach(element => storageFilter2.push(element))
     }
 
-    console.log(storageFilter2)
     if (storageFilter2.find(element => element.name === filtername) === undefined) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       storageFilter2.push({filter: filter.value, name: filtername})
       localStorage.setItem("Filter", JSON.stringify(storageFilter2))
     } else {

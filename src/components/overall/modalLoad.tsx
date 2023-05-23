@@ -15,17 +15,18 @@ type Filter = {
 };
 
 const ModalLoad: React.FC<CustomModalProps> = ({ showModal, onCloseModal, filter}) => {
+  const filters = useHookstate(filter)
+  const [index,setIndex] = useState<number>()
+
   if (!showModal) {
     return null;
   }
 
-  const filters = useHookstate(filter)
-  const [index,setIndex] = useState<number>()
-
   const storageFilter = localStorage.getItem("Filter")
-  const storageFilter2: Filter[] = []
   let parseFilter: Filter[] = []
+  
   if (typeof storageFilter === 'string'){
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     parseFilter = JSON.parse(storageFilter)
   }
 
