@@ -393,7 +393,7 @@ const Content: React.FC = () => {
           {/* Price */}
           <div className="items-center text-center">
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
                 <Popover.Body>
                   <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1">
@@ -478,7 +478,7 @@ const Content: React.FC = () => {
           {/* Laboratory */}
           <div className="items-center text-center">
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                 <Popover.Body>
                   <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1 text-right">
@@ -509,7 +509,7 @@ const Content: React.FC = () => {
           {/* Clinical Diagnosis */}
           <div className="items-center text-center">
             <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
                 <Popover.Body>
                   <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
                     <div className="col-span-1">
@@ -528,7 +528,7 @@ const Content: React.FC = () => {
                 </Popover.Body>
               </Popover>
             }>
-              <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Laboratory</button>
+              <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Diagnosis</button>
             </OverlayTrigger>
           </div>
         </div>
