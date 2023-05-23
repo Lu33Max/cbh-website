@@ -534,10 +534,6 @@ const Content: React.FC = () => {
         </div>
       </div>
 
-
-     
-
-
       {/* Displaying active filters */}
       <div className="flex flex-col mx-5 max-w-10xl overflow-x-auto overflow-y-hidden whitespace-normal">
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
@@ -615,14 +611,17 @@ const Content: React.FC = () => {
         </span>
       </div>
 
-      <div className="flex flex-row w-full items-center justify-center mt-5">
-      <div>
-        Count: {count}
-      </div>
-        <Footer range={range} page={page} setPage={setPage} />
+      <div className="flex flex-row w-full items-center mt-5 px-5">
+        <div className="ml-4 w-fit z-20 px-3 py-1 text-lg rounded-full border-2 border-gray-500">
+          Search Results: {count}
+        </div>
 
-        <p className="mt-[-1%] ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</p>
-        <select className="mt-[-1%] w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+        <div className="mx-auto">
+          <Footer range={range} page={page} setPage={setPage} />
+        </div>
+
+        <div className="ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</div>
+        <select className="w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
           <option value={100}>100</option>
           <option value={150}>150</option>

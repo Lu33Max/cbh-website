@@ -654,25 +654,34 @@ const Table: React.FC<props> = ({ filter }) => {
 
 
   return (
-    <>
-      
+    <> 
       <div className="mx-4 my-5">
-        <button className='bg-violet-600 text-white px-3 rounded-lg mx-2' onClick={openModalLoad}>Load Filter</button>
+
+        <div className='flex flex-row'>
+          <div className='flex flex-row w-[50%] justify-start'>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setFilterQuery(BuildQuery(filters))}>Apply Filter</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filters.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
+          </div>
+          <div className='flex flex-row w-[50%] justify-end'>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={openModalLoad}>Load Filter</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] border-l-white' onClick={openModal}>Save Filter</button>
+          </div>
+        </div>
+
+        <ModalSave showModal={showModal} onCloseModal={closeModal} filter={filters} />
         <ModalLoad showModal={showModalLoad} onCloseModal={closeModalLoad} filter={filters} />
 
-        <button className='bg-green-300 text-black px-3 rounded-lg mx-2' onClick={openModal}>Save Filter</button>
-        <ModalSave showModal={showModal} onCloseModal={closeModal} filter={filters} />
-        <button className='bg-[rgb(131,182,94)] text-white px-3 rounded-lg' onClick={() => setFilterQuery(BuildQuery(filters))}>Apply Filter</button>
-        <button className='bg-[rgb(208,165,96)] text-white px-3 rounded-lg' onClick={() => filters.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
+        <div className="flex flex-row w-full items-center mt-5">
+          <div className="w-fit z-20 px-3 py-1 text-lg rounded-full border-2 border-gray-500">
+            Search Results: {count ?? "0"}
+          </div>
 
-        <div className="flex flex-row w-full items-center justify-center mt-5">
-        <div>
-          Count: {count}
-        </div>
-          <Footer range={range} page={page} setPage={setPage} />
+          <div className="mx-auto">
+            <Footer range={range} page={page} setPage={setPage} />
+          </div>
 
-          <p className="mt-[-1%] ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</p>
-          <select className="mt-[-1%] w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+          <div className="ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</div>
+          <select className="w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
             <option value={50}>50</option>
             <option value={100}>100</option>
             <option value={150}>150</option>
