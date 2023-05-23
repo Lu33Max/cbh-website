@@ -293,6 +293,7 @@ const Content: React.FC = () => {
     setShow(newArray)
   } 
 
+
   function handleFilterChange(value: string, column:string): void {
     switch(column){
       case "Matrix":
@@ -533,6 +534,10 @@ const Content: React.FC = () => {
         </div>
       </div>
 
+
+     
+
+
       {/* Displaying active filters */}
       <div className="flex flex-col mx-5 max-w-10xl overflow-x-auto overflow-y-hidden whitespace-normal">
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
@@ -611,6 +616,9 @@ const Content: React.FC = () => {
       </div>
 
       <div className="flex flex-row w-full items-center justify-center mt-5">
+      <div>
+        Count: {count}
+      </div>
         <Footer range={range} page={page} setPage={setPage} />
 
         <p className="ml-4">Show rows</p>

@@ -622,6 +622,9 @@ const Table: React.FC<props> = ({ filter }) => {
         <button className='bg-[rgb(208,165,96)] text-white px-3 rounded-lg' onClick={() => filters.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
 
         <div className="flex flex-row w-full items-center justify-center mt-5">
+        <div>
+          Count: {count}
+        </div>
           <Footer range={range} page={page} setPage={setPage} />
 
           <p className="ml-4">Show rows</p>
