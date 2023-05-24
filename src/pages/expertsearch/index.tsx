@@ -8,7 +8,7 @@ import Head from 'next/head';
 import Header from '~/components/overall/header';
 import Sidebar from '~/components/overall/sidebar';
 import Footer from "~/components/search/footer";
-import ModalSave from '~/components/overall/modalSave';
+import ModalSave, { groupSchema } from '~/components/overall/modalSave';
 import ModalLoad from '~/components/overall/modalLoad';
 
 import AutofillExpert from '~/components/search/autofill_expert';
@@ -84,6 +84,19 @@ export type TableSamples = {
   Date_of_Collection?:                     Date,
   Procurement_Type?:                       string,
   Informed_Consent?:                       string,
+}
+
+const defaultGroup: group = {
+  not: false,
+  link: 'AND',
+  activated: true,
+  filter: [{
+    col: 'CBH_Donor_ID',
+    type: 'equal',
+    values: [],
+    activated: true,
+  }],
+  groups: []
 }
 
 function BuildQuery(group: State<group>): string {
@@ -168,20 +181,7 @@ function BuildQuery(group: State<group>): string {
 }
 
 const ExpertSearch: NextPage = () => {
-  const state = useHookstate<group>(
-    {
-      not: false,
-      link: 'AND',
-      activated: true,
-      filter: [{
-        col: 'CBH_Donor_ID',
-        type: 'equal',
-        values: [],
-        activated: true,
-      }],
-      groups: []
-    },
-  );
+  const state = useHookstate<group>(defaultGroup);
 
   return (
     <>
@@ -396,7 +396,6 @@ function TypeSelect(props: { type: State<string>, values: State<string[]>, activ
   const filterActivated = useHookstate(props.filterActivated);
 
   function getOperator(type: string): string {
-    console.log(type)
     switch (type) {
       case 'equal':
         return '=';
@@ -495,7 +494,7 @@ const Table: React.FC<props> = ({ filter }) => {
   const [range, setRange] = useState<number[]>([])
   const [filterQuery, setFilterQuery] = useState<string>("")
 
-  const filters = useHookstate(filter)
+
   const defaultShow: boolean[] = []
 
   const [showModal, setShowModal] = useState(false);
@@ -652,14 +651,23 @@ const Table: React.FC<props> = ({ filter }) => {
     setPagelength(length);
   };
 
+  function unfreeze(): group {
+    const result = groupSchema.safeParse(JSON.parse(JSON.stringify(filter.value)))
+
+    if(result.success){
+      return result.data
+    } else {
+      return defaultGroup
+    }
+  }
 
   return (
     <> 
       <div className="mx-4 my-5">
         <div className='flex flex-row'>
           <div className='flex flex-row w-[50%] justify-start'>
-            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setFilterQuery(BuildQuery(filters))}>Apply Filter</button>
-            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filters.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setFilterQuery(BuildQuery(filter))}>Apply Filter</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
           </div>
           <div className='flex flex-row w-[50%] justify-end'>
             <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={openModalLoad}>Load Filter</button>
@@ -667,8 +675,8 @@ const Table: React.FC<props> = ({ filter }) => {
           </div>
         </div>
 
-        <ModalSave showModal={showModal} onCloseModal={closeModal} filter={filters} />
-        <ModalLoad showModal={showModalLoad} onCloseModal={closeModalLoad} filter={filters} />
+        <ModalSave showModal={showModal} onCloseModal={closeModal} filter={unfreeze()} />
+        <ModalLoad showModal={showModalLoad} onCloseModal={closeModalLoad} filter={filter} />
 
         <div className="flex flex-row w-full items-center mt-5">
           <div className="w-fit px-3 py-1 text-lg rounded-full border-2 border-gray-500">

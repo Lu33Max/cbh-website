@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { group } from "~/pages/expertsearch";
-import { useHookstate, type State, type ImmutableObject } from '@hookstate/core';
-
+import { type group } from "~/pages/expertsearch";
+import { useHookstate, type State } from '@hookstate/core';
+import { z } from "zod";
 
 type CustomModalProps = {
   showModal: boolean;
@@ -9,25 +9,46 @@ type CustomModalProps = {
   filter: State<group>;
 };
 
-type Filter = {
-  name: string;
-  filter: ImmutableObject<group>;
-};
+export const groupSchema: z.ZodSchema<group> = z.lazy(() =>
+  z.object({
+    not: z.boolean(),
+    link: z.string(),
+    activated: z.boolean(),
+    filter: z.array(
+      z.object({
+        col: z.string(),
+        type: z.string(),
+        values: z.array(z.string()),
+        activated: z.boolean()
+      })
+    ),
+    groups: z.array(groupSchema)
+  })
+)
+
+export const filterSchema = z.array( 
+  z.object({
+    name: z.string(),
+    filter: groupSchema
+  }) 
+)
+
+type Filter = z.infer<typeof filterSchema>
 
 const ModalLoad: React.FC<CustomModalProps> = ({ showModal, onCloseModal, filter}) => {
   const filters = useHookstate(filter)
   const [index,setIndex] = useState<number>()
 
   if (!showModal) {
-    return null;
+    return <></>;
   }
 
   const storageFilter = localStorage.getItem("Filter")
-  let parseFilter: Filter[] = []
+  let parseFilter: Filter = []
   
   if (typeof storageFilter === 'string'){
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    parseFilter = JSON.parse(storageFilter)
+    // TODO: Add safeguard for parse errors
+    parseFilter = filterSchema.parse(JSON.parse(storageFilter))
   }
 
   function LoadFilter() {

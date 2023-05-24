@@ -1,43 +1,62 @@
 import { type group } from "~/pages/expertsearch";
 import React, { useState } from "react";
-import { type State, type ImmutableObject } from '@hookstate/core';
+import { z } from "zod";
 
 type CustomModalProps = {
   showModal: boolean;
   onCloseModal: () => void;
-  filter: State<group>;
+  filter: group;
 };
 
-type Filter = {
-  name: string;
-  filter: ImmutableObject<group>;
-};
+export const groupSchema: z.ZodSchema<group> = z.lazy(() =>
+  z.object({
+    not: z.boolean(),
+    link: z.string(),
+    activated: z.boolean(),
+    filter: z.array(
+      z.object({
+        col: z.string(),
+        type: z.string(),
+        values: z.array(z.string()),
+        activated: z.boolean()
+      })
+    ),
+    groups: z.array(groupSchema)
+  })
+)
+
+export const filterSchema = z.array( 
+  z.object({
+    name: z.string(),
+    filter: groupSchema
+  }) 
+)
+
+type Filter = z.infer<typeof filterSchema>
 
 const ModalSave: React.FC<CustomModalProps> = ({ showModal, onCloseModal , filter}) => {
   const [filtername, setFiltername] = useState<string>('')
 
   if (!showModal) {
-    return null;
+    return <></>;
   }
 
   function SaveFilter(filtername: string) {
 
     const storageFilter = localStorage.getItem("Filter")
-    const storageFilter2: Filter[] = []
+    const storageFilter2: Filter = []
 
     if (typeof storageFilter === 'string'){
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const parseFilter: Filter[] = JSON.parse(storageFilter)
+      const parseFilter: Filter = filterSchema.parse(JSON.parse(storageFilter))
       parseFilter.forEach(element => storageFilter2.push(element))
     }
 
     if (storageFilter2.find(element => element.name === filtername) === undefined) {
-      storageFilter2.push({filter: filter.value, name: filtername})
+      storageFilter2.push({filter: filter, name: filtername})
       localStorage.setItem("Filter", JSON.stringify(storageFilter2))
     } else {
       alert("Name already exists")
-    }
-    
+    }   
   }
 
   return (
