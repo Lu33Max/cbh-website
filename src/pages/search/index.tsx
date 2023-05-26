@@ -12,29 +12,11 @@ import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import Autofill from "~/components/search/autofill";
+import Autofill from "~/components/search/normal/autofill";
 
-export type Filter = {
-  cbhMasterID: string | undefined,
-  cbhDonorID: string | undefined,
-  cbhSampleID: string | undefined,
-  price: { 
-    min: number | undefined, 
-    max: number | undefined 
-  },
-  matrix: string[],
-  quantity: {
-    min: number | undefined,
-    max: number | undefined,
-  },
-  unit: string[],
-  labParameter: string[],
-  resultInterpretation: string[],
-  //resultNumericals
-  resultUnit: string[],
-  diagnosis: string[],
-  ICDCode: string[]
-}
+import { type INormalFilter } from "~/common/filter/filter";
+import ModalLoad from "~/components/search/normal/modalLoad";
+import ModalSave from "~/components/search/normal/modalSave";
 
 export type TableSamples = {
     id:                                      string 
@@ -94,7 +76,6 @@ export type TableSamples = {
 }
 
 const Search: NextPage = () => {
-
   return (
     <>
       <Head>
@@ -119,7 +100,7 @@ const Search: NextPage = () => {
 export default Search;
 
 const Content: React.FC = () => {
-  const defaultFilter: Filter = {
+  const defaultFilter: INormalFilter = {
     cbhMasterID: undefined, 
     cbhDonorID: undefined, 
     cbhSampleID: undefined,
@@ -150,9 +131,11 @@ const Content: React.FC = () => {
   const [page, setPage] = useState<number>(1)
   const [pagelength, setPagelength] = useState<number>(50)
   const [search, setSearch] = useState<string | undefined>(encodedSearchQuery)
-  const [filter, setFilter] = useState<Filter>(defaultFilter)
+  const [filter, setFilter] = useState<INormalFilter>(defaultFilter)
   const [range, setRange] = useState<number[]>([])
   const [tableSamples, setTableSamples] = useState<TableSamples[]>([])
+  const [showLoad, setShowLoad] = useState<boolean>(false)
+  const [showSave, setShowSave] = useState<boolean>(false)
 
   for(let i = 0; i < pagelength; i++){
     defaultShow.push(false)
@@ -365,7 +348,7 @@ const Content: React.FC = () => {
         <div className="grid grid-cols-4 gap-2 max-w-full">
           {/* CBH Master ID */}
           <div className="items-center text-center w-full">
-            <input type="text" className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onKeyDown={e => {
+            <input type="text" value={filter.cbhMasterID ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onKeyDown={e => {
               if(e.key === "Enter"){
                 const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
                 setFilter(filter => ({...filter, cbhMasterID: temp}))
@@ -374,7 +357,7 @@ const Content: React.FC = () => {
           </div>
           {/* CBH Donor ID */}
           <div className="items-center text-center">
-            <input type="text" className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onKeyDown={e => {
+            <input type="text" value={filter.cbhDonorID ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onKeyDown={e => {
               if(e.key === "Enter"){
                 const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
                 setFilter(filter => ({...filter, cbhDonorID: temp}))
@@ -383,7 +366,7 @@ const Content: React.FC = () => {
           </div>
           {/* CBH Sample ID */}
           <div className="items-center text-center">
-            <input type="text" className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onKeyDown={e => {
+            <input type="text" value={filter.cbhDonorID ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onKeyDown={e => {
               if(e.key === "Enter"){
                 const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
                 setFilter(filter => ({...filter, cbhSampleID: temp}))
@@ -620,8 +603,16 @@ const Content: React.FC = () => {
           <Footer range={range} page={page} setPage={setPage} />
         </div>
 
-        <div className="ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</div>
-        <select className="w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+        <div className='mr-2'>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => void setShowLoad(true)}>Load Filter</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] border-l-white' onClick={() => void setShowSave(true)}>Save Filter</button>
+        </div>
+
+        <ModalSave showModal={showSave} setShowModal={setShowSave} filter={filter}/>
+        <ModalLoad showModal={showLoad} setShowModal={setShowLoad} setFilter={setFilter} />
+
+        <div className="w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 h-10 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</div>
+        <select className="w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 h-10 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
           <option value={100}>100</option>
           <option value={150}>150</option>
@@ -649,8 +640,7 @@ const Content: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-
-              {tableSamples?.map((sample, index) => (
+            {tableSamples?.map((sample, index) => (
               <>
                 <tr key={index} className="text-center">
                   <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button><BiCartAdd className="relative top-1"/></button></td>
@@ -719,8 +709,8 @@ const Content: React.FC = () => {
       <div className="flex flex-row w-full items-center justify-center mt-5">
         <Footer range={range} page={page} setPage={setPage} />
 
-        <p className="mt-[-1%] ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</p>
-        <select className="mt-[-1%] w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+        <p className="mt-1 ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</p>
+        <select className="mt-1 w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
           <option value={100}>100</option>
           <option value={150}>150</option>

@@ -8,26 +8,14 @@ import Head from 'next/head';
 import Header from '~/components/overall/header';
 import Sidebar from '~/components/overall/sidebar';
 import Footer from "~/components/search/footer";
-import ModalSave, { groupSchema } from '~/components/overall/modalSave';
-import ModalLoad from '~/components/overall/modalLoad';
-
-import AutofillExpert from '~/components/search/autofill_expert';
+import ModalSave from '~/components/search/expert/modalSave';
+import ModalLoad from '~/components/search/expert/modalLoad';
+import AutofillExpert from '~/components/search/expert/autofill_expert';
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 
-export type group = {
-  not: boolean,
-  link: string,
-  activated: boolean,
-  filter: {
-    col: string,
-    type: string,
-    values: string[],
-    activated: boolean,
-  }[],
-  groups: group[],
-}
+import { type IGroup, GroupSchema } from '~/common/filter/filter';
 
 export type TableSamples = {
   id:                                      string,
@@ -86,7 +74,7 @@ export type TableSamples = {
   Informed_Consent?:                       string,
 }
 
-const defaultGroup: group = {
+const defaultGroup: IGroup = {
   not: false,
   link: 'AND',
   activated: true,
@@ -99,7 +87,7 @@ const defaultGroup: group = {
   groups: []
 }
 
-function BuildQuery(group: State<group>): string {
+function BuildQuery(group: State<IGroup>): string {
   let sql = '';
 
   function getOperator(type: string): string {
@@ -181,7 +169,7 @@ function BuildQuery(group: State<group>): string {
 }
 
 const ExpertSearch: NextPage = () => {
-  const state = useHookstate<group>(defaultGroup);
+  const state = useHookstate<IGroup>(defaultGroup);
 
   return (
     <>
@@ -211,12 +199,12 @@ const ExpertSearch: NextPage = () => {
 }
 export default ExpertSearch;
 
-function InitialContentEditor(props: { self: State<group> }) {
+function InitialContentEditor(props: { self: State<IGroup> }) {
   const self = useHookstate(props.self)
 
-  function SetActivated(groupState: State<group>, activated: boolean): void{
+  function SetActivated(groupState: State<IGroup>, activated: boolean): void{
     groupState.activated.set(activated)
-    groupState.groups.map((group: State<group>) => {SetActivated(group, activated)})    
+    groupState.groups.map((group: State<IGroup>) => {SetActivated(group, activated)})    
   }
 
   return <>
@@ -264,15 +252,15 @@ function InitialContentEditor(props: { self: State<group> }) {
   </>
 }
 
-function GroupContentEditor(props: { self: State<group>, parent: State<group>, index: number }) {
+function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>, index: number }) {
   const self = useHookstate(props.self)
   const parent = useHookstate(props.parent)
 
   const i = props.index;
 
-  function SetActivated(groupState: State<group>, activated: boolean): void{
+  function SetActivated(groupState: State<IGroup>, activated: boolean): void{
     groupState.activated.set(activated)
-    groupState.groups.map((group: State<group>) => {SetActivated(group, activated)})    
+    groupState.groups.map((group: State<IGroup>) => {SetActivated(group, activated)})    
   }
 
   return <>
@@ -306,14 +294,14 @@ function GroupContentEditor(props: { self: State<group>, parent: State<group>, i
   </>
 }
 
-function GroupListEditor(props: { groups: State<group> }) {
+function GroupListEditor(props: { groups: State<IGroup> }) {
   const state = useHookstate(props.groups);
 
   return (
     <>
       {(state.groups.length > 0) && (
         <div className='border-4 mx-2 mb-1 rounded-3xl'>
-          {state.groups.map((groupState: State<group>, i) =>
+          {state.groups.map((groupState: State<IGroup>, i) =>
             <div key={i}>
               <GroupContentEditor self={groupState} parent={state} index={i}/>
               <GroupListEditor groups={groupState}/>
@@ -485,7 +473,7 @@ function ChooseValues(props: { values: State<string[]>, type: State<string>, col
   )
 }
 
-type props = { filter: State<group> }
+type props = { filter: State<IGroup> }
 
 const Table: React.FC<props> = ({ filter }) => {
   const [page, setPage] = useState<number>(1)
@@ -493,24 +481,11 @@ const Table: React.FC<props> = ({ filter }) => {
   const [search,] = useState<string | undefined>()
   const [range, setRange] = useState<number[]>([])
   const [filterQuery, setFilterQuery] = useState<string>("")
-
+  const [showSave, setShowSave] = useState(false);
+  const [showLoad, setShowLoad] = useState(false);
 
   const defaultShow: boolean[] = []
 
-  const [showModal, setShowModal] = useState(false);
-  const [showModalLoad, setShowModalLoad] = useState(false);
-  const openModal = () => {
-    setShowModal(true);
-  };
-  const closeModal = () => {
-    setShowModal(false);
-  };
-  const openModalLoad = () => {
-    setShowModalLoad(true);
-  };
-  const closeModalLoad = () => {
-    setShowModalLoad(false);
-  };
   const [tableSamples, setTableSamples] = useState<TableSamples[]>([])
 
   for (let i = 0; i < pagelength; i++) {
@@ -651,8 +626,8 @@ const Table: React.FC<props> = ({ filter }) => {
     setPagelength(length);
   };
 
-  function unfreeze(): group {
-    const result = groupSchema.safeParse(JSON.parse(JSON.stringify(filter.value)))
+  function unfreeze(): IGroup {
+    const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(filter.value)))
 
     if(result.success){
       return result.data
@@ -670,15 +645,15 @@ const Table: React.FC<props> = ({ filter }) => {
             <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
           </div>
           <div className='flex flex-row w-[50%] justify-end'>
-            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={openModalLoad}>Load Filter</button>
-            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] border-l-white' onClick={openModal}>Save Filter</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setShowLoad(true)}>Load Filter</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] border-l-white' onClick={() => setShowSave(true)}>Save Filter</button>
           </div>
         </div>
 
-        <ModalSave showModal={showModal} onCloseModal={closeModal} filter={unfreeze()} />
-        <ModalLoad showModal={showModalLoad} onCloseModal={closeModalLoad} filter={filter} />
+        <ModalSave showModal={showSave} setShowModal={setShowSave} filter={unfreeze()} />
+        <ModalLoad showModal={showLoad} setShowModal={setShowLoad} filter={filter} />
 
-        <div className="flex flex-row w-full items-center mt-5">
+        <div className="flex flex-row w-full items-center mt-3 mb-2">
           <div className="w-fit px-3 py-1 text-lg rounded-full border-2 border-gray-500">
             Search Results: {count ?? "0"}
           </div>
@@ -687,8 +662,8 @@ const Table: React.FC<props> = ({ filter }) => {
             <Footer range={range} page={page} setPage={setPage} />
           </div>
 
-          <div className="ml-4 w-fit px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</div>
-          <select className="w-fit px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+          <div className="ml-4 w-fit px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition h-10">Show rows</div>
+          <select className="w-fit px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition h-10" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
             <option value={50}>50</option>
             <option value={100}>100</option>
             <option value={150}>150</option>
@@ -715,7 +690,7 @@ const Table: React.FC<props> = ({ filter }) => {
             </tr>
           </thead>
           <tbody>
-            {tableSamples?.map((sample, index) => (
+            {tableSamples.map((sample, index) => (
               <>
                 <tr key={index} className="text-center">
                   <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button><BiCartAdd className="relative top-1" /></button></td>
@@ -780,11 +755,11 @@ const Table: React.FC<props> = ({ filter }) => {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-row w-full items-center justify-center">
+      <div className="flex flex-row w-full justify-center items-center mt-2 mb-5">
         <Footer range={range} page={page} setPage={setPage} />
 
-        <p className='mt-[-1%] ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition'>Show rows</p>
-        <select className="mt-[-1%] w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+        <p className="ml-4 w-fit px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition h-10">Show rows</p>
+        <select className="w-fit px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition h-10" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
           <option value={100}>100</option>
           <option value={150}>150</option>

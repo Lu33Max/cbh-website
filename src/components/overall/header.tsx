@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { BiSearch, BiNews, BiLogIn } from 'react-icons/bi'
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const Header: React.FC = () => {
   const { data: sessionData } = useSession();
@@ -16,7 +17,6 @@ const Header: React.FC = () => {
 
     const encodedSearchQuery = encodeURI(searchQuery);
     void router.push(`/search?q=${encodedSearchQuery}`);
-
   }
 
   return (
@@ -41,9 +41,9 @@ const Header: React.FC = () => {
       <button className='flex flex-row gap-2 hover:bg-[rgb(149,201,112)] px-2'>
         <BiNews className='relative top-1'/>Newsletter
       </button>
-      <button className='flex flex-row gap-2 hover:bg-[rgb(149,201,112)] px-2' onClick={sessionData ? () => void signOut() : () => void signIn()}>
-        <BiLogIn className='relative top-1'/>{sessionData ? "Logout" : "Login"}
-      </button>
+        <button className='flex flex-row gap-2 hover:bg-[rgb(149,201,112)] px-2' onClick={sessionData ? () => void signOut() : () => void signIn()}>
+          <BiLogIn className='relative top-1'/>{sessionData ? "Logout" : "Login"}
+        </button>
     </div>
   </div>
 
