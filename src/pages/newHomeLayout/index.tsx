@@ -35,7 +35,7 @@ const Content: React.FC = () => {
     event.preventDefault();
 
     const encodedSearchQuery = encodeURI(searchQuery);
-    void router.push(`/search?q=${encodedSearchQuery}`);
+    void router.push(`/search/overall?q=${encodedSearchQuery}`);
   };
 
   return (

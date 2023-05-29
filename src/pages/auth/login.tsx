@@ -1,15 +1,18 @@
-import { signIn } from "next-auth/react";
+import { type GetServerSidePropsContext, type InferGetServerSidePropsType } from "next";
+import { getServerSession } from "next-auth";
+import { getProviders, signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { authOptions } from "~/server/auth";
 
-export default function LoginPage() {
+export default function LoginPage({ providers }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <section className="bg-ct-blue-600 min-h-screen pt-20">
         <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
           <div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10">
-            <LoginForm />
+            <LoginForm providers={providers} />
           </div>
         </div>
       </section>
@@ -17,13 +20,17 @@ export default function LoginPage() {
   );
 }
 
-export const LoginForm = () => {
+export const LoginForm = ({ providers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
   const [error, setError] = useState("");
+
+  const searchBar = useSearchParams();
+  const searchQuery = searchBar.get('prev');
+  const callbackURL = searchQuery ? encodeURI(searchQuery) : "/";
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +43,7 @@ export const LoginForm = () => {
       });
 
       if(res?.ok){
-        router.push(res.url ?? "/")
+        router.push(callbackURL)
       }
 
     } catch (error) {
@@ -87,10 +94,33 @@ export const LoginForm = () => {
         <p className="text-center font-semibold mx-4 mb-0">OR</p>
       </div>
 
-        <div className="text-center">
-          Don&apos;t have an account yet? <Link href={"/sign-up"} className="text-blue-700">Sign Up</Link>
-        </div>
+      {Object.values(providers).filter(provider => provider.name !== "credentials").map((provider) => (
+        <>
+          <div key={provider.name}>
+            <button onClick={() => void signIn(provider.id)}>
+              Sign in with {provider.name}
+            </button>
+          </div>    
+        </>
+      ))}
 
+      <div className="text-center">
+        <p>Don&apos;t have an account yet? <Link href={`/auth/signup?prev=${callbackURL}`} className="text-blue-700">Sign Up</Link></p>
+      </div>
     </form>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  
+  if (session) {
+    return { redirect: { destination: "/" } };
+  }
+
+  const providers = await getProviders();
+  
+  return {
+    props: { providers: providers ?? [] },
+  }
+}

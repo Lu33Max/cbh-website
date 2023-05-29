@@ -5,12 +5,11 @@ import { useRouter } from "next/router";
 
 const buttonsSidebar = [
   { name: 'Home', link: '/' },
-  { name: 'Explore', link: '/search' },
-  { name: 'Expert Search', link: '/expertsearch' },
-  { name: 'Cart', link: '/Cart' },
-  { name: 'About Us', link: '/About' },
-  { name: 'Become a Supplier', link: '/BecomeSup' },
-  
+  { name: 'Explore', link: '/search/overall' },
+  { name: 'Expert Search', link: '/search/expert' },
+  { name: 'Cart', link: '/cart' },
+  { name: 'About Us', link: '/about' },
+  { name: 'Become a Supplier', link: '/supplier' },
 ];
 
 const Sidebar: React.FC = () => {

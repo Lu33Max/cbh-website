@@ -14,7 +14,7 @@ export default function SimpleSlider() {
   };
 
   return (
-    <div className="h-[20vh] w-[80vw] mx-10 font-poppins text-2xl">
+    <div className="h-[20vh] max-w-full mx-10 font-poppins text-2xl">
         <Slider {...settings} className="items-center justify-center text-center">
             <div >
                 <div className="mb-2">

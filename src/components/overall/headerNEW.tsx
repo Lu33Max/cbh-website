@@ -2,13 +2,10 @@ import React, { useState } from 'react'
 import Link from "next/link";
 import Image from "next/image";
 
-import { BiSearch, BiNews, BiLogIn } from 'react-icons/bi'
-import { signIn, signOut, useSession } from "next-auth/react";
+import { BiSearch } from 'react-icons/bi'
 import { useRouter } from 'next/router';
 
 const HeaderNEW: React.FC = () => {
-  const { data: sessionData } = useSession();
-
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeHeader, setActiveHeader] = useState<number>(0)
 
@@ -18,7 +15,7 @@ const HeaderNEW: React.FC = () => {
     event.preventDefault();
 
     const encodedSearchQuery = encodeURI(searchQuery);
-    void router.push(`/search?q=${encodedSearchQuery}`);
+    void router.push(`/search/overall?q=${encodedSearchQuery}`);
   }
 
   const navigationButtons = [

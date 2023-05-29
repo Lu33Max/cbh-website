@@ -1,12 +1,12 @@
 import type { NextPage } from "next";
 import React, { useState } from "react";
-import Head from "next/head";
 import Link from "next/link";
 
 import { signUpSchema, type ISignUp } from "../../common/validation/auth";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 const SignUp: NextPage = () => {
   return (
@@ -14,7 +14,7 @@ const SignUp: NextPage = () => {
       <main className="bg-ct-blue-600 min-h-screen pt-20">
         <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
           <div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10">
-            <LoginForm />
+            <SignUpForm />
           </div>
         </div>
       </main>
@@ -22,7 +22,7 @@ const SignUp: NextPage = () => {
   );
 };
 
-const LoginForm = () => {
+const SignUpForm = () => {
   const router = useRouter();
   const [formValues, setFormValues] = useState<ISignUp>({
     username: "",
@@ -30,6 +30,10 @@ const LoginForm = () => {
     password: "",
   });
   const [error, setError] = useState("");
+
+  const searchBar = useSearchParams();
+  const searchQuery = searchBar.get('prev');
+  const callbackURL = searchQuery ? encodeURI(searchQuery) : "/";
 
   const createUser = api.auth.signup.useMutation();
 
@@ -47,7 +51,7 @@ const LoginForm = () => {
         });
   
         if(res?.ok){
-          void router.push(res.url ?? "/")
+          void router.push(callbackURL)
         }
 
       } catch(error){
@@ -111,10 +115,9 @@ const LoginForm = () => {
         <p className="text-center font-semibold mx-4 mb-0">OR</p>
       </div>
 
-        <div className="text-center">
-          Already have an account? <Link href={"/sign-in"} className="text-blue-700">Sign In</Link>
-        </div>
-
+      <div className="text-center">
+        <p>Already have an account? <Link href={`/auth/login?prev=${callbackURL}`} className="text-blue-700">Sign In</Link></p>
+      </div>
     </div>
   )
 }
