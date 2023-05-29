@@ -195,11 +195,11 @@ const Content: React.FC = () => {
         <div className="headline mx-4 text-center font-poppins text-[#164A41]">
           <div className="inline-block px-32">Follow Our Journey!</div>
           <div className="mt-2 flex w-full flex-wrap rounded-lg border-2 border-[#164A41] p-4">
-            <Image src="facebook.png" alt="" className="mx-4" />
-            <Image src="twitter.png" alt="" className="mx-4" />
-            <Image src="youtube.png" alt="" className="mx-4" />
-            <Image src="instagram.png" alt="" className="mx-4" />
-            <Image src="linkedin.png" alt="" className="mx-4" />
+            <img src="facebook.png" alt="" className="mx-4" />
+            <img src="twitter.png" alt="" className="mx-4" />
+            <img src="youtube.png" alt="" className="mx-4" />
+            <img src="instagram.png" alt="" className="mx-4" />
+            <img src="linkedin.png" alt="" className="mx-4" />
           </div>
         </div>
         <div className="headline mx-16 text-center font-poppins text-[#164A41]">
