@@ -91,9 +91,9 @@ const defaultGroup: group = {
   link: 'AND',
   activated: true,
   filter: [{
-    col: 'CBH_Donor_ID',
+    col: 'Matrix',
     type: 'equal',
-    values: [],
+    values: ['Serum'],
     activated: true,
   }],
   groups: []
@@ -520,7 +520,7 @@ const Table: React.FC<props> = ({ filter }) => {
   const [show, setShow] = useState<boolean[]>(defaultShow)
 
   //Test
-  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ query: filterQuery, pages: page, pagelength: pagelength })
+  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: defaultGroup, pages: page, pagelength: pagelength })
   const { data: count } = api.samples.countExpert.useQuery({ query: filterQuery })
 
   useEffect(() => {
