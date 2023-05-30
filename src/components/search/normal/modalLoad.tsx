@@ -81,7 +81,7 @@ const ModalLoad: React.FC<CustomModalProps> = ({ showModal, setShowModal, setFil
                                     </div>
                                 ): (
                                     <div className="px-5 py-3">
-                                        <label className="flex flex-col text-center justify-center">Want to save your current filter?<br/> <Link href={"/sign-in"} className="text-blue-700"><b>Sign In</b></Link></label>
+                                        <label className="flex flex-col text-center justify-center">Want to save your current filter?<br/> <Link href={"/auth/login"} className="text-blue-700"><b>Sign In</b></Link></label>
                                     </div>
                                 )}
                                 {/*footer*/}
