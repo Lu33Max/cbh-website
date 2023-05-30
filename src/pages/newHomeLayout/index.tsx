@@ -123,7 +123,7 @@ const Content: React.FC = () => {
       <div className="mt-10 flex w-full flex-row items-center justify-center">
         <h1 className="relative">
           <span className="headline inline-block font-poppins">
-            lorem ipsum
+            Popular Samples
           </span>
           <span className="absolute -bottom-1 left-1/2 h-[2px] w-20 -translate-x-1/2 transform rounded-full bg-[#164A41]"></span>
         </h1>
@@ -131,43 +131,43 @@ const Content: React.FC = () => {
       <div className="mb-10 ml-[128px] mt-5 grid w-full grid-cols-3 items-center justify-center">
         <div>
           <Image
-            src="/placeholderTest.jpg"
-            alt=""
-            className="custom-shadow mx-16 w-max border-b-2 border-[#164A41] object-contain"
+            src="/allergy.png"
+            alt="allergy"
+            className="custom-shadow mx-16 border-b-2 border-[#164A41] object-contain"
             width={225}
             height={210}
           />
-          <div className="mx-16 flex w-[225px] flex-col bg-white p-6">
+          <div className="custom-shadow mx-16 flex w-[225px] flex-col bg-white p-6">
             <div className="h-full items-start text-center font-poppins">
-              lorem ipsum
+              Spring is Coming! Allergy Season Ahead
             </div>
           </div>
         </div>
         <div>
           <Image
-            src="/placeholderTest.jpg"
-            alt=""
-            className="custom-shadow mx-16 w-max border-b-2 border-[#164A41] object-contain"
+            src="/pink.png"
+            alt="pink stuff"
+            className="custom-shadow mx-16 border-b-2 border-[#164A41] object-contain"
             width={225}
             height={210}
           />
-          <div className="mx-16 flex w-[225px] flex-col bg-white p-6">
+          <div className="custom-shadow mx-16 flex w-[225px] flex-col bg-white p-6">
             <div className="h-full items-start text-center font-poppins">
-              lorem ipsum
+              Discover Endocrine Disorder Biospecimens
             </div>
           </div>
         </div>
         <div>
           <Image
-            src="/placeholderTest.jpg"
-            alt=""
-            className="custom-shadow mx-16 w-fit border-b-2 border-[#164A41] object-contain"
+            src="/mosquito.png"
+            alt="mosquito"
+            className="custom-shadow mx-16 border-b-2 border-[#164A41] object-contain"
             width={225}
             height={210}
           />
-          <div className="mx-16 flex w-[225px] flex-col bg-white p-6">
+          <div className="custom-shadow mx-16 flex w-[225px] flex-col bg-white p-6">
             <div className="h-full items-start text-center font-poppins">
-              lorem ipsum
+              Be Aware! Tropical Infection Biospecimens
             </div>
           </div>
         </div>
@@ -195,11 +195,11 @@ const Content: React.FC = () => {
         <div className="headline mx-4 text-center font-poppins text-[#164A41]">
           <div className="inline-block px-32">Follow Our Journey!</div>
           <div className="mt-2 flex w-full flex-wrap rounded-lg border-2 border-[#164A41] p-4">
-            <Image src="facebook.png" alt="" className="mx-4" />
-            <Image src="twitter.png" alt="" className="mx-4" />
-            <Image src="youtube.png" alt="" className="mx-4" />
-            <Image src="instagram.png" alt="" className="mx-4" />
-            <Image src="linkedin.png" alt="" className="mx-4" />
+            <Image src="/facebook.png" alt="" className="mx-4" width={32} height={60} />
+            <Image src="/twitter.png" alt="" className="mx-4" width={75} height={60} />
+            <Image src="/youtube.png" alt="" className="mx-4" width={75} height={60} />
+            <Image src="/instagram.png" alt="" className="mx-4" width={60} height={60} />
+            <Image src="/linkedin.png" alt="" className="mx-4" width={66} height={60} />
           </div>
         </div>
         <div className="headline mx-16 text-center font-poppins text-[#164A41]">
@@ -234,15 +234,21 @@ const Content: React.FC = () => {
         <div className="headline mx-4 text-center font-poppins text-[#164A41]">
           <div className="inline-block px-[140px]">Payment Methods</div>
           <div className="mt-2 flex w-full flex-wrap rounded-lg border-2 border-[#164A41] p-4">
-            <Image src="Paypal.png" alt="" className="ml-4 mr-6" />
-            <Image src="amex.png" alt="" className="mx-6" />
-            <Image src="Visa.png" alt="" className="mx-6" />
-            <Image src="Mastercard.png" alt="" className="ml-6 mr-4" />
+            <Image src="/Paypal.png" alt="" className="ml-4 mr-6" width={55} height={60} />
+            <Image src="/amex.png" alt="" className="mx-6" width={67} height={60} />
+            <Image src="/Visa.png" alt="" className="mx-6" width={90} height={60} />
+            <Image src="/Mastercard.png" alt="" className="ml-6 mr-4" width={91} height={60} />
           </div>
         </div>
       </div>
-      <HoverImages />
-      <div className="my-5 h-0 w-full rounded-3xl border-2 border-solid border-gray-400"></div>
+      <div className="border-b-2 border-solid p-48 border-[#164A41] my-1 gradient slide">
+        <div>
+
+        </div>
+        
+      </div>
+      <div className="my-5 border h-0 w-full rounded-3xl border-solid border-[#164A41]"></div>
+
       <div className="text-center">
         <h1 className="mb-2 font-poppins text-2xl text-[#164A41]">
           Central BioHub GmbH, Neuendorfstrasse 17, 16761 Hennigsdorf, Germany |
