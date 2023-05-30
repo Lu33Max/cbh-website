@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHookstate, type State } from '@hookstate/core';
 import { type NextPage } from 'next';
 import { api } from "~/utils/api";
+import { IGroup, GroupSchema } from '~/common/filter/filter';
 
 import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 import Head from 'next/head';
@@ -91,9 +92,9 @@ const defaultGroup: group = {
   link: 'AND',
   activated: true,
   filter: [{
-    col: 'Matrix',
+    col: 'CBH_Sample_ID',
     type: 'equal',
-    values: ['Serum'],
+    values: [''],
     activated: true,
   }],
   groups: []
@@ -520,7 +521,7 @@ const Table: React.FC<props> = ({ filter }) => {
   const [show, setShow] = useState<boolean[]>(defaultShow)
 
   //Test
-  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: defaultGroup, pages: page, pagelength: pagelength })
+  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: unfreeze(), pages: page, pagelength: pagelength })
   const { data: count } = api.samples.countExpert.useQuery({ query: filterQuery })
 
   useEffect(() => {
@@ -651,10 +652,11 @@ const Table: React.FC<props> = ({ filter }) => {
     setPagelength(length);
   };
 
-  function unfreeze(): group {
-    const result = groupSchema.safeParse(JSON.parse(JSON.stringify(filter.value)))
+  function unfreeze(): IGroup {
+    const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(filter.value)))
 
     if(result.success){
+      console.log(JSON.stringify(result.data))
       return result.data
     } else {
       return defaultGroup

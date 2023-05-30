@@ -4,6 +4,7 @@ import { useHookstate, type State } from '@hookstate/core';
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import { Prisma } from "@prisma/client";
+import { json } from "stream/consumers";
 
 const baseGroupSchema = z.object({
     not: z.boolean(), 
@@ -778,7 +779,7 @@ export const sampleRouter = createTRPCRouter({
     applyFilter: publicProcedure
         .input(z.object({ pagelength: z.number(), pages: z.number(), group: groupSchema}))
         .query(async ({ ctx, input }) => {
-            
+
             //Replace this later
             function getOperator(type: string): string {
                 switch (type) {
@@ -804,8 +805,7 @@ export const sampleRouter = createTRPCRouter({
 
             function BuildQuery(group: Group): Prisma.Sql {
 
-                let sql = '';
-                //let sql = (Prisma.sql``); 
+                let sqlArray : Prisma.Sql[] = []
                 
                 //If group isn't undefined and has the activated parameter
                 if (group !== undefined && group.activated === true) {
@@ -815,817 +815,837 @@ export const sampleRouter = createTRPCRouter({
                     if (group.groups && group.groups.length > 0) {
                         //loop trough each groups element.
                         group.groups.map((g, i) => {
-                            //If it's not the first element and the sql string isn't empty
-                            if (i > 0 && sql !== '') {
-                                //add the link for this element
-                                sql += ` ${group.link.toUpperCase()} `;
-                            }
-                            //and build the string for this element.
-                            sql += BuildQuery(g)
+                            sqlArray.push(BuildQuery(g))
                         });
                     }
-
-                    //Adds a link if there is already another opertaion in the sql string and a new filter is present.
-                    //If the sql string isn't empty and there is a filter greater than 0
-                    if (sql !== "" && group.filter && group.filter?.length > 0) {
-                        //loop trough each filter element
-                        for (let i = 0; i < group.filter.length; i++) {
-                            //and if all required paramters are present
-                            if (group.filter[i] && group.filter[i]?.col && group.filter[i]?.type && group.filter[i]?.values && group.filter[i]?.values.length !== 0 && group.filter[i]?.activated === true) {
-                                //add the link for this element.
-                                sql += ` ${group.link.toUpperCase()} `;
-                                break;
-                            }
-                        }
-                    }
-
-                    let filterCount = 0;
 
                     //If there are filters present
                     if (group.filter.length > 0) {
                         //loop through each filter element
                         for (let i = 0; i < group.filter.length; i++) {
-                           
-                            //Create a new temporary sql string.
-                            let tempSql = ''
 
                             //And if all required parameters are present
                             if (group.filter[i] && group.filter[i]?.col && group.filter[i]?.type && group.filter[i]?.values && group.filter[i]?.values.length !== 0 && (getOperator(group.filter[i]?.type ?? 'invalid')) !== 'invalid' && group.filter[i]?.activated === true) {
 
+                                console.log(group.filter[i]?.type)
+
                                 switch (group.not) {
                                     case false:
-                                        switch (group.filter[0]?.col) {
+                                        switch (group.filter[i]?.col) {
                                             case "Price":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" < ${group.filter[0].values[0]}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Price" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Price" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`"Price" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
                                                     case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" = ${group.filter[0].values[0]}`;
+                                                        sqlArray.push(Prisma.sql`"Price" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`"Price" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`"Price" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
                                                     case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`"Price" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Quantity":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity" < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity" <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity" = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity" = ${group.filter[0].values[0]}`;
-                                                    case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity" = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Quantity" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Quantity" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`"Quantity" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`"Quantity" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`"Quantity" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`"Quantity" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "between": 
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`"Quantity" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Unit":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Unit" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Unit" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Unit" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Unit" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Matrix":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Matrix" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Matrix" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Storage_Temperature":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature" < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature" <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature" = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature" = ${group.filter[0].values[0]}`;
-                                                    case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature" = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Storage_Temperature" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Storage_Temperature" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`"Storage_Temperature" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`"Storage_Temperature" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`"Storage_Temperature" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`"Storage_Temperature" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "between": 
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`"Storage_Temperature" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Freeze_Thaw_Cycles":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles" < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles" <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles" = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles" = ${group.filter[0].values[0]}`;
-                                                    case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles" = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Freeze_Thaw_Cycles" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Freeze_Thaw_Cycles" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`"Freeze_Thaw_Cycles" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`"Freeze_Thaw_Cycles" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`"Freeze_Thaw_Cycles" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`"Freeze_Thaw_Cycles" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "between": 
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`"Freeze_Thaw_Cycles" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Sample_Condition":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Sample_Condition" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Sample_Condition" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Sample_Condition" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Sample_Condition" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Gender":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Gender" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Gender" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Gender" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Gender" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Age":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age" < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age" <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age" = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age" = ${group.filter[0].values[0]}`;
-                                                    case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age" = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Age" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Age" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`"Age" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`"Age" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`"Age" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`"Age" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "between": 
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`"Age" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Ethnicity":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Matrix" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Matrix" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "BMI":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI" < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI" <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI" = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI" = ${group.filter[0].values[0]}`;
-                                                    case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI" = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"BMI" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"BMI" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`"BMI" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`"BMI" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`"BMI" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`"BMI" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "between": 
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`"BMI" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Lab_Parameter":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Lab_Parameter" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Lab_Parameter" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Lab_Parameter" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Lab_Parameter" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Result_Interpretation":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Result_Interpretation" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Result_Interpretation" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Result_Interpretation" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Result_Interpretation" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Test_System_Manufacturer":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Test_System_Manufacturer" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Test_System_Manufacturer" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Test_System_Manufacturer" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Test_System_Manufacturer" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Diagnosis":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Diagnosis" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Diagnosis" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Diagnosis" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Diagnosis" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Diagnosis_Remarks":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Diagnosis_Remarks" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Diagnosis_Remarks" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Diagnosis_Remarks" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Diagnosis_Remarks" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "ICD_Code":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"ICD_Code" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"ICD_Code" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"ICD_Code" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"ICD_Code" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Medication":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Medication" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Medication" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Medication" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Medication" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Therapy":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Therapy" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Therapy" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Therapy" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Therapy" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "TNM_Class_T":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Matrix" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Matrix" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "TNM_Class_N":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"TNM_Class_N" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"TNM_Class_N" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"TNM_Class_N" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"TNM_Class_N" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "TNM_Class_M":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"TNM_Class_M" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"TNM_Class_M" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"TNM_Class_M" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"TNM_Class_M" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Tumour_Grade":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Tumour_Grade" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Tumour_Grade" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Tumour_Grade" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Tumour_Grade" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Estrogen_Receptor":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Estrogen_Receptor" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Estrogen_Receptor" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Estrogen_Receptor" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Estrogen_Receptor" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "HER_2_Receptor":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"HER_2_Receptor" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"HER_2_Receptor" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"HER_2_Receptor" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"HER_2_Receptor" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Other_Gene_Mutations":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Other_Gene_Mutations" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Other_Gene_Mutations" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Other_Gene_Mutations" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Other_Gene_Mutations" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Country_of_Collection":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Country_of_Collection" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Country_of_Collection" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Country_of_Collection" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Country_of_Collection" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Date_of_Collection":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Date_of_Collection" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Date_of_Collection" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Date_of_Collection" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Date_of_Collection" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Informed_Consent":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Informed_Consent" = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Informed_Consent" IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`"Informed_Consent" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`"Informed_Consent" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                         }
+                                        break;
                                     case true:
-                                        switch (group.filter[0]?.col) {
+                                        switch (group.filter[i]?.col) {
                                             case "Price":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" NOT < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" NOT <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" NOT = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" NOT = ${group.filter[0].values[0]}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Price" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Price" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`NOT "Price" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Price" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`NOT "Price" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Price" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
                                                     case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Price" NOT = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`NOT "Price" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        } 
+                                                        break;
                                                 }
                                             break;
                                             case "Quantity":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity" NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity" < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity"  NOT <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Quantity"  NOT = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Quantity" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Quantity" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`NOT "Quantity" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Quantity" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`NOT "Quantity" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Quantity" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "between": 
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`NOT "Quantity" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Unit":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Unit"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Unit"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Unit" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Unit" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Matrix":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Matrix" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Matrix" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Storage_Temperature":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature"  NOT < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature"  NOT <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature"  NOT = ${group.filter[0].values[0]}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Storage_Temperature" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Storage_Temperature" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`NOT "Storage_Temperature" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Storage_Temperature" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`NOT "Storage_Temperature" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Storage_Temperature" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
                                                     case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Storage_Temperature"  NOT = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`NOT "Storage_Temperature" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Freeze_Thaw_Cycles":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles"  NOT < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles"  NOT <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Freeze_Thaw_Cycles"  NOT = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Freeze_Thaw_Cycles" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Freeze_Thaw_Cycles" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`NOT "Freeze_Thaw_Cycles" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Freeze_Thaw_Cycles" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`NOT "Freeze_Thaw_Cycles" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Freeze_Thaw_Cycles" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "between": 
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`NOT "Freeze_Thaw_Cycles" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Sample_Condition":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Sample_Condition"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Sample_Condition"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Sample_Condition" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Sample_Condition" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Gender":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Gender"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Gender"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Gender" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Gender" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Age":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age"  NOT < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age"  NOT <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Age"  NOT = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Age" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Age" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`NOT "Age" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Age" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`NOT "Age" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Age" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "between": 
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`NOT "Age" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Ethnicity":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Matrix" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Matrix" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "BMI":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
-                                                    case "less":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI"  NOT < ${group.filter[0].values[0]}`;
-                                                    case "lessequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI"  NOT <= ${group.filter[0].values[0]}`;
-                                                    case "more":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "moreequal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "between":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"BMI"  NOT = ${group.filter[i]?.values.map(v => `'${v}'`).join(' AND ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "BMI" = ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "BMI" IN (${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(', ') ?? ""})`);
+                                                        break;
+                                                    case "less": 
+                                                        sqlArray.push(Prisma.sql`NOT "BMI" < ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "lessequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "BMI" <= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "more": 
+                                                        sqlArray.push(Prisma.sql`NOT "BMI" > ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "moreequal": 
+                                                        sqlArray.push(Prisma.sql`NOT "BMI" >= ${Number(group.filter[i]?.values[0])}`);
+                                                        break;
+                                                    case "between": 
+                                                        if (group.filter[i]?.values[1] != undefined) {
+                                                            sqlArray.push(Prisma.sql`NOT "BMI" BETWEEN ${group.filter[i]?.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                                        }
+                                                        break;
                                                 }
                                             break;
                                             case "Lab_Parameter":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Lab_Parameter"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Lab_Parameter"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Lab_Parameter" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Lab_Parameter" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Result_Interpretation":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Result_Interpretation"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Result_Interpretation"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Result_Interpretation" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Result_Interpretation" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Test_System_Manufacturer":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Test_System_Manufacturer"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Test_System_Manufacturer"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Test_System_Manufacturer" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Test_System_Manufacturer" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Diagnosis":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Diagnosis"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Diagnosis"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Diagnosis" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Diagnosis" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Diagnosis_Remarks":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Diagnosis_Remarks"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Diagnosis_Remarks"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Diagnosis_Remarks" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Diagnosis_Remarks" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "ICD_Code":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"ICD_Code"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"ICD_Code"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "ICD_Code" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "ICD_Code" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Medication":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Medication"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Medication"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Medication" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Medication" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Therapy":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Therapy"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Therapy"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Therapy" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Therapy" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "TNM_Class_T":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Matrix"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Matrix" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Matrix" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "TNM_Class_N":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"TNM_Class_N"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"TNM_Class_N"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "TNM_Class_N" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "TNM_Class_N" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "TNM_Class_M":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"TNM_Class_M"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"TNM_Class_M"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "TNM_Class_M" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "TNM_Class_M" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Tumour_Grade":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Tumour_Grade"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Tumour_Grade"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Tumour_Grade" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Tumour_Grade" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Estrogen_Receptor":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Estrogen_Receptor"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Estrogen_Receptor"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Estrogen_Receptor" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Estrogen_Receptor" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "HER_2_Receptor":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"HER_2_Receptor"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"HER_2_Receptor"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "HER_2_Receptor" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "HER_2_Receptor" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Other_Gene_Mutations":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Other_Gene_Mutations"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Other_Gene_Mutations"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Other_Gene_Mutations" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Other_Gene_Mutations" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Country_of_Collection":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Country_of_Collection"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Country_of_Collection"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Country_of_Collection" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Country_of_Collection" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Date_of_Collection":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Date_of_Collection"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Date_of_Collection"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Date_of_Collection" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Date_of_Collection" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                             case "Informed_Consent":
-                                                switch (group.filter[0].type) {
-                                                    case "equal":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Informed_Consent"  NOT = ${group.filter[0].values[0]}`;
-                                                    case "in":
-                                                        console.log(group.filter[0].values[0])
-                                                        return Prisma.sql`"Informed_Consent"  NOT IN ${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""}`;
+                                                switch (group.filter[i]?.type) {
+                                                    case "equal": 
+                                                        sqlArray.push(Prisma.sql`NOT "Informed_Consent" = ${group.filter[i]?.values[0]}`);
+                                                        break;
+                                                    case "in": 
+                                                        sqlArray.push(Prisma.sql`NOT "Informed_Consent" IN (${group.filter[i]?.values.map(v => `'${v}'`).join(', ') ?? ""})`);
+                                                        break;
                                                 }
                                             break;
                                         }
                                     break;
-                                }            
+                                }
                             }
                         }
                     }
                 }
-                return Prisma.empty
+
+                let finalSql = sqlArray[0]
+
+                if (finalSql != undefined) {
+                    for (let i = 1; i < sqlArray.length; i++) {
+                        if (sqlArray[i] != Prisma.empty) {
+                            if (group.link == "AND") {
+                                finalSql = Prisma.sql`${finalSql} AND ${sqlArray[i]}` 
+                            } else {
+                                finalSql = Prisma.sql`${finalSql} OR ${sqlArray[i]}` 
+                            }
+                        }
+                    }
+                    console.log(finalSql)
+                    finalSql = Prisma.sql`(${finalSql})`
+                    return finalSql
+                } else {
+                    return Prisma.empty
+                }
             }
 
             //Pagination
@@ -1644,8 +1664,6 @@ export const sampleRouter = createTRPCRouter({
                     },
                 })
             } else {
-                console.log(query)
-                console.log(BuildQuery(input.group))
 
                 //If not,
                 //get all entries with the filter applied
