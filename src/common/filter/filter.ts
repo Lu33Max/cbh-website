@@ -4,11 +4,13 @@ export type IGroup = {
     not: boolean,
     link: string,
     activated: boolean,
+    mandatory: boolean,
     filter: {
       col: string,
       type: string,
       values: string[],
       activated: boolean,
+      mandatory: boolean,
     }[],
     groups: IGroup[],
 }
@@ -18,12 +20,14 @@ export const GroupSchema: z.ZodSchema<IGroup> = z.lazy(() =>
     not: z.boolean(),
     link: z.string(),
     activated: z.boolean(),
+    mandatory: z.boolean(),
     filter: z.array(
       z.object({
         col: z.string(),
         type: z.string(),
         values: z.array(z.string()),
-        activated: z.boolean()
+        activated: z.boolean(),
+        mandatory: z.boolean(),
       })
     ),
     groups: z.array(GroupSchema)

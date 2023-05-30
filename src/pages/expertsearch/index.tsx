@@ -21,11 +21,13 @@ export type group = {
   not: boolean,
   link: string,
   activated: boolean,
+  mandatory: boolean,
   filter: {
     col: string,
     type: string,
     values: string[],
     activated: boolean,
+    mandatory: boolean,
   }[],
   groups: group[],
 }
@@ -91,13 +93,41 @@ const defaultGroup: group = {
   not: false,
   link: 'AND',
   activated: true,
+  mandatory: true,
   filter: [{
     col: 'CBH_Sample_ID',
     type: 'equal',
     values: [''],
     activated: true,
+    mandatory: true,
   }],
   groups: []
+}
+
+const testGroup: group = {
+  not: false,
+  link: 'AND',
+  activated: true,
+  mandatory: true,
+  filter: [{
+    col: 'Matrix',
+    type: 'equal',
+    values: ['Serum'],
+    activated: true,
+    mandatory: true,
+  }],
+  groups: [{  not: false,
+    link: 'AND',
+    activated: true,
+    mandatory: false,
+    filter: [{
+      col: 'Price',
+      type: 'equal',
+      values: ['23'],
+      activated: true,
+      mandatory: true,
+    }],
+    groups: []}]
 }
 
 function BuildQuery(group: State<group>): string {
@@ -242,13 +272,13 @@ function InitialContentEditor(props: { self: State<group> }) {
           </OverlayTrigger>
         </div>
         <div className='flex flex-row justify-end items-center w-[50%] pr-3'>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true}], groups: [] }))}>New Group</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true}]))}>New Rule</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: true}], groups: [] }))}>New Group</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true}]))}>New Rule</button>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-400 border-orange-400' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "deactivate": "activate"}</button>
         </div>
       </div>
 
-      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean }>, i) =>
+      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean, mandatory: boolean }>, i) =>
         <div key={i}>  
           <div className='flex flex-row ml-5 my-1'>
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
@@ -256,7 +286,7 @@ function InitialContentEditor(props: { self: State<group> }) {
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "deactivate": "activate"}</button>
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
-          </div>  
+          </div>
         </div>
       )}
 
@@ -285,14 +315,14 @@ function GroupContentEditor(props: { self: State<group>, parent: State<group>, i
           <button className={`w-[6rem] px-4 py-1 text-lg text-center rounded-r-2xl border-solid border-2 border-[#F1B24A] ${self.link.value === "OR" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('OR')}>OR</button>
         </div>
         <div className='flex flex-row justify-end items-center w-[50%] pr-3'>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true}], groups: [] }))}>New Group</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true}]))}>New Rule</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: true}], groups: [] }))}>New Group</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true}]))}>New Rule</button>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-orange-400 border-y-orange-400 border-l-orange-400' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "Deactivate": "Activate"}</button>
           <button className="w-[6rem] border-2 bg-red-500 hover:bg-red-400 border-red-500 hover:border-red-400 text-white py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => parent.groups.set((group) => group.filter((_, index) => index !== i))} >Delete</button>
         </div>
       </div>
 
-      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean }>, i) =>
+      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean, mandatory: boolean }>, i) =>
         <div key={i}>  
           <div className='flex flex-row ml-5 my-1'>
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
@@ -521,8 +551,8 @@ const Table: React.FC<props> = ({ filter }) => {
   const [show, setShow] = useState<boolean[]>(defaultShow)
 
   //Test
-  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: unfreeze(), pages: page, pagelength: pagelength })
-  const { data: count } = api.samples.countExpert.useQuery({ query: filterQuery })
+  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: testGroup, pages: page, pagelength: pagelength })
+  const { data: count } = api.samples.countExpert.useQuery({ group: testGroup })
 
   useEffect(() => {
     void refetchSamples()
@@ -656,7 +686,6 @@ const Table: React.FC<props> = ({ filter }) => {
     const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(filter.value)))
 
     if(result.success){
-      console.log(JSON.stringify(result.data))
       return result.data
     } else {
       return defaultGroup
@@ -669,7 +698,7 @@ const Table: React.FC<props> = ({ filter }) => {
         <div className='flex flex-row'>
           <div className='flex flex-row w-[50%] justify-start'>
             <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setFilterQuery(BuildQuery(filter))}>Apply Filter</button>
-            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true }], groups: [] },)}>Reset</button>
           </div>
           <div className='flex flex-row w-[50%] justify-end'>
             <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={openModalLoad}>Load Filter</button>
