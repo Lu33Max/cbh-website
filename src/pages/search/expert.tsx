@@ -285,7 +285,7 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <TypeSelect type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
-            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "Deactivate": "Dctivate"}</button>
+            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "Deactivate": "Activate"}</button>
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))}>Delete</button>
           </div>  
         </div>
