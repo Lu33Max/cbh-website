@@ -78,94 +78,41 @@ const defaultGroup: IGroup = {
   not: false,
   link: 'AND',
   activated: true,
+  mandatory: true,
   filter: [{
-    col: 'CBH_Donor_ID',
+    col: 'CBH_Sample_ID',
     type: 'equal',
-    values: [],
+    values: [''],
     activated: true,
+    mandatory: true,
   }],
   groups: []
 }
 
-function BuildQuery(group: State<IGroup>): string {
-  let sql = '';
-
-  function getOperator(type: string): string {
-    switch (type) {
-      case 'equal':
-        return '=';
-      case 'in':
-        return 'IN';
-      case 'less':
-        return '<';
-      case 'lessequal':
-        return '<=';
-      case 'more':
-        return '>';
-      case 'moreequal':
-        return '>=';
-      case 'between':
-        return 'BETWEEN';
-      default:
-        throw new Error(`Invalid filter type: ${type}`);
-    }
-  }
-
-  if (group !== undefined && group.activated.value === true) {
-    if (group.groups.value && group.groups.value.length > 0) {
-      group.groups.ornull?.map((g, i) => {
-        if (i > 0 && sql !== '') {
-          sql += ` ${group.link.value.toUpperCase()} `;
-        }
-        sql += BuildQuery(g)
-      });
-    }
-
-    if (sql !== "" && group.filter.value && group.filter.value?.length > 0) {
-      for (let i = 0; i < group.filter.length; i++) {
-        if (group.filter[i] && group.filter[i]?.col && group.filter[i]?.type && group.filter[i]?.values && group.filter[i]?.values.length !== 0 && group.filter[i]?.activated.value === true) {
-          sql += ` ${group.link.value.toUpperCase()} `;
-          break
-        }
-      }
-    }
-
-    let filterCount = 0;
-    if (group.filter.length > 0) {
-      for (let i = 0; i < group.filter.length; i++) {
-        if (group.filter[i] && group.filter[i]?.col && group.filter[i]?.type && group.filter[i]?.values && group.filter[i]?.values.length !== 0 && (getOperator(group.filter[i]?.type.value ?? 'invalid')) !== 'invalid' && group.filter[i]?.activated.value === true) {
-          let tempSql = ""
-          
-          if (group.filter[i]?.type.value !== "between" && group.filter[i]?.type.value !== "in" && group.filter[i]?.values[0] && group.filter[i]?.values[0]?.value !== "") {
-            tempSql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} '${group.filter[i]?.values[0]?.value ?? ""}'`;
-          } else {
-            if (group.filter[i]?.type.value === "between" && group.filter[i]?.values[0] !== undefined && group.filter[i]?.values[0]?.value !== "" && group.filter[i]?.values[1] !== undefined && group.filter[i]?.values[1]?.value !== "") {
-              tempSql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} ${group.filter[i]?.values.value.map(v => `'${v}'`).join(' AND ') ?? ""}`;
-            } else if (group.filter[i]?.type.value === "in" && group.filter[i]?.values[0] !== undefined) {
-              tempSql += `"${group.filter[i]?.col.value ?? ""}" ${getOperator(group.filter[i]?.type.value ?? "invalid")} (${group.filter[i]?.values.value.map(v => `'${v}'`).join(', ') ?? ""})`;
-            }
-          }
-
-          if(tempSql !== ""){
-            if (filterCount !== 0 ) {
-              tempSql = `${group.link.value?.toUpperCase()}` + tempSql;
-            }
-            sql += tempSql
-            filterCount++;
-          }
-        }
-      }
-    }
-
-    if (sql !== "") {
-      if (group.not.value) {
-        sql = 'NOT ' + sql;
-      }
-      sql = "(" + sql + ")"
-    }
-  }
-
-  return sql;
+const testGroup: IGroup = {
+  not: false,
+  link: 'AND',
+  activated: true,
+  mandatory: true,
+  filter: [{
+    col: 'Matrix',
+    type: 'equal',
+    values: ['Serum'],
+    activated: true,
+    mandatory: true,
+  }],
+  groups: [{  not: false,
+    link: 'AND',
+    activated: true,
+    mandatory: false,
+    filter: [{
+      col: 'Price',
+      type: 'equal',
+      values: ['23'],
+      activated: true,
+      mandatory: true,
+    }],
+    groups: []}]
 }
 
 const ExpertSearch: NextPage = () => {
@@ -229,13 +176,13 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
           </OverlayTrigger>
         </div>
         <div className='flex flex-row justify-end items-center w-[50%] pr-3'>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true}], groups: [] }))}>New Group</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true}]))}>New Rule</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: true}], groups: [] }))}>New Group</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true}]))}>New Rule</button>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-400 border-orange-400' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "deactivate": "activate"}</button>
         </div>
       </div>
 
-      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean }>, i) =>
+      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean, mandatory: boolean }>, i) =>
         <div key={i}>  
           <div className='flex flex-row ml-5 my-1'>
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
@@ -243,7 +190,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "deactivate": "activate"}</button>
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
-          </div>  
+          </div>
         </div>
       )}
 
@@ -272,14 +219,14 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
           <button className={`w-[6rem] px-4 py-1 text-lg text-center rounded-r-2xl border-solid border-2 border-[#F1B24A] ${self.link.value === "OR" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('OR')}>OR</button>
         </div>
         <div className='flex flex-row justify-end items-center w-[50%] pr-3'>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true}], groups: [] }))}>New Group</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true}]))}>New Rule</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: true}], groups: [] }))}>New Group</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true}]))}>New Rule</button>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-orange-400 border-y-orange-400 border-l-orange-400' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "Deactivate": "Activate"}</button>
           <button className="w-[6rem] border-2 bg-red-500 hover:bg-red-400 border-red-500 hover:border-red-400 text-white py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => parent.groups.set((group) => group.filter((_, index) => index !== i))} >Delete</button>
         </div>
       </div>
 
-      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean }>, i) =>
+      {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean, mandatory: boolean }>, i) =>
         <div key={i}>  
           <div className='flex flex-row ml-5 my-1'>
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
@@ -383,29 +330,8 @@ function TypeSelect(props: { type: State<string>, values: State<string[]>, activ
   const activated = useHookstate(props.activated);
   const filterActivated = useHookstate(props.filterActivated);
 
-  function getOperator(type: string): string {
-    switch (type) {
-      case 'equal':
-        return '=';
-      case 'in':
-        return 'in';
-      case 'less':
-        return '<';
-      case 'lessequal':
-        return '<=';
-      case 'more':
-        return '>';
-      case 'moreequal':
-        return '>=';
-      case 'between':
-        return '<x<';
-      default:
-        throw new Error(`Invalid filter type: ${type}`);
-    }
-  }
-
   return (
-    <select className="w-fit z-20 px-3 py-1 text-lg text-center border-y-2 border-gray-500 focus:border-gray-700 outline-none transition" value={type.value} onChange={(e) => { values.set([]); type.set(e.target.value); console.log(getOperator(type.value)) }} disabled = {!(activated.value && filterActivated.value)}>
+    <select className="w-fit z-20 px-3 py-1 text-lg text-center border-y-2 border-gray-500 focus:border-gray-700 outline-none transition" value={type.value} onChange={(e) => { values.set([]); type.set(e.target.value)}} disabled = {!(activated.value && filterActivated.value)}>
       <option className='text-left' value={'equal'}>=</option>
       <option className='text-left' value={'in'}>in</option>
       <option className='text-left' value={'less'}>&lt;</option>
@@ -480,7 +406,6 @@ const Table: React.FC<props> = ({ filter }) => {
   const [pagelength, setPagelength] = useState<number>(50)
   const [search,] = useState<string | undefined>()
   const [range, setRange] = useState<number[]>([])
-  const [filterQuery, setFilterQuery] = useState<string>("")
   const [showSave, setShowSave] = useState(false);
   const [showLoad, setShowLoad] = useState(false);
 
@@ -495,12 +420,12 @@ const Table: React.FC<props> = ({ filter }) => {
   const [show, setShow] = useState<boolean[]>(defaultShow)
 
   //Test
-  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ query: filterQuery, pages: page, pagelength: pagelength })
-  const { data: count } = api.samples.countExpert.useQuery({ query: filterQuery })
+  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: unfreeze(), pages: page, pagelength: pagelength })
+  const { data: count } = api.samples.countExpert.useQuery({ group: unfreeze() })
 
   useEffect(() => {
     void refetchSamples()
-  }, [search, page, pagelength, refetchSamples])
+  }, [page, pagelength, refetchSamples])
 
   useEffect(() => {
     const newRange = [];
@@ -732,8 +657,8 @@ const Table: React.FC<props> = ({ filter }) => {
       <div className="mx-4 my-5">
         <div className='flex flex-row'>
           <div className='flex flex-row w-[50%] justify-start'>
-            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setFilterQuery(BuildQuery(filter))}>Apply Filter</button>
-            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => void refetchSamples()}>Apply Filter</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true }], groups: [] },)}>Reset</button>
           </div>
           <div className='flex flex-row w-[50%] justify-end'>
             <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setShowLoad(true)}>Load Filter</button>

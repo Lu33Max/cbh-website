@@ -101,24 +101,57 @@ export default Search;
 
 const Content: React.FC = () => {
   const defaultFilter: INormalFilter = {
-    cbhMasterID: undefined, 
-    cbhDonorID: undefined, 
-    cbhSampleID: undefined,
-    price: {
-      min: undefined,
-      max: undefined,
+    cbhMasterID: {
+      value: undefined,
+      mandatory: false
     },
-    matrix: [],
+    cbhDonorID: {
+      value: undefined,
+      mandatory: true
+    },
+    cbhSampleID: {
+      value: undefined,
+      mandatory: true
+    },
+    price: { 
+      min: undefined, 
+      max: undefined,
+      mandatory: true
+    },
+    matrix: {
+      value: [],
+      mandatory: true
+    },
     quantity: {
       min: undefined,
       max: undefined,
+      mandatory: true
     },
-    unit: [],
-    labParameter: [],
-    resultInterpretation: [],
-    resultUnit: [],
-    diagnosis: [],
-    ICDCode: []
+    unit: {
+      value: [],
+      mandatory: true
+    },
+    labParameter: {
+      value: [],
+      mandatory: true
+    }, 
+    resultInterpretation: {
+      value: [],
+      mandatory: true
+    }, 
+    //resultNumericals
+    resultUnit: {
+      value: [],
+      mandatory: true
+    }, 
+    diagnosis: {
+      value: [],
+      mandatory: true
+    }, 
+    ICDCode: {
+      value: [],
+      mandatory: true
+    } 
   }
 
   const defaultShow: boolean[] = []
@@ -178,7 +211,7 @@ const Content: React.FC = () => {
   useEffect(() => {
     const newArray: TableSamples[] = []
     if(samples!== undefined){
-      for(let i = 0; i<samples?.length; i++){
+      for(let i = 0; i < samples?.length; i++){
         if(newArray.find(sample => sample.CBH_Sample_ID === samples[i]?.CBH_Sample_ID)){
           const sampleIndex = newArray.findIndex(sample => sample.CBH_Sample_ID === samples[i]?.CBH_Sample_ID)
           if(samples[i]?.Lab_Parameter) newArray[sampleIndex]?.Lab_Parameter?.push(samples[i]?.Lab_Parameter ?? "")
@@ -280,51 +313,51 @@ const Content: React.FC = () => {
   function handleFilterChange(value: string, column:string): void {
     switch(column){
       case "Matrix":
-        if(!filter.matrix.includes(value)){
+        if(!filter.matrix.value.includes(value)){
           const temp1 = filter.matrix
-          temp1.push(value)
+          temp1.value.push(value)
           setFilter(filter => ({...filter, matrix: temp1}))
         }
         break;
       case "Unit":
-        if(!filter.unit.includes(value)){
+        if(!filter.unit.value.includes(value)){
           const temp2 = filter.unit
-          temp2.push(value)
+          temp2.value.push(value)
           setFilter(filter => ({...filter, unit: temp2}))
         }
         break;
       case "Lab_Parameter":
-        if(!filter.labParameter.includes(value)){
+        if(!filter.labParameter.value.includes(value)){
           const temp3 = filter.labParameter
-          temp3.push(value)
+          temp3.value.push(value)
           setFilter(filter => ({...filter, labParameter: temp3}))
         }
         break;
       case "Result_Interpretation":
-        if(!filter.resultInterpretation.includes(value)){
+        if(!filter.resultInterpretation.value.includes(value)){
           const temp4 = filter.resultInterpretation
-          temp4.push(value)
+          temp4.value.push(value)
           setFilter(filter => ({...filter, resultInterpretation: temp4}))
         }
         break;
       case "Result_Unit":
-        if(!filter.resultUnit.includes(value)){
+        if(!filter.resultUnit.value.includes(value)){
           const temp5 = filter.resultUnit
-          temp5.push(value)
+          temp5.value.push(value)
           setFilter(filter => ({...filter, resultUnit: temp5}))
         }
         break;
       case "Diagnosis":
-        if(!filter.diagnosis.includes(value)){
+        if(!filter.diagnosis.value.includes(value)){
           const temp6 = filter.diagnosis
-          temp6.push(value)
+          temp6.value.push(value)
           setFilter(filter => ({...filter, diagnosis: temp6}))
         }
         break;
       case "ICD_Code":
-        if(!filter.ICDCode.includes(value)){
+        if(!filter.ICDCode.value.includes(value)){
           const temp7 = filter.ICDCode
-          temp7.push(value)
+          temp7.value.push(value)
           setFilter(filter => ({...filter, ICDCode: temp7}))
         }
         break;
@@ -445,7 +478,7 @@ const Content: React.FC = () => {
             <input type="text" value={filter.cbhMasterID ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onKeyDown={e => {
               if(e.key === "Enter"){
                 const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
-                setFilter(filter => ({...filter, cbhMasterID: temp}))
+                setFilter(filter => ({...filter, cbhMasterID: {value: temp, mandatory: filter.cbhMasterID.mandatory}}))
               }
             }}/>
           </div>
@@ -454,7 +487,7 @@ const Content: React.FC = () => {
             <input type="text" value={filter.cbhDonorID ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onKeyDown={e => {
               if(e.key === "Enter"){
                 const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
-                setFilter(filter => ({...filter, cbhDonorID: temp}))
+                setFilter(filter => ({...filter, cbhDonorID: {value: temp, mandatory: filter.cbhDonorID.mandatory}}))
               }
             }}/>
           </div>
@@ -463,7 +496,7 @@ const Content: React.FC = () => {
             <input type="text" value={filter.cbhSampleID ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onKeyDown={e => {
               if(e.key === "Enter"){
                 const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
-                setFilter(filter => ({...filter, cbhSampleID: temp}))
+                setFilter(filter => ({...filter, cbhSampleID: {value: temp, mandatory: filter.cbhSampleID.mandatory}}))
               }
             }}/>
           </div>
@@ -616,72 +649,72 @@ const Content: React.FC = () => {
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
           Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.matrix.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.matrix.value.length > 0 ? "" : "hidden"}`}>
           Matrix:&nbsp;
-          {filter.matrix.map((item, i) => (
+          {filter.matrix.value.map((item, i) => (
             <>
               <>{(i !== 0) ? (<>, {item}</>) : (<>{item}</>)} </>
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, matrix: filter.matrix.filter((_, index) => index !== i)})) }}><BiX/></button>
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, matrix: {value: filter.matrix.value.filter((_, index) => index !== i), mandatory: filter.matrix.mandatory }})) }}><BiX/></button>
             </>
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.unit.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.unit.value.length > 0 ? "" : "hidden"}`}>
           Unit:&nbsp;
-          {filter.unit.map((item, i) => (
+          {filter.unit.value.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, unit: filter.unit.filter((_, index) => index !== i)})) }}><BiX/></button>
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, unit: {value: filter.unit.value.filter((_, index) => index !== i), mandatory: filter.unit.mandatory }})) }}><BiX/></button>
             </>
             
           ))}
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.labParameter.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.labParameter.value.length > 0 ? "" : "hidden"}`}>
           Parameter:&nbsp;
-          {filter.labParameter.map((item, i) => (
+          {filter.labParameter.value.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, labParameter: filter.labParameter.filter((_, index) => index !== i)})) }}><BiX/></button>
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, labParameter: {value: filter.labParameter.value.filter((_, index) => index !== i), mandatory: filter.labParameter.mandatory }})) }}><BiX/></button>
             </>
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.value.length > 0 ? "" : "hidden"}`}>
           Res.Interpretation:&nbsp;
-          {filter.resultInterpretation.map((item, i) => (
+          {filter.resultInterpretation.value.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultInterpretation: filter.resultInterpretation.filter((_, index) => index !== i)})) }}><BiX/></button>
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultInterpretation: {value: filter.resultInterpretation.value.filter((_, index) => index !== i), mandatory: filter.resultInterpretation.mandatory }})) }}><BiX/></button>
             </>
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultUnit.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultUnit.value.length > 0 ? "" : "hidden"}`}>
           Res.Unit:&nbsp;
-          {filter.resultUnit.map((item, i) => (
+          {filter.resultUnit.value.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultUnit: filter.resultUnit.filter((_, index) => index !== i)})) }}><BiX/></button>
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultUnit: {value: filter.resultUnit.value.filter((_, index) => index !== i), mandatory: filter.resultUnit.mandatory }})) }}><BiX/></button>
             </>
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.diagnosis.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.diagnosis.value.length > 0 ? "" : "hidden"}`}>
           Diagnosis:&nbsp;
-          {filter.diagnosis.map((item, i) => (
+          {filter.diagnosis.value.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, diagnosis: filter.diagnosis.filter((_, index) => index !== i)})) }}><BiX/></button>
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, diagnosis: {value: filter.diagnosis.value.filter((_, index) => index !== i), mandatory: filter.diagnosis.mandatory }})) }}><BiX/></button>
             </>
           ))}
           
         </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICDCode.length > 0 ? "" : "hidden"}`}>
+        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICDCode.value.length > 0 ? "" : "hidden"}`}>
           ICD:&nbsp;
-          {filter.ICDCode.map((item, i) => (
+          {filter.ICDCode.value.map((item, i) => (
             <>
               {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, ICDCode: filter.ICDCode.filter((_, index) => index !== i)})) }}><BiX/></button>
+              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, ICDCode: {value: filter.ICDCode.value.filter((_, index) => index !== i), mandatory: filter.ICDCode.mandatory }})) }}><BiX/></button>
             </>
           ))}
           

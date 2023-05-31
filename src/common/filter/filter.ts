@@ -4,11 +4,13 @@ export type IGroup = {
     not: boolean,
     link: string,
     activated: boolean,
+    mandatory: boolean,
     filter: {
       col: string,
       type: string,
       values: string[],
       activated: boolean,
+      mandatory: boolean,
     }[],
     groups: IGroup[],
 }
@@ -18,12 +20,14 @@ export const GroupSchema: z.ZodSchema<IGroup> = z.lazy(() =>
     not: z.boolean(),
     link: z.string(),
     activated: z.boolean(),
+    mandatory: z.boolean(),
     filter: z.array(
       z.object({
         col: z.string(),
         type: z.string(),
         values: z.array(z.string()),
-        activated: z.boolean()
+        activated: z.boolean(),
+        mandatory: z.boolean(),
       })
     ),
     groups: z.array(GroupSchema)
@@ -31,25 +35,57 @@ export const GroupSchema: z.ZodSchema<IGroup> = z.lazy(() =>
 )
 
 export const NormalFilterSchema = z.object({
-    cbhMasterID: z.string().optional(),
-    cbhDonorID: z.string().optional(),
-    cbhSampleID: z.string().optional(),
+    cbhMasterID: z.object({
+      value: z.string().optional(),
+      mandatory: z.boolean()
+    }),
+    cbhDonorID: z.object({
+      value: z.string().optional(),
+      mandatory: z.boolean()
+    }),
+    cbhSampleID: z.object({
+      value: z.string().optional(),
+      mandatory: z.boolean()
+    }),
     price: z.object({ 
       min: z.number().optional(), 
       max: z.number().optional(),
+      mandatory: z.boolean()
     }),
-    matrix: z.array(z.string()),
+    matrix: z.object({
+      value: z.string().array(),
+      mandatory: z.boolean()
+    }),
     quantity: z.object({
       min: z.number().optional(),
       max: z.number().optional(),
+      mandatory: z.boolean()
     }),
-    unit: z.array(z.string()),
-    labParameter: z.array(z.string()),
-    resultInterpretation: z.array(z.string()),
+    unit: z.object({
+      value: z.string().array(),
+      mandatory: z.boolean()
+    }),
+    labParameter: z.object({
+      value: z.string().array(),
+      mandatory: z.boolean()
+    }),
+    resultInterpretation: z.object({
+      value: z.string().array(),
+      mandatory: z.boolean()
+    }),
     //resultNumericals
-    resultUnit: z.array(z.string()),
-    diagnosis: z.array(z.string()),
-    ICDCode: z.array(z.string()),
+    resultUnit: z.object({
+      value: z.string().array(),
+      mandatory: z.boolean()
+    }),
+    diagnosis: z.object({
+      value: z.string().array(),
+      mandatory: z.boolean()
+    }),
+    ICDCode: z.object({
+      value: z.string().array(),
+      mandatory: z.boolean()
+    }),
 })
 
 export type INormalFilter = z.infer<typeof NormalFilterSchema>
