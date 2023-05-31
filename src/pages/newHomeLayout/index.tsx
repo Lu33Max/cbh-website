@@ -234,10 +234,10 @@ const Content: React.FC = () => {
         <div className="headline mx-4 text-center font-poppins text-[#164A41]">
           <div className="inline-block px-[140px]">Payment Methods</div>
           <div className="mt-2 flex w-full flex-wrap rounded-lg border-2 border-[#164A41] p-4">
-            <Image src="Paypal.png" alt="" className="ml-4 mr-6" />
-            <Image src="amex.png" alt="" className="mx-6" />
-            <Image src="Visa.png" alt="" className="mx-6" />
-            <Image src="Mastercard.png" alt="" className="ml-6 mr-4" />
+            <img src="Paypal.png" alt="" className="ml-4 mr-6" />
+            <img src="amex.png" alt="" className="mx-6" />
+            <img src="Visa.png" alt="" className="mx-6" />
+            <img src="Mastercard.png" alt="" className="ml-6 mr-4" />
           </div>
         </div>
       </div>

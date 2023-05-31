@@ -17,7 +17,6 @@ import Autofill from "~/components/search/normal/autofill";
 import { type INormalFilter } from "~/common/filter/filter";
 import ModalLoad from "~/components/search/normal/modalLoad";
 import ModalSave from "~/components/search/normal/modalSave";
-import { TypeOf } from "zod";
 
 export type TableSamples = {
     id:                                      string 
@@ -801,11 +800,11 @@ const Content: React.FC = () => {
         </table>
       </div>
 
-      <div className="flex flex-row w-full items-center justify-center mt-5">
+      <div className="flex flex-row w-full items-center justify-center mt-2 mb-5">
         <Footer range={range} page={page} setPage={setPage} />
 
-        <p className="mt-1 ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</p>
-        <select className="mt-1 w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
+        <p className="mt-1 ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 h-10 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</p>
+        <select className="mt-1 w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 h-10 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
           <option value={50}>50</option>
           <option value={100}>100</option>
           <option value={150}>150</option>
