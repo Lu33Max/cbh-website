@@ -17,6 +17,7 @@ import Autofill from "~/components/search/normal/autofill";
 import { type INormalFilter } from "~/common/filter/filter";
 import ModalLoad from "~/components/search/normal/modalLoad";
 import ModalSave from "~/components/search/normal/modalSave";
+import { TypeOf } from "zod";
 
 export type TableSamples = {
     id:                                      string 
@@ -333,6 +334,100 @@ const Content: React.FC = () => {
     }
   }
 
+  const [sortBy, setSortBy] = useState('');
+
+  const handleSort = (column: string) => {
+    let sortArray: TableSamples[]=[]
+    switch(column) {
+      case "Price":
+        sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+          if(a.Price !== undefined && b.Price !== undefined){
+            if (a.Price > b.Price) return (column == sortBy) ? -1 : 1;
+            else if (b.Price > a.Price) return (column == sortBy) ? 1 :  -1;
+            return 0;
+          }
+          return(-1)
+        }); 
+        break
+      case "CBHDonorID":
+        sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+          if(a.CBH_Donor_ID !== undefined && b.CBH_Donor_ID !== undefined){
+            if (a.CBH_Donor_ID > b.CBH_Donor_ID) return (column == sortBy) ? -1 : 1;
+            else if (b.CBH_Donor_ID > a.CBH_Donor_ID) return (column == sortBy) ? 1 :  -1;
+            return 0;
+          }
+          return(-1)
+        }); 
+        break
+      case "CBHSampleID":
+        sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+          if(a.CBH_Sample_ID !== undefined && b.CBH_Sample_ID !== undefined){
+            if (a.CBH_Sample_ID > b.CBH_Sample_ID) return (column == sortBy) ? -1 : 1;
+            else if (b.CBH_Sample_ID > a.CBH_Sample_ID) return (column == sortBy) ? 1 :  -1;
+            return 0;
+          }
+          return(-1)
+        }); 
+        break
+      case "Matrix":
+        sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+          if(a.Matrix !== undefined && b.Matrix !== undefined){
+            if (a.Matrix > b.Matrix) return (column == sortBy) ? -1 : 1;
+            else if (b.Matrix > a.Matrix) return (column == sortBy) ? 1 :  -1;
+            return 0;
+          }
+          return(-1)
+        }); 
+        break
+      case "Quantity":
+        sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+          if(a.Quantity !== undefined && b.Quantity !== undefined){
+            if (a.Quantity > b.Quantity) return (column == sortBy) ? -1 : 1;
+            else if (b.Quantity > a.Quantity) return (column == sortBy) ? 1 :  -1;
+            return 0;
+          }
+          return(-1)
+        }); 
+        break
+      case "Unit":
+        sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+          if(a.Unit !== undefined && b.Unit !== undefined){
+            if (a.Unit > b.Unit) return (column == sortBy) ? -1 : 1;
+            else if (b.Unit > a.Unit) return (column == sortBy) ? 1 :  -1;
+            return 0;
+          }
+          return(-1)
+        }); 
+        break
+      case "Age":
+        sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+          if(a.Age !== undefined && b.Age !== undefined){
+            if (a.Age > b.Age) return (column == sortBy) ? -1 : 1;
+            else if (b.Age > a.Age) return (column == sortBy) ? 1 :  -1;
+            return 0;
+          }
+          return(-1)
+        }); 
+        break
+      case "Gender":
+        sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+          if(a.Gender !== undefined && b.Gender !== undefined){
+            if (a.Gender > b.Gender) return (column == sortBy) ? -1 : 1;
+            else if (b.Gender > a.Gender) return (column == sortBy) ? 1 :  -1;
+            return 0;
+          }
+          return(-1)
+        }); 
+        break
+      default: 
+        return(-1)
+    }
+    setTableSamples(sortArray);
+  }
+
+  
+  
+
   return(
     <div className="max-h-[95vh] overflow-y-scroll w-full overflow-x-hidden font-poppins">
       <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Overall Search</b></h1>
@@ -628,15 +723,15 @@ const Content: React.FC = () => {
           <thead>
             <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
               <th className="py-2 font-extralight border-dotted rounded-l-xl border-black border-r-2">Cart</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">CBHDonorID</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">CBHSampleID</th>
+              <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("CBHDonorID"): setSortBy(""); handleSort("CBHDonorID")}}>CBHDonorID</button></th>
+              <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("CBHSampleID"): setSortBy(""); handleSort("CBHSampleID")}}>CBHSampleID</button></th>
               <th className="py-2 font-extralight border-dotted border-black border-r-2">Details</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Matrix</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Quantity</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Unit</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Age</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Gender</th>
-              <th className="py-2 font-extralight rounded-r-xl">Price</th>
+              <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Matrix"): setSortBy(""); handleSort("Matrix")}}>Matrix</button></th>
+              <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Quantity"): setSortBy(""); handleSort("Quantity")}}>Quantity</button></th>
+              <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Unit"): setSortBy(""); handleSort("Unit")}}>Unit</button></th>
+              <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Age"): setSortBy(""); handleSort("Age")}}>Age</button></th>
+              <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Gender"): setSortBy(""); handleSort("Gender")}}>Gender</button></th>
+              <th  className="py-2 font-extralight rounded-r-xl"><button onClick={() => {sortBy === "" ? setSortBy("Price"): setSortBy(""); handleSort("Price")}}>Price</button></th>
             </tr>
           </thead>
           <tbody>
