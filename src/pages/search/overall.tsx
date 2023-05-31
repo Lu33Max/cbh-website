@@ -475,7 +475,7 @@ const Content: React.FC = () => {
         <div className="grid grid-cols-4 gap-2 max-w-full">
           {/* CBH Master ID */}
           <div className="items-center text-center w-full">
-            <input type="text" value={filter.cbhMasterID ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onKeyDown={e => {
+            <input type="text" value={filter.cbhMasterID.value ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onKeyDown={e => {
               if(e.key === "Enter"){
                 const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
                 setFilter(filter => ({...filter, cbhMasterID: {value: temp, mandatory: filter.cbhMasterID.mandatory}}))
@@ -484,7 +484,7 @@ const Content: React.FC = () => {
           </div>
           {/* CBH Donor ID */}
           <div className="items-center text-center">
-            <input type="text" value={filter.cbhDonorID ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onKeyDown={e => {
+            <input type="text" value={filter.cbhDonorID.value ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onKeyDown={e => {
               if(e.key === "Enter"){
                 const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
                 setFilter(filter => ({...filter, cbhDonorID: {value: temp, mandatory: filter.cbhDonorID.mandatory}}))
@@ -493,7 +493,7 @@ const Content: React.FC = () => {
           </div>
           {/* CBH Sample ID */}
           <div className="items-center text-center">
-            <input type="text" value={filter.cbhSampleID ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onKeyDown={e => {
+            <input type="text" value={filter.cbhSampleID.value ?? ""} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onKeyDown={e => {
               if(e.key === "Enter"){
                 const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
                 setFilter(filter => ({...filter, cbhSampleID: {value: temp, mandatory: filter.cbhSampleID.mandatory}}))

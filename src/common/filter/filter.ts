@@ -15,21 +15,21 @@ export type IGroup = {
     groups: IGroup[],
 }
 
+export const GroupFilterSchema = z.object({
+  col: z.string(),
+  type: z.string(),
+  values: z.array(z.string()),
+  activated: z.boolean(),
+  mandatory: z.boolean(),
+})
+
 export const GroupSchema: z.ZodSchema<IGroup> = z.lazy(() =>
   z.object({
     not: z.boolean(),
     link: z.string(),
     activated: z.boolean(),
     mandatory: z.boolean(),
-    filter: z.array(
-      z.object({
-        col: z.string(),
-        type: z.string(),
-        values: z.array(z.string()),
-        activated: z.boolean(),
-        mandatory: z.boolean(),
-      })
-    ),
+    filter: z.array(GroupFilterSchema),
     groups: z.array(GroupSchema)
   })
 )
@@ -88,6 +88,7 @@ export const NormalFilterSchema = z.object({
     }),
 })
 
+export type IGroupFilter = z.infer<typeof GroupFilterSchema>
 export type INormalFilter = z.infer<typeof NormalFilterSchema>
 
 export const FilterType = {

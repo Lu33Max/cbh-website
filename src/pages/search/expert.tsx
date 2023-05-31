@@ -89,32 +89,6 @@ const defaultGroup: IGroup = {
   groups: []
 }
 
-const testGroup: IGroup = {
-  not: false,
-  link: 'AND',
-  activated: true,
-  mandatory: true,
-  filter: [{
-    col: 'Matrix',
-    type: 'equal',
-    values: ['Serum'],
-    activated: true,
-    mandatory: true,
-  }],
-  groups: [{  not: false,
-    link: 'AND',
-    activated: true,
-    mandatory: false,
-    filter: [{
-      col: 'Price',
-      type: 'equal',
-      values: ['23'],
-      activated: true,
-      mandatory: true,
-    }],
-    groups: []}]
-}
-
 const ExpertSearch: NextPage = () => {
   const state = useHookstate<IGroup>(defaultGroup);
 
@@ -404,10 +378,24 @@ type props = { filter: State<IGroup> }
 const Table: React.FC<props> = ({ filter }) => {
   const [page, setPage] = useState<number>(1)
   const [pagelength, setPagelength] = useState<number>(50)
-  const [search,] = useState<string | undefined>()
   const [range, setRange] = useState<number[]>([])
   const [showSave, setShowSave] = useState(false);
   const [showLoad, setShowLoad] = useState(false);
+
+  const [newFilter, setNewFilter] = useState<IGroup>({
+    not: false,
+    link: 'AND',
+    activated: true,
+    mandatory: true,
+    filter: [{
+      col: 'CBH_Sample_ID',
+      type: 'equal',
+      values: [''],
+      activated: true,
+      mandatory: true,
+    }],
+    groups: []
+  })
 
   const defaultShow: boolean[] = []
 
@@ -420,8 +408,8 @@ const Table: React.FC<props> = ({ filter }) => {
   const [show, setShow] = useState<boolean[]>(defaultShow)
 
   //Test
-  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: unfreeze(), pages: page, pagelength: pagelength })
-  const { data: count } = api.samples.countExpert.useQuery({ group: unfreeze() })
+  const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: newFilter, pages: page, pagelength: pagelength })
+  const { data: count } = api.samples.countExpert.useQuery({ group: newFilter })
 
   useEffect(() => {
     void refetchSamples()
@@ -561,6 +549,13 @@ const Table: React.FC<props> = ({ filter }) => {
     }
   }
 
+  function newUnfreeze(): void {
+    const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(filter.value)))
+    if(result.success){
+      setNewFilter(result.data)
+    }
+  }
+
   const [sortBy, setSortBy] = useState('');
 
   const handleSort = (column: string) => {
@@ -657,7 +652,7 @@ const Table: React.FC<props> = ({ filter }) => {
       <div className="mx-4 my-5">
         <div className='flex flex-row'>
           <div className='flex flex-row w-[50%] justify-start'>
-            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => void refetchSamples()}>Apply Filter</button>
+            <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => newUnfreeze()}>Apply Filter</button>
             <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true }], groups: [] },)}>Reset</button>
           </div>
           <div className='flex flex-row w-[50%] justify-end'>
