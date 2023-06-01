@@ -1,8 +1,7 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import { useHookstate, type State } from '@hookstate/core';
-import { api } from "~/utils/api";
+import React, { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
+import { type State } from '@hookstate/core';
 
-import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
+import { BiCartAdd, BiDetail } from "react-icons/bi"
 import Footer from "~/components/search/footer";
 import ModalSave from '~/components/search/normal/modalSave';
 import ModalLoad from '~/components/search/normal/modalLoad';
@@ -10,8 +9,8 @@ import ModalLoad from '~/components/search/normal/modalLoad';
 import ShowRows from '~/components/search/showRows';
 import Count from '~/components/search/count';
 
-import { type IGroup, GroupSchema, INormalFilter } from '~/common/filter/filter';
-import { Samples } from '@prisma/client';
+import { type IGroup, GroupSchema, type INormalFilter } from '~/common/filter/filter';
+import { type Samples } from '@prisma/client';
 import ModalLoadExpert from '~/components/search/expert/modalLoad';
 import ModalSaveExpert from '~/components/search/expert/modalSave';
 
@@ -76,11 +75,13 @@ export type TableSamples = {
     not: false,
     link: 'AND',
     activated: true,
+    mandatory: true,
     filter: [{
       col: 'CBH_Donor_ID',
       type: 'equal',
       values: [],
       activated: true,
+      mandatory: true,
     }],
     groups: []
   }  
@@ -114,8 +115,6 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
     }
   
     const [show, setShow] = useState<boolean[]>(defaultShow)
-  
-
   
     useEffect(() => {
       const newRange = [];
@@ -223,7 +222,6 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
       }
       
       setTableSamples(newArray)
-  
     }, [samples])
   
     const updateState = (index: number) => {
@@ -237,9 +235,6 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
       setShow(newArray)
     }
   
-    const handlePageLengthChange = (length: number) => {
-      setPagelength(length);
-    };
   
     function unfreeze(): IGroup {
       const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(filter.value)))
@@ -249,6 +244,97 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
       } else {
         return defaultGroup
       }
+    }
+
+    const [sortBy, setSortBy] = useState('');
+
+    const handleSort = (column: string) => {
+      let sortArray: TableSamples[]=[]
+      switch(column) {
+        case "Price":
+          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+            if(a.Price !== undefined && b.Price !== undefined){
+              if (a.Price > b.Price) return (column == sortBy) ? -1 : 1;
+              else if (b.Price > a.Price) return (column == sortBy) ? 1 :  -1;
+              return 0;
+            }
+            return(-1)
+          }); 
+          break
+        case "CBHDonorID":
+          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+            if(a.CBH_Donor_ID !== undefined && b.CBH_Donor_ID !== undefined){
+              if (a.CBH_Donor_ID > b.CBH_Donor_ID) return (column == sortBy) ? -1 : 1;
+              else if (b.CBH_Donor_ID > a.CBH_Donor_ID) return (column == sortBy) ? 1 :  -1;
+              return 0;
+            }
+            return(-1)
+          }); 
+          break
+        case "CBHSampleID":
+          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+            if(a.CBH_Sample_ID !== undefined && b.CBH_Sample_ID !== undefined){
+              if (a.CBH_Sample_ID > b.CBH_Sample_ID) return (column == sortBy) ? -1 : 1;
+              else if (b.CBH_Sample_ID > a.CBH_Sample_ID) return (column == sortBy) ? 1 :  -1;
+              return 0;
+            }
+            return(-1)
+          }); 
+          break
+        case "Matrix":
+          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+            if(a.Matrix !== undefined && b.Matrix !== undefined){
+              if (a.Matrix > b.Matrix) return (column == sortBy) ? -1 : 1;
+              else if (b.Matrix > a.Matrix) return (column == sortBy) ? 1 :  -1;
+              return 0;
+            }
+            return(-1)
+          }); 
+          break
+        case "Quantity":
+          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+            if(a.Quantity !== undefined && b.Quantity !== undefined){
+              if (a.Quantity > b.Quantity) return (column == sortBy) ? -1 : 1;
+              else if (b.Quantity > a.Quantity) return (column == sortBy) ? 1 :  -1;
+              return 0;
+            }
+            return(-1)
+          }); 
+          break
+        case "Unit":
+          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+            if(a.Unit !== undefined && b.Unit !== undefined){
+              if (a.Unit > b.Unit) return (column == sortBy) ? -1 : 1;
+              else if (b.Unit > a.Unit) return (column == sortBy) ? 1 :  -1;
+              return 0;
+            }
+            return(-1)
+          }); 
+          break
+        case "Age":
+          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+            if(a.Age !== undefined && b.Age !== undefined){
+              if (a.Age > b.Age) return (column == sortBy) ? -1 : 1;
+              else if (b.Age > a.Age) return (column == sortBy) ? 1 :  -1;
+              return 0;
+            }
+            return(-1)
+          }); 
+          break
+        case "Gender":
+          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+            if(a.Gender !== undefined && b.Gender !== undefined){
+              if (a.Gender > b.Gender) return (column == sortBy) ? -1 : 1;
+              else if (b.Gender > a.Gender) return (column == sortBy) ? 1 :  -1;
+              return 0;
+            }
+            return(-1)
+          }); 
+          break
+        default: 
+          return(-1)
+      }
+      setTableSamples(sortArray);
     }
   
     return (
@@ -260,7 +346,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
               <>
                 <div className='flex flex-row w-[50%] justify-start'>
                   <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => applyFilter()}>Apply Filter</button>
-                  <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true }], groups: [] },)}>Reset</button>
+                  <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true }], groups: [] },)}>Reset</button>
                 </div>
                 <div className='flex flex-row w-[50%] justify-end'>
                   <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setShowLoad(true)}>Load Filter</button>
@@ -273,8 +359,8 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
               
           {expert &&(
             <>
-            <ModalSaveExpert showModal={showSave} setShowModal={setShowSave} filter={unfreeze()} />
-            <ModalLoadExpert showModal={showLoad} setShowModal={setShowLoad} filter={filter} />
+              <ModalSaveExpert showModal={showSave} setShowModal={setShowSave} filter={unfreeze()} />
+              <ModalLoadExpert showModal={showLoad} setShowModal={setShowLoad} filter={filter} />
             </>
           )}
           {(!expert && filterNormal && setFilter) &&(
@@ -284,12 +370,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
               </>
           )}
           
-  
           <div className="flex flex-row w-full items-center mt-3 mb-2">
-            {/*<div className="w-fit px-3 py-1 text-lg rounded-full border-2 border-gray-500">
-              Search Results: {count ?? "0"}
-            </div>
-            */}
             <Count count={count}/>
   
             <div className="mx-auto">
@@ -298,8 +379,8 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
 
             {!expert && (
               <div className='mr-2'>
-                <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => void setShowLoad(true)}>Load Filter</button>
-                <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] border-l-white' onClick={() => void setShowSave(true)}>Save Filter</button>
+                <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setShowLoad(true)}>Load Filter</button>
+                <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] border-l-white' onClick={() => setShowSave(true)}>Save Filter</button>
               </div>
             )}          
   
@@ -310,15 +391,15 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
             <thead>
               <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
                 <th className="py-2 font-extralight border-dotted rounded-l-xl border-black border-r-2">Cart</th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2">CBHDonorID</th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2">CBHSampleID</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("CBHDonorID"): setSortBy(""); handleSort("CBHDonorID")}}>CBHDonorID</button></th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("CBHSampleID"): setSortBy(""); handleSort("CBHSampleID")}}>CBHSampleID</button></th>
                 <th className="py-2 font-extralight border-dotted border-black border-r-2">Details</th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2">Matrix</th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2">Quantity</th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2">Unit</th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2">Age</th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2">Gender</th>
-                <th className="py-2 font-extralight rounded-r-xl">Price</th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Matrix"): setSortBy(""); handleSort("Matrix")}}>Matrix</button></th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Quantity"): setSortBy(""); handleSort("Quantity")}}>Quantity</button></th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Unit"): setSortBy(""); handleSort("Unit")}}>Unit</button></th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Age"): setSortBy(""); handleSort("Age")}}>Age</button></th>
+                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Gender"): setSortBy(""); handleSort("Gender")}}>Gender</button></th>
+                <th  className="py-2 font-extralight rounded-r-xl"><button onClick={() => {sortBy === "" ? setSortBy("Price"): setSortBy(""); handleSort("Price")}}>Price</button></th>
               </tr>
             </thead>
             <tbody>
