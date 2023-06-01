@@ -13,7 +13,7 @@ type CustomModalProps = {
   filter: State<IGroup>;
 };
 
-const ModalLoad: React.FC<CustomModalProps> = ({ showModal, setShowModal, filter }) => {
+const ModalLoadExpert: React.FC<CustomModalProps> = ({ showModal, setShowModal, filter }) => {
     const [selected, setSelected] = useState<Filter | undefined>()
 
     const { data: sessionData } = useSession();
@@ -114,4 +114,4 @@ const ModalLoad: React.FC<CustomModalProps> = ({ showModal, setShowModal, filter
     );
 };
 
-export default ModalLoad;
+export default ModalLoadExpert;

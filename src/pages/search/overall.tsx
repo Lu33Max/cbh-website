@@ -1,5 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import { useHookstate, type State } from '@hookstate/core';
+import { type IGroup, GroupSchema } from '~/common/filter/filter';
 
 import { api } from "~/utils/api";
 import Header from "~/components/overall/header";
@@ -13,6 +15,9 @@ import { BiCartAdd, BiDetail, BiX } from "react-icons/bi"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import Autofill from "~/components/search/normal/autofill";
+import Count from "~/components/search/count";
+import ShowRows from "~/components/search/showRows";
+import Table from "~/components/search/table";
 
 import { type INormalFilter } from "~/common/filter/filter";
 import ModalLoad from "~/components/search/normal/modalLoad";
@@ -73,6 +78,19 @@ export type TableSamples = {
     Date_of_Collection?:                     Date,
     Procurement_Type?:                       string,
     Informed_Consent?:                       string,
+}
+
+const defaultGroup: IGroup = {
+  not: false,
+  link: 'AND',
+  activated: true,
+  filter: [{
+    col: 'CBH_Donor_ID',
+    type: 'equal',
+    values: [],
+    activated: true,
+  }],
+  groups: []
 }
 
 const Search: NextPage = () => {
@@ -332,6 +350,7 @@ const Content: React.FC = () => {
         break;
     }
   }
+  const state = useHookstate<IGroup>(defaultGroup);
 
   return(
     <div className="max-h-[95vh] overflow-y-scroll w-full overflow-x-hidden font-poppins">
@@ -594,131 +613,8 @@ const Content: React.FC = () => {
         </span>
       </div>
 
-      <div className="flex flex-row w-full items-center mt-5 px-5">
-        <div className="w-fit z-20 px-3 py-1 text-lg rounded-full border-2 border-gray-500">
-          Search Results: {count}
-        </div>
-
-        <div className="mx-auto">
-          <Footer range={range} page={page} setPage={setPage} />
-        </div>
-
-        <div className='mr-2'>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => void setShowLoad(true)}>Load Filter</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] border-l-white' onClick={() => void setShowSave(true)}>Save Filter</button>
-        </div>
-
-        <ModalSave showModal={showSave} setShowModal={setShowSave} filter={filter}/>
-        <ModalLoad showModal={showLoad} setShowModal={setShowLoad} setFilter={setFilter} />
-
-        <div className="w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 h-10 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</div>
-        <select className="w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 h-10 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
-          <option value={50}>50</option>
-          <option value={100}>100</option>
-          <option value={150}>150</option>
-          <option value={200}>200</option>
-          <option value={250}>250</option>
-          <option value={500}>500</option>
-          <option value={1000}>1000</option>
-        </select>
-      </div>
-
       <div className="mx-4 my-2">
-        <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
-          <thead>
-            <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
-              <th className="py-2 font-extralight border-dotted rounded-l-xl border-black border-r-2">Cart</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">CBHDonorID</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">CBHSampleID</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Details</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Matrix</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Quantity</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Unit</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Age</th>
-              <th className="py-2 font-extralight border-dotted border-black border-r-2">Gender</th>
-              <th className="py-2 font-extralight rounded-r-xl">Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableSamples?.map((sample, index) => (
-              <>
-                <tr key={index} className="text-center">
-                  <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button><BiCartAdd className="relative top-1"/></button></td>
-                  <td className="py-2 px-3 bg-gray-300">{sample.CBH_Donor_ID}</td>
-                  <td className="py-2 px-3 bg-gray-300">{sample.CBH_Sample_ID}</td>
-                  <td className="items-center text-2xl bg-gray-300"><button onClick={() => {updateState(index)}}><BiDetail className="relative top-1"/></button></td>
-                  <td className="py-2 px-3 bg-gray-300">{sample.Matrix}</td>
-                  <td className="py-2 px-3 bg-gray-300">{sample.Quantity}</td>
-                  <td className="py-2 px-3 bg-gray-300">{sample.Unit}</td>
-                  <td className="py-2 px-3 bg-gray-300">{sample.Age}</td>
-                  <td className="py-2 px-3 bg-gray-300">{sample.Gender}</td>
-                  <td className="py-2 px-3 bg-gray-300 rounded-r-xl">{sample.Price} €</td> 
-                </tr>
-                <tr className={`mx-5 ${show[index] ? "" : "hidden"}`}>
-                  <td colSpan={2} className="px-5 bg-gray-200">
-                    <div className="grid grid-cols-2">
-                      <strong className="col-span-2">General Data</strong>
-                      <span>CBH Master ID:</span> {sample.CBH_Master_ID ?? "NaN"}
-                      <span>Storage Temperature:</span> {sample.Storage_Temperature ?? "NaN"}
-                      <span>Freeze Thaw Cycles:</span> {sample.Freeze_Thaw_Cycles ?? "NaN"}
-                      <span>Infectious Disease Test Result:</span> {(sample.Infectious_Disease_Test_Result !== null && sample.Infectious_Disease_Test_Result !== "") ? sample.Infectious_Disease_Test_Result : "NaN"}
-                      <span>Sample Condition:</span> {sample.Sample_Condition ?? "NaN"}
-                    </div>
-                  </td>
-                  <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
-                    <div className="grid grid-cols-2 ">
-                      <strong className="col-span-2">Donor</strong>
-                      <span>Age:</span> {sample.Age ?? "NaN"}
-                      <span>Gender:</span> {sample.Gender ?? "NaN"}
-                      <span>Ethnicity:</span> {sample.Ethnicity ?? "NaN"}
-                      <strong className="col-span-2 mt-2">Ethics</strong>
-                      <span>Procurement Type:</span> {sample.Procurement_Type ?? "NaN"}
-                    </div>
-                  </td>
-                  <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
-                    <div className="grid grid-cols-2">
-                    <strong className="col-span-2">Laboratory</strong>
-                      <span>Lab Parameter</span> {(sample.Lab_Parameter && sample.Lab_Parameter.length > 0) ? sample.Lab_Parameter.join(", "): "NaN"}
-                      <span>Result Raw:</span> {(sample.Result_Raw && sample.Result_Raw.length > 0) ? sample.Result_Raw.join(", "): "NaN"}
-                      <span>Result Unit:</span> {(sample.Result_Unit && sample.Result_Unit.length > 0) ? sample.Result_Unit.join(", "): "NaN"}
-                      <span>Interpretation:</span> {(sample.Result_Interpretation && sample.Result_Interpretation.length > 0) ? sample.Result_Interpretation.join(", "): "NaN"}
-                      <span>Cut Off Raw:</span> {sample.Cut_Off_Raw ? sample.Cut_Off_Raw.join(", "): "NaN"}
-                      <span>Test Method:</span> {(sample.Test_Method && sample.Test_Method.length > 0) ? sample.Test_Method.join(", "): "NaN"}
-                      <span>Test System:</span> {(sample.Test_System && sample.Test_System.length > 0) ? sample.Test_System.join(", "): "NaN"}
-                      <span>Test System Manuf.:</span> {(sample.Test_System_Manufacturer && sample.Test_System_Manufacturer.length > 0) ? sample.Test_System_Manufacturer.join(", "): "NaN"}
-                    </div>
-                  </td>
-                  <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={4}>
-                    <div className="grid grid-cols-2">
-                      <strong className="col-span-2">Clinical Diagnosis</strong>
-                      <span>Diagnosis:</span> {(sample.Diagnosis && sample.Diagnosis.length > 0) ? sample.Diagnosis.join(", "): "NaN"}
-                      <span>Diagnosis Remarks:</span> {(sample.Diagnosis_Remarks && sample.Diagnosis_Remarks.length > 0) ? sample.Diagnosis_Remarks.join(", "): "NaN"}
-                      <span>ICD:</span> {(sample.ICD_Code && sample.ICD_Code.length > 0) ? sample.ICD_Code.join(", ") : "NaN"}
-                      <strong className="col-span-2 mt-2">Preanalytics</strong>
-                      <span>Collection Country:</span> {sample.Country_of_Collection ?? "NaN"}
-                      <span>Collection Date:</span> {sample.Date_of_Collection?.toDateString() ?? "NaN"}
-                    </div>
-                  </td>
-                </tr>
-              </>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="flex flex-row w-full items-center justify-center mt-5">
-        <Footer range={range} page={page} setPage={setPage} />
-
-        <p className="mt-1 ml-4 w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition">Show rows</p>
-        <select className="mt-1 w-fit z-20 px-3 py-2 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" name="pagelength" id="pagelength" value={pagelength} onChange={e => handlePageLengthChange(parseInt(e.target.value))}>
-          <option value={50}>50</option>
-          <option value={100}>100</option>
-          <option value={150}>150</option>
-          <option value={200}>200</option>
-          <option value={250}>250</option>
-          <option value={500}>500</option>
-          <option value={1000}>1000</option>
-        </select>
+        <Table filter={state} page={page} pagelength={pagelength} count={count} samples={samples} setPage={setPage} setPagelength={setPagelength} expert={false} filterNormal={filter} setFilter={setFilter}/>
       </div>
     </div>
   )

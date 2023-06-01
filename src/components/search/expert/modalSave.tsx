@@ -11,7 +11,7 @@ type CustomModalProps = {
   filter: IGroup;
 };
 
-const ModalSave: React.FC<CustomModalProps> = ({ showModal, setShowModal , filter}) => {
+const ModalSaveExpert: React.FC<CustomModalProps> = ({ showModal, setShowModal , filter}) => {
      const [filtername, setFiltername] = useState<string>('')
 
     const { data: sessionData } = useSession();
@@ -107,4 +107,4 @@ const ModalSave: React.FC<CustomModalProps> = ({ showModal, setShowModal , filte
     );
 };
 
-export default ModalSave;
+export default ModalSaveExpert;
