@@ -1,7 +1,7 @@
 import React, { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
 import { type State } from '@hookstate/core';
 
-import { BiCartAdd, BiDetail } from "react-icons/bi"
+import { BiCartAdd, BiDetail, BiCog } from "react-icons/bi"
 import Footer from "~/components/search/footer";
 import ModalSave from '~/components/search/normal/modalSave';
 import ModalLoad from '~/components/search/normal/modalLoad';
@@ -109,6 +109,17 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
     const defaultShow: boolean[] = []
   
     const [tableSamples, setTableSamples] = useState<TableSamples[]>([])
+
+
+    type SampleKey = keyof typeof tableSamples[0];
+
+    const [settings, setSettings] = useState<boolean>(false)
+    const [formatting, setFormatting] = useState<boolean>(true)
+
+    const defaultColumns = ["CBH_Donor_ID","CBH_Sample_ID","Matrix","Quantity","Unit","Age","Gender","Price"]
+    const [activeColumns, setActiveColumns] = useState<string[]>(defaultColumns)
+    const [tempColumns, setTempColumns] = useState<string[]>(defaultColumns)
+     
   
     for (let i = 0; i < pagelength; i++) {
       defaultShow.push(false)
@@ -223,6 +234,10 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
       
       setTableSamples(newArray)
     }, [samples])
+
+    useEffect(() => {
+      sortColumns()
+    }, [tempColumns])
   
     const updateState = (index: number) => {
       const newArray = show.map((item, i) => {
@@ -248,93 +263,51 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
 
     const [sortBy, setSortBy] = useState('');
 
-    const handleSort = (column: string) => {
+    function getProperty<T, K extends keyof T>(o: T, propertyName: K): T[K] {
+      return o[propertyName]; // o[propertyName] is of type T[K]
+    }
+
+    const handleSort = (column: SampleKey) => {
       let sortArray: TableSamples[]=[]
-      switch(column) {
-        case "Price":
-          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
-            if(a.Price !== undefined && b.Price !== undefined){
-              if (a.Price > b.Price) return (column == sortBy) ? -1 : 1;
-              else if (b.Price > a.Price) return (column == sortBy) ? 1 :  -1;
-              return 0;
-            }
-            return(-1)
-          }); 
-          break
-        case "CBHDonorID":
-          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
-            if(a.CBH_Donor_ID !== undefined && b.CBH_Donor_ID !== undefined){
-              if (a.CBH_Donor_ID > b.CBH_Donor_ID) return (column == sortBy) ? -1 : 1;
-              else if (b.CBH_Donor_ID > a.CBH_Donor_ID) return (column == sortBy) ? 1 :  -1;
-              return 0;
-            }
-            return(-1)
-          }); 
-          break
-        case "CBHSampleID":
-          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
-            if(a.CBH_Sample_ID !== undefined && b.CBH_Sample_ID !== undefined){
-              if (a.CBH_Sample_ID > b.CBH_Sample_ID) return (column == sortBy) ? -1 : 1;
-              else if (b.CBH_Sample_ID > a.CBH_Sample_ID) return (column == sortBy) ? 1 :  -1;
-              return 0;
-            }
-            return(-1)
-          }); 
-          break
-        case "Matrix":
-          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
-            if(a.Matrix !== undefined && b.Matrix !== undefined){
-              if (a.Matrix > b.Matrix) return (column == sortBy) ? -1 : 1;
-              else if (b.Matrix > a.Matrix) return (column == sortBy) ? 1 :  -1;
-              return 0;
-            }
-            return(-1)
-          }); 
-          break
-        case "Quantity":
-          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
-            if(a.Quantity !== undefined && b.Quantity !== undefined){
-              if (a.Quantity > b.Quantity) return (column == sortBy) ? -1 : 1;
-              else if (b.Quantity > a.Quantity) return (column == sortBy) ? 1 :  -1;
-              return 0;
-            }
-            return(-1)
-          }); 
-          break
-        case "Unit":
-          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
-            if(a.Unit !== undefined && b.Unit !== undefined){
-              if (a.Unit > b.Unit) return (column == sortBy) ? -1 : 1;
-              else if (b.Unit > a.Unit) return (column == sortBy) ? 1 :  -1;
-              return 0;
-            }
-            return(-1)
-          }); 
-          break
-        case "Age":
-          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
-            if(a.Age !== undefined && b.Age !== undefined){
-              if (a.Age > b.Age) return (column == sortBy) ? -1 : 1;
-              else if (b.Age > a.Age) return (column == sortBy) ? 1 :  -1;
-              return 0;
-            }
-            return(-1)
-          }); 
-          break
-        case "Gender":
-          sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
-            if(a.Gender !== undefined && b.Gender !== undefined){
-              if (a.Gender > b.Gender) return (column == sortBy) ? -1 : 1;
-              else if (b.Gender > a.Gender) return (column == sortBy) ? 1 :  -1;
-              return 0;
-            }
-            return(-1)
-          }); 
-          break
-        default: 
-          return(-1)
-      }
+
+      sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+
+        const a1 = getProperty(a, column)
+        const b1 = getProperty(b, column)
+
+        if(a1 !== undefined && b1 !== undefined){
+          if(a1 > b1) return (column == sortBy) ? -1 : 1;
+          else if (b1 > a1) return (column == sortBy) ? 1 :  -1;
+          return 0;
+        }
+        return(-1)
+      }); 
+
       setTableSamples(sortArray);
+    }
+
+    function showColumns (column:string):void {
+      if (tempColumns.find(c => c === column)) {
+        setTempColumns(tempColumns.filter(c => c !== column))
+      } else {
+        setTempColumns([...tempColumns, column])
+      }
+    }
+
+    function sortColumns (){
+      let sortArray: string[]=[]
+
+      sortArray = [...tempColumns].sort((a: string, b: string) => {
+        if (tableSamples[0]) {
+          if(Object.getOwnPropertyNames(tableSamples[0]).findIndex(i => i === a) > Object.getOwnPropertyNames(tableSamples[0]).findIndex(i => i === b)) return (1)
+          else if (Object.getOwnPropertyNames(tableSamples[0]).findIndex(i => i === b) > Object.getOwnPropertyNames(tableSamples[0]).findIndex(i => i === a)) return (-1)
+          return 0;
+        }
+        return 0;
+        
+      })
+      setActiveColumns(sortArray)
+ 
     }
   
     return (
@@ -385,21 +358,37 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
             )}          
   
             <ShowRows pagelength={pagelength} setPagelength={setPagelength}/>
+            {expert &&(
+              <button className='text-xl mx-3' onClick={() => setSettings(!settings)}><BiCog/></button>
+            )}
           </div>
+          {settings &&(
+            <div className='my-3'>
+            <h1 className='text-2xl'>Settings</h1>
+            <label>Auto-Formatting: </label><input type='checkbox' onChange={() => setFormatting(!formatting)} checked={formatting}></input>
+            <br/>
+            {Object.getOwnPropertyNames(tableSamples[0]).map(name => {
+              if (name !== "id") {
+                return(
+                  <button onClick={() => showColumns(name)} disabled={formatting} className={`mx-1 my-1 rounded-lg p-2 ${activeColumns.find(c => c === name)? "bg-[#9DC88D]": "bg-gray-300"}`}>{name.replace(/_/g," ")}</button>
+                )
+              }              
+            })}
+            <br/>
+            <button onClick={() => {setActiveColumns(defaultColumns); setTempColumns(defaultColumns)}} className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-2xl border-solid border-2 bg-orange-300 border-orange-300'>Reset</button>
+            </div>
+          )}
   
           <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
             <thead>
               <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
                 <th className="py-2 font-extralight border-dotted rounded-l-xl border-black border-r-2">Cart</th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("CBHDonorID"): setSortBy(""); handleSort("CBHDonorID")}}>CBHDonorID</button></th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("CBHSampleID"): setSortBy(""); handleSort("CBHSampleID")}}>CBHSampleID</button></th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2">Details</th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Matrix"): setSortBy(""); handleSort("Matrix")}}>Matrix</button></th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Quantity"): setSortBy(""); handleSort("Quantity")}}>Quantity</button></th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Unit"): setSortBy(""); handleSort("Unit")}}>Unit</button></th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Age"): setSortBy(""); handleSort("Age")}}>Age</button></th>
-                <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy("Gender"): setSortBy(""); handleSort("Gender")}}>Gender</button></th>
-                <th  className="py-2 font-extralight rounded-r-xl"><button onClick={() => {sortBy === "" ? setSortBy("Price"): setSortBy(""); handleSort("Price")}}>Price</button></th>
+                {activeColumns.map(column => {
+                  return(
+                    <th className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy(column): setSortBy(""); handleSort(column as SampleKey)}}>{column.replace(/_/g," ")}</button></th>
+                  )
+                })}
+                <th className="py-2 font-extralight rounded-r-xl">Details</th>
               </tr>
             </thead>
             <tbody>
@@ -407,15 +396,24 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
                 <>
                   <tr key={index} className="text-center">
                     <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button><BiCartAdd className="relative top-1" /></button></td>
+                    {activeColumns.map(column => {
+                      return(
+                        <td className="py-2 px-3 bg-gray-300">{getProperty(sample, column as SampleKey)?.toString()}</td>
+                      )
+                    })}
+
+                    <td className="py-2 px-3 bg-gray-300 rounded-r-xl"><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
+
+{/*
                     <td className="py-2 px-3 bg-gray-300">{sample.CBH_Donor_ID}</td>
                     <td className="py-2 px-3 bg-gray-300">{sample.CBH_Sample_ID}</td>
-                    <td className="items-center text-2xl bg-gray-300"><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
                     <td className="py-2 px-3 bg-gray-300">{sample.Matrix}</td>
                     <td className="py-2 px-3 bg-gray-300">{sample.Quantity}</td>
                     <td className="py-2 px-3 bg-gray-300">{sample.Unit}</td>
                     <td className="py-2 px-3 bg-gray-300">{sample.Age}</td>
                     <td className="py-2 px-3 bg-gray-300">{sample.Gender}</td>
                     <td className="py-2 px-3 bg-gray-300 rounded-r-xl">{sample.Price} €</td>
+*/}
                   </tr>
                   <tr className={`mx-5 ${show[index] ? "" : "hidden"}`}>
                     <td colSpan={2} className="px-5 bg-gray-200">
