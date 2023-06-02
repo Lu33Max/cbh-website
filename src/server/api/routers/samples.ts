@@ -1781,9 +1781,23 @@ export const sampleRouter = createTRPCRouter({
             const offset = (input.pages && input.pagelength) ? (input.pages -1) * input.pagelength : 0
 
             if (BuildQuery(input.group) == Prisma.empty) {
-                return ctx.prisma.samples.findMany({
-                    take: input.pagelength, 
-                    skip: offset,
+                const uniqueSamples = await ctx.prisma.samples.findMany({
+                    distinct: ['CBH_Sample_ID'],
+                    take: input.pagelength,
+                    skip: (input.pages && input.pagelength) ? (input.pages - 1) * input.pagelength : 0,
+                    select: {
+                        CBH_Sample_ID: true
+                    }
+                })
+
+                const uniqueIDs = uniqueSamples.map(sample => sample.CBH_Sample_ID ?? "") ?? []
+
+                return await ctx.prisma.samples.findMany({
+                    where: {
+                        CBH_Sample_ID: {
+                            in: uniqueIDs
+                        }
+                    },
                     orderBy: {
                         CBH_Sample_ID: 'desc',
                     },
