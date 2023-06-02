@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const SampleSchema = z.object({
-    id:                             z.string().optional(),
+    id:                             z.string(),
     CBH_Donor_ID:                   z.string().nullable(),
     CBH_Master_ID:                  z.string().nullable(),
     CBH_Sample_ID:                  z.string().nullable(),
