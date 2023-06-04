@@ -108,7 +108,7 @@ const HeaderNEW: React.FC = () => {
           <div className="flex flex-col items-start mx-3">
             <label style={{ fontSize: '18px' }}>Become a Part of us!</label>
           </div>
-          <div className="flex flex-col items-center mx-3 border border-solid rounded-lg border-2 border-[#164A41] pl-4 ">
+          <div className="flex flex-col items-center mx-3 border-solid rounded-lg border-2 border-[#164A41] pl-4 ">
            <div className="flex">
             <button className="bg-white mr-2" style={{ fontSize: '18px' }}>Register now!</button>
              <button className="rounded-br-lg rounded-tr-lg bg-[#F1B24A] px-2 py-1 ml-8 text-lg">
@@ -134,7 +134,7 @@ const HeaderNEW: React.FC = () => {
           </div>
 
           <div className="flex flex-col items-end mx-3">
-            <label style={{ fontSize: '18px' }}>Don't miss out!</label>
+            <label style={{ fontSize: '18px' }}>Don&apos;t miss out!</label>
           </div>
           <div className="flex flex-col items-center mx-3 border border-solid rounded-lg border-2 border-[#164A41] pl-4">
            <div className="flex">
