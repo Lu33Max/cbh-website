@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { BiSearch, BiNews, BiLogIn } from 'react-icons/bi'
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 
 const Header: React.FC = () => {
   const { data: sessionData } = useSession();
@@ -13,7 +12,7 @@ const Header: React.FC = () => {
   const onSearch = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const encodedSearchQuery = encodeURI(searchQuery);
+    const encodedSearchQuery = encodeURIComponent(searchQuery);
     void router.push(`/search/overall?q=${encodedSearchQuery}`);
   }
 

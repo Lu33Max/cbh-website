@@ -12,8 +12,10 @@ import Table from '~/components/search/table';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 
-import { type IGroup, GroupSchema } from '~/common/filter/filter';
+import { type IGroup, GroupSchema, GroupFilterSchema } from '~/common/filter/filter';
 import { api } from '~/utils/api';
+import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 export type TableSamples = {
   id:                                      string,
@@ -108,6 +110,11 @@ const ExpertSearch: NextPage = () => {
 
   const state = useHookstate<IGroup>(defaultGroup);
 
+  /*Search Bar function */
+  const router = useRouter()
+  const pathname = usePathname();
+  const { f } = router.query
+
   //Test
   const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: newFilter, pages: page, pagelength: pagelength })
   const { data: count } = api.samples.countExpert.useQuery({ group: newFilter })
@@ -116,7 +123,15 @@ const ExpertSearch: NextPage = () => {
     void refetchSamples()
   }, [search, page, pagelength, refetchSamples])
 
+  useEffect(() => {
+    if(f !== undefined){
+      state.set(GroupSchema.parse(JSON.parse(f.toString())))
+      applyFilter()
+    }
+  }, [f])
+
   function applyFilter () {
+    void router.push(`${pathname}?f=${encodeURIComponent(JSON.stringify(state.value))}`, undefined, {shallow: true})
     const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(state.value)))
     if(result.success){
       setNewFilter(result.data)

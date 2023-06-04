@@ -1,13 +1,13 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useHookstate } from '@hookstate/core';
-import { type IGroup } from '~/common/filter/filter';
+import { NormalFilterSchema, type IGroup } from '~/common/filter/filter';
 
 import { api } from "~/utils/api";
 import Header from "~/components/overall/header";
 import Sidebar from "~/components/overall/sidebar";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
@@ -16,6 +16,7 @@ import Table from "~/components/search/table";
 
 import { type INormalFilter } from "~/common/filter/filter";
 import { BiX } from "react-icons/bi";
+import { useRouter } from "next/router";
 
 const defaultGroup: IGroup = {
   not: false,
@@ -114,13 +115,14 @@ const Content: React.FC = () => {
   const defaultShow: boolean[] = []
 
   /*Search Bar function */
-  const searchBar = useSearchParams();
-  const searchQuery = searchBar ? searchBar.get('q') : null;
-  const encodedSearchQuery = encodeURI(searchQuery || "");
+  const router = useRouter()
+  const pathname = usePathname();
+  const { q, f } = router.query
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
   const [page, setPage] = useState<number>(1)
   const [pagelength, setPagelength] = useState<number>(50)
-  const [search, setSearch] = useState<string | undefined>(encodedSearchQuery)
+  const [search, setSearch] = useState<string | undefined>()
   const [filter, setFilter] = useState<INormalFilter>(defaultFilter)
 
   const state = useHookstate<IGroup>(defaultGroup);
@@ -139,11 +141,21 @@ const Content: React.FC = () => {
   }, [search, page, pagelength, filter, refetchSamples])
 
   useEffect(() => {
-    const newSearchQuery = searchBar ? searchBar.get('q') : null;
-    const newEncodedSearchQuery = encodeURI(newSearchQuery || "");
+    setSearch(q ? q.toString() : undefined)
+  }, [q])
 
-    setSearch(newEncodedSearchQuery)
-  }, [searchBar])
+  useEffect(() => {
+    if(f !== undefined){
+      setFilter(NormalFilterSchema.parse(JSON.parse(f.toString())))
+      setIsLoaded(true)
+    }
+  }, [f])
+
+  useEffect(() => {
+    if(isLoaded && !(JSON.stringify(filter) === JSON.stringify(defaultFilter))){
+      void router.push(`${pathname}?${search ? encodeURIComponent(search) + "&" : ""}f=${encodeURIComponent(JSON.stringify(filter))}`, undefined, {shallow: true})
+    }
+  }, [filter, isLoaded])
 
   function handleFilterChange(value: string, column:string): void {
     switch(column){
