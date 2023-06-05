@@ -159,6 +159,11 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
     groupState.groups.map((group: State<IGroup>) => {SetActivated(group, activated)})    
   }
 
+  function SetOptional(groupState: State<IGroup>, optional: boolean): void{
+    groupState.groups.map((group: State<IGroup>) => {SetOptional(group, optional)})    
+    groupState.mandatory.set(optional)
+  }
+
   return <>
     <div className="w-full py-1 text-lg rounded-3xl mt-3 from-[#164A41] to-[#4D774E] bg-gradient-to-r">
       <div className='flex flex-row px-5 py-2 font-body font-poppins text-2xl font-thin'>
@@ -184,6 +189,17 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: true}], groups: [] }))}>New Group</button>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true}]))}>New Rule</button>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-400 border-orange-400' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "deactivate": "activate"}</button>
+          <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {SetOptional(self, !self.mandatory.value)}}>{self.mandatory.value ? "!": "?"}</button>
+          </OverlayTrigger>
         </div>
       </div>
 
@@ -193,9 +209,19 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <TypeSelect type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
-            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "deactivate": "activate"}</button>
+            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
-          </div>
+            <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+            }>
+              <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
+            </OverlayTrigger>          </div>
         </div>
       )}
 
@@ -217,6 +243,11 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
     groupState.groups.map((group: State<IGroup>) => {SetActivated(group, activated)})    
   }
 
+  function SetOptional(groupState: State<IGroup>, optional: boolean): void{
+    groupState.groups.map((group: State<IGroup>) => {SetOptional(group, optional)})    
+    groupState.mandatory.set(optional)
+  }
+
   return <>
     <div className="w-full py-1 text-lg rounded-3xl mt-1 bg-[rgb(131,182,94)] to-[#4D774E] bg-gradient-to-r">
       <div className='flex flex-row px-5 py-2 font-body font-poppins text-2xl font-thin'>
@@ -228,8 +259,19 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
         <div className='flex flex-row justify-end items-center w-[50%] pr-3'>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: true}], groups: [] }))}>New Group</button>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true}]))}>New Rule</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-orange-400 border-y-orange-400 border-l-orange-400' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "Deactivate": "Activate"}</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-orange-400 border-y-orange-400 border-l-orange-400' disabled={!parent.activated.value} onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "Deactivate": "Activate"}</button>
           <button className="w-[6rem] border-2 bg-red-500 hover:bg-red-400 border-red-500 hover:border-red-400 text-white py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => parent.groups.set((group) => group.filter((_, index) => index !== i))} >Delete</button>
+          <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" disabled={!parent.mandatory.value} onClick={() => {SetOptional(self, !self.mandatory.value)}}>{self.mandatory.value ? "!": "?"}</button>
+          </OverlayTrigger> 
         </div>
       </div>
 
@@ -239,8 +281,19 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <TypeSelect type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
-            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{filterState.activated.value ? "Deactivate": "Activate"}</button>
+            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" disabled={!self.activated.value} onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))}>Delete</button>
+            <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+            }>
+              <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" disabled={!self.mandatory.value} onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
+            </OverlayTrigger>
           </div>  
         </div>
       )}

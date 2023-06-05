@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useHookstate } from '@hookstate/core';
+import { useHookstate, type State } from '@hookstate/core';
 import { type IGroup } from '~/common/filter/filter';
 
 import { api } from "~/utils/api";
@@ -201,6 +201,7 @@ const Content: React.FC = () => {
     }
   }
 
+
   return(
     <div className="max-h-[95vh] overflow-y-scroll w-full overflow-x-hidden font-poppins">
       <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Overall Search</b></h1>
@@ -398,8 +399,18 @@ const Content: React.FC = () => {
               <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, matrix: {value: filter.matrix.value.filter((_, index) => index !== i), mandatory: filter.matrix.mandatory }})) }}><BiX/></button>
             </>
           ))}
-          
-        </span>
+          <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp1 = filter.matrix;  temp1.mandatory = !temp1.mandatory; setFilter(filter => ({...filter, matrix: temp1}))}}>{filter.matrix.mandatory ? "!": "?"}</button>
+          </OverlayTrigger>        
+          </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.unit.value.length > 0 ? "" : "hidden"}`}>
           Unit:&nbsp;
           {filter.unit.value.map((item, i) => (
@@ -409,6 +420,17 @@ const Content: React.FC = () => {
             </>
             
           ))}
+          <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp2 = filter.unit;  temp2.mandatory = !temp2.mandatory; setFilter(filter => ({...filter, unit: temp2}))}}>{filter.unit.mandatory ? "!": "?"}</button>
+          </OverlayTrigger>
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.labParameter.value.length > 0 ? "" : "hidden"}`}>
           Parameter:&nbsp;
@@ -418,7 +440,17 @@ const Content: React.FC = () => {
               <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, labParameter: {value: filter.labParameter.value.filter((_, index) => index !== i), mandatory: filter.labParameter.mandatory }})) }}><BiX/></button>
             </>
           ))}
-          
+          <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp3 = filter.labParameter;  temp3.mandatory = !temp3.mandatory; setFilter(filter => ({...filter, labParameter: temp3}))}}>{filter.labParameter.mandatory ? "!": "?"}</button>
+          </OverlayTrigger>
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.value.length > 0 ? "" : "hidden"}`}>
           Res.Interpretation:&nbsp;
@@ -428,7 +460,17 @@ const Content: React.FC = () => {
               <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultInterpretation: {value: filter.resultInterpretation.value.filter((_, index) => index !== i), mandatory: filter.resultInterpretation.mandatory }})) }}><BiX/></button>
             </>
           ))}
-          
+          <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp4 = filter.resultInterpretation;  temp4.mandatory = !temp4.mandatory; setFilter(filter => ({...filter, resultInterpretation: temp4}))}}>{filter.resultInterpretation.mandatory ? "!": "?"}</button>
+          </OverlayTrigger>
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultUnit.value.length > 0 ? "" : "hidden"}`}>
           Res.Unit:&nbsp;
@@ -438,7 +480,17 @@ const Content: React.FC = () => {
               <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultUnit: {value: filter.resultUnit.value.filter((_, index) => index !== i), mandatory: filter.resultUnit.mandatory }})) }}><BiX/></button>
             </>
           ))}
-          
+          <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp5 = filter.resultUnit;  temp5.mandatory = !temp5.mandatory; setFilter(filter => ({...filter, resultUnit: temp5}))}}>{filter.resultUnit.mandatory ? "!": "?"}</button>
+          </OverlayTrigger>
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.diagnosis.value.length > 0 ? "" : "hidden"}`}>
           Diagnosis:&nbsp;
@@ -448,7 +500,17 @@ const Content: React.FC = () => {
               <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, diagnosis: {value: filter.diagnosis.value.filter((_, index) => index !== i), mandatory: filter.diagnosis.mandatory }})) }}><BiX/></button>
             </>
           ))}
-          
+          <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp6 = filter.diagnosis;  temp6.mandatory = !temp6.mandatory; setFilter(filter => ({...filter, diagnosis: temp6}))}}>{filter.diagnosis.mandatory ? "!": "?"}</button>
+          </OverlayTrigger>          
         </span>
         <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICDCode.value.length > 0 ? "" : "hidden"}`}>
           ICD:&nbsp;
@@ -458,7 +520,17 @@ const Content: React.FC = () => {
               <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, ICDCode: {value: filter.ICDCode.value.filter((_, index) => index !== i), mandatory: filter.ICDCode.mandatory }})) }}><BiX/></button>
             </>
           ))}
-          
+          <OverlayTrigger trigger="hover" placement="bottom" rootClose={true} overlay={
+            <Popover id="popover-basic" className='z-30'>
+              <Popover.Body className="bg-white rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                <div>
+                  Description optional Button
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp7 = filter.ICDCode;  temp7.mandatory = !temp7.mandatory; setFilter(filter => ({...filter, ICDCode: temp7}))}}>{filter.ICDCode.mandatory ? "!": "?"}</button>
+          </OverlayTrigger>          
         </span>
       </div>
 
