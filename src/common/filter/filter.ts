@@ -73,7 +73,11 @@ export const NormalFilterSchema = z.object({
       value: z.string().array(),
       mandatory: z.boolean()
     }),
-    //resultNumericals
+    resultNumerical: z.object({
+      min: z.number().optional(),
+      max: z.number().optional(),
+      mandatory: z.boolean()
+    }),
     resultUnit: z.object({
       value: z.string().array(),
       mandatory: z.boolean()
