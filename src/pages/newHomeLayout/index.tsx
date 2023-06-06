@@ -255,7 +255,6 @@ const Content: React.FC = () => {
       <div className="headline italic justify-center text-center font-poppins text-[#164A41] border-2 border-[#164A41] p-4 mx-28 mb-4 rounded-lg relative">
         <div>“You have deserved to be called the leading human biospecimen marketplace”</div>
         <div>Nadine, DE [ 10/05/2022 ]</div>
-
       </div>
       <div className="border-b-2 border-solid border-[#164A41] my-1 gradient">
         <div className="grid grid-cols-3 items-center text-center justify-center justify-items-center text-white gap-8 font-poppins text-2xl">
