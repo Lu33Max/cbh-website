@@ -128,18 +128,22 @@ const Content: React.FC = () => {
           <span className="absolute -bottom-1 left-1/2 h-[2px] w-20 -translate-x-1/2 transform rounded-full bg-[#164A41]"></span>
         </h1>
       </div>
-      <div className="mb-10 ml-[128px] mt-5 grid w-full grid-cols-3 items-center justify-center">
+
+      <div className="mb-10 mt-5 mx-40 grid w-auto grid-cols-3 items-center justify-center text-center justify-items-center">
         <div>
           <Image
             src="/allergy.png"
             alt="allergy"
-            className="custom-shadow mx-16 border-b-2 border-[#164A41] object-contain"
-            width={225}
-            height={210}
+            className="custom-shadow border-b-2 border-[#164A41] object-contain"
+            width={300}
+            height={300}
           />
-          <div className="custom-shadow mx-16 flex w-[225px] flex-col bg-white p-6">
+          <div className="custom-shadow flex w-[300px] flex-col bg-white p-6">
             <div className="h-full items-start text-center font-poppins">
-              Spring is Coming! Allergy Season Ahead
+              Spring is Coming!
+            </div>
+            <div className="h-full items-start text-center font-poppins">
+              Allergy Season Ahead
             </div>
           </div>
         </div>
@@ -147,11 +151,11 @@ const Content: React.FC = () => {
           <Image
             src="/pink.png"
             alt="pink stuff"
-            className="custom-shadow mx-16 border-b-2 border-[#164A41] object-contain"
-            width={225}
-            height={210}
+            className="custom-shadow border-b-2 border-[#164A41] object-contain"
+            width={300}
+            height={300}
           />
-          <div className="custom-shadow mx-16 flex w-[225px] flex-col bg-white p-6">
+          <div className="custom-shadow flex w-[300px] flex-col bg-white p-6">
             <div className="h-full items-start text-center font-poppins">
               Discover Endocrine Disorder Biospecimens
             </div>
@@ -161,11 +165,11 @@ const Content: React.FC = () => {
           <Image
             src="/mosquito.png"
             alt="mosquito"
-            className="custom-shadow mx-16 border-b-2 border-[#164A41] object-contain"
-            width={225}
-            height={210}
+            className="custom-shadow border-b-2 border-[#164A41] object-contain"
+            width={300}
+            height={300}
           />
-          <div className="custom-shadow mx-16 flex w-[225px] flex-col bg-white p-6">
+          <div className="custom-shadow flex w-[300px] flex-col bg-white p-6">
             <div className="h-full items-start text-center font-poppins">
               Be Aware! Tropical Infection Biospecimens
             </div>
@@ -181,19 +185,26 @@ const Content: React.FC = () => {
         </h1>
       </div>
       <div>
-        <div className="my-6 flex h-fit w-full flex-row items-center justify-center">
+        <div className="my-6 flex h-1/5 w-full flex-row justify-items-center justify-center items-center relative my-[160px]">
+        <Image
+              src="/ESR.png"
+              alt=""
+              className="absolute opacity-100"
+              width={1192}
+              height={200}
+             />
           <Image
             src="/placeholdergreen.png"
             alt=""
-            className="custom-shadow opacity-50"
+            className="custom-shadow absolute opacity-40"
             width={1920}
-            height={280}
+            height={300}
           />
         </div>
       </div>
-      <div className="m-auto mb-10 mt-5 flex items-center justify-center">
+      <div className="m-auto mb-10 mt-32 flex items-center justify-center">
         <div className="headline mx-4 text-center font-poppins text-[#164A41]">
-          <div className="inline-block px-32">Follow Our Journey!</div>
+          <div className="inline-block px-32 ">Follow Our Journey!</div>
           <div className="mt-2 flex w-full flex-wrap rounded-lg border-2 border-[#164A41] p-4">
             <Image src="/facebook.png" alt="" className="mx-4" width={32} height={60} />
             <Image src="/twitter.png" alt="" className="mx-4" width={75} height={60} />
@@ -241,16 +252,33 @@ const Content: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="border-b-2 border-solid p-48 border-[#164A41] my-1 gradient slide">
-        <div>
+      <div className="headline italic justify-center text-center font-poppins text-[#164A41] border-2 border-[#164A41] p-4 mx-28 mb-4 rounded-lg relative">
+        <div>“You have deserved to be called the leading human biospecimen marketplace”</div>
+        <div>Nadine, DE [ 10/05/2022 ]</div>
 
-        </div>
-        
       </div>
-      <div className="my-5 border h-0 w-full rounded-3xl border-solid border-[#164A41]"></div>
+      <div className="border-b-2 border-solid border-[#164A41] my-1 gradient">
+        <div className="grid grid-cols-3 items-center text-center justify-center justify-items-center text-white gap-8 font-poppins text-2xl">
+          <div className="mt-4 tracking-[0.1em]">COMPANY INFORMATION</div>
+          <div className="mt-4 tracking-[0.1em]">QUESTIONS?</div>
+          <div className="mt-4 tracking-[0.1em]">BECOME A SUPPLIER</div>
+          <button className="">Terms and Conditions</button>
+          <button className="">Shipping Information,</button>
+          <button className="">Sell at CBH</button>
+          <button className="">Privacy Policy</button>
+          <button className="">Career Opportunities</button>
+          <button className="">Supplier Login</button>
+          <button className="">Ethical Statement</button>
+          <button className="">and FAQ's</button>
+          <button className="">Marketing</button>
+          <button className="mb-8">Quality Management</button>
+          <button className="mb-8 border-2 border-solid border-[#164A41] text-[#164A41] w-fit rounded-lg bg-[#FFFFFF]/[0.45] py-2 px-40">Contact Us!</button>
+          <button className="mb-8">Sucess Stories</button>
+        </div>
+      </div>
 
       <div className="text-center">
-        <h1 className="mb-2 font-poppins text-2xl text-[#164A41]">
+        <h1 className="mb-2 mt-4 font-poppins text-2xl text-[#164A41]">
           Central BioHub GmbH, Neuendorfstrasse 17, 16761 Hennigsdorf, Germany |
           Call: +49 3302 230 91 66 | Email: info@centralbiohub.com
         </h1>
