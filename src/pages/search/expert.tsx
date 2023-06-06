@@ -74,7 +74,20 @@ export type TableSamples = {
   Informed_Consent?:                       string,
 }
 
-const defaultGroup: IGroup = {not:false, link:"AND",activated:true,mandatory:true,filter:[{col:"Matrix",type:"equal",values:["CD19+ B Cells "],activated:true,mandatory:false}],"groups":[]}
+const defaultGroup: IGroup = {
+  not: false,
+  link: 'AND',
+  activated: true,
+  mandatory: true,
+  filter: [{
+    col: 'CBH_Sample_ID',
+    type: 'equal',
+    values: [''],
+    activated: true,
+    mandatory: true,
+  }],
+  groups: []
+}
 
 const ExpertSearch: NextPage = () => {
   const [page, setPage] = useState<number>(1)
@@ -208,8 +221,6 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
           </div>
         </div>
       )}
-
-      
 
       <GroupListEditor groups={self} />
     </div>
