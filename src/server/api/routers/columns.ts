@@ -1,4 +1,4 @@
-import { z } from "zod";
+/*import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ColumnSchema } from "~/common/database/columns";
 
@@ -97,4 +97,4 @@ export const columnRouter = createTRPCRouter ({
                 }
             })
         }),
-})
+})*/
