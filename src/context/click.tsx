@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from 'react';
+/*import React, { createContext, useState, ReactNode } from 'react';
 
 type TableSample = {
   id: number;
@@ -30,4 +30,4 @@ export const ClickProvider: React.FC<ClickProviderProps> = ({ children }) => {
   );
 };
 
-export default ClickContext;
+export default ClickContext;*/

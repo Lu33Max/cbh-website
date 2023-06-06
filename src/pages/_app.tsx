@@ -1,7 +1,6 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { ClickProvider } from "~/context/click";
 
 import { api } from "~/utils/api";
 
@@ -13,9 +12,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ClickProvider>
         <Component {...pageProps} />
-      </ClickProvider>
     </SessionProvider>
   );
 };
