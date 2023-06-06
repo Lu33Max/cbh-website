@@ -113,7 +113,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
     type SampleKey = keyof typeof tableSamples[0];
 
     const [settings, setSettings] = useState<boolean>(false)
-    const [formatting, setFormatting] = useState<boolean>(true)
+    const [formatting, setFormatting] = useState<boolean>(false)
 
     const defaultColumns = ["CBH_Donor_ID","CBH_Sample_ID","Matrix","Quantity","Unit","Age","Gender","Price"]
     const [activeColumns, setActiveColumns] = useState<string[]>(defaultColumns)
@@ -326,7 +326,6 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
         
       })
       setActiveColumns(sortArray)
- 
     }
   
     return (
@@ -381,10 +380,12 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
               <button className='text-xl mx-3' onClick={() => setSettings(!settings)}><BiCog/></button>
             )}
           </div>
+
           {settings &&(
             <div className='my-3'>
             <h1 className='text-2xl'>Settings</h1>
-            <label>Auto-Formatting: </label><input type='checkbox' onChange={() => setFormatting(!formatting)} checked={formatting}></input>
+            {/*<label>Auto-Formatting: </label><input type='checkbox' onChange={() => setFormatting(!formatting)} checked={formatting}></input>*/}
+            <button onClick={() => {setActiveColumns(defaultColumns); setTempColumns(defaultColumns)}} className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-2xl border-solid border-2 bg-orange-300 border-orange-300'>Reset</button>
             <br/>
             {Object.getOwnPropertyNames(tableSamples[0]).map((name, i) => {
               if (name !== "id") {
@@ -394,7 +395,6 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
               }              
             })}
             <br/>
-            <button onClick={() => {setActiveColumns(defaultColumns); setTempColumns(defaultColumns)}} className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-2xl border-solid border-2 bg-orange-300 border-orange-300'>Reset</button>
             </div>
           )}
   

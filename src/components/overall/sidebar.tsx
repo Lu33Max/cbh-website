@@ -9,7 +9,7 @@ const buttonsSidebar = [
   { name: 'Expert Search', link: '/search/expert' },
   { name: 'Cart', link: '/cart' },
   { name: 'About Us', link: '/about' },
-  { name: 'Become a Supplier', link: '/supplier' },
+  { name: 'New Home Layout', link: '/newHomeLayout' },
 ];
 
 const Sidebar: React.FC = () => {

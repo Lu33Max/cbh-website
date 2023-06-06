@@ -94,11 +94,13 @@ export const LoginForm = ({ providers }: InferGetServerSidePropsType<typeof getS
 
       {Object.values(providers).filter(provider => provider.name !== "credentials").map((provider) => (
         <>
+          {provider.name !== "Discord" && (
           <div key={provider.name}>
             <button onClick={() => void signIn(provider.id)}>
               Sign in with {provider.name}
             </button>
           </div>    
+          )}
         </>
       ))}
 
