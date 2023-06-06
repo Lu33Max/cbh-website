@@ -10,6 +10,8 @@ const HeaderNEW: React.FC = () => {
   const [buttonClicked, setButtonClicked] = useState<boolean>(false);
   const [navigationColor, setNavigationColor] = useState<string>('gray-700');
   const [contactColor, setContactColor] = useState<string>('gray-700');
+  const [ArrowRotation, setArrowRotation] = useState('');
+  const [BackgroundColor, setBackgroundColor] = useState('');
 
   const router = useRouter();
 
@@ -31,9 +33,12 @@ const HeaderNEW: React.FC = () => {
   const handleButtonClick = () => {
     setActiveHeader(activeHeader === 1 ? 0 : 1);
     setButtonClicked(!buttonClicked);
-    setNavigationColor('[#164A41]');
-    setContactColor('[#164A41]');
+    setNavigationColor('#164A41');
+    setContactColor('#164A41');
+    setArrowRotation(!buttonClicked ? 'rotate-90' : '');
+    setBackgroundColor(!buttonClicked ? '#9DC88D' : '');
   };
+  
 
   return (
     <>
@@ -43,14 +48,16 @@ const HeaderNEW: React.FC = () => {
         <div className='flex flex-row justify-between mx-auto gap-5 z-20'>
           <button
             onClick={handleButtonClick}
-            className={`flex flex-row ${buttonClicked ? 'text-white' : 'text-[#164A41]'}`}>
+            className={`flex flex-row pl-2 pr-4 rounded-lg ${buttonClicked ? 'text-white' : 'text-[#164A41]'} ${buttonClicked ? 'bg-[#9DC88D]' : ''}`}>
+
 
             Services
-
-            <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform rotate-90 translate-y-[4px] ml-2">
+            <div className={` ${buttonClicked ? 'rotate-180' : ''}  ${buttonClicked ? 'pr-2' : ''} ${buttonClicked ? 'pb-2' : ''} ${buttonClicked ? '-mr-3' : ''}`}>
+            <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transform translate-y-[4px] rotate-90 ml-2`}>
               <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
               <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
             </svg>
+            </div>
           </button>
 
           <button onClick={() => setActiveHeader(activeHeader === 2 ? 0 : 2)} className={`flex flex-row ${buttonClicked ? 'text-white' : `text-${navigationColor}`}`}>
