@@ -131,6 +131,7 @@ const ExpertSearch: NextPage = () => {
   }, [f])
 
   function applyFilter () {
+    console.log(JSON.stringify(state.value))
     void router.push(`${pathname}?f=${encodeURIComponent(JSON.stringify(state.value))}`, undefined, {shallow: true})
     const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(state.value)))
     if(result.success){
@@ -177,6 +178,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
   function SetOptional(groupState: State<IGroup>, optional: boolean): void{
     groupState.groups.map((group: State<IGroup>) => {SetOptional(group, optional)})    
     groupState.mandatory.set(optional)
+    groupState.filter.forEach(filter => {filter.mandatory.set(optional)})
   }
 
   return <>
