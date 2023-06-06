@@ -1631,74 +1631,74 @@ export const sampleRouter = createTRPCRouter({
                 where: {
                     AND: [
                         { 
-                            CBH_Master_ID: { 
-                                contains: input.filter.cbhMasterID.value, 
+                            CBH_Master_ID: {
+                                contains: input.filter.cbhMasterID.mandatory? input.filter.cbhMasterID.value : undefined,
                                 mode: 'insensitive',
-                            }
+                            } 
                         },
                         { 
                             CBH_Donor_ID: { 
-                                contains: input.filter.cbhDonorID.value, 
+                                contains: input.filter.cbhDonorID.mandatory? input.filter.cbhDonorID.value : undefined,
                                 mode: 'insensitive' 
                             } 
                         },
                         { 
                             CBH_Sample_ID: { 
-                                contains: input.filter.cbhSampleID.value, 
+                                contains: input.filter.cbhSampleID.mandatory? input.filter.cbhSampleID.value : undefined,
                                 mode: 'insensitive' 
                             } 
                         },
-                        {
-                            Price: {
-                                lte: input.filter.price.max,
-                                gte: input.filter.price.min
-                            }
+                        { 
+                            Price: { 
+                                lte: input.filter.price.mandatory? input.filter.price.max : undefined,
+                                gte: input.filter.price.mandatory? input.filter.price.min : undefined, 
+                            } 
                         },
                         { 
                             Matrix: { 
-                                in: input.filter.matrix.value.length > 0 ? input.filter.matrix.value : undefined, 
+                                in: (input.filter.matrix.mandatory && input.filter.matrix?.value.length > 0) ? input.filter.matrix.value : undefined, 
                                 mode: 'insensitive' 
                             } 
                         },
-                        {
-                            Quantity: {
-                                lte: input.filter.quantity.max,
-                                gte: input.filter.quantity.min
-                            }
+                        { 
+                            Quantity: { 
+                                lte: input.filter.quantity.mandatory? input.filter.quantity.max : undefined,
+                                gte: input.filter.quantity.mandatory? input.filter.quantity.min : undefined, 
+                            } 
                         },
                         { 
                             Unit: { 
-                                in: input.filter.unit.value.length  > 0 ? input.filter.unit.value : undefined,
+                                in: (input.filter.unit.mandatory && input.filter.unit?.value.length > 0) ? input.filter.unit.value : undefined,
                                 mode: 'insensitive'
-                            }
+                            } 
                         },
                         { 
                             Lab_Parameter: { 
-                                in: input.filter.labParameter.value.length > 0 ? input.filter.labParameter.value : undefined, 
+                                in: (input.filter.labParameter.mandatory && input.filter.labParameter?.value.length > 0) ? input.filter.labParameter.value : undefined, 
                                 mode: 'insensitive' 
                             } 
                         },
                         { 
                             Result_Interpretation: { 
-                                in: input.filter.resultInterpretation.value.length > 0 ? input.filter.resultInterpretation.value : undefined,
+                                in: (input.filter.resultInterpretation.mandatory && input.filter.resultInterpretation?.value.length > 0) ? input.filter.resultInterpretation.value : undefined,
                                 mode: 'insensitive' 
                             } 
                         },
                         { 
                             Result_Unit: { 
-                                in: input.filter.resultUnit.value.length > 0 ? input.filter.resultUnit.value : undefined, 
+                                in: (input.filter.resultUnit.mandatory && input.filter.resultUnit?.value.length > 0) ? input.filter.resultUnit.value : undefined, 
                                 mode: 'insensitive' 
                             } 
                         },
                         { 
                             Diagnosis: { 
-                                in: input.filter.diagnosis.value.length > 0 ? input.filter.diagnosis.value : undefined, 
+                                in: (input.filter.diagnosis.mandatory && input.filter.diagnosis?.value.length > 0) ? input.filter.diagnosis.value : undefined, 
                                 mode: 'insensitive' 
                             } 
                         },
                         { 
                             ICD_Code: { 
-                                in: input.filter.ICDCode.value.length > 0 ? input.filter.ICDCode.value : undefined, 
+                                in: (input.filter.ICDCode.mandatory && input.filter.ICDCode?.value.length > 0) ? input.filter.ICDCode.value : undefined, 
                                 mode: 'insensitive' 
                             } 
                         },
@@ -1780,7 +1780,9 @@ export const sampleRouter = createTRPCRouter({
             //Pagination
             const offset = (input.pages && input.pagelength) ? (input.pages -1) * input.pagelength : 0
 
-            if (BuildQuery(input.group) == Prisma.empty) {
+            const query = BuildQuery(input.group)
+
+            if (query === Prisma.empty) {
                 const uniqueSamples = await ctx.prisma.samples.findMany({
                     distinct: ['CBH_Sample_ID'],
                     take: input.pagelength,
@@ -1804,8 +1806,14 @@ export const sampleRouter = createTRPCRouter({
                 })
             } else {
                 const allUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ${BuildQuery(input.group)} ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
-                let mandatoryUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ${BuildQuery(input.group, true)} ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
+                let mandatoryUniqueSampleIDs: { CBH_Sample_ID: string}[]
                
+                if(BuildQuery(input.group, true) === Prisma.empty){
+                    mandatoryUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
+                } else {
+                    mandatoryUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ${BuildQuery(input.group, true)} ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
+                }
+
                 mandatoryUniqueSampleIDs = mandatoryUniqueSampleIDs.filter(val => !allUniqueSampleIDs.includes(val));
 
                 const allUniqueSampleIDStrings : string[] = allUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
