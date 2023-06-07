@@ -1,4 +1,4 @@
-/*import { z } from "zod";
+import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ColumnSchema } from "~/common/database/columns";
 
@@ -63,17 +63,17 @@ export const columnRouter = createTRPCRouter ({
     }),
 
     updateMany: publicProcedure
-    .input(ColumnSchema.array())
-    .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.columns.updateMany({
-            where: {
-                name: {
-                    in: input.map(column => column.id)
-                }
-            },
-            data: input
-        })
-    }),
+        .input(ColumnSchema.array())
+        .mutation(async ({ ctx, input }) => {
+            return await ctx.prisma.columns.updateMany({
+                where: {
+                    name: {
+                        in: input.map(column => column.name)
+                    }
+                },
+                data: input
+            })
+        }),
 
     //Delete
     delete: publicProcedure
@@ -97,4 +97,4 @@ export const columnRouter = createTRPCRouter ({
                 }
             })
         }),
-})*/
+})
