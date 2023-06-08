@@ -1,10 +1,14 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import { useContext, useState } from 'react';
+import { BiDetail, BiX } from "react-icons/bi";
 
 import Header from "~/components/overall/header";
 import Sidebar from "~/components/overall/sidebar";
 import SimpleSlider from "~/components/home/carousel"
 import Testimonials from "~/components/home/testimonials";
+import ClickContext from "~/context/click";
+import Table, { TableSamples } from "~/components/search/table";
 
 const Home: NextPage = () => {
   return (
@@ -32,13 +36,144 @@ export default Home;
 
 const Content: React.FC = () => {
 
-  return(
-    <div className="max-h-[95vh] overflow-x-hidden">
-      <h1>CART</h1>      
-      <button className="relative w-fit bg-red-500 hover:bg-red-400 text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition">delete</button>
-      <br/>
-      <button className="relative w-fit bg-red-500 hover:bg-red-400 text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition">delete all</button>
+  const [cartSamples, setCartSamples] = useContext(ClickContext) 
+  const activeColumns = ["CBH_Donor_ID","CBH_Sample_ID","Matrix","Quantity","Unit","Age","Gender","Price"]
+  const [sortBy, setSortBy] = useState('');
+  type SampleKey = keyof typeof cartSamples[0];
+  const defaultShow: boolean[] = []
+  const [show, setShow] = useState<boolean[]>(defaultShow)
 
+  for (let i = 0; i < cartSamples.length; i++) {
+    defaultShow.push(false)
+  }
+
+  const updateState = (index: number) => {
+    const newArray = show.map((item, i) => {
+      if (index === i) {
+        return !item
+      } else {
+        return item
+      }
+    })
+    setShow(newArray)
+  }
+
+  function getProperty<T, K extends keyof T>(o: T, propertyName: K): T[K] {
+    return o[propertyName]
+  }
+
+  function deleteCartItem (cartSample: TableSamples){
+    setCartSamples((current) => current.filter(item => item.id !== cartSample.id))    
+  }
+
+  const handleSort = (column: SampleKey) => {
+    let sortArray: TableSamples[]=[]
+
+    sortArray = [...cartSamples].sort((a: TableSamples, b: TableSamples) => {
+
+      const a1 = getProperty(a, column)
+      const b1 = getProperty(b, column)
+
+      if(a1 !== undefined && b1 !== undefined){
+        if(a1 > b1) return (column == sortBy) ? -1 : 1;
+        else if (b1 > a1) return (column == sortBy) ? 1 :  -1;
+        return 0;
+      }
+      return(-1)
+    }); 
+
+    setCartSamples(sortArray);
+  }
+
+
+  return(
+    <div className="max-h-[95vh] overflow-x-hidden w-full">
+      <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Cart</b></h1>      
+      <div className="mx-4 my-5">
+        {cartSamples.length > 0 ? (
+          <>
+        <button onClick={() => setCartSamples([])} className="relative w-fit bg-red-500 hover:bg-red-400 text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition">delete all</button>
+          <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto ">
+            <thead>
+              <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
+                <th className="py-2 font-extralight border-dotted rounded-l-xl border-black border-r-2">Cart</th>
+                {activeColumns.map((column, i) => {
+                  return(
+                    <th key={i} className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy(column): setSortBy(""); handleSort(column as SampleKey)}}>{column.replace(/_/g," ")}</button></th>
+                  )
+                })}
+                <th className="py-2 font-extralight rounded-r-xl">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cartSamples.map((sample, index) => (
+                <>
+                  <tr key={index} className="text-center">
+                    <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button onClick={() => deleteCartItem(sample)}><BiX className="relative top-1" /></button></td>
+                    
+                    {activeColumns.map((column, i) => {
+                      return (
+                        <td key={i} className="py-2 px-3 bg-gray-300">{getProperty(sample, column as SampleKey)?.toString()}</td>
+                      )
+                    })}
+                    <td className="py-2 px-3 bg-gray-300 rounded-r-xl"><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
+                  </tr>
+                  <tr className={`mx-5 ${show[index] ? "" : "hidden"}`}>
+                    <td colSpan={2} className="px-5 bg-gray-200">
+                      <div className="grid grid-cols-2">
+                        <strong className="col-span-2">General Data</strong>
+                        <span>CBH Master ID:</span> {sample.CBH_Master_ID ?? "NaN"}
+                        <span>Storage Temperature:</span> {sample.Storage_Temperature ?? "NaN"}
+                        <span>Freeze Thaw Cycles:</span> {sample.Freeze_Thaw_Cycles ?? "NaN"}
+                        <span>Infectious Disease Test Result:</span> {(sample.Infectious_Disease_Test_Result !== null && sample.Infectious_Disease_Test_Result !== "") ? sample.Infectious_Disease_Test_Result : "NaN"}
+                        <span>Sample Condition:</span> {sample.Sample_Condition ?? "NaN"}
+                      </div>
+                    </td>
+                    <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
+                      <div className="grid grid-cols-2 ">
+                        <strong className="col-span-2">Donor</strong>
+                        <span>Age:</span> {sample.Age ?? "NaN"}
+                        <span>Gender:</span> {sample.Gender ?? "NaN"}
+                        <span>Ethnicity:</span> {sample.Ethnicity ?? "NaN"}
+                        <strong className="col-span-2 mt-2">Ethics</strong>
+                        <span>Procurement Type:</span> {sample.Procurement_Type ?? "NaN"}
+                      </div>
+                    </td>
+                    <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
+                      <div className="grid grid-cols-2">
+                      <strong className="col-span-2">Laboratory</strong>
+                        <span>Lab Parameter</span> {(sample.Lab_Parameter && sample.Lab_Parameter.length > 0) ? sample.Lab_Parameter.join(", "): "NaN"}
+                        <span>Result Raw:</span> {(sample.Result_Raw && sample.Result_Raw.length > 0) ? sample.Result_Raw.join(", "): "NaN"}
+                        <span>Result Unit:</span> {(sample.Result_Unit && sample.Result_Unit.length > 0) ? sample.Result_Unit.join(", "): "NaN"}
+                        <span>Interpretation:</span> {(sample.Result_Interpretation && sample.Result_Interpretation.length > 0) ? sample.Result_Interpretation.join(", "): "NaN"}
+                        <span>Cut Off Raw:</span> {sample.Cut_Off_Raw ? sample.Cut_Off_Raw.join(", "): "NaN"}
+                        <span>Test Method:</span> {(sample.Test_Method && sample.Test_Method.length > 0) ? sample.Test_Method.join(", "): "NaN"}
+                        <span>Test System:</span> {(sample.Test_System && sample.Test_System.length > 0) ? sample.Test_System.join(", "): "NaN"}
+                        <span>Test System Manuf.:</span> {(sample.Test_System_Manufacturer && sample.Test_System_Manufacturer.length > 0) ? sample.Test_System_Manufacturer.join(", "): "NaN"}
+                      </div>
+                    </td>
+                    <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={4}>
+                      <div className="grid grid-cols-2">
+                        <strong className="col-span-2">Clinical Diagnosis</strong>
+                        <span>Diagnosis:</span> {(sample.Diagnosis && sample.Diagnosis.length > 0) ? sample.Diagnosis.join(", "): "NaN"}
+                        <span>Diagnosis Remarks:</span> {(sample.Diagnosis_Remarks && sample.Diagnosis_Remarks.length > 0) ? sample.Diagnosis_Remarks.join(", "): "NaN"}
+                        <span>ICD:</span> {(sample.ICD_Code && sample.ICD_Code.length > 0) ? sample.ICD_Code.join(", ") : "NaN"}
+                        <strong className="col-span-2 mt-2">Preanalytics</strong>
+                        <span>Collection Country:</span> {sample.Country_of_Collection ?? "NaN"}
+                        <span>Collection Date:</span> {sample.Date_of_Collection?.toDateString() ?? "NaN"}
+                      </div>
+                    </td>
+                  </tr>
+                </>
+              ))}
+            </tbody>
+          </table>
+          <button onClick={() => setCartSamples([])} className="relative w-fit bg-red-500 hover:bg-red-400 text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition">delete all</button>
+          </>
+          ): (
+            <h1>No samples in cart!</h1>
+          )}
+        </div>
     </div>
   )
 }

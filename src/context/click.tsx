@@ -1,33 +1,22 @@
-/*import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, type ReactNode, type Dispatch, type SetStateAction } from 'react';
+import { type TableSamples } from '~/components/search/table';
 
-type TableSample = {
-  id: number;
-  name: string;
-};
+type ClickContextType = [TableSamples[], Dispatch<SetStateAction<TableSamples[]>>];
 
-type ClickContextType = [TableSample[], () => void];
-
-const ClickContext = createContext<ClickContextType>([[], () => {}]);
+const ClickContext = createContext<ClickContextType>([[], () => ({})]);
 
 interface ClickProviderProps {
   children: ReactNode;
 }
 
 export const ClickProvider: React.FC<ClickProviderProps> = ({ children }) => {
-  const [tableSamples, setTableSamples] = useState<TableSample[]>([]);
-  const addTableSample = () => {
-    const newSample: TableSample = {
-      id: tableSamples.length + 1,
-      name: `Sample ${tableSamples.length + 1}`,
-    };
-    setTableSamples((samples) => [...samples, newSample]);
-  };
+  const [tableSamples, setTableSamples] = useState<TableSamples[]>([]);
 
   return (
-    <ClickContext.Provider value={[tableSamples, addTableSample]}>
+    <ClickContext.Provider value={[tableSamples, setTableSamples]}>
       {children}
     </ClickContext.Provider>
   );
 };
 
-export default ClickContext;*/
+export default ClickContext;
