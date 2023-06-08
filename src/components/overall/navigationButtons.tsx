@@ -6,7 +6,7 @@ const buttonsSidebar = [
   { name: 'Home', link: '/newHomeLayout' },
   { name: 'Explore', link: '/search' },
   { name: 'Expert Search', link: '/expertsearch' },
-  { name: 'Cart', link: '/Cart' },
+  { name: 'Cart', link: '/cart' },
   { name: 'About Us', link: '/About' },
   { name: 'Become a Supplier', link: '/BecomeSup' },
   

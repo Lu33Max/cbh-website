@@ -238,7 +238,8 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             </Popover>
             }>
               <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
-            </OverlayTrigger>          </div>
+            </OverlayTrigger>          
+          </div>
         </div>
       )}
 

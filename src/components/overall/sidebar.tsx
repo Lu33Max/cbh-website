@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useContext} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import ClickContext from "~/context/click";
 
 const buttonsSidebar = [
   { name: 'Home', link: '/' },
@@ -14,6 +15,7 @@ const buttonsSidebar = [
 
 const Sidebar: React.FC = () => {
   const router = useRouter();
+  const [cartSamples, addCartSamples] = useContext(ClickContext)
 
   return(
     
@@ -27,7 +29,9 @@ const Sidebar: React.FC = () => {
             <Link key={index} href={link.link}> 
               <div className={`relative block w-full h-full py-2 px-4 font-medium text-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out button-sidebar ${router.pathname === link.link ? 'bg-gray-200' : ''}`}>
                 <div className={`activeButton absolute h-full w-[15%] bg-emerald-700 left-[-20%] ${router.pathname === link.link ? '' : 'hidden'}`}></div>
-                {link.name}                                 
+                  <div className="flex flex-row">
+                    {link.name}{link.name === "Cart" && (<div className="ml-2">({cartSamples.length})</div>)}  
+                  </div>                               
               </div>
             </Link>
           ))}

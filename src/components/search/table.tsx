@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
+import React, { useState, useEffect, useContext, type Dispatch, type SetStateAction } from 'react';
 import { type State } from '@hookstate/core';
 
 import { BiCartAdd, BiDetail, BiCog } from "react-icons/bi"
@@ -13,6 +13,7 @@ import { type IGroup, GroupSchema, type INormalFilter } from '~/common/filter/fi
 import { type Samples } from '@prisma/client';
 import ModalLoadExpert from '~/components/search/expert/modalLoad';
 import ModalSaveExpert from '~/components/search/expert/modalSave';
+import ClickContext from '~/context/click';
 
 export type TableSamples = {
     id:                                      string,
@@ -102,6 +103,7 @@ export type TableSamples = {
 
 const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setPage, setPagelength, applyFilter, expert, filterNormal, setFilter}) => {
 
+    const [cartSamples, addCartSamples] = useContext(ClickContext)
     const [range, setRange] = useState<number[]>([])
     const [showSave, setShowSave] = useState(false);
     const [showLoad, setShowLoad] = useState(false);
@@ -414,7 +416,8 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
               {tableSamples.map((sample, index) => (
                 <>
                   <tr key={index} className="text-center">
-                    <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button><BiCartAdd className="relative top-1" /></button></td>
+                    <td className="items-center text-2xl bg-gray-300 rounded-l-xl" onClick={() => addCartSamples([...cartSamples, sample])}><button><BiCartAdd className="relative top-1" /></button></td>
+                    
                     {activeColumns.map((column, i) => {
                       return (
                         <td key={i} className="py-2 px-3 bg-gray-300">{getProperty(sample, column as SampleKey)?.toString()}</td>

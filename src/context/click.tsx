@@ -1,11 +1,7 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
+import { TableSamples } from '~/components/search/table';
 
-type TableSample = {
-  id: number;
-  name: string;
-};
-
-type ClickContextType = [TableSample[], () => void];
+type ClickContextType = [TableSamples[], Dispatch<SetStateAction<TableSamples[]>>];
 
 const ClickContext = createContext<ClickContextType>([[], () => {}]);
 
@@ -14,17 +10,14 @@ interface ClickProviderProps {
 }
 
 export const ClickProvider: React.FC<ClickProviderProps> = ({ children }) => {
-  const [tableSamples, setTableSamples] = useState<TableSample[]>([]);
-  const addTableSample = () => {
-    const newSample: TableSample = {
-      id: tableSamples.length + 1,
-      name: `Sample ${tableSamples.length + 1}`,
-    };
-    setTableSamples((samples) => [...samples, newSample]);
+  const [tableSamples, setTableSamples] = useState<TableSamples[]>([]);
+  const addTableSample = (newSample: TableSamples[]) => {
+    
+    setTableSamples((samples) => [...samples, ...newSample]);
   };
 
   return (
-    <ClickContext.Provider value={[tableSamples, addTableSample]}>
+    <ClickContext.Provider value={[tableSamples, setTableSamples]}>
       {children}
     </ClickContext.Provider>
   );
