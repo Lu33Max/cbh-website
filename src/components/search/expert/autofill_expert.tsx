@@ -21,7 +21,7 @@ const AutofillExpert = ({col, callback, value, rounded} : Props) => {
         if(autofill){
           for (let i = 0; i < autofill?.length; i++){
             const test = autofill[i]
-            test ? tempArray.push(test) : void(0)
+            test ? tempArray.push(test.toString()) : void(0)
           }
         }
         setResults(tempArray)
