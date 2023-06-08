@@ -17,7 +17,7 @@ import { api } from '~/utils/api';
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 import { SampleSchema } from "~/common/database/samples"
-import { TypeOf, z } from 'zod';
+import { TypeOf, array, z } from 'zod';
 
 export type TableSamples = {
   id:                                      string,
@@ -368,12 +368,12 @@ function TypeSelect(props: { type: State<string>, col: State<string>, values: St
   const values = useHookstate(props.values);
   const activated = useHookstate(props.activated);
   const filterActivated = useHookstate(props.filterActivated);
-  type SampleKey = keyof typeof SampleSchema
+  const numberCol = ["Age", "BMI", "Cut_Off_Numerical", "Freeze_Thaw_Cycles", "Pregnancy_Week", "Price", "Quantity", "Result_Numerical"]
   return (
     <select className="w-fit z-20 px-3 py-1 text-lg text-center border-y-2 border-gray-500 focus:border-gray-700 outline-none transition" value={type.value} onChange={(e) => { values.set([]); type.set(e.target.value)}} disabled = {!(activated.value && filterActivated.value)}>
       <option className='text-left' value={'equal'}>=</option>
       <option className='text-left' value={'in'}>in</option>
-      {typeof getProperty(SampleSchema, props.col.value as SampleKey) === typeof z.ZodNullable<z.ZodNumber> && (
+      {numberCol.find(item => item === props.col.value) && (
         <>
           <option className='text-left' value={'less'}>&lt;</option>
           <option className='text-left' value={'lessequal'}>&lt;=</option>
