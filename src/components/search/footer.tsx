@@ -24,7 +24,7 @@ const Footer: React.FC<props> = ({range, page, setPage}) => {
                     )}
                     {(el === range.length && range.length !== 1) && (
                         <>
-                            {(page+4 < range.length) && (
+                            {(page +3 < range.length) && (
                                 <label key={range.length+1}>&nbsp;. . .&nbsp;</label>
                             )}
                             <button key={index} className={`justify-center mx-1 rounded-full px-3 py-1 ${page === index + 1 ? 'bg-[rgb(174,207,150)] border-2 border-solid border-green-900 py-1 text-lg text-green-900' : 'border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900'}`} onClick={() => setPage(el)}>{el}</button>

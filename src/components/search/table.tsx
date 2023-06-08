@@ -10,6 +10,8 @@ import ShowRows from '~/components/search/showRows';
 import Count from '~/components/search/count';
 
 import { type IGroup, GroupSchema, type INormalFilter } from '~/common/filter/filter';
+import { ExampleSample, SampleSchema } from '~/common/database/samples';
+
 import { type Samples } from '@prisma/client';
 import ModalLoadExpert from '~/components/search/expert/modalLoad';
 import ModalSaveExpert from '~/components/search/expert/modalSave';
@@ -118,13 +120,88 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
     const defaultColumns = ["CBH_Donor_ID","CBH_Sample_ID","Matrix","Quantity","Unit","Age","Gender","Price"]
     const [activeColumns, setActiveColumns] = useState<string[]>(defaultColumns)
     const [tempColumns, setTempColumns] = useState<string[]>(defaultColumns)
-     
   
     for (let i = 0; i < pagelength; i++) {
       defaultShow.push(false)
     }
   
     const [show, setShow] = useState<boolean[]>(defaultShow)
+
+    const [filterTest, setFilterTest] = useState<INormalFilter | undefined>(filterNormal)
+
+    useEffect(() => {
+      setFilterTest(filterNormal)
+    }, [filterNormal])
+
+    useEffect(() => {
+      if(filterTest != undefined){
+        let tempTemp = [...tempColumns]
+        let count = 0
+
+        tempTemp = tempTemp.filter(item => item !== "Gender" && item !== "Age" && item !== "CBH_Donor_ID")
+
+        if(filterTest.labParameter && filterTest.labParameter.value.length > 0){
+          if(!activeColumns.find(item => item === "Lab_Parameter")){
+            tempTemp.push("Lab_Parameter")
+          }
+          count ++
+        } else {
+          tempTemp = tempTemp.filter(item => item !== "Lab_Parameter")
+        }
+
+        if(filterTest.resultInterpretation && filterTest.resultInterpretation.value.length > 0){
+          if(!activeColumns.find(item => item === "Result_Interpretation")){
+            tempTemp.push("Result_Interpretation")
+          }
+          count ++
+        } else {
+          tempTemp = tempTemp.filter(item => item !== "Result_Interpretation")
+        }
+
+        if(filterTest.diagnosis && filterTest.diagnosis.value.length > 0){
+          if(!activeColumns.find(item => item === "Diagnosis")){
+            tempTemp.push("Diagnosis")
+          }
+          count ++
+        } else {
+          tempTemp = tempTemp.filter(item => item !== "Diagnosis")
+        }
+
+        switch(count){
+          case 0 : 
+            if(!tempTemp.find(col => col === "Gender")){
+              tempTemp.push("Gender")
+            }
+
+            if(!tempTemp.find(col => col === "Age")){
+              tempTemp.push("Age")
+            }
+
+            if(!tempTemp.find(col => col === "CBH_Donor_ID")){
+              tempTemp.push("CBH_Donor_ID")
+            }
+           break
+          case 1 :
+            if(!tempTemp.find(col => col === "Age")){
+              tempTemp.push("Age")
+            }
+
+            if(!tempTemp.find(col => col === "CBH_Donor_ID")){
+              tempTemp.push("CBH_Donor_ID")
+            }
+            break
+          case 2:
+            if(!tempTemp.find(col => col === "CBH_Donor_ID")){
+              tempTemp.push("CBH_Donor_ID")
+            }
+            break
+          default: 
+            break
+        }
+
+        setTempColumns(tempTemp)
+      }
+    }, [filterTest])
   
     useEffect(() => {
       const newRange = [];
@@ -170,24 +247,24 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
               }
             }*/
 
-            if(sample.Lab_Parameter) newArray[sampleIndex]?.Lab_Parameter?.push(sample.Lab_Parameter)
-            if(sample.Result_Interpretation) newArray[sampleIndex]?.Result_Interpretation?.push(sample.Result_Interpretation)
-            if(sample.Result_Raw) newArray[sampleIndex]?.Result_Raw?.push(sample.Result_Raw)
-            if(sample.Result_Numerical) newArray[sampleIndex]?.Result_Numerical?.push(sample.Result_Numerical ?? 0)
-            if(sample.Result_Unit) newArray[sampleIndex]?.Result_Unit?.push(sample.Result_Unit)
-            if(sample.Cut_Off_Raw) newArray[sampleIndex]?.Cut_Off_Raw?.push(sample.Cut_Off_Raw)
-            if(sample.Cut_Off_Numerical) newArray[sampleIndex]?.Cut_Off_Numerical?.push(sample.Cut_Off_Numerical ?? 0)
-            if(sample.Test_Method) newArray[sampleIndex]?.Test_Method?.push(sample.Test_Method)
-            if(sample.Test_System) newArray[sampleIndex]?.Test_System?.push(sample.Test_System)
-            if(sample.Test_System_Manufacturer) newArray[sampleIndex]?.Test_System_Manufacturer?.push(sample.Test_System_Manufacturer)
-            if(sample.Result_Obtained_From) newArray[sampleIndex]?.Result_Obtained_From?.push(sample.Result_Obtained_From)
-            if(sample.Diagnosis) newArray[sampleIndex]?.Diagnosis?.push(sample.Diagnosis)
-            if(sample.Diagnosis_Remarks) newArray[sampleIndex]?.Diagnosis_Remarks?.push(sample.Diagnosis_Remarks)
-            if(sample.ICD_Code) newArray[sampleIndex]?.ICD_Code?.push(sample.ICD_Code)
-            if(sample.Medication) newArray[sampleIndex]?.Medication?.push(sample.Medication)
-            if(sample.Therapy) newArray[sampleIndex]?.Therapy?.push(sample.Therapy)
-            if(sample.Histological_Diagnosis) newArray[sampleIndex]?.Histological_Diagnosis?.push(sample.Histological_Diagnosis)
-            if(sample.Other_Gene_Mutations) newArray[sampleIndex]?.Other_Gene_Mutations?.push(sample.Other_Gene_Mutations)
+            if(sample.Lab_Parameter && !newArray[sampleIndex]?.Lab_Parameter?.find(item => item === sample.Lab_Parameter)) newArray[sampleIndex]?.Lab_Parameter?.push(sample.Lab_Parameter)
+            if(sample.Result_Interpretation && !newArray[sampleIndex]?.Result_Interpretation?.find(item => item === sample.Result_Interpretation)) newArray[sampleIndex]?.Result_Interpretation?.push(sample.Result_Interpretation)
+            if(sample.Result_Raw && !newArray[sampleIndex]?.Result_Raw?.find(item => item === sample.Result_Raw)) newArray[sampleIndex]?.Result_Raw?.push(sample.Result_Raw)
+            if(sample.Result_Numerical && !newArray[sampleIndex]?.Result_Numerical?.find(item => item === sample.Result_Numerical)) newArray[sampleIndex]?.Result_Numerical?.push(sample.Result_Numerical ?? 0)
+            if(sample.Result_Unit && !newArray[sampleIndex]?.Result_Unit?.find(item => item === sample.Result_Unit)) newArray[sampleIndex]?.Result_Unit?.push(sample.Result_Unit)
+            if(sample.Cut_Off_Raw && !newArray[sampleIndex]?.Cut_Off_Raw?.find(item => item === sample.Cut_Off_Raw)) newArray[sampleIndex]?.Cut_Off_Raw?.push(sample.Cut_Off_Raw)
+            if(sample.Cut_Off_Numerical && !newArray[sampleIndex]?.Cut_Off_Numerical?.find(item => item === sample.Cut_Off_Numerical)) newArray[sampleIndex]?.Cut_Off_Numerical?.push(sample.Cut_Off_Numerical ?? 0)
+            if(sample.Test_Method && !newArray[sampleIndex]?.Test_Method?.find(item => item === sample.Test_Method)) newArray[sampleIndex]?.Test_Method?.push(sample.Test_Method)
+            if(sample.Test_System && !newArray[sampleIndex]?.Test_System?.find(item => item === sample.Test_System)) newArray[sampleIndex]?.Test_System?.push(sample.Test_System)
+            if(sample.Test_System_Manufacturer && !newArray[sampleIndex]?.Test_System_Manufacturer?.find(item => item === sample.Test_System_Manufacturer)) newArray[sampleIndex]?.Test_System_Manufacturer?.push(sample.Test_System_Manufacturer)
+            if(sample.Result_Obtained_From && !newArray[sampleIndex]?.Result_Obtained_From?.find(item => item === sample.Result_Obtained_From)) newArray[sampleIndex]?.Result_Obtained_From?.push(sample.Result_Obtained_From)
+            if(sample.Diagnosis && !newArray[sampleIndex]?.Diagnosis?.find(item => item === sample.Diagnosis)) newArray[sampleIndex]?.Diagnosis?.push(sample.Diagnosis)
+            if(sample.Diagnosis_Remarks && !newArray[sampleIndex]?.Diagnosis_Remarks?.find(item => item === sample.Diagnosis_Remarks)) newArray[sampleIndex]?.Diagnosis_Remarks?.push(sample.Diagnosis_Remarks)
+            if(sample.ICD_Code && !newArray[sampleIndex]?.ICD_Code?.find(item => item === sample.ICD_Code)) newArray[sampleIndex]?.ICD_Code?.push(sample.ICD_Code)
+            if(sample.Medication && !newArray[sampleIndex]?.Medication?.find(item => item === sample.Medication)) newArray[sampleIndex]?.Medication?.push(sample.Medication)
+            if(sample.Therapy && !newArray[sampleIndex]?.Therapy?.find(item => item === sample.Therapy)) newArray[sampleIndex]?.Therapy?.push(sample.Therapy)
+            if(sample.Histological_Diagnosis && !newArray[sampleIndex]?.Histological_Diagnosis?.find(item => item === sample.Histological_Diagnosis)) newArray[sampleIndex]?.Histological_Diagnosis?.push(sample.Histological_Diagnosis)
+            if(sample.Other_Gene_Mutations && !newArray[sampleIndex]?.Other_Gene_Mutations?.find(item => item === sample.Other_Gene_Mutations)) newArray[sampleIndex]?.Other_Gene_Mutations?.push(sample.Other_Gene_Mutations)
           } else {
             newArray.push(
               { id:                               sample.id,
@@ -281,11 +358,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
     function getProperty<T, K extends keyof T>(o: T, propertyName: K): T[K] {
       return o[propertyName]
     }
-
-    function setProperty<T, K extends keyof T, V extends T[K]>(o: T, propertyName: K, value: V): void {
-      o[propertyName] = value
-    }
-
+    
     const handleSort = (column: SampleKey) => {
       let sortArray: TableSamples[]=[]
 
@@ -317,14 +390,11 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
       let sortArray: string[]=[]
 
       sortArray = [...tempColumns].sort((a: string, b: string) => {
-        if (tableSamples[0]) {
-          if(Object.getOwnPropertyNames(tableSamples[0]).findIndex(i => i === a) > Object.getOwnPropertyNames(tableSamples[0]).findIndex(i => i === b)) return (1)
-          else if (Object.getOwnPropertyNames(tableSamples[0]).findIndex(i => i === b) > Object.getOwnPropertyNames(tableSamples[0]).findIndex(i => i === a)) return (-1)
-          return 0;
-        }
+        if(Object.getOwnPropertyNames(SampleSchema.shape).findIndex(i => i === a) > Object.getOwnPropertyNames(SampleSchema.shape).findIndex(i => i === b)) return (1)
+        else if (Object.getOwnPropertyNames(SampleSchema.shape).findIndex(i => i === b) > Object.getOwnPropertyNames(SampleSchema.shape).findIndex(i => i === a)) return (-1)
         return 0;
-        
       })
+
       setActiveColumns(sortArray)
     }
   
@@ -416,8 +486,15 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
                   <tr key={index} className="text-center">
                     <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button><BiCartAdd className="relative top-1" /></button></td>
                     {activeColumns.map((column, i) => {
+                      const prop = getProperty(sample, column as SampleKey)
                       return (
-                        <td key={i} className="py-2 px-3 bg-gray-300">{getProperty(sample, column as SampleKey)?.toString()}</td>
+                        <td key={i} className="py-2 px-3 bg-gray-300">
+                          {((!expert || (expert && formatting)) && (column === "Lab_Parameter" || column === "Diagnosis" || column === "Result_Interpretation") && Array.isArray(prop)) ? 
+                            (prop as string[]).filter((item: string) => column === "Lab_Parameter" ? filterNormal?.labParameter.value.find(val => val === item) : column === "Diagnosis" ? filterNormal?.diagnosis.value.find(val => val === item) : filterNormal?.resultInterpretation.value.find(val => val === item))
+                          :
+                            prop?.toString()
+                          }
+                        </td>
                       )
                     })}
                     <td className="py-2 px-3 bg-gray-300 rounded-r-xl"><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>

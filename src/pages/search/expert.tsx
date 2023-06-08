@@ -12,10 +12,11 @@ import Table from '~/components/search/table';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 
-import { type IGroup, GroupSchema, GroupFilterSchema } from '~/common/filter/filter';
+import { type IGroup, GroupSchema } from '~/common/filter/filter';
 import { api } from '~/utils/api';
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
+import { SampleSchema } from '~/common/database/samples';
 
 export type TableSamples = {
   id:                                      string,
@@ -304,59 +305,13 @@ function ColSelect(props: { col: State<string>, activated: State<boolean>, filte
 
   return (
     <select name="col" id="col" className="w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" value={col.value} onChange={(e) => col.set(e.target.value)} disabled = {!(activated.value && filterActivated.value)}>
-      <option value={'CBH_Donor_ID'}>CBH_Donor_ID</option>
-      <option value={'CBH_Master_ID'}>CBH_Master_ID</option>
-      <option value={'CBH_Sample_ID'}>CBH_Sample_ID</option>
-      <option value={'Price'}>Price</option>
-      <option value={'Quantity'}>Quantity</option>
-      <option value={'Unit'}>Unit</option>
-      <option value={'Matrix'}>Matrix</option>
-      <option value={'Storage_Temperature'}>Storage_Temperature</option>
-      <option value={'Freeze_Thaw_Cycles'}>Freeze_Thaw_Cycles</option>
-      <option value={'Sample_Condition'}>Sample_Condition</option>
-      <option value={'Infectious_Disease_Test_Result'}>Infectious_Disease_Test_Result</option>
-      <option value={'Gender'}>Gender</option>
-      <option value={'Age'}>Age</option>
-      <option value={'Ethnicity'}>Ethnicity</option>
-      <option value={'BMI'}>BMI</option>
-      <option value={'Lab_Parameter'}>Lab_Parameter</option>
-      <option value={'Result_Interpretation'}>Result_Interpretation</option>
-      <option value={'Result_Raw'}>Result_Raw</option>
-      <option value={'Result_Numerical'}>Result_Numerical</option>
-      <option value={'Result_Unit'}>Result_Unit</option>
-      <option value={'Cut_Off_Raw'}>Cut_Off_Raw</option>
-      <option value={'Cut_Off_Numerical'}>Cut_Off_Numerical</option>
-      <option value={'Test_Method'}>Test_Method</option>
-      <option value={'Test_System'}>Test_System</option>
-      <option value={'Test_System_Manufacturer'}>Test_System_Manufacturer</option>
-      <option value={'Result_Obtained_From'}>Result_Obtained_From</option>
-      <option value={'Diagnosis'}>Diagnosis</option>
-      <option value={'Diagnosis_Remarks'}>Diagnosis_Remarks</option>
-      <option value={'ICD_Code'}>ICD_Code</option>
-      <option value={'Pregnancy_Week'}>Pregnancy_Week</option>
-      <option value={'Pregnancy_Trimester'}>Pregnancy_Trimester</option>
-      <option value={'Medication'}>Medication</option>
-      <option value={'Therapy'}>Therapy</option>
-      <option value={'Histological_Diagnosis'}>Histological_Diagnosis</option>
-      <option value={'Organ'}>Organ</option>
-      <option value={'Disease_Presentation'}>Disease_Presentation</option>
-      <option value={'TNM_Class_T'}>TNM_Class_T</option>
-      <option value={'TNM_Class_N'}>TNM_Class_N</option>
-      <option value={'TNM_Class_M'}>TNM_Class_M</option>
-      <option value={'Tumour_Grade'}>Tumour_Grade</option>
-      <option value={'Tumour_Stage'}>Tumour_Stage</option>
-      <option value={'Viable_Cells__per_'}>Viable_Cells__per_</option>
-      <option value={'Necrotic_Cells__per_'}>Necrotic_Cells__per_</option>
-      <option value={'Tumour_Cells__per_'}>Tumour_Cells__per_</option>
-      <option value={'Proliferation_Rate__Ki67_per_'}>Proliferation_Rate__Ki67_per_</option>
-      <option value={'Estrogen_Receptor'}>Estrogen_Receptor</option>
-      <option value={'Progesteron_Receptor'}>Progesteron_Receptor</option>
-      <option value={'HER_2_Receptor'}>HER_2_Receptor</option>
-      <option value={'Other_Gene_Mutations'}>Other_Gene_Mutations</option>
-      <option value={'Country_of_Collection'}>Country_of_Collection</option>
-      <option value={'Date_of_Collection'}>Date_of_Collection</option>
-      <option value={'Procurement_Type'}>Procurement_Type</option>
-      <option value={'Informed_Consent'}>Informed_Consent</option>
+      {Object.getOwnPropertyNames(SampleSchema.shape).map((property, i) => {
+        if (property !== "id") {
+          return (
+            <option key={1000 + i} value={property}>{property.replaceAll("_"," ")}</option>
+          )
+        }
+      })}  
     </select>
   )
 }
