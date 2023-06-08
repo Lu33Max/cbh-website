@@ -215,7 +215,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
         <div key={i}>  
           <div className='flex flex-row ml-5 my-1'>
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
-            <TypeSelect type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
+            <TypeSelect col={filterState.col} type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
@@ -267,7 +267,7 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
         <div key={i}>  
           <div className='flex flex-row ml-5 my-1'>
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
-            <TypeSelect type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
+            <TypeSelect col={filterState.col} type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" disabled={!self.activated.value} onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))}>Delete</button>
@@ -316,23 +316,31 @@ function ColSelect(props: { col: State<string>, activated: State<boolean>, filte
   )
 }
 
-function TypeSelect(props: { type: State<string>, values: State<string[]>, activated: State<boolean>, filterActivated: State<boolean>}) {
+function TypeSelect(props: { type: State<string>, col: State<string>, values: State<string[]>, activated: State<boolean>, filterActivated: State<boolean>}) {
   const type = useHookstate(props.type);
   const values = useHookstate(props.values);
   const activated = useHookstate(props.activated);
   const filterActivated = useHookstate(props.filterActivated);
-
+  const numberCol = ["Age", "BMI", "Cut_Off_Numerical", "Freeze_Thaw_Cycles", "Pregnancy_Week", "Price", "Quantity", "Result_Numerical"]
   return (
     <select className="w-fit z-20 px-3 py-1 text-lg text-center border-y-2 border-gray-500 focus:border-gray-700 outline-none transition" value={type.value} onChange={(e) => { values.set([]); type.set(e.target.value)}} disabled = {!(activated.value && filterActivated.value)}>
       <option className='text-left' value={'equal'}>=</option>
       <option className='text-left' value={'in'}>in</option>
-      <option className='text-left' value={'less'}>&lt;</option>
-      <option className='text-left' value={'lessequal'}>&lt;=</option>
-      <option className='text-left' value={'more'}>&gt;</option>
-      <option className='text-left' value={'moreequal'}>&gt;=</option>
-      <option className='text-left' value={'between'}>&lt;x&lt;</option>
+      {numberCol.find(item => item === props.col.value) && (
+        <>
+          <option className='text-left' value={'less'}>&lt;</option>
+          <option className='text-left' value={'lessequal'}>&lt;=</option>
+          <option className='text-left' value={'more'}>&gt;</option>
+          <option className='text-left' value={'moreequal'}>&gt;=</option>
+          <option className='text-left' value={'between'}>&lt;x&lt;</option>
+        </>
+      )}
     </select>
   )
+}
+
+function getProperty<T, K extends keyof T>(o: T, propertyName: K): T[K] {
+  return o[propertyName]
 }
 
 function ChooseValues(props: { values: State<string[]>, type: State<string>, col: State<string>, activated: State<boolean>, filterActivated: State<boolean>}) {
