@@ -5,6 +5,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import { Prisma, type Samples } from "@prisma/client";
 import { GroupFilterSchema, GroupSchema, NormalFilterSchema, type IGroup } from "~/common/filter/filter";
+import { type OptionalSamples } from "~/components/search/table";
 
 export const sampleRouter = createTRPCRouter({
 
@@ -364,9 +365,13 @@ export const sampleRouter = createTRPCRouter({
                 },
             })
 
-            allEntries.push(...mandatoryEntries)
-            
-            return allEntries
+            const allEntriesWithOptionals: OptionalSamples[] = allEntries.map(e =>{return {optional: true, data: e}}) 
+            const mandatoryEntriesWithOptionals: OptionalSamples[] = mandatoryEntries.map(e =>{return {optional: false, data: e}}) 
+
+            allEntriesWithOptionals.push(...mandatoryEntriesWithOptionals)
+
+            return allEntriesWithOptionals
+
         }),
 
     // Update
@@ -590,7 +595,7 @@ export const sampleRouter = createTRPCRouter({
 
                 const uniqueIDs = uniqueSamples.map(sample => sample.CBH_Sample_ID ?? "") ?? []
 
-                return await ctx.prisma.samples.findMany({
+                const entries = await ctx.prisma.samples.findMany({
                     where: {
                         CBH_Sample_ID: {
                             in: uniqueIDs
@@ -600,6 +605,12 @@ export const sampleRouter = createTRPCRouter({
                         CBH_Sample_ID: 'desc',
                     },
                 })
+
+                const entriesWithOptionals: OptionalSamples[] = entries.map(e =>{return {optional: true, data: e}}) 
+
+                return entriesWithOptionals
+
+
             } else {
                 const allUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ${BuildQuery(input.group)} ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
                 
@@ -638,9 +649,12 @@ export const sampleRouter = createTRPCRouter({
                     },
                 })
 
-                allEntries.push(...mandatoryEntries)
+                const allEntriesWithOptionals: OptionalSamples[] = allEntries.map(e =>{return {optional: true, data: e}}) 
+                const mandatoryEntriesWithOptionals: OptionalSamples[] = mandatoryEntries.map(e =>{return {optional: false, data: e}}) 
 
-                return allEntries              
+                allEntriesWithOptionals.push(...mandatoryEntriesWithOptionals)
+
+                return allEntriesWithOptionals              
             }
         }),
 })

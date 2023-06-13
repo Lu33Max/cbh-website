@@ -75,6 +75,11 @@ export type TableSamples = {
   Informed_Consent?:                       string,
 }
 
+export type OptionalTableSamples = {
+  optional: boolean,
+  data: TableSamples
+}
+
 const defaultGroup: IGroup = {
   not: false,
   link: 'AND',
@@ -132,12 +137,12 @@ const ExpertSearch: NextPage = () => {
   }, [f])
 
   function applyFilter () {
-    console.log(JSON.stringify(state.value))
     void router.push(`${pathname}?f=${encodeURIComponent(JSON.stringify(state.value))}`, undefined, {shallow: true})
     const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(state.value)))
     if(result.success){
       setNewFilter(result.data)
     }
+    setPage(1)
   }
 
   return (
@@ -158,7 +163,7 @@ const ExpertSearch: NextPage = () => {
               <div className='mx-3'>
                 <InitialContentEditor self={state}/>
               </div>
-              <Table filter={state} page={page} pagelength={pagelength} count={count} samples={samples} setPage={setPage} setPagelength={setPagelength} applyFilter={applyFilter} expert={true}/>
+              <Table filter={state} page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} applyFilter={applyFilter} expert={true}/>
             </div>
           </div>
         </div>

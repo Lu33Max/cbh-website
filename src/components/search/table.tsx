@@ -17,6 +17,11 @@ import ModalLoadExpert from '~/components/search/expert/modalLoad';
 import ModalSaveExpert from '~/components/search/expert/modalSave';
 import ClickContext from '~/context/click';
 
+export type OptionalSamples = {
+  optional: boolean,
+  data: Samples
+}
+
 export type TableSamples = {
     id:                                      string,
     CBH_Donor_ID?:                           string,
@@ -74,6 +79,11 @@ export type TableSamples = {
     Informed_Consent?:                       string,
   }
 
+  export type OptionalTableSamples = {
+    optional: boolean,
+    data: TableSamples
+  }
+
   const defaultGroup: IGroup = {
     not: false,
     link: 'AND',
@@ -94,7 +104,7 @@ export type TableSamples = {
     page: number,
     pagelength: number ,
     count: number | undefined,
-    samples: Samples[] | undefined,
+    optionalSamples: OptionalSamples[] | undefined,
     setPage: Dispatch<SetStateAction<number>>,
     setPagelength: Dispatch<SetStateAction<number>>,
     applyFilter?: () => void,
@@ -103,18 +113,19 @@ export type TableSamples = {
     setFilter?: Dispatch<SetStateAction<INormalFilter>>
   }
 
-const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setPage, setPagelength, applyFilter, expert, filterNormal, setFilter}) => {
+const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSamples, setPage, setPagelength, applyFilter, expert, filterNormal, setFilter}) => {
 
     const [cartSamples, addCartSamples] = useContext(ClickContext)
     const [range, setRange] = useState<number[]>([])
     const [showSave, setShowSave] = useState(false);
     const [showLoad, setShowLoad] = useState(false);
     const [sortBy, setSortBy] = useState('');
+    const [showPage, setShowPage] = useState(page)
   
     const defaultShow: boolean[] = []
   
-    const [tableSamples, setTableSamples] = useState<TableSamples[]>([])
-    type SampleKey = keyof typeof tableSamples[0];
+    const [tableSamples, setTableSamples] = useState<OptionalTableSamples[]>([])
+    type SampleKey = keyof TableSamples
 
     const [settings, setSettings] = useState<boolean>(false)
     const [formatting, setFormatting] = useState<boolean>(false)
@@ -130,6 +141,10 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
     const [show, setShow] = useState<boolean[]>(defaultShow)
 
     const [filterTest, setFilterTest] = useState<INormalFilter | undefined>(filterNormal)
+
+    useEffect(() => {
+      setShowPage(page)
+    }, [page])
 
     useEffect(() => {
       setFilterTest(filterNormal)
@@ -225,11 +240,11 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
     }, [pagelength])
   
     useEffect(() => {
-      const newArray: TableSamples[] = []
-      if(samples !== undefined){
-        samples.forEach(sample => {
-          if(newArray.find(arraySample => arraySample.CBH_Sample_ID === sample.CBH_Sample_ID)){
-            const sampleIndex = newArray.findIndex(arraySample => arraySample.CBH_Sample_ID === sample.CBH_Sample_ID)
+      const newArray: OptionalTableSamples[] = []
+      if(optionalSamples !== undefined){
+        optionalSamples.forEach(sample => {
+          if(newArray.find(arraySample => arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID)){
+            const sampleIndex = newArray.findIndex(arraySample => arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID)
 
             /*const stringArray = [""]
 
@@ -249,88 +264,91 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
               }
             }*/
 
-            if(sample.Lab_Parameter && !newArray[sampleIndex]?.Lab_Parameter?.find(item => item === sample.Lab_Parameter)) newArray[sampleIndex]?.Lab_Parameter?.push(sample.Lab_Parameter)
-            if(sample.Result_Interpretation && !newArray[sampleIndex]?.Result_Interpretation?.find(item => item === sample.Result_Interpretation)) newArray[sampleIndex]?.Result_Interpretation?.push(sample.Result_Interpretation)
-            if(sample.Result_Raw && !newArray[sampleIndex]?.Result_Raw?.find(item => item === sample.Result_Raw)) newArray[sampleIndex]?.Result_Raw?.push(sample.Result_Raw)
-            if(sample.Result_Numerical && !newArray[sampleIndex]?.Result_Numerical?.find(item => item === sample.Result_Numerical)) newArray[sampleIndex]?.Result_Numerical?.push(sample.Result_Numerical ?? 0)
-            if(sample.Result_Unit && !newArray[sampleIndex]?.Result_Unit?.find(item => item === sample.Result_Unit)) newArray[sampleIndex]?.Result_Unit?.push(sample.Result_Unit)
-            if(sample.Cut_Off_Raw && !newArray[sampleIndex]?.Cut_Off_Raw?.find(item => item === sample.Cut_Off_Raw)) newArray[sampleIndex]?.Cut_Off_Raw?.push(sample.Cut_Off_Raw)
-            if(sample.Cut_Off_Numerical && !newArray[sampleIndex]?.Cut_Off_Numerical?.find(item => item === sample.Cut_Off_Numerical)) newArray[sampleIndex]?.Cut_Off_Numerical?.push(sample.Cut_Off_Numerical ?? 0)
-            if(sample.Test_Method && !newArray[sampleIndex]?.Test_Method?.find(item => item === sample.Test_Method)) newArray[sampleIndex]?.Test_Method?.push(sample.Test_Method)
-            if(sample.Test_System && !newArray[sampleIndex]?.Test_System?.find(item => item === sample.Test_System)) newArray[sampleIndex]?.Test_System?.push(sample.Test_System)
-            if(sample.Test_System_Manufacturer && !newArray[sampleIndex]?.Test_System_Manufacturer?.find(item => item === sample.Test_System_Manufacturer)) newArray[sampleIndex]?.Test_System_Manufacturer?.push(sample.Test_System_Manufacturer)
-            if(sample.Result_Obtained_From && !newArray[sampleIndex]?.Result_Obtained_From?.find(item => item === sample.Result_Obtained_From)) newArray[sampleIndex]?.Result_Obtained_From?.push(sample.Result_Obtained_From)
-            if(sample.Diagnosis && !newArray[sampleIndex]?.Diagnosis?.find(item => item === sample.Diagnosis)) newArray[sampleIndex]?.Diagnosis?.push(sample.Diagnosis)
-            if(sample.Diagnosis_Remarks && !newArray[sampleIndex]?.Diagnosis_Remarks?.find(item => item === sample.Diagnosis_Remarks)) newArray[sampleIndex]?.Diagnosis_Remarks?.push(sample.Diagnosis_Remarks)
-            if(sample.ICD_Code && !newArray[sampleIndex]?.ICD_Code?.find(item => item === sample.ICD_Code)) newArray[sampleIndex]?.ICD_Code?.push(sample.ICD_Code)
-            if(sample.Medication && !newArray[sampleIndex]?.Medication?.find(item => item === sample.Medication)) newArray[sampleIndex]?.Medication?.push(sample.Medication)
-            if(sample.Therapy && !newArray[sampleIndex]?.Therapy?.find(item => item === sample.Therapy)) newArray[sampleIndex]?.Therapy?.push(sample.Therapy)
-            if(sample.Histological_Diagnosis && !newArray[sampleIndex]?.Histological_Diagnosis?.find(item => item === sample.Histological_Diagnosis)) newArray[sampleIndex]?.Histological_Diagnosis?.push(sample.Histological_Diagnosis)
-            if(sample.Other_Gene_Mutations && !newArray[sampleIndex]?.Other_Gene_Mutations?.find(item => item === sample.Other_Gene_Mutations)) newArray[sampleIndex]?.Other_Gene_Mutations?.push(sample.Other_Gene_Mutations)
+            if(sample.data.Lab_Parameter && !newArray[sampleIndex]?.data.Lab_Parameter?.find(item => item === sample.data.Lab_Parameter)) newArray[sampleIndex]?.data.Lab_Parameter?.push(sample.data.Lab_Parameter)
+            if(sample.data.Result_Interpretation && !newArray[sampleIndex]?.data.Result_Interpretation?.find(item => item === sample.data.Result_Interpretation)) newArray[sampleIndex]?.data.Result_Interpretation?.push(sample.data.Result_Interpretation)
+            if(sample.data.Result_Raw && !newArray[sampleIndex]?.data.Result_Raw?.find(item => item === sample.data.Result_Raw)) newArray[sampleIndex]?.data.Result_Raw?.push(sample.data.Result_Raw)
+            if(sample.data.Result_Numerical && !newArray[sampleIndex]?.data.Result_Numerical?.find(item => item === sample.data.Result_Numerical)) newArray[sampleIndex]?.data.Result_Numerical?.push(sample.data.Result_Numerical ?? 0)
+            if(sample.data.Result_Unit && !newArray[sampleIndex]?.data.Result_Unit?.find(item => item === sample.data.Result_Unit)) newArray[sampleIndex]?.data.Result_Unit?.push(sample.data.Result_Unit)
+            if(sample.data.Cut_Off_Raw && !newArray[sampleIndex]?.data.Cut_Off_Raw?.find(item => item === sample.data.Cut_Off_Raw)) newArray[sampleIndex]?.data.Cut_Off_Raw?.push(sample.data.Cut_Off_Raw)
+            if(sample.data.Cut_Off_Numerical && !newArray[sampleIndex]?.data.Cut_Off_Numerical?.find(item => item === sample.data.Cut_Off_Numerical)) newArray[sampleIndex]?.data.Cut_Off_Numerical?.push(sample.data.Cut_Off_Numerical ?? 0)
+            if(sample.data.Test_Method && !newArray[sampleIndex]?.data.Test_Method?.find(item => item === sample.data.Test_Method)) newArray[sampleIndex]?.data.Test_Method?.push(sample.data.Test_Method)
+            if(sample.data.Test_System && !newArray[sampleIndex]?.data.Test_System?.find(item => item === sample.data.Test_System)) newArray[sampleIndex]?.data.Test_System?.push(sample.data.Test_System)
+            if(sample.data.Test_System_Manufacturer && !newArray[sampleIndex]?.data.Test_System_Manufacturer?.find(item => item === sample.data.Test_System_Manufacturer)) newArray[sampleIndex]?.data.Test_System_Manufacturer?.push(sample.data.Test_System_Manufacturer)
+            if(sample.data.Result_Obtained_From && !newArray[sampleIndex]?.data.Result_Obtained_From?.find(item => item === sample.data.Result_Obtained_From)) newArray[sampleIndex]?.data.Result_Obtained_From?.push(sample.data.Result_Obtained_From)
+            if(sample.data.Diagnosis && !newArray[sampleIndex]?.data.Diagnosis?.find(item => item === sample.data.Diagnosis)) newArray[sampleIndex]?.data.Diagnosis?.push(sample.data.Diagnosis)
+            if(sample.data.Diagnosis_Remarks && !newArray[sampleIndex]?.data.Diagnosis_Remarks?.find(item => item === sample.data.Diagnosis_Remarks)) newArray[sampleIndex]?.data.Diagnosis_Remarks?.push(sample.data.Diagnosis_Remarks)
+            if(sample.data.ICD_Code && !newArray[sampleIndex]?.data.ICD_Code?.find(item => item === sample.data.ICD_Code)) newArray[sampleIndex]?.data.ICD_Code?.push(sample.data.ICD_Code)
+            if(sample.data.Medication && !newArray[sampleIndex]?.data.Medication?.find(item => item === sample.data.Medication)) newArray[sampleIndex]?.data.Medication?.push(sample.data.Medication)
+            if(sample.data.Therapy && !newArray[sampleIndex]?.data.Therapy?.find(item => item === sample.data.Therapy)) newArray[sampleIndex]?.data.Therapy?.push(sample.data.Therapy)
+            if(sample.data.Histological_Diagnosis && !newArray[sampleIndex]?.data.Histological_Diagnosis?.find(item => item === sample.data.Histological_Diagnosis)) newArray[sampleIndex]?.data.Histological_Diagnosis?.push(sample.data.Histological_Diagnosis)
+            if(sample.data.Other_Gene_Mutations && !newArray[sampleIndex]?.data.Other_Gene_Mutations?.find(item => item === sample.data.Other_Gene_Mutations)) newArray[sampleIndex]?.data.Other_Gene_Mutations?.push(sample.data.Other_Gene_Mutations)
           } else {
             newArray.push(
-              { id:                               sample.id,
-                CBH_Donor_ID:                     sample.CBH_Donor_ID ?? undefined,
-                CBH_Master_ID:                    sample.CBH_Master_ID ?? undefined,
-                CBH_Sample_ID:                    sample.CBH_Sample_ID ?? undefined,
-                Price:                            sample.Price ?? undefined,
-                Quantity:                         sample.Quantity ?? undefined,
-                Unit:                             sample.Unit ?? undefined,
-                Matrix:                           sample.Matrix ?? undefined,
-                Storage_Temperature:              sample.Storage_Temperature ?? undefined,
-                Freeze_Thaw_Cycles:               sample.Freeze_Thaw_Cycles ?? undefined,
-                Sample_Condition:                 sample.Sample_Condition ?? undefined,
-                Infectious_Disease_Test_Result:   sample.Infectious_Disease_Test_Result ?? undefined,
-                Gender:                           sample.Gender ?? undefined,
-                Age:                              sample.Age ?? undefined,
-                Ethnicity:                        sample.Ethnicity ?? undefined,
-                BMI:                              sample.BMI ?? undefined,
-                Lab_Parameter:                    sample.Lab_Parameter ? [sample.Lab_Parameter] : [],
-                Result_Interpretation:            sample.Result_Interpretation ? [sample.Result_Interpretation] : [],
-                Result_Raw:                       sample.Result_Raw ? [sample.Result_Raw] : [],
-                Result_Numerical:                 sample.Result_Numerical ? [sample.Result_Numerical ?? 0] : [],
-                Result_Unit:                      sample.Result_Unit ? [sample.Result_Unit] : [],
-                Cut_Off_Raw:                      sample.Cut_Off_Raw ? [sample.Cut_Off_Raw] : [],
-                Cut_Off_Numerical:                sample.Cut_Off_Numerical ? [sample.Cut_Off_Numerical ?? 0] : [],
-                Test_Method:                      sample.Test_Method ? [sample.Test_Method] : [],
-                Test_System:                      sample.Test_System ? [sample.Test_System] : [],
-                Test_System_Manufacturer:         sample.Test_System_Manufacturer ? [sample.Test_System_Manufacturer] : [],
-                Result_Obtained_From:             sample.Result_Obtained_From ? [sample.Result_Obtained_From] : [],
-                Diagnosis:                        sample.Diagnosis ? [sample.Diagnosis] : [],
-                Diagnosis_Remarks:                sample.Diagnosis_Remarks ? [sample.Diagnosis_Remarks] : [],
-                ICD_Code:                         sample.ICD_Code ? [sample.ICD_Code] : [],
-                Pregnancy_Week:                   sample.Pregnancy_Week ?? undefined,
-                Pregnancy_Trimester:              sample.Pregnancy_Trimester ?? undefined,
-                Medication:                       sample.Medication ? [sample.Medication] : [],
-                Therapy:                          sample.Therapy ? [sample.Therapy] : [],
-                Histological_Diagnosis:           sample.Histological_Diagnosis ? [sample.Histological_Diagnosis] : [],
-                Organ:                            sample.Organ ?? undefined,
-                Disease_Presentation:             sample.Disease_Presentation ?? undefined,
-                TNM_Class_T:                      sample.TNM_Class_T ?? undefined,
-                TNM_Class_N:                      sample.TNM_Class_N ?? undefined,
-                TNM_Class_M:                      sample.TNM_Class_M ?? undefined,
-                Tumour_Grade:                     sample.Tumour_Grade ?? undefined,
-                Tumour_Stage:                     sample.Tumour_Stage ?? undefined,
-                Viable_Cells__per_:               sample.Viable_Cells__per_ ?? undefined,
-                Necrotic_Cells__per_:             sample.Necrotic_Cells__per_ ?? undefined,
-                Tumour_Cells__per_:               sample.Tumour_Cells__per_ ?? undefined,
-                Proliferation_Rate__Ki67_per_:    sample.Proliferation_Rate__Ki67_per_ ?? undefined,
-                Estrogen_Receptor:                sample.Estrogen_Receptor ?? undefined,
-                Progesteron_Receptor:             sample.Progesteron_Receptor ?? undefined,
-                HER_2_Receptor:                   sample.HER_2_Receptor ?? undefined,
-                Other_Gene_Mutations:             sample.Other_Gene_Mutations ? [sample.Other_Gene_Mutations] : [],
-                Country_of_Collection:            sample.Country_of_Collection ?? undefined,
-                Date_of_Collection:               sample.Date_of_Collection ?? undefined,
-                Procurement_Type:                 sample.Procurement_Type ?? undefined,
-                Informed_Consent:                 sample.Informed_Consent ?? undefined,
+              {optional: sample.optional, data: 
+                { id:                               sample.data.id,
+                  CBH_Donor_ID:                     sample.data.CBH_Donor_ID ?? undefined,
+                  CBH_Master_ID:                    sample.data.CBH_Master_ID ?? undefined,
+                  CBH_Sample_ID:                    sample.data.CBH_Sample_ID ?? undefined,
+                  Price:                            sample.data.Price ?? undefined,
+                  Quantity:                         sample.data.Quantity ?? undefined,
+                  Unit:                             sample.data.Unit ?? undefined,
+                  Matrix:                           sample.data.Matrix ?? undefined,
+                  Storage_Temperature:              sample.data.Storage_Temperature ?? undefined,
+                  Freeze_Thaw_Cycles:               sample.data.Freeze_Thaw_Cycles ?? undefined,
+                  Sample_Condition:                 sample.data.Sample_Condition ?? undefined,
+                  Infectious_Disease_Test_Result:   sample.data.Infectious_Disease_Test_Result ?? undefined,
+                  Gender:                           sample.data.Gender ?? undefined,
+                  Age:                              sample.data.Age ?? undefined,
+                  Ethnicity:                        sample.data.Ethnicity ?? undefined,
+                  BMI:                              sample.data.BMI ?? undefined,
+                  Lab_Parameter:                    sample.data.Lab_Parameter ? [sample.data.Lab_Parameter] : [],
+                  Result_Interpretation:            sample.data.Result_Interpretation ? [sample.data.Result_Interpretation] : [],
+                  Result_Raw:                       sample.data.Result_Raw ? [sample.data.Result_Raw] : [],
+                  Result_Numerical:                 sample.data.Result_Numerical ? [sample.data.Result_Numerical ?? 0] : [],
+                  Result_Unit:                      sample.data.Result_Unit ? [sample.data.Result_Unit] : [],
+                  Cut_Off_Raw:                      sample.data.Cut_Off_Raw ? [sample.data.Cut_Off_Raw] : [],
+                  Cut_Off_Numerical:                sample.data.Cut_Off_Numerical ? [sample.data.Cut_Off_Numerical ?? 0] : [],
+                  Test_Method:                      sample.data.Test_Method ? [sample.data.Test_Method] : [],
+                  Test_System:                      sample.data.Test_System ? [sample.data.Test_System] : [],
+                  Test_System_Manufacturer:         sample.data.Test_System_Manufacturer ? [sample.data.Test_System_Manufacturer] : [],
+                  Result_Obtained_From:             sample.data.Result_Obtained_From ? [sample.data.Result_Obtained_From] : [],
+                  Diagnosis:                        sample.data.Diagnosis ? [sample.data.Diagnosis] : [],
+                  Diagnosis_Remarks:                sample.data.Diagnosis_Remarks ? [sample.data.Diagnosis_Remarks] : [],
+                  ICD_Code:                         sample.data.ICD_Code ? [sample.data.ICD_Code] : [],
+                  Pregnancy_Week:                   sample.data.Pregnancy_Week ?? undefined,
+                  Pregnancy_Trimester:              sample.data.Pregnancy_Trimester ?? undefined,
+                  Medication:                       sample.data.Medication ? [sample.data.Medication] : [],
+                  Therapy:                          sample.data.Therapy ? [sample.data.Therapy] : [],
+                  Histological_Diagnosis:           sample.data.Histological_Diagnosis ? [sample.data.Histological_Diagnosis] : [],
+                  Organ:                            sample.data.Organ ?? undefined,
+                  Disease_Presentation:             sample.data.Disease_Presentation ?? undefined,
+                  TNM_Class_T:                      sample.data.TNM_Class_T ?? undefined,
+                  TNM_Class_N:                      sample.data.TNM_Class_N ?? undefined,
+                  TNM_Class_M:                      sample.data.TNM_Class_M ?? undefined,
+                  Tumour_Grade:                     sample.data.Tumour_Grade ?? undefined,
+                  Tumour_Stage:                     sample.data.Tumour_Stage ?? undefined,
+                  Viable_Cells__per_:               sample.data.Viable_Cells__per_ ?? undefined,
+                  Necrotic_Cells__per_:             sample.data.Necrotic_Cells__per_ ?? undefined,
+                  Tumour_Cells__per_:               sample.data.Tumour_Cells__per_ ?? undefined,
+                  Proliferation_Rate__Ki67_per_:    sample.data.Proliferation_Rate__Ki67_per_ ?? undefined,
+                  Estrogen_Receptor:                sample.data.Estrogen_Receptor ?? undefined,
+                  Progesteron_Receptor:             sample.data.Progesteron_Receptor ?? undefined,
+                  HER_2_Receptor:                   sample.data.HER_2_Receptor ?? undefined,
+                  Other_Gene_Mutations:             sample.data.Other_Gene_Mutations ? [sample.data.Other_Gene_Mutations] : [],
+                  Country_of_Collection:            sample.data.Country_of_Collection ?? undefined,
+                  Date_of_Collection:               sample.data.Date_of_Collection ?? undefined,
+                  Procurement_Type:                 sample.data.Procurement_Type ?? undefined,
+                  Informed_Consent:                 sample.data.Informed_Consent ?? undefined,
+                }
               }
+              
             )
           }
         })
       }
       
       setTableSamples(newArray)
-    }, [samples])
+    }, [optionalSamples])
 
     useEffect(() => {
       void sortColumns()
@@ -362,12 +380,12 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
     }
     
     const handleSort = (column: SampleKey) => {
-      let sortArray: TableSamples[]=[]
+      let sortArray: OptionalTableSamples[]=[]
 
-      sortArray = [...tableSamples].sort((a: TableSamples, b: TableSamples) => {
+      sortArray = [...tableSamples].sort((a: OptionalTableSamples, b: OptionalTableSamples) => {
 
-        const a1 = getProperty(a, column)
-        const b1 = getProperty(b, column)
+        const a1 = getProperty(a.data, column as SampleKey)
+        const b1 = getProperty(b.data, column as SampleKey)
 
         if(a1 !== undefined && b1 !== undefined){
           if(a1 > b1) return (column == sortBy) ? -1 : 1;
@@ -437,7 +455,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
             <Count count={count}/>
   
             <div className="mx-auto">
-              <Footer range={range} page={page} setPage={setPage} />
+              <Footer range={range} page={showPage} setPage={setPage} />
             </div> 
 
             {!expert && (
@@ -486,12 +504,12 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
               {tableSamples.map((sample, index) => (
                 <>
                   <tr key={index} className="text-center">
-                    <td className="items-center text-2xl bg-gray-300 rounded-l-xl" onClick={() => addCartSamples([...cartSamples, sample])}><button><BiCartAdd className="relative top-1" /></button></td>
+                    <td className={`${sample.optional ? "bg-green-300 items-center text-2xl rounded-l-xl" : "bg-gray-300 items-center text-2xl rounded-l-xl"}`} onClick={() => addCartSamples([...cartSamples, sample])}><button><BiCartAdd className="relative top-1" /></button></td>
                     
                     {activeColumns.map((column, i) => {
-                      const prop = getProperty(sample, column as SampleKey)
+                      const prop = getProperty(sample.data, column as SampleKey)
                       return (
-                        <td key={i} className="py-2 px-3 bg-gray-300">
+                        <td key={i} className={`${sample.optional ? "bg-green-300" : "bg-gray-300"}`}>
                           {((!expert || (expert && formatting)) && (column === "Lab_Parameter" || column === "Diagnosis" || column === "Result_Interpretation") && Array.isArray(prop)) ? 
                             (prop as string[]).filter((item: string) => column === "Lab_Parameter" ? filterNormal?.labParameter.value.find(val => val === item) : column === "Diagnosis" ? filterNormal?.diagnosis.value.find(val => val === item) : filterNormal?.resultInterpretation.value.find(val => val === item))
                           :
@@ -500,51 +518,51 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
                         </td>
                       )
                     })}
-                    <td className="py-2 px-3 bg-gray-300 rounded-r-xl"><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
+                    <td className={`${sample.optional ? "bg-green-300 py-2 px-3 rounded-r-xl" : "bg-gray-300 py-2 px-3 rounded-r-xl"}`}><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
                   </tr>
                   <tr className={`mx-5 ${show[index] ? "" : "hidden"}`}>
                     <td colSpan={2} className="px-5 bg-gray-200">
                       <div className="grid grid-cols-2">
                         <strong className="col-span-2">General Data</strong>
-                        <span>CBH Master ID:</span> {sample.CBH_Master_ID ?? "NaN"}
-                        <span>Storage Temperature:</span> {sample.Storage_Temperature ?? "NaN"}
-                        <span>Freeze Thaw Cycles:</span> {sample.Freeze_Thaw_Cycles ?? "NaN"}
-                        <span>Infectious Disease Test Result:</span> {(sample.Infectious_Disease_Test_Result !== null && sample.Infectious_Disease_Test_Result !== "") ? sample.Infectious_Disease_Test_Result : "NaN"}
-                        <span>Sample Condition:</span> {sample.Sample_Condition ?? "NaN"}
+                        <span>CBH Master ID:</span> {sample.data.CBH_Master_ID ?? "NaN"}
+                        <span>Storage Temperature:</span> {sample.data.Storage_Temperature ?? "NaN"}
+                        <span>Freeze Thaw Cycles:</span> {sample.data.Freeze_Thaw_Cycles ?? "NaN"}
+                        <span>Infectious Disease Test Result:</span> {(sample.data.Infectious_Disease_Test_Result !== null && sample.data.Infectious_Disease_Test_Result !== "") ? sample.data.Infectious_Disease_Test_Result : "NaN"}
+                        <span>Sample Condition:</span> {sample.data.Sample_Condition ?? "NaN"}
                       </div>
                     </td>
                     <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
                       <div className="grid grid-cols-2 ">
                         <strong className="col-span-2">Donor</strong>
-                        <span>Age:</span> {sample.Age ?? "NaN"}
-                        <span>Gender:</span> {sample.Gender ?? "NaN"}
-                        <span>Ethnicity:</span> {sample.Ethnicity ?? "NaN"}
+                        <span>Age:</span> {sample.data.Age ?? "NaN"}
+                        <span>Gender:</span> {sample.data.Gender ?? "NaN"}
+                        <span>Ethnicity:</span> {sample.data.Ethnicity ?? "NaN"}
                         <strong className="col-span-2 mt-2">Ethics</strong>
-                        <span>Procurement Type:</span> {sample.Procurement_Type ?? "NaN"}
+                        <span>Procurement Type:</span> {sample.data.Procurement_Type ?? "NaN"}
                       </div>
                     </td>
                     <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
                       <div className="grid grid-cols-2">
                       <strong className="col-span-2">Laboratory</strong>
-                        <span>Lab Parameter</span> {(sample.Lab_Parameter && sample.Lab_Parameter.length > 0) ? sample.Lab_Parameter.join(", "): "NaN"}
-                        <span>Result Raw:</span> {(sample.Result_Raw && sample.Result_Raw.length > 0) ? sample.Result_Raw.join(", "): "NaN"}
-                        <span>Result Unit:</span> {(sample.Result_Unit && sample.Result_Unit.length > 0) ? sample.Result_Unit.join(", "): "NaN"}
-                        <span>Interpretation:</span> {(sample.Result_Interpretation && sample.Result_Interpretation.length > 0) ? sample.Result_Interpretation.join(", "): "NaN"}
-                        <span>Cut Off Raw:</span> {sample.Cut_Off_Raw ? sample.Cut_Off_Raw.join(", "): "NaN"}
-                        <span>Test Method:</span> {(sample.Test_Method && sample.Test_Method.length > 0) ? sample.Test_Method.join(", "): "NaN"}
-                        <span>Test System:</span> {(sample.Test_System && sample.Test_System.length > 0) ? sample.Test_System.join(", "): "NaN"}
-                        <span>Test System Manuf.:</span> {(sample.Test_System_Manufacturer && sample.Test_System_Manufacturer.length > 0) ? sample.Test_System_Manufacturer.join(", "): "NaN"}
+                        <span>Lab Parameter</span> {(sample.data.Lab_Parameter && sample.data.Lab_Parameter.length > 0) ? sample.data.Lab_Parameter.join(", "): "NaN"}
+                        <span>Result Raw:</span> {(sample.data.Result_Raw && sample.data.Result_Raw.length > 0) ? sample.data.Result_Raw.join(", "): "NaN"}
+                        <span>Result Unit:</span> {(sample.data.Result_Unit && sample.data.Result_Unit.length > 0) ? sample.data.Result_Unit.join(", "): "NaN"}
+                        <span>Interpretation:</span> {(sample.data.Result_Interpretation && sample.data.Result_Interpretation.length > 0) ? sample.data.Result_Interpretation.join(", "): "NaN"}
+                        <span>Cut Off Raw:</span> {sample.data.Cut_Off_Raw ? sample.data.Cut_Off_Raw.join(", "): "NaN"}
+                        <span>Test Method:</span> {(sample.data.Test_Method && sample.data.Test_Method.length > 0) ? sample.data.Test_Method.join(", "): "NaN"}
+                        <span>Test System:</span> {(sample.data.Test_System && sample.data.Test_System.length > 0) ? sample.data.Test_System.join(", "): "NaN"}
+                        <span>Test System Manuf.:</span> {(sample.data.Test_System_Manufacturer && sample.data.Test_System_Manufacturer.length > 0) ? sample.data.Test_System_Manufacturer.join(", "): "NaN"}
                       </div>
                     </td>
                     <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={4}>
                       <div className="grid grid-cols-2">
                         <strong className="col-span-2">Clinical Diagnosis</strong>
-                        <span>Diagnosis:</span> {(sample.Diagnosis && sample.Diagnosis.length > 0) ? sample.Diagnosis.join(", "): "NaN"}
-                        <span>Diagnosis Remarks:</span> {(sample.Diagnosis_Remarks && sample.Diagnosis_Remarks.length > 0) ? sample.Diagnosis_Remarks.join(", "): "NaN"}
-                        <span>ICD:</span> {(sample.ICD_Code && sample.ICD_Code.length > 0) ? sample.ICD_Code.join(", ") : "NaN"}
+                        <span>Diagnosis:</span> {(sample.data.Diagnosis && sample.data.Diagnosis.length > 0) ? sample.data.Diagnosis.join(", "): "NaN"}
+                        <span>Diagnosis Remarks:</span> {(sample.data.Diagnosis_Remarks && sample.data.Diagnosis_Remarks.length > 0) ? sample.data.Diagnosis_Remarks.join(", "): "NaN"}
+                        <span>ICD:</span> {(sample.data.ICD_Code && sample.data.ICD_Code.length > 0) ? sample.data.ICD_Code.join(", ") : "NaN"}
                         <strong className="col-span-2 mt-2">Preanalytics</strong>
-                        <span>Collection Country:</span> {sample.Country_of_Collection ?? "NaN"}
-                        <span>Collection Date:</span> {sample.Date_of_Collection?.toDateString() ?? "NaN"}
+                        <span>Collection Country:</span> {sample.data.Country_of_Collection ?? "NaN"}
+                        <span>Collection Date:</span> {sample.data.Date_of_Collection?.toDateString() ?? "NaN"}
                       </div>
                     </td>
                   </tr>
@@ -554,7 +572,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, samples, setP
           </table>
         </div>
         <div className="flex flex-row w-full justify-center items-center mt-2 mb-5">
-          <Footer range={range} page={page} setPage={setPage} />
+          <Footer range={range} page={showPage} setPage={setPage} />
           <ShowRows pagelength={pagelength} setPagelength={setPagelength}/>
         </div>
       </>
