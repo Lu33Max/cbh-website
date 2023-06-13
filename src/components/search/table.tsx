@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext, type Dispatch, type SetStateAction } from 'react';
 import { type State } from '@hookstate/core';
+import { OverlayTrigger } from 'react-bootstrap';
+import Popover from 'react-bootstrap/Popover';
 
 import { BiCartAdd, BiDetail, BiCog } from "react-icons/bi"
 import Footer from "~/components/search/footer";
@@ -115,12 +117,13 @@ export type TableSamples = {
 
 const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSamples, setPage, setPagelength, applyFilter, expert, filterNormal, setFilter}) => {
 
-    const [cartSamples, addCartSamples] = useContext(ClickContext)
+    const [cartSamples, setCartSamples] = useContext(ClickContext)
     const [range, setRange] = useState<number[]>([])
     const [showSave, setShowSave] = useState(false);
     const [showLoad, setShowLoad] = useState(false);
     const [sortBy, setSortBy] = useState('');
     const [showPage, setShowPage] = useState(page)
+    const [samplesToAdd, setSamplesToAdd] = useState(0)
   
     const defaultShow: boolean[] = []
   
@@ -417,6 +420,19 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
 
       setActiveColumns(sortArray)
     }
+
+    function addSamplesToCart(){
+      const tempArray: OptionalTableSamples[] = []
+
+      for (let i = 0; i < samplesToAdd; i++) {
+        const tempSample = tableSamples[i]
+        if (tempSample) {
+          tempArray.push(tempSample)
+        }        
+      }
+      setCartSamples([...cartSamples, ...tempArray])
+
+    }
   
     return (
       <> 
@@ -453,6 +469,24 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
           
           <div className="flex flex-row w-full items-center mt-3 mb-2">
             <Count count={count}/>
+            <OverlayTrigger trigger="click" placement="right" rootClose={true} overlay={
+              <Popover id="popover-basic" className='bg-gray-300 rounded-xl p-2 text-center'>
+                <Popover.Header as="h3">Here you choose the first <br/> samples from the top.</Popover.Header>
+                <Popover.Body>
+                  <select className='text-center text-xl' onChange={(e) => setSamplesToAdd(Number(e.target.value))}>
+                    <option disabled selected hidden>0</option>
+                    <option value={pagelength/5}>{pagelength/5}</option>
+                    <option value={pagelength*2/5}>{pagelength*2/5}</option>
+                    <option value={pagelength*3/5}>{pagelength*3/5}</option>
+                    <option value={pagelength*4/5}>{pagelength*4/5}</option>
+                    <option value={pagelength}>all</option>
+                  </select>
+                  <button onClick={addSamplesToCart} className='bg-green-200 p-2 rounded-xl ml-2'>Add</button>
+                </Popover.Body>
+              </Popover>
+            }>
+              <button className='bg-gray-300 text-3xl rounded-xl p-1'><BiCartAdd/></button>
+            </OverlayTrigger>           
   
             <div className="mx-auto">
               <Footer range={range} page={showPage} setPage={setPage} />
@@ -504,7 +538,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
               {tableSamples.map((sample, index) => (
                 <>
                   <tr key={index} className="text-center">
-                    <td className={`${sample.optional ? "bg-green-300 items-center text-2xl rounded-l-xl" : "bg-gray-300 items-center text-2xl rounded-l-xl"}`} onClick={() => addCartSamples([...cartSamples, sample])}><button><BiCartAdd className="relative top-1" /></button></td>
+                    <td className={`${sample.optional ? "bg-green-300 items-center text-2xl rounded-l-xl" : "bg-gray-300 items-center text-2xl rounded-l-xl"}`} onClick={() => setCartSamples([...cartSamples, sample])}><button><BiCartAdd className="relative top-1" /></button></td>
                     
                     {activeColumns.map((column, i) => {
                       const prop = getProperty(sample.data, column as SampleKey)

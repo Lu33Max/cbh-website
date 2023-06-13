@@ -8,7 +8,7 @@ import Sidebar from "~/components/overall/sidebar";
 import SimpleSlider from "~/components/home/carousel"
 import Testimonials from "~/components/home/testimonials";
 import ClickContext from "~/context/click";
-import Table, { TableSamples } from "~/components/search/table";
+import Table, { OptionalTableSamples, TableSamples } from "~/components/search/table";
 
 const Home: NextPage = () => {
   return (
@@ -39,7 +39,7 @@ const Content: React.FC = () => {
   const [cartSamples, setCartSamples] = useContext(ClickContext) 
   const activeColumns = ["CBH_Donor_ID","CBH_Sample_ID","Matrix","Quantity","Unit","Age","Gender","Price"]
   const [sortBy, setSortBy] = useState('');
-  type SampleKey = keyof typeof cartSamples[0];
+  type SampleKey = keyof TableSamples
   const defaultShow: boolean[] = []
   const [show, setShow] = useState<boolean[]>(defaultShow)
 
@@ -63,16 +63,16 @@ const Content: React.FC = () => {
   }
 
   function deleteCartItem (cartSample: TableSamples){
-    setCartSamples((current) => current.filter(item => item.id !== cartSample.id))    
+    setCartSamples((current) => current.filter(item => item.data.id !== cartSample.id))    
   }
 
   const handleSort = (column: SampleKey) => {
-    let sortArray: TableSamples[]=[]
+    let sortArray: OptionalTableSamples[]=[]
 
-    sortArray = [...cartSamples].sort((a: TableSamples, b: TableSamples) => {
+    sortArray = [...cartSamples].sort((a: OptionalTableSamples, b: OptionalTableSamples) => {
 
-      const a1 = getProperty(a, column)
-      const b1 = getProperty(b, column)
+      const a1 = getProperty(a.data, column)
+      const b1 = getProperty(b.data, column)
 
       if(a1 !== undefined && b1 !== undefined){
         if(a1 > b1) return (column == sortBy) ? -1 : 1;
@@ -109,11 +109,11 @@ const Content: React.FC = () => {
               {cartSamples.map((sample, index) => (
                 <>
                   <tr key={index} className="text-center">
-                    <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button onClick={() => deleteCartItem(sample)}><BiX className="relative top-1" /></button></td>
+                    <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button onClick={() => deleteCartItem(sample.data)}><BiX className="relative top-1" /></button></td>
                     
                     {activeColumns.map((column, i) => {
                       return (
-                        <td key={i} className="py-2 px-3 bg-gray-300">{getProperty(sample, column as SampleKey)?.toString()}</td>
+                        <td key={i} className="py-2 px-3 bg-gray-300">{getProperty(sample.data, column as SampleKey)?.toString()}</td>
                       )
                     })}
                     <td className="py-2 px-3 bg-gray-300 rounded-r-xl"><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
@@ -122,45 +122,45 @@ const Content: React.FC = () => {
                     <td colSpan={2} className="px-5 bg-gray-200">
                       <div className="grid grid-cols-2">
                         <strong className="col-span-2">General Data</strong>
-                        <span>CBH Master ID:</span> {sample.CBH_Master_ID ?? "NaN"}
-                        <span>Storage Temperature:</span> {sample.Storage_Temperature ?? "NaN"}
-                        <span>Freeze Thaw Cycles:</span> {sample.Freeze_Thaw_Cycles ?? "NaN"}
-                        <span>Infectious Disease Test Result:</span> {(sample.Infectious_Disease_Test_Result !== null && sample.Infectious_Disease_Test_Result !== "") ? sample.Infectious_Disease_Test_Result : "NaN"}
-                        <span>Sample Condition:</span> {sample.Sample_Condition ?? "NaN"}
+                        <span>CBH Master ID:</span> {sample.data.CBH_Master_ID ?? "NaN"}
+                        <span>Storage Temperature:</span> {sample.data.Storage_Temperature ?? "NaN"}
+                        <span>Freeze Thaw Cycles:</span> {sample.data.Freeze_Thaw_Cycles ?? "NaN"}
+                        <span>Infectious Disease Test Result:</span> {(sample.data.Infectious_Disease_Test_Result !== null && sample.data.Infectious_Disease_Test_Result !== "") ? sample.data.Infectious_Disease_Test_Result : "NaN"}
+                        <span>Sample Condition:</span> {sample.data.Sample_Condition ?? "NaN"}
                       </div>
                     </td>
                     <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
                       <div className="grid grid-cols-2 ">
                         <strong className="col-span-2">Donor</strong>
-                        <span>Age:</span> {sample.Age ?? "NaN"}
-                        <span>Gender:</span> {sample.Gender ?? "NaN"}
-                        <span>Ethnicity:</span> {sample.Ethnicity ?? "NaN"}
+                        <span>Age:</span> {sample.data.Age ?? "NaN"}
+                        <span>Gender:</span> {sample.data.Gender ?? "NaN"}
+                        <span>Ethnicity:</span> {sample.data.Ethnicity ?? "NaN"}
                         <strong className="col-span-2 mt-2">Ethics</strong>
-                        <span>Procurement Type:</span> {sample.Procurement_Type ?? "NaN"}
+                        <span>Procurement Type:</span> {sample.data.Procurement_Type ?? "NaN"}
                       </div>
                     </td>
                     <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
                       <div className="grid grid-cols-2">
                       <strong className="col-span-2">Laboratory</strong>
-                        <span>Lab Parameter</span> {(sample.Lab_Parameter && sample.Lab_Parameter.length > 0) ? sample.Lab_Parameter.join(", "): "NaN"}
-                        <span>Result Raw:</span> {(sample.Result_Raw && sample.Result_Raw.length > 0) ? sample.Result_Raw.join(", "): "NaN"}
-                        <span>Result Unit:</span> {(sample.Result_Unit && sample.Result_Unit.length > 0) ? sample.Result_Unit.join(", "): "NaN"}
-                        <span>Interpretation:</span> {(sample.Result_Interpretation && sample.Result_Interpretation.length > 0) ? sample.Result_Interpretation.join(", "): "NaN"}
-                        <span>Cut Off Raw:</span> {sample.Cut_Off_Raw ? sample.Cut_Off_Raw.join(", "): "NaN"}
-                        <span>Test Method:</span> {(sample.Test_Method && sample.Test_Method.length > 0) ? sample.Test_Method.join(", "): "NaN"}
-                        <span>Test System:</span> {(sample.Test_System && sample.Test_System.length > 0) ? sample.Test_System.join(", "): "NaN"}
-                        <span>Test System Manuf.:</span> {(sample.Test_System_Manufacturer && sample.Test_System_Manufacturer.length > 0) ? sample.Test_System_Manufacturer.join(", "): "NaN"}
+                        <span>Lab Parameter</span> {(sample.data.Lab_Parameter && sample.data.Lab_Parameter.length > 0) ? sample.data.Lab_Parameter.join(", "): "NaN"}
+                        <span>Result Raw:</span> {(sample.data.Result_Raw && sample.data.Result_Raw.length > 0) ? sample.data.Result_Raw.join(", "): "NaN"}
+                        <span>Result Unit:</span> {(sample.data.Result_Unit && sample.data.Result_Unit.length > 0) ? sample.data.Result_Unit.join(", "): "NaN"}
+                        <span>Interpretation:</span> {(sample.data.Result_Interpretation && sample.data.Result_Interpretation.length > 0) ? sample.data.Result_Interpretation.join(", "): "NaN"}
+                        <span>Cut Off Raw:</span> {sample.data.Cut_Off_Raw ? sample.data.Cut_Off_Raw.join(", "): "NaN"}
+                        <span>Test Method:</span> {(sample.data.Test_Method && sample.data.Test_Method.length > 0) ? sample.data.Test_Method.join(", "): "NaN"}
+                        <span>Test System:</span> {(sample.data.Test_System && sample.data.Test_System.length > 0) ? sample.data.Test_System.join(", "): "NaN"}
+                        <span>Test System Manuf.:</span> {(sample.data.Test_System_Manufacturer && sample.data.Test_System_Manufacturer.length > 0) ? sample.data.Test_System_Manufacturer.join(", "): "NaN"}
                       </div>
                     </td>
                     <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={4}>
                       <div className="grid grid-cols-2">
                         <strong className="col-span-2">Clinical Diagnosis</strong>
-                        <span>Diagnosis:</span> {(sample.Diagnosis && sample.Diagnosis.length > 0) ? sample.Diagnosis.join(", "): "NaN"}
-                        <span>Diagnosis Remarks:</span> {(sample.Diagnosis_Remarks && sample.Diagnosis_Remarks.length > 0) ? sample.Diagnosis_Remarks.join(", "): "NaN"}
-                        <span>ICD:</span> {(sample.ICD_Code && sample.ICD_Code.length > 0) ? sample.ICD_Code.join(", ") : "NaN"}
+                        <span>Diagnosis:</span> {(sample.data.Diagnosis && sample.data.Diagnosis.length > 0) ? sample.data.Diagnosis.join(", "): "NaN"}
+                        <span>Diagnosis Remarks:</span> {(sample.data.Diagnosis_Remarks && sample.data.Diagnosis_Remarks.length > 0) ? sample.data.Diagnosis_Remarks.join(", "): "NaN"}
+                        <span>ICD:</span> {(sample.data.ICD_Code && sample.data.ICD_Code.length > 0) ? sample.data.ICD_Code.join(", ") : "NaN"}
                         <strong className="col-span-2 mt-2">Preanalytics</strong>
-                        <span>Collection Country:</span> {sample.Country_of_Collection ?? "NaN"}
-                        <span>Collection Date:</span> {sample.Date_of_Collection?.toDateString() ?? "NaN"}
+                        <span>Collection Country:</span> {sample.data.Country_of_Collection ?? "NaN"}
+                        <span>Collection Date:</span> {sample.data.Date_of_Collection?.toDateString() ?? "NaN"}
                       </div>
                     </td>
                   </tr>
