@@ -667,7 +667,7 @@ function BuildQuery(group: IGroup, mandatoryOnly?: boolean): Prisma.Sql {
 
             type SampleKey = keyof typeof ExampleSample
             type FieldName<T> = string & keyof T
-            const fieldName = <T>(name: FieldName<T>) => Prisma.sql([`"${name}"`])
+            const fieldName = <T>(name: FieldName<T>) => Prisma.sql([`lower("${name}")`])
             const filterTypes = ["equal","in","less","lessequal","more","moreequal","between"]
 
             for (let i = 0; i < group.filter.length; i++) {
@@ -679,10 +679,10 @@ function BuildQuery(group: IGroup, mandatoryOnly?: boolean): Prisma.Sql {
                         if (currentFilter.values.length !== 0 && filterTypes.find(item => item === currentFilter.type) && currentFilter.activated && Object.getOwnPropertyNames(ExampleSample).find(item => item === currentFilter.col)) {
                             switch(currentFilter.type){
                                 case "equal": 
-                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} = ${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Number(currentFilter.values[0]) : currentFilter.values[0]}`);
+                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} = ${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Number(currentFilter.values[0]) : currentFilter.values[0]?.toLowerCase()}`);
                                     break;
                                 case "in": 
-                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} IN (${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Prisma.join(currentFilter.values.map(v => Number(v))) : Prisma.join(currentFilter.values)})`);
+                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} IN (${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Prisma.join(currentFilter.values.map(v => Number(v))) : Prisma.join(currentFilter.values.map(v => {return(v.toLowerCase())}))})`);
                                     break;
                                 case "less": 
                                     sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} < ${Number(currentFilter.values[0])}`);
