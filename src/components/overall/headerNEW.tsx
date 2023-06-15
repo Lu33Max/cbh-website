@@ -92,7 +92,7 @@ const HeaderNEW: React.FC = () => {
       </div>
 
       {/* Services */}
-      <div className={`overflow-visible absolute top-0 w-full text-black bg-[#164A41] transition-height duration-500 ease-in-out ${activeHeader === 1 ? "z-10 h-[450px]" : "h-0 opacity-0"}`}>
+      <div className={`overflow-visible absolute top-0 w-full text-black bg-[#164A41] transition-height duration-500 ease-in-out ${activeHeader === 1 ? "z-10 h-[450px]" : "z-0 h-0 hidden"}`}>
         <div className="flex flex-row w-full items-center justify-center mt-[5%]">
           <div className="flex flex-col items-center border border-solid border-[#9DC88D] mx-3 rounded-lg">
             <span className="text-center text-2xl text-white justify-center">Easy Online</span>
@@ -170,7 +170,7 @@ const HeaderNEW: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <div className={`absolute top-0 w-full text-black bg-[#164A41] font-poppins ${activeHeader === 2 ? "z-10 h-[450px]" : "h-0 hidden" }`}>
+      <div className={`absolute top-0 w-full text-black bg-[#164A41] font-poppins ${activeHeader === 2 ? "z-10 h-[450px]" : "z-0 h-0 hidden" }`}>
         <div className="flex flex-col items-center mt-[2%]">
           <nav style={{ display: "flex", flexDirection: "column", justifyContent: "center" }} className="ml-[-317px] pt-12 items-left border border-[#9DC88D] px-20 mt-7 rounded-lg">
             {navigationButtons.map((link, index) => (
