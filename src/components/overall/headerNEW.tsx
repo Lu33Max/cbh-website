@@ -10,8 +10,6 @@ const HeaderNEW: React.FC = () => {
   const [buttonClicked, setButtonClicked] = useState<boolean>(false);
   const [navigationColor, setNavigationColor] = useState<string>('gray-700');
   const [contactColor, setContactColor] = useState<string>('gray-700');
-  const [ArrowRotation, setArrowRotation] = useState('');
-  const [BackgroundColor, setBackgroundColor] = useState('');
 
   const router = useRouter();
 
@@ -30,24 +28,22 @@ const HeaderNEW: React.FC = () => {
     { name: 'About Us', link: '/About' },
   ];
 
-  const handleButtonClick = () => {
-    setActiveHeader(activeHeader === 1 ? 0 : 1);
-    setButtonClicked(!buttonClicked);
+  const handleButtonClick = (input: number) => {
+    setActiveHeader(activeHeader === input ? 0 : input);
+    setButtonClicked(activeHeader === input ? false : true);
     setNavigationColor('#164A41');
     setContactColor('#164A41');
-    setArrowRotation(!buttonClicked ? 'rotate-90' : '');
-    setBackgroundColor(!buttonClicked ? '#9DC88D' : '');
   };
   
 
   return (
     <>
       {/* Header */}
-      <div className='bg-white h-[80px] flex flex-row pl-10 pr-5 items-center font-body font-poppins text-xl text-[#164A41] font-thin'>
+      <div className={`${buttonClicked ? 'bg-[#164A41]' : 'bg-white'} transition duration-500 ease-in-out h-[80px] flex flex-row pl-10 pr-5 items-center font-body font-poppins text-xl text-[#164A41] font-thin relative z-[999]`}>
         <Image src="/cbh_logos/logo_black.png" alt="Logo" width={200} height={80} className='z-20'/>
         <div className='flex flex-row justify-between mx-auto gap-5 z-20'>
           <button
-            onClick={handleButtonClick}
+            onClick={() => handleButtonClick(1)}
             className={`flex flex-row pl-2 pr-4 rounded-lg ${buttonClicked ? 'text-white' : 'text-[#164A41]'} ${buttonClicked ? 'bg-[#9DC88D]' : ''}`}>
 
 
@@ -60,7 +56,7 @@ const HeaderNEW: React.FC = () => {
             </div>
           </button>
 
-          <button onClick={() => setActiveHeader(activeHeader === 2 ? 0 : 2)} className={`flex flex-row ${buttonClicked ? 'text-white' : `text-${navigationColor}`}`}>
+          <button onClick={() => handleButtonClick(2)} className={`flex flex-row ${buttonClicked ? 'text-white' : `text-${navigationColor}`}`}>
             
             Navigation
 
@@ -70,11 +66,11 @@ const HeaderNEW: React.FC = () => {
             </svg>
           </button>
 
-          <button className={`flex flex-row ${buttonClicked ? 'text-white' : `text-${contactColor}`}`}>
+          <button className={`flex flex-row relative z-[999] ${buttonClicked ? 'text-white' : `text-${contactColor}`}`}>
             
             Contact
             
-            </button>
+          </button>
         </div>
         <span className='relative block w-full max-w-[30%] z-20'>
           <form onSubmit={onSearch}>
@@ -92,7 +88,7 @@ const HeaderNEW: React.FC = () => {
       </div>
 
       {/* Services */}
-      <div className={`overflow-visible absolute top-0 w-full text-black bg-[#164A41] transition-height duration-500 ease-in-out ${activeHeader === 1 ? "z-10 h-[450px]" : "z-0 h-0 hidden"}`}>
+      <div className={`overflow-visible absolute top-0 w-full text-black bg-[#164A41] transition-height duration-500 ease-in-out ${activeHeader === 1 ? "z-[900] h-[450px]" : "h-0 opacity-0 -z-10"}`}>
         <div className="flex flex-row w-full items-center justify-center mt-[5%]">
           <div className="flex flex-col items-center border border-solid border-[#9DC88D] mx-3 rounded-lg">
             <span className="text-center text-2xl text-white justify-center">Easy Online</span>
@@ -170,7 +166,7 @@ const HeaderNEW: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <div className={`absolute top-0 w-full text-black bg-[#164A41] font-poppins ${activeHeader === 2 ? "z-10 h-[450px]" : "z-0 h-0 hidden" }`}>
+      <div className={`absolute top-0 w-full text-black bg-[#164A41] font-poppins ${activeHeader === 2 ? "z-[900] h-[450px]" : "-z-10 h-0 opacity-0" }`}>
         <div className="flex flex-col items-center mt-[2%]">
           <nav style={{ display: "flex", flexDirection: "column", justifyContent: "center" }} className="ml-[-317px] pt-12 items-left border border-[#9DC88D] px-20 mt-7 rounded-lg">
             {navigationButtons.map((link, index) => (
