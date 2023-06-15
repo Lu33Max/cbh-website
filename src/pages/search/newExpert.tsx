@@ -154,7 +154,7 @@ const ExpertSearch: NextPage = () => {
             <HeaderNEW />
             <InitialContentEditor self={state}/>
         
-            <Table filter={state} page={page} pagelength={pagelength} count={count} samples={samples} setPage={setPage} setPagelength={setPagelength} applyFilter={applyFilter} expert={true}/>
+            <Table filter={state} page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} applyFilter={applyFilter} expert={true}/>
             
             <div className="border-b-2 border-solid border-[#164A41] my-1 gradient">
               <div className="grid grid-cols-3 items-center text-center justify-center justify-items-center text-white gap-8 font-poppins text-2xl">

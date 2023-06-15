@@ -12,7 +12,7 @@ import ShowRows from '~/components/search/showRows';
 import Count from '~/components/search/count';
 
 import { type IGroup, GroupSchema, type INormalFilter } from '~/common/filter/filter';
-import { ExampleSample, SampleSchema } from '~/common/database/samples';
+import { SampleSchema } from '~/common/database/samples';
 
 import { type Samples } from '@prisma/client';
 import ModalLoadExpert from '~/components/search/expert/modalLoad';
@@ -387,8 +387,8 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
 
       sortArray = [...tableSamples].sort((a: OptionalTableSamples, b: OptionalTableSamples) => {
 
-        const a1 = getProperty(a.data, column as SampleKey)
-        const b1 = getProperty(b.data, column as SampleKey)
+        const a1 = getProperty(a.data, column)
+        const b1 = getProperty(b.data, column)
 
         if(a1 !== undefined && b1 !== undefined){
           if(a1 > b1) return (column == sortBy) ? -1 : 1;
