@@ -192,6 +192,14 @@ export const sampleRouter = createTRPCRouter({
                 }
             });
 
+            if (allUniqueSampleIDs.length = 50) {
+                input.lines = 0
+            } else {
+                if (input.lines && input.lines > allUniqueSampleIDs.length) {
+                    input.lines - allUniqueSampleIDs.length
+                }
+            }
+
             let mandatoryUniqueSampleIDs = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
                 take: input.lines, 
@@ -347,6 +355,11 @@ export const sampleRouter = createTRPCRouter({
                 where: {
                     CBH_Sample_ID: {
                         in: allUniqueSampleIDStrings
+                    },
+                    NOT: {
+                        CBH_Sample_ID: {
+                            in: mandatoryUniqueSampleIDStrings
+                        }
                     }
                 },
                 orderBy: {
@@ -614,6 +627,14 @@ export const sampleRouter = createTRPCRouter({
             } else {
                 const allUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ${BuildQuery(input.group)} ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
                 
+                if (allUniqueSampleIDs.length = 50) {
+                    input.pagelength = 0
+                } else {
+                    if (input.pagelength && input.pagelength > allUniqueSampleIDs.length) {
+                        input.pagelength - allUniqueSampleIDs.length
+                    }
+                }
+
                 let mandatoryUniqueSampleIDs: { CBH_Sample_ID: string}[]
                
                 if(BuildQuery(input.group, true) === Prisma.empty){
@@ -693,26 +714,26 @@ function BuildQuery(group: IGroup, mandatoryOnly?: boolean): Prisma.Sql {
                         if (currentFilter.values.length !== 0 && filterTypes.find(item => item === currentFilter.type) && currentFilter.activated && Object.getOwnPropertyNames(ExampleSample).find(item => item === currentFilter.col)) {
                             switch(currentFilter.type){
                                 case "equal": 
-                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} = ${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Number(currentFilter.values[0]) : currentFilter.values[0]?.toLowerCase()}`);
+                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} = ${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Number(currentFilter.values[0]) : currentFilter.values[0]?.toLowerCase()}`);
                                     break;
                                 case "in": 
-                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} IN (${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Prisma.join(currentFilter.values.map(v => Number(v))) : Prisma.join(currentFilter.values.map(v => {return(v.toLowerCase())}))})`);
+                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} IN (${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Prisma.join(currentFilter.values.map(v => Number(v))) : Prisma.join(currentFilter.values.map(v => {return(v.toLowerCase())}))})`);
                                     break;
                                 case "less": 
-                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} < ${Number(currentFilter.values[0])}`);
+                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} < ${Number(currentFilter.values[0])}`);
                                     break;
                                 case "lessequal":
-                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} <= ${Number(currentFilter.values[0])}`);
+                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} <= ${Number(currentFilter.values[0])}`);
                                     break;
                                 case "more": 
-                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} > ${Number(currentFilter.values[0])}`);
+                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} > ${Number(currentFilter.values[0])}`);
                                     break;
                                 case "moreequal": 
-                                    sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} >= ${Number(currentFilter.values[0])}`);
+                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} >= ${Number(currentFilter.values[0])}`);
                                     break;
                                 case "between":
                                     if (currentFilter.values[1] != undefined) {
-                                        sqlArray.push(Prisma.sql`${group.not ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} BETWEEN ${currentFilter.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                        sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldName<Samples>(currentFilter.col as FieldName<Samples>)} BETWEEN ${currentFilter.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
                                     }
                                     break;
                                 default:
