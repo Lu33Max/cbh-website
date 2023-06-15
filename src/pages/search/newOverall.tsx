@@ -529,7 +529,7 @@ const Content: React.FC = () => {
      
 
     <div className="mx-4 my-2">
-        <Table filter={state} page={page} pagelength={pagelength} count={count} samples={samples} setPage={setPage} setPagelength={setPagelength} expert={false} filterNormal={filter} setFilter={setFilter}/>
+        <Table filter={state} page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} expert={false} filterNormal={filter} setFilter={setFilter}/>
     </div>
 
       <div className="border-b-2 border-solid border-[#164A41] my-1 gradient">
