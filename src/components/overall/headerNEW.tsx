@@ -44,26 +44,30 @@ const HeaderNEW: React.FC = () => {
         <div className='flex flex-row justify-between mx-auto gap-5 z-20'>
           <button
             onClick={() => handleButtonClick(1)}
-            className={`flex flex-row pl-2 pr-4 rounded-lg ${buttonClicked ? 'text-white' : 'text-[#164A41]'} ${buttonClicked ? 'bg-[#9DC88D]' : ''}`}>
-
+            className={`flex flex-row pl-2 pr-4 rounded-lg ${buttonClicked ? 'text-white' : 'text-[#164A41]'} ${activeHeader === 1 ? 'bg-[#9DC88D]' : ''}`}>
 
             Services
-            <div className={` ${buttonClicked ? 'rotate-180' : ''}  ${buttonClicked ? 'pr-2' : ''} ${buttonClicked ? 'pb-2' : ''} ${buttonClicked ? '-mr-3' : ''}`}>
-            <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transform translate-y-[4px] rotate-90 ml-2`}>
-              <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
-              <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
-            </svg>
+
+            <div className={` ${activeHeader === 1 ? 'rotate-180 pr-2 pb-2 -mr-3' : ''}`}>
+              <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transform translate-y-[4px] rotate-90 ml-2`}>
+                <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
+                <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
+              </svg>
             </div>
           </button>
 
-          <button onClick={() => handleButtonClick(2)} className={`flex flex-row ${buttonClicked ? 'text-white' : `text-${navigationColor}`}`}>
+          <button 
+            onClick={() => handleButtonClick(2)} 
+            className={`flex flex-row pl-2 pr-4 rounded-lg ${buttonClicked ? 'text-white' : 'text-[#164A41]'} ${activeHeader === 2 ? 'bg-[#9DC88D]' : ''}`}>
             
             Navigation
 
-            <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform rotate-90 translate-y-[4px] ml-2">
-              <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
-              <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
-            </svg>
+            <div className={` ${activeHeader === 2 ? 'rotate-180 pr-2 pb-2 -mr-3' : ''}`}>
+              <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform rotate-90 translate-y-[4px] ml-2">
+                <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
+                <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
+              </svg>
+            </div>
           </button>
 
           <button className={`flex flex-row relative z-[999] ${buttonClicked ? 'text-white' : `text-${contactColor}`}`}>
@@ -166,12 +170,12 @@ const HeaderNEW: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <div className={`absolute top-0 w-full text-black bg-[#164A41] font-poppins ${activeHeader === 2 ? "z-[900] h-[450px]" : "-z-10 h-0 opacity-0" }`}>
+      <div className={`overflow-visible absolute top-0 w-full text-black bg-[#164A41] transition-height duration-500 ease-in-out ${activeHeader === 2 ? "z-[900] h-[450px]" : "h-0 opacity-0 -z-10"}`}>
         <div className="flex flex-col items-center mt-[2%]">
-          <nav style={{ display: "flex", flexDirection: "column", justifyContent: "center" }} className="ml-[-317px] pt-12 items-left border border-[#9DC88D] px-20 mt-7 rounded-lg">
+          <nav style={{ display: "flex", flexDirection: "column", justifyContent: "center" }} className="ml-[-317px] py-2 items-left border border-[#9DC88D] px-20 mt-14 rounded-lg">
             {navigationButtons.map((link, index) => (
               <Link key={index} href={link.link}> 
-                <div className={`tracking-wider ml-[-80px] relative block text-3xl w-auto h-full py-2 px-8 font-poppins text-white hover:bg-[#9DC88DBF] transition duration-300 ease-in-out ${router.pathname === link.link ? 'bg-gray-200' : ''}`}>
+                <div className={`tracking-wider ml-[-80px] relative block text-3xl w-auto h-full py-2 px-8 font-poppins text-white hover:bg-[#9DC88DBF] rounded-r-full transition duration-300 ease-in-out ${router.pathname === link.link ? 'bg-gray-200' : ''}`}>
                   <div className={`activeButton absolute h-full w-[15%] ${activeHeader === 2 ? "bg-emerald-700" : ""} left-[-20%] ${router.pathname === link.link ? '' : 'hidden'}`}></div>
                   {link.name}                                 
                 </div>
