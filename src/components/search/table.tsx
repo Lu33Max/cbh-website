@@ -538,7 +538,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
               {tableSamples.map((sample, index) => (
                 <>
                   <tr key={index} className="text-center">
-                    <td className={`${sample.optional ? "bg-green-300 items-center text-2xl rounded-l-xl" : "bg-gray-300 items-center text-2xl rounded-l-xl"}`} onClick={() => setCartSamples([...cartSamples, sample])}><button><BiCartAdd className="relative top-1" /></button></td>
+                    <td className={`${sample.optional ? "bg-[rgb(221,252,199)] items-center text-2xl rounded-l-xl" : "bg-gray-300 items-center text-2xl rounded-l-xl"}`} onClick={() => setCartSamples([...cartSamples, sample])}><button><BiCartAdd className="relative top-1" /></button></td>
                     
                     {activeColumns.map((column, i) => {
                       const prop = getProperty(sample.data, column as SampleKey)
@@ -552,7 +552,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
                         </td>
                       )
                     })}
-                    <td className={`${sample.optional ? "bg-green-300 py-2 px-3 rounded-r-xl" : "bg-gray-300 py-2 px-3 rounded-r-xl"}`}><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
+                    <td className={`${sample.optional ? "bg-[rgb(221,252,199)] py-2 px-3 rounded-r-xl" : "bg-gray-300 py-2 px-3 rounded-r-xl"}`}><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
                   </tr>
                   <tr className={`mx-5 ${show[index] ? "" : "hidden"}`}>
                     <td colSpan={2} className="px-5 bg-gray-200">

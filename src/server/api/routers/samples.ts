@@ -40,8 +40,8 @@ export const sampleRouter = createTRPCRouter({
 
     getAll: publicProcedure
         .input(z.object({
-            pages: z.number().optional(),
-            lines: z.number().optional(),
+            pages: z.number(),
+            lines: z.number(),
             search: z.string().optional(),
             filter: NormalFilterSchema
         }))
@@ -192,12 +192,10 @@ export const sampleRouter = createTRPCRouter({
                 }
             });
 
-            if (allUniqueSampleIDs.length = 50) {
+            if (allUniqueSampleIDs.length >= input.lines) {
                 input.lines = 0
             } else {
-                if (input.lines && input.lines > allUniqueSampleIDs.length) {
-                    input.lines - allUniqueSampleIDs.length
-                }
+                input.lines - allUniqueSampleIDs.length
             }
 
             let mandatoryUniqueSampleIDs = await ctx.prisma.samples.findMany({
@@ -378,8 +376,8 @@ export const sampleRouter = createTRPCRouter({
                 },
             })
 
-            const allEntriesWithOptionals: OptionalSamples[] = allEntries.map(e =>{return {optional: true, data: e}}) 
-            const mandatoryEntriesWithOptionals: OptionalSamples[] = mandatoryEntries.map(e =>{return {optional: false, data: e}}) 
+            const allEntriesWithOptionals: OptionalSamples[] = allEntries.map(e => {return {optional: true, data: e}})
+            const mandatoryEntriesWithOptionals: OptionalSamples[] = mandatoryEntries.map(e => {return {optional: false, data: e}}) 
 
             allEntriesWithOptionals.push(...mandatoryEntriesWithOptionals)
 
