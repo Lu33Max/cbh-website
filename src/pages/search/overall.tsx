@@ -357,16 +357,16 @@ const Content: React.FC = () => {
                     <div className="col-span-1">
                       Min:
                     </div>
-                    <input type="number" value={filter.price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min result" onChange={e => {
-                      const temp = filter.price
+                    <input type="number" value={filter.resultNumerical.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min result" onChange={e => {
+                      const temp = filter.resultNumerical
                       temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
                       setFilter(filter => ({...filter, resultNumerical: temp}))
                     }}/>
                     <div className="col-span-1">
                       Max:
                     </div>
-                    <input type="number" value={filter.price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max result" onChange={e => {
-                      const temp = filter.price
+                    <input type="number" value={filter.resultNumerical.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max result" onChange={e => {
+                      const temp = filter.resultNumerical
                       temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
                       setFilter(filter => ({...filter, resultNumerical: temp}))
                     }}/>
