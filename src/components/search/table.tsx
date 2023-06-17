@@ -511,7 +511,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
             {/*<label>Auto-Formatting: </label><input type='checkbox' onChange={() => setFormatting(!formatting)} checked={formatting}></input>*/}
             <button onClick={() => {setActiveColumns(defaultColumns); setTempColumns(defaultColumns)}} className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-2xl border-solid border-2 bg-orange-300 border-orange-300'>Reset</button>
             <br/>
-            {Object.getOwnPropertyNames(tableSamples[0]).map((name, i) => {
+            {Object.getOwnPropertyNames(tableSamples[0]?.data).map((name, i) => {
               if (name !== "id") {
                 return (
                   <button key={i} onClick={() => showColumns(name)} disabled={formatting} className={`mx-1 my-1 rounded-lg p-2 ${activeColumns.find(c => c === name)? "bg-[#9DC88D]": "bg-gray-300"}`}>{name.replace(/_/g," ")}</button>

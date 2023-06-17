@@ -151,39 +151,40 @@ const ExpertSearch: NextPage = () => {
       </Head>
 
         <div className="min-h-screen overflow-hidden bg-gray-200">
-            <HeaderNEW />
-            <InitialContentEditor self={state}/>
-        
-            <Table filter={state} page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} applyFilter={applyFilter} expert={true}/>
-            
-            <div className="border-b-2 border-solid border-[#164A41] my-1 gradient">
-              <div className="grid grid-cols-3 items-center text-center justify-center justify-items-center text-white gap-8 font-poppins text-2xl">
-                  <div className="mt-4 tracking-[0.1em]">COMPANY INFORMATION</div>
-                  <div className="mt-4 tracking-[0.1em]">QUESTIONS?</div>
-                  <div className="mt-4 tracking-[0.1em]">BECOME A SUPPLIER</div>
-                  <button className="">Terms and Conditions</button>
-                  <button className="">Shipping Information,</button>
-                  <button className="">Sell at CBH</button>
-                  <button className="">Privacy Policy</button>
-                  <button className="">Career Opportunities</button>
-                  <button className="">Supplier Login</button>
-                  <button className="">Ethical Statement</button>
-                  <button className="">and FAQ&apos;s</button>
-                  <button className="">Marketing</button>
-                  <button className="mb-8">Quality Management</button>
-                  <button className="mb-8 border-2 border-solid border-[#164A41] text-[#164A41] w-fit rounded-lg bg-[#FFFFFF]/[0.45] py-2 px-40">Contact Us!</button>
-                  <button className="mb-8">Sucess Stories</button>
-              </div>
-          </div><div className="text-center">
-              <h1 className="mb-2 mt-4 font-poppins text-2xl text-[#164A41]">
-                  Central BioHub GmbH, Neuendorfstrasse 17, 16761 Hennigsdorf, Germany |
-                  Call: +49 3302 230 91 66 | Email: info@centralbiohub.com
-              </h1>
-              <h1 className="mb-2 font-poppins text-2xl text-[#164A41]">
-                  © 2023 www.centralbiohub.de All Rights Reserved - Link to Imprint here
-              </h1>
-          </div>
-          </div>
+          <HeaderNEW />
+          <InitialContentEditor self={state}/>
+      
+          <Table filter={state} page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} applyFilter={applyFilter} expert={true}/>
+          
+          <div className="border-b-2 border-solid border-[#164A41] my-1 gradient">
+            <div className="grid grid-cols-3 items-center text-center justify-center justify-items-center text-white gap-8 font-poppins text-2xl">
+                <div className="mt-4 tracking-[0.1em]">COMPANY INFORMATION</div>
+                <div className="mt-4 tracking-[0.1em]">QUESTIONS?</div>
+                <div className="mt-4 tracking-[0.1em]">BECOME A SUPPLIER</div>
+                <button className="">Terms and Conditions</button>
+                <button className="">Shipping Information,</button>
+                <button className="">Sell at CBH</button>
+                <button className="">Privacy Policy</button>
+                <button className="">Career Opportunities</button>
+                <button className="">Supplier Login</button>
+                <button className="">Ethical Statement</button>
+                <button className="">and FAQ&apos;s</button>
+                <button className="">Marketing</button>
+                <button className="mb-8">Quality Management</button>
+                <button className="mb-8 border-2 border-solid border-[#164A41] text-[#164A41] w-fit rounded-lg bg-[#FFFFFF]/[0.45] py-2 px-40">Contact Us!</button>
+                <button className="mb-8">Sucess Stories</button>
+            </div>
+        </div>
+        <div className="text-center">
+            <h1 className="mb-2 mt-4 font-poppins text-2xl text-[#164A41]">
+                Central BioHub GmbH, Neuendorfstrasse 17, 16761 Hennigsdorf, Germany |
+                Call: +49 3302 230 91 66 | Email: info@centralbiohub.com
+            </h1>
+            <h1 className="mb-2 font-poppins text-2xl text-[#164A41]">
+                © 2023 www.centralbiohub.de All Rights Reserved - Link to Imprint here
+            </h1>
+        </div>
+      </div>
     </>
   )
 }
