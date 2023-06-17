@@ -46,7 +46,8 @@ export const sampleRouter = createTRPCRouter({
             filter: NormalFilterSchema
         }))
         .query(async ({ ctx, input }) => {
-            const allUniqueSampleIDs = await ctx.prisma.samples.findMany({
+
+            const optionalUniqueSampleIDs = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
                 take: input.lines,
                 skip: (input.pages && input.lines) ? (input.pages - 1) * input.lines : 0,
@@ -192,23 +193,165 @@ export const sampleRouter = createTRPCRouter({
                 }
             });
 
-            if (allUniqueSampleIDs.length >= input.lines) {
-                input.lines = 0
-            } else {
-                input.lines - allUniqueSampleIDs.length
-            }
+            const allOptionals = await ctx.prisma.samples.findMany({
+                distinct: ['CBH_Sample_ID'],
+                where: {
+                    AND: [
+                        { 
+                            CBH_Master_ID: { 
+                                contains: input.filter.cbhMasterID.value, 
+                                mode: 'insensitive',
+                            }
+                        },
+                        { 
+                            CBH_Donor_ID: { 
+                                contains: input.filter.cbhDonorID.value, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            CBH_Sample_ID: { 
+                                contains: input.filter.cbhSampleID.value, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        {
+                            Price: {
+                                lte: input.filter.price.max,
+                                gte: input.filter.price.min
+                            }
+                        },
+                        { 
+                            Matrix: { 
+                                in: input.filter.matrix?.value.length > 0 ? input.filter.matrix.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        {
+                            Quantity: {
+                                lte: input.filter.quantity.max,
+                                gte: input.filter.quantity.min
+                            }
+                        },
+                        { 
+                            Unit: { 
+                                in: input.filter.unit?.value.length  > 0 ? input.filter.unit.value : undefined,
+                                mode: 'insensitive'
+                            }
+                        },
+                        { 
+                            Lab_Parameter: { 
+                                in: input.filter.labParameter?.value.length > 0 ? input.filter.labParameter.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Interpretation: { 
+                                in: input.filter.resultInterpretation?.value.length > 0 ? input.filter.resultInterpretation.value : undefined,
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Unit: { 
+                                in: input.filter.resultUnit?.value.length > 0 ? input.filter.resultUnit.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Diagnosis: { 
+                                in: input.filter.diagnosis?.value.length > 0 ? input.filter.diagnosis.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            ICD_Code: { 
+                                in: input.filter.ICDCode?.value.length > 0 ? input.filter.ICDCode.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        {
+                            OR: [
+                                {
+                                    CBH_Master_ID: {
+                                        contains: input.search,
+                                        mode: 'insensitive',
+                                    }
+                                },
+                                {
+                                    CBH_Donor_ID: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    CBH_Sample_ID: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Matrix: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Lab_Parameter: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Result_Interpretation: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Result_Unit: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Diagnosis: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    ICD_Code: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                            ]
+                        }
+                    ]
+                },
+                orderBy: {
+                    CBH_Sample_ID: 'desc',
+                },
+                select: {
+                    CBH_Sample_ID: true
+                }
+            });
+
+            const optionalsLength = allOptionals.length        
+            
+            console.log(optionalsLength)
 
             let mandatoryUniqueSampleIDs = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
-                take: input.lines, 
-                skip: (input.pages && input.lines) ? (input.pages -1) * input.lines : 0,
+                take: input.lines - optionalUniqueSampleIDs.length,
+                skip: (input.lines - optionalsLength % input.lines) + input.lines * (input.pages - (Math.floor(optionalsLength / input.lines) + 2)),
                 where: {
                     AND: [
                         { 
                             CBH_Master_ID: {
                                 contains: input.filter.cbhMasterID.mandatory? input.filter.cbhMasterID.value : undefined,
                                 mode: 'insensitive',
-                            } 
+                            }
                         },
                         { 
                             CBH_Donor_ID: { 
@@ -253,10 +396,17 @@ export const sampleRouter = createTRPCRouter({
                             } 
                         },
                         { 
-                            Result_Interpretation: { 
-                                in: (input.filter.resultInterpretation.mandatory && input.filter.resultInterpretation?.value.length > 0) ? input.filter.resultInterpretation.value : undefined,
-                                mode: 'insensitive' 
-                            } 
+                            OR: [
+                                {
+                                    Result_Interpretation: { 
+                                        in: (input.filter.resultInterpretation.mandatory && input.filter.resultInterpretation?.value.length > 0) ? input.filter.resultInterpretation.value : undefined,
+                                        notIn: (!input.filter.resultInterpretation.mandatory && input.filter.resultInterpretation?.value.length > 0) ? input.filter.resultInterpretation.value : undefined,
+                                        mode: 'insensitive' 
+                                    }
+                                }, {
+                                    Result_Interpretation: null
+                                }
+                            ]
                         },
                         { 
                             Result_Unit: { 
@@ -333,6 +483,76 @@ export const sampleRouter = createTRPCRouter({
                                     } 
                                 },
                             ]
+                        },
+                        {
+                            NOT: [
+                                { 
+                                    CBH_Master_ID: {
+                                        contains: !input.filter.cbhMasterID.mandatory? input.filter.cbhMasterID.value : undefined,
+                                        mode: 'insensitive',
+                                    } 
+                                },
+                                { 
+                                    CBH_Donor_ID: { 
+                                        contains: !input.filter.cbhDonorID.mandatory? input.filter.cbhDonorID.value : undefined,
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    CBH_Sample_ID: { 
+                                        contains: !input.filter.cbhDonorID.mandatory? input.filter.cbhSampleID.value : undefined,
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Price: { 
+                                        lte: !input.filter.price.mandatory? input.filter.price.max : undefined,
+                                        gte: !input.filter.price.mandatory? input.filter.price.min : undefined, 
+                                    } 
+                                },
+                                { 
+                                    Matrix: { 
+                                        in: (!input.filter.matrix.mandatory && input.filter.matrix?.value.length > 0) ? input.filter.matrix.value : undefined, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Quantity: { 
+                                        lte: !input.filter.quantity.mandatory? input.filter.quantity.max : undefined,
+                                        gte: !input.filter.quantity.mandatory? input.filter.quantity.min : undefined, 
+                                    } 
+                                },
+                                { 
+                                    Unit: { 
+                                        in: (!input.filter.unit.mandatory && input.filter.unit?.value.length > 0) ? input.filter.unit.value : undefined,
+                                        mode: 'insensitive'
+                                    } 
+                                },
+                                { 
+                                    Lab_Parameter: { 
+                                        in: (!input.filter.labParameter.mandatory && input.filter.labParameter?.value.length > 0) ? input.filter.labParameter.value : undefined, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    Result_Unit: { 
+                                        in: (!input.filter.resultUnit.mandatory && input.filter.resultUnit?.value.length > 0) ? input.filter.resultUnit.value : undefined, 
+                                        mode: 'insensitive' 
+                                    }
+                                },
+                                { 
+                                    Diagnosis: { 
+                                        in: (!input.filter.diagnosis.mandatory && input.filter.diagnosis?.value.length > 0) ? input.filter.diagnosis.value : undefined, 
+                                        mode: 'insensitive' 
+                                    } 
+                                },
+                                { 
+                                    ICD_Code: { 
+                                        in: (!input.filter.ICDCode.mandatory && input.filter.ICDCode?.value.length > 0) ? input.filter.ICDCode.value : undefined, 
+                                        mode: 'insensitive' 
+                                    } 
+                                } 
+                            ]
                         }
                     ]
                 },
@@ -344,20 +564,13 @@ export const sampleRouter = createTRPCRouter({
                 }
             });
 
-            mandatoryUniqueSampleIDs = mandatoryUniqueSampleIDs.filter(val => !allUniqueSampleIDs.includes(val));
-
-            const allUniqueSampleIDStrings : string[] = allUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
+            const optionalUniqueSampleIDStrings : string[] = optionalUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
             const mandatoryUniqueSampleIDStrings : string[] = mandatoryUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
 
-            const allEntries = await ctx.prisma.samples.findMany({
+            const optionalEntries = await ctx.prisma.samples.findMany({
                 where: {
                     CBH_Sample_ID: {
-                        in: allUniqueSampleIDStrings
-                    },
-                    NOT: {
-                        CBH_Sample_ID: {
-                            in: mandatoryUniqueSampleIDStrings
-                        }
+                        in: optionalUniqueSampleIDStrings
                     }
                 },
                 orderBy: {
@@ -376,13 +589,158 @@ export const sampleRouter = createTRPCRouter({
                 },
             })
 
-            const allEntriesWithOptionals: OptionalSamples[] = allEntries.map(e => {return {optional: true, data: e}})
+            const allEntriesWithOptionals: OptionalSamples[] = optionalEntries.map(e => {return {optional: true, data: e}})
             const mandatoryEntriesWithOptionals: OptionalSamples[] = mandatoryEntries.map(e => {return {optional: false, data: e}}) 
 
             allEntriesWithOptionals.push(...mandatoryEntriesWithOptionals)
 
-            return allEntriesWithOptionals
+            const test1 = await ctx.prisma.samples.findMany({
+                distinct: ['CBH_Sample_ID'],
+                where: {
+                    AND: [
+                        { 
+                            CBH_Master_ID: { 
+                                contains: input.filter.cbhMasterID.value, 
+                                mode: 'insensitive',
+                            }
+                        },
+                        { 
+                            CBH_Donor_ID: { 
+                                contains: input.filter.cbhDonorID.value, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            CBH_Sample_ID: { 
+                                contains: input.filter.cbhSampleID.value, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        {
+                            Price: {
+                                lte: input.filter.price.max,
+                                gte: input.filter.price.min
+                            }
+                        },
+                        { 
+                            Matrix: { 
+                                in: input.filter.matrix?.value.length > 0 ? input.filter.matrix.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        {
+                            Quantity: {
+                                lte: input.filter.quantity.max,
+                                gte: input.filter.quantity.min
+                            }
+                        },
+                        { 
+                            Unit: { 
+                                in: input.filter.unit?.value.length  > 0 ? input.filter.unit.value : undefined,
+                                mode: 'insensitive'
+                            }
+                        },
+                        { 
+                            Lab_Parameter: { 
+                                in: input.filter.labParameter?.value.length > 0 ? input.filter.labParameter.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Interpretation: { 
+                                in: input.filter.resultInterpretation?.value.length > 0 ? input.filter.resultInterpretation.value : undefined,
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Result_Unit: { 
+                                in: input.filter.resultUnit?.value.length > 0 ? input.filter.resultUnit.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            Diagnosis: { 
+                                in: input.filter.diagnosis?.value.length > 0 ? input.filter.diagnosis.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        { 
+                            ICD_Code: { 
+                                in: input.filter.ICDCode?.value.length > 0 ? input.filter.ICDCode.value : undefined, 
+                                mode: 'insensitive' 
+                            } 
+                        },
+                        {
+                            OR: [
+                                {
+                                    CBH_Master_ID: {
+                                        contains: input.search,
+                                        mode: 'insensitive',
+                                    }
+                                },
+                                {
+                                    CBH_Donor_ID: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    CBH_Sample_ID: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Matrix: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Lab_Parameter: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Result_Interpretation: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Result_Unit: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    Diagnosis: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                                {
+                                    ICD_Code: {
+                                        contains: input.search,
+                                        mode: 'insensitive'
+                                    }
+                                },
+                            ]
+                        }
+                    ]
+                },
+                orderBy: {
+                    CBH_Sample_ID: 'desc',
+                },
+                select: {
+                    CBH_Sample_ID: true
+                }
+            });
 
+            console.log(mandatoryUniqueSampleIDs.length)
+
+            return allEntriesWithOptionals
         }),
 
     // Update
@@ -436,6 +794,7 @@ export const sampleRouter = createTRPCRouter({
             filter: NormalFilterSchema
         }))
         .query(async ({ctx, input}) => {
+
             const result = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
                 take: input.lines, 
@@ -456,7 +815,7 @@ export const sampleRouter = createTRPCRouter({
                         },
                         { 
                             CBH_Sample_ID: { 
-                                contains: input.filter.cbhSampleID.mandatory? input.filter.cbhSampleID.value : undefined,
+                                contains: input.filter.cbhDonorID.mandatory? input.filter.cbhSampleID.value : undefined,
                                 mode: 'insensitive' 
                             } 
                         },
