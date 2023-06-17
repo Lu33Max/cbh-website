@@ -543,7 +543,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
                     {activeColumns.map((column, i) => {
                       const prop = getProperty(sample.data, column as SampleKey)
                       return (
-                        <td key={i} className={`${sample.optional ? "bg-green-300" : "bg-gray-300"}`}>
+                        <td key={i} className={`${sample.optional ? "bg-[rgb(221,252,199)]" : "bg-gray-300"}`}>
                           {((!expert || (expert && formatting)) && (column === "Lab_Parameter" || column === "Diagnosis" || column === "Result_Interpretation") && Array.isArray(prop)) ? 
                             (prop as string[]).filter((item: string) => column === "Lab_Parameter" ? filterNormal?.labParameter.value.find(val => val === item) : column === "Diagnosis" ? filterNormal?.diagnosis.value.find(val => val === item) : filterNormal?.resultInterpretation.value.find(val => val === item))
                           :
