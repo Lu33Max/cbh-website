@@ -59,7 +59,7 @@ const Content: React.FC = () => {
     const defaultFilter: INormalFilter = {
         cbhMasterID: {
           value: undefined,
-          mandatory: false
+          mandatory: true
         },
         cbhDonorID: {
           value: undefined,
