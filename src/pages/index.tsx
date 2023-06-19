@@ -3,7 +3,6 @@ import Head from "next/head";
 
 import Header from "~/components/overall/header";
 import Sidebar from "~/components/overall/sidebar";
-import SimpleSlider from "~/components/home/carousel"
 import Testimonials from "~/components/home/testimonials";
 
 const Home: NextPage = () => {
@@ -44,9 +43,6 @@ const Content: React.FC = () => {
         <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>
         <h1 className="headline whitespace-nowrap ml-20 mr-20 mb-1">Biospecimen Categories</h1>
         <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>
-      </div>
-      <div className="mt-5">
-        <SimpleSlider/>
       </div>
       <div className="flex flex-row w-full items-center justify-center">
         <div className="w-full border-2 border-solid h-3 border-gray-400 rounded-3xl m-5"></div>

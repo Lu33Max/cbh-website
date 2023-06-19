@@ -77,10 +77,6 @@
   background-size: cover;
 }
 
-.custom-shadow {
-  box-shadow: -30px 30px 0px 0px rgba(157, 200, 141, 0.25);
-}
-
 .gradient {
   background: linear-gradient(0deg, rgba(157, 200, 141, 0.7294117647058823) 0%, rgba(77, 119, 78, 0.8392156862745098) 40%, #164A41 100%);
 }

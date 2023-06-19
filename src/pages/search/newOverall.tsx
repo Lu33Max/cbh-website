@@ -3,23 +3,22 @@ import Head from "next/head";
 import { NormalFilterSchema, type IGroup } from '~/common/filter/filter';
 import { useHookstate } from '@hookstate/core';
 import { api } from "~/utils/api";
-import { BiCog } from "react-icons/bi";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import Autofill from "~/components/search/normal/autofill";
 import { BiX } from "react-icons/bi";
 
 import HeaderNEW from "~/components/overall/headerNEW";
-import SimpleSlider from "~/components/home/carousel";
-import HoverImages from "~/components/overall/hoverImages";
-import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Table from "~/components/search/table";
 import ModalLoad from "~/components/search/normal/modalLoad";
 import ModalSave from "~/components/search/normal/modalSave";
 
 import { type INormalFilter } from "~/common/filter/filter";
+import Footer from "~/components/overall/footer";
+import { usePathname } from "next/navigation";
+import { Colors } from "~/common/styles";
 
 const defaultGroup: IGroup = {
     not: false,
@@ -45,9 +44,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen overflow-hidden bg-gray-200">
-        <HeaderNEW />
-        <Content />
+      <div className="min-h-screen max-h-screen overflow-hidden bg-gray-200">
+        <div className="flex flex-col">
+          <HeaderNEW />
+          <Content />
+        </div>
       </div>
     </>
   );
@@ -56,93 +57,116 @@ const Home: NextPage = () => {
 export default Home;
 
 const Content: React.FC = () => {
-    const defaultFilter: INormalFilter = {
-        cbhMasterID: {
-          value: undefined,
-          mandatory: true
-        },
-        cbhDonorID: {
-          value: undefined,
-          mandatory: true
-        },
-        cbhSampleID: {
-          value: undefined,
-          mandatory: true
-        },
-        price: { 
-          min: undefined, 
-          max: undefined,
-          mandatory: true
-        },
-        matrix: {
-          value: [],
-          mandatory: true
-        },
-        quantity: {
-          min: undefined,
-          max: undefined,
-          mandatory: true
-        },
-        unit: {
-          value: [],
-          mandatory: true
-        },
-        labParameter: {
-          value: [],
-          mandatory: true
-        }, 
-        resultInterpretation: {
-          value: [],
-          mandatory: true
-        }, 
-        resultUnit: {
-          value: [],
-          mandatory: true
-        }, 
-        resultNumerical: {
-          min: undefined,
-          max: undefined,
-          mandatory: true
-        }, 
-        diagnosis: {
-          value: [],
-          mandatory: true
-        }, 
-        ICDCode: {
-          value: [],
-          mandatory: true
-        } 
-    }
+  const defaultFilter: INormalFilter = {
+    cbhMasterID: {
+      value: undefined,
+      mandatory: true
+    },
+    cbhDonorID: {
+      value: undefined,
+      mandatory: true
+    },
+    cbhSampleID: {
+      value: undefined,
+      mandatory: true
+    },
+    price: { 
+      min: undefined, 
+      max: undefined,
+      mandatory: true
+    },
+    matrix: {
+      value: [],
+      mandatory: true
+    },
+    quantity: {
+      min: undefined,
+      max: undefined,
+      mandatory: true
+    },
+    unit: {
+      value: [],
+      mandatory: true
+    },
+    labParameter: {
+      value: [],
+      mandatory: true
+    }, 
+    resultInterpretation: {
+      value: [],
+      mandatory: true
+    }, 
+    resultUnit: {
+      value: [],
+      mandatory: true
+    }, 
+    resultNumerical: {
+      min: undefined,
+      max: undefined,
+      mandatory: true
+    }, 
+    diagnosis: {
+      value: [],
+      mandatory: true
+    }, 
+    ICDCode: {
+      value: [],
+      mandatory: true
+    } 
+  }
 
+  const defaultShow: boolean[] = []
 
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const router = useRouter();
-  const state = useHookstate<IGroup>(defaultGroup);
+  /*Search Bar function */
+  const router = useRouter()
+  const pathname = usePathname();
+  const { q, f } = router.query
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
+
   const [page, setPage] = useState<number>(1)
   const [pagelength, setPagelength] = useState<number>(50)
   const [search, setSearch] = useState<string | undefined>()
   const [filter, setFilter] = useState<INormalFilter>(defaultFilter)
-  const [showFilter, setshowFilter] = useState<boolean>(false)
   const [showSave, setShowSave] = useState(false);
   const [showLoad, setShowLoad] = useState(false);
+  const [showFilter, setShowFilter] = useState<boolean>(false)
 
+  const state = useHookstate<IGroup>(defaultGroup);
 
-  const toggleFilter = () => {
-    setshowFilter(!showFilter);
-  };
-
-  const { data: count } = api.samples.countNormal.useQuery({ search: search, filter: filter })
+  for(let i = 0; i < pagelength; i++){
+    defaultShow.push(false)
+  }
 
   const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
     { pages: page, lines: pagelength, search: search, filter: filter }
   )
+  const { data: count } = api.samples.countNormal.useQuery({ search: search, filter: filter })
+  
+  useEffect(() => {
+    void refetchSamples()
+  }, [search, page, pagelength, filter, refetchSamples])
 
-  const onSearch = (event: React.FormEvent) => {
-    event.preventDefault();
+  useEffect(() => {
+    setPage(1)
+  }, [search, pagelength, filter])
 
-    const encodedSearchQuery = encodeURI(searchQuery);
-    void router.push(`/search/overall?q=${encodedSearchQuery}`);
-  };
+  useEffect(() => {
+    setSearch(q ? q.toString() : undefined)
+  }, [q])
+
+  useEffect(() => {
+    if(f !== undefined){
+      setFilter(NormalFilterSchema.parse(JSON.parse(f.toString())))
+      setIsLoaded(true)
+    }
+  }, [f])
+
+  useEffect(() => {
+    if(isLoaded && !(JSON.stringify(filter) === JSON.stringify(defaultFilter))){
+      void router.push(`${pathname}?${search ? encodeURIComponent(search) + "&" : ""}f=${encodeURIComponent(JSON.stringify(filter))}`, undefined, {shallow: true})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter, isLoaded])
 
   function handleFilterChange(value: string, column:string): void {
     switch(column){
@@ -201,57 +225,58 @@ const Content: React.FC = () => {
   }
 
   return (
-    <div className="relative ">
-      <div className="flex flex-row w-full items-center justify-center ">
-        <div className="w-full border-2 border-solid h-1 border-green-900 rounded-3xl m-5"></div>
-        <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900 flex-grow flex-shrink-0 whitespace-nowrap"><b>OVERALL PRODUCT SEARCH</b></h1>
-        <div className="w-full border-2 border-solid h-1 border-green-900 rounded-3xl m-5"></div>
+    <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins'>
+      <div className={`flex flex-row w-full items-center justify-center text-[${Colors.dark}] border-[${Colors.dark}]`}>
+        <div className="w-full border-2 border-solid h-1 border-inherit rounded-3xl m-5"></div>
+        <h1 className="text-5xl mt-5 ml-5 mb-2 flex-grow flex-shrink-0 whitespace-nowrap"><b>OVERALL PRODUCT SEARCH</b></h1>
+        <div className="w-full border-2 border-solid h-1 border-inherit rounded-3xl m-5"></div>
       </div>
       
-      <p className="px-5 my-7 text-lg text-center">overall search is a tailor-made solution to improve your serach by understanding the <br/>
-      precise needs and search behavior of researches worldwide. Therefore, we provide you <br/>
-      with a wide array of search options, helping to dive deeper into our bio inventory. <br/>
+      <p className={`px-5 my-7 text-xl text-center text-[${Colors.dark}]`}>
+        <i>overall search is a tailor-made solution to improve your serach by understanding the <br/>
+        precise needs and search behavior of researches worldwide. Therefore, we provide you <br/>
+        with a wide array of search options, helping to dive deeper into our bio inventory. <br/></i>
       </p>
-
 
       <div className="flex flex-row w-full">
         <div className="ml-5 flex flex-row w-[50%] justify-start">
-        <button className='text-xl mx-3  bg-[#9DC88D] text-white h-10 flex flex-row pl-2 pr-4 rounded-lg' onClick={() => setshowFilter(!showFilter)}>
-          show filter
-          <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transform translate-y-[4px] rotate-90 ml-2`}>
-              <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
-              <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
-          </svg>
-        </button>
+          <button className={`text-xl mx-3 text-[${Colors.dark}] align-middle items-center flex flex-row pl-2 pr-4 rounded-lg`} onClick={() => setShowFilter(!showFilter)}>
+            filter
+            <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transform translate-y-[2px] rotate-90 ml-2`}>
+                <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
+                <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
+            </svg>
+          </button>
 
-        <select className='text-xl mx-3  bg-[#9DC88D] text-white h-10 flex flex-row pl-2 pr-4 rounded-lg'>
-          <option>categorie</option>
-          <option>Overall</option>
-          <option>Pregnancy</option>
-          <option>Infection Diseases</option>
-          <option>Sexually Transmitted Diseases</option>
-          <option>Cancer Samples</option>
-          <option>Allergies</option>
-          <option>Autoimmune Diseases</option>
-          <option>Cardiovascular Diseases</option>
-          <option>Musculosketeletal System and Connective Tissue</option>
-          <option>Endocrine Disorders</option>
-          <option>COVID 19</option>
-          <option>Gynaecology</option>
-          <option>Healthy Donors (Self Reported)</option>
-          <option>Metabolic Disorders</option>
-          <option>Parasitology</option>
-          <option>Neurological Disorders</option>
-          <option>Respiratory Tract Infections</option>
-          <option>Tropical Infections</option>
-          <option>Other Vector Borne Diseases</option>
-          <option>Specimen Matrix</option>
-          <option>Tissue Bank</option>
-          <option>Cell Products</option>
-          <option>Other Biofluids</option>
-          <option>Dermatological Diseases</option>
-        </select>
+          <select className={`text-xl w-[10vw] mx-3 text-[${Colors.dark}] align-middle items-center flex flex-row pl-2 pr-4 rounded-lg bg-transparent appearance-none`}>
+            <option>category</option>
+            <option>overall</option>
+            <option>Pregnancy</option>
+            <option>Infection Diseases</option>
+            <option>Sexually Transmitted Diseases</option>
+            <option>Cancer Samples</option>
+            <option>Allergies</option>
+            <option>Autoimmune Diseases</option>
+            <option>Cardiovascular Diseases</option>
+            <option>Musculosketeletal System and Connective Tissue</option>
+            <option>Endocrine Disorders</option>
+            <option>COVID 19</option>
+            <option>Gynaecology</option>
+            <option>Healthy Donors (Self Reported)</option>
+            <option>Metabolic Disorders</option>
+            <option>Parasitology</option>
+            <option>Neurological Disorders</option>
+            <option>Respiratory Tract Infections</option>
+            <option>Tropical Infections</option>
+            <option>Other Vector Borne Diseases</option>
+            <option>Specimen Matrix</option>
+            <option>Tissue Bank</option>
+            <option>Cell Products</option>
+            <option>Other Biofluids</option>
+            <option>Dermatological Diseases</option>
+          </select>
         </div>
+
         <div className='flex flex-row justify-end w-[50%] mr-8'>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setShowLoad(true)}>Load Filter</button>
           <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-[#9DC88D] border-l-white' onClick={() => setShowSave(true)}>Save Filter</button>
@@ -260,307 +285,280 @@ const Content: React.FC = () => {
         <ModalSave showModal={showSave} setShowModal={setShowSave} filter={filter}/>
         <ModalLoad showModal={showLoad} setShowModal={setShowLoad} setFilter={setFilter} />
         <br/>
-      </div>
-        {showFilter &&(
-         <>
-              {/* Input fields */}   
-      <div className="px-5 py-3 items-center justify-center">
-        <div className="grid grid-cols-4 gap-2 max-w-full">
-          {/* CBH Master ID */}
-          <div className="items-center text-center w-full">
-            <input type="text" value={filter.cbhMasterID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onChange={e => {
-              const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
-              setFilter(filter => ({...filter, cbhMasterID: {value: temp, mandatory: filter.cbhMasterID.mandatory}}))
-            }}/>
-          </div>
-          {/* CBH Donor ID */}
-          <div className="items-center text-center">
-            <input type="text" value={filter.cbhDonorID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onChange={e => {
-              const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
-              setFilter(filter => ({...filter, cbhDonorID: {value: temp, mandatory: filter.cbhDonorID.mandatory}}))
-            }}/>
-          </div>
-          {/* CBH Sample ID */}
-          <div className="items-center text-center">
-            <input type="text" value={filter.cbhSampleID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onChange={e => {
-              const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
-              setFilter(filter => ({...filter, cbhSampleID: {value: temp, mandatory: filter.cbhSampleID.mandatory}}))
-            }}/>
-          </div>
-          {/* Price */}
-          <div className="items-center text-center">
-            <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
-                <Popover.Body>
-                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
-                    <div className="col-span-1">
-                      Min:
-                    </div>
-                    <input type="number" value={filter.price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min price" onChange={e => {
-                      const temp = filter.price
-                      temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                      setFilter(filter => ({...filter, price: temp}))
-                    }}/>
-                    <div className="col-span-1">
-                      Max:
-                    </div>
-                    <input type="number" value={filter.price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max price" onChange={e => {
-                      const temp = filter.price
-                      temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                      setFilter(filter => ({...filter, price: temp}))
-                    }}/>
-                  </div>
-                </Popover.Body>
-              </Popover>
-            }>
-              <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md rounded-lg">Price</button>
-            </OverlayTrigger>
-          </div>
-        </div>
-        <div className="grid grid-cols-4 max-w-full gap-2 mt-2">
-          {/* General Data */}
-          <div className="items-center text-center">
-            <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
-                <Popover.Body>
-                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
-                    <div className="col-span-1">
-                      Matrix:
-                    </div>
-                    <div className="col-span-1">
-                      <Autofill value="Matrix" callback={handleFilterChange}/>
-                    </div>
-                  </div>
-                </Popover.Body>
-              </Popover>
-            }>
-              <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md rounded-lg">General Data</button>
-            </OverlayTrigger>
-          </div>
-          {/* Quantity Information */}
-          <div className="items-center text-center">
-            <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
-                <Popover.Body>
-                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
-                    <div className="col-span-1">
-                      Min:
-                    </div>
-                    <input type="number" value={filter.quantity.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min quantity" onChange={e => {
-                      const temp = filter.quantity
-                      temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                      setFilter(filter => ({...filter, quantity: temp}))
-                    }}/>
-                    <div className="col-span-1">
-                      Max:
-                    </div>
-                    <input type="number" value={filter.quantity.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max quantity" onChange={e => {
-                      const temp = filter.quantity
-                      temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                      setFilter(filter => ({...filter, quantity: temp}))
-                    }}/>
-                    <div className="col-span-1">
-                      Unit:
-                    </div>
-                    <div className="col-span-1">
-                      <Autofill value="Unit" callback={handleFilterChange}/>
-                    </div>
-                  </div>
-                </Popover.Body>
-              </Popover>
-            }>
-              <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Quantity Information</button>
-            </OverlayTrigger>
-          </div>
-          {/* Laboratory */}
-          <div className="items-center text-center">
-            <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
-                <Popover.Body>
-                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
-                    <div className="col-span-1 text-right">
-                      Parameter:
-                    </div>
-                    <div className="col-span-1">
-                      <Autofill value="Lab_Parameter" callback={handleFilterChange}/>
-                    </div>
-                    <div className="col-span-1 text-right">
-                      Result Interpretation:
-                    </div>
-                    <div className="col-span-1">
-                      <Autofill value="Result_Interpretation" callback={handleFilterChange}/>
-                    </div>
-                    <div className="col-span-1">
-                      Min:
-                    </div>
-                    <input type="number" value={filter.price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min result" onChange={e => {
-                      const temp = filter.price
-                      temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                      setFilter(filter => ({...filter, resultNumerical: temp}))
-                    }}/>
-                    <div className="col-span-1">
-                      Max:
-                    </div>
-                    <input type="number" value={filter.price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max result" onChange={e => {
-                      const temp = filter.price
-                      temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                      setFilter(filter => ({...filter, resultNumerical: temp}))
-                    }}/>
-                    <div className="col-span-1 text-right">
-                      Unit:
-                    </div>
-                    <div className="col-span-1">
-                      <Autofill value="Result_Unit" callback={handleFilterChange}/>
-                    </div>
-                  </div>
-                </Popover.Body>
-              </Popover>
-            }>
-              <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Laboratory</button>
-            </OverlayTrigger>
-          </div>
-          {/* Clinical Diagnosis */}
-          <div className="items-center text-center">
-            <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
-              <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
-                <Popover.Body>
-                  <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
-                    <div className="col-span-1">
-                      Diagnosis:
-                    </div>
-                    <div className="col-span-1">
-                      <Autofill value="Diagnosis" callback={handleFilterChange}/>
-                    </div>
-                    <div className="col-span-1">
-                      ICD Code:
-                    </div>
-                    <div className="col-span-1">
-                      <Autofill value="ICD_Code" callback={handleFilterChange}/>
-                    </div>
-                  </div>
-                </Popover.Body>
-              </Popover>
-            }>
-              <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Diagnosis</button>
-            </OverlayTrigger>
-          </div>
-        </div>
-      </div>
 
-      {/* Displaying active filters */}
-      <div className="flex flex-col mx-5 max-w-10xl overflow-x-auto overflow-y-hidden whitespace-normal">
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
-          Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
-        </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.matrix.value.length > 0 ? "" : "hidden"}`}>
-          Matrix:&nbsp;
-          {filter.matrix.value.map((item, i) => (
-            <>
-              <>{(i !== 0) ? (<>, {item}</>) : (<>{item}</>)} </>
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, matrix: {value: filter.matrix.value.filter((_, index) => index !== i), mandatory: filter.matrix.mandatory }})) }}><BiX/></button>
-            </>
-          ))}
-          <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp1 = filter.matrix;  temp1.mandatory = !temp1.mandatory; setFilter(filter => ({...filter, matrix: temp1}))}}>{filter.matrix.mandatory ? "!": "?"}</button>     
-          </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.unit.value.length > 0 ? "" : "hidden"}`}>
-          Unit:&nbsp;
-          {filter.unit.value.map((item, i) => (
-            <>
-              {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, unit: {value: filter.unit.value.filter((_, index) => index !== i), mandatory: filter.unit.mandatory }})) }}><BiX/></button>
-            </>
-            
-          ))}
-          <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp2 = filter.unit;  temp2.mandatory = !temp2.mandatory; setFilter(filter => ({...filter, unit: temp2}))}}>{filter.unit.mandatory ? "!": "?"}</button>
-        </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.labParameter.value.length > 0 ? "" : "hidden"}`}>
-          Parameter:&nbsp;
-          {filter.labParameter.value.map((item, i) => (
-            <>
-              {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, labParameter: {value: filter.labParameter.value.filter((_, index) => index !== i), mandatory: filter.labParameter.mandatory }})) }}><BiX/></button>
-            </>
-          ))}
-          <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp3 = filter.labParameter;  temp3.mandatory = !temp3.mandatory; setFilter(filter => ({...filter, labParameter: temp3}))}}>{filter.labParameter.mandatory ? "!": "?"}</button>
-        </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.value.length > 0 ? "" : "hidden"}`}>
-          Res.Interpretation:&nbsp;
-          {filter.resultInterpretation.value.map((item, i) => (
-            <>
-              {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultInterpretation: {value: filter.resultInterpretation.value.filter((_, index) => index !== i), mandatory: filter.resultInterpretation.mandatory }})) }}><BiX/></button>
-            </>
-          ))}
-            <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp4 = filter.resultInterpretation;  temp4.mandatory = !temp4.mandatory; setFilter(filter => ({...filter, resultInterpretation: temp4}))}}>{filter.resultInterpretation.mandatory ? "!": "?"}</button>
-        </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultUnit.value.length > 0 ? "" : "hidden"}`}>
-          Res.Unit:&nbsp;
-          {filter.resultUnit.value.map((item, i) => (
-            <>
-              {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultUnit: {value: filter.resultUnit.value.filter((_, index) => index !== i), mandatory: filter.resultUnit.mandatory }})) }}><BiX/></button>
-            </>
-          ))}
-          <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp5 = filter.resultUnit;  temp5.mandatory = !temp5.mandatory; setFilter(filter => ({...filter, resultUnit: temp5}))}}>{filter.resultUnit.mandatory ? "!": "?"}</button>
-        </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.diagnosis.value.length > 0 ? "" : "hidden"}`}>
-          Diagnosis:&nbsp;
-          {filter.diagnosis.value.map((item, i) => (
-            <>
-              {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, diagnosis: {value: filter.diagnosis.value.filter((_, index) => index !== i), mandatory: filter.diagnosis.mandatory }})) }}><BiX/></button>
-            </>
-          ))}
-          <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp6 = filter.diagnosis;  temp6.mandatory = !temp6.mandatory; setFilter(filter => ({...filter, diagnosis: temp6}))}}>{filter.diagnosis.mandatory ? "!": "?"}</button>      
-        </span>
-        <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICDCode.value.length > 0 ? "" : "hidden"}`}>
-          ICD:&nbsp;
-          {filter.ICDCode.value.map((item, i) => (
-            <>
-              {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-              <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, ICDCode: {value: filter.ICDCode.value.filter((_, index) => index !== i), mandatory: filter.ICDCode.mandatory }})) }}><BiX/></button>
-            </>
-          ))}
-          <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp7 = filter.ICDCode;  temp7.mandatory = !temp7.mandatory; setFilter(filter => ({...filter, ICDCode: temp7}))}}>{filter.ICDCode.mandatory ? "!": "?"}</button>      
-        </span>
       </div>
-         </>
-        )}
+      {showFilter &&(
+        <>
+          {/* Input fields */}   
+          <div className="px-5 py-3 items-center justify-center">
+            <div className="grid grid-cols-4 gap-2 max-w-full">
+              {/* CBH Master ID */}
+              <div className="items-center text-center w-full">
+                <input type="text" value={filter.cbhMasterID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onChange={e => {
+                  const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
+                  setFilter(filter => ({...filter, cbhMasterID: {value: temp, mandatory: filter.cbhMasterID.mandatory}}))
+                }}/>
+              </div>
+              {/* CBH Donor ID */}
+              <div className="items-center text-center">
+                <input type="text" value={filter.cbhDonorID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onChange={e => {
+                  const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
+                  setFilter(filter => ({...filter, cbhDonorID: {value: temp, mandatory: filter.cbhDonorID.mandatory}}))
+                }}/>
+              </div>
+              {/* CBH Sample ID */}
+              <div className="items-center text-center">
+                <input type="text" value={filter.cbhSampleID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onChange={e => {
+                  const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
+                  setFilter(filter => ({...filter, cbhSampleID: {value: temp, mandatory: filter.cbhSampleID.mandatory}}))
+                }}/>
+              </div>
+              {/* Price */}
+              <div className="items-center text-center">
+                <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
+                  <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md text-center">
+                    <Popover.Body>
+                      <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
+                        <div className="col-span-1">
+                          Min:
+                        </div>
+                        <input type="number" value={filter.price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min price" onChange={e => {
+                          const temp = filter.price
+                          temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, price: temp}))
+                        }}/>
+                        <div className="col-span-1">
+                          Max:
+                        </div>
+                        <input type="number" value={filter.price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max price" onChange={e => {
+                          const temp = filter.price
+                          temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, price: temp}))
+                        }}/>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }>
+                  <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md rounded-lg">Price</button>
+                </OverlayTrigger>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 max-w-full gap-2 mt-2">
+              {/* General Data */}
+              <div className="items-center text-center">
+                <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
+                  <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+                    <Popover.Body>
+                      <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
+                        <div className="col-span-1">
+                          Matrix:
+                        </div>
+                        <div className="col-span-1">
+                          <Autofill value="Matrix" callback={handleFilterChange}/>
+                        </div>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }>
+                  <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md rounded-lg">General Data</button>
+                </OverlayTrigger>
+              </div>
+              {/* Quantity Information */}
+              <div className="items-center text-center">
+                <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
+                  <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+                    <Popover.Body>
+                      <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
+                        <div className="col-span-1">
+                          Min:
+                        </div>
+                        <input type="number" value={filter.quantity.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min quantity" onChange={e => {
+                          const temp = filter.quantity
+                          temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, quantity: temp}))
+                        }}/>
+                        <div className="col-span-1">
+                          Max:
+                        </div>
+                        <input type="number" value={filter.quantity.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max quantity" onChange={e => {
+                          const temp = filter.quantity
+                          temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, quantity: temp}))
+                        }}/>
+                        <div className="col-span-1">
+                          Unit:
+                        </div>
+                        <div className="col-span-1">
+                          <Autofill value="Unit" callback={handleFilterChange}/>
+                        </div>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }>
+                  <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Quantity Information</button>
+                </OverlayTrigger>
+              </div>
+              {/* Laboratory */}
+              <div className="items-center text-center">
+                <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
+                  <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+                    <Popover.Body>
+                      <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
+                        <div className="col-span-1 text-right">
+                          Parameter:
+                        </div>
+                        <div className="col-span-1">
+                          <Autofill value="Lab_Parameter" callback={handleFilterChange}/>
+                        </div>
+                        <div className="col-span-1 text-right">
+                          Result Interpretation:
+                        </div>
+                        <div className="col-span-1">
+                          <Autofill value="Result_Interpretation" callback={handleFilterChange}/>
+                        </div>
+                        <div className="col-span-1">
+                          Min:
+                        </div>
+                        <input type="number" value={filter.price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min result" onChange={e => {
+                          const temp = filter.price
+                          temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, resultNumerical: temp}))
+                        }}/>
+                        <div className="col-span-1">
+                          Max:
+                        </div>
+                        <input type="number" value={filter.price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max result" onChange={e => {
+                          const temp = filter.price
+                          temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
+                          setFilter(filter => ({...filter, resultNumerical: temp}))
+                        }}/>
+                        <div className="col-span-1 text-right">
+                          Unit:
+                        </div>
+                        <div className="col-span-1">
+                          <Autofill value="Result_Unit" callback={handleFilterChange}/>
+                        </div>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }>
+                  <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Laboratory</button>
+                </OverlayTrigger>
+              </div>
+              {/* Clinical Diagnosis */}
+              <div className="items-center text-center">
+                <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={
+                  <Popover id="popover-basic" className="z-20 bg-white min-w-[10vw] rounded-xl px-2 py-3 border-solid border-2 border-green-900 items-center justify-center shadow-md  text-center">
+                    <Popover.Body>
+                      <div className="grid grid-flow-col auto-cols-max justify-center items-center text-lg gap-3">
+                        <div className="col-span-1">
+                          Diagnosis:
+                        </div>
+                        <div className="col-span-1">
+                          <Autofill value="Diagnosis" callback={handleFilterChange}/>
+                        </div>
+                        <div className="col-span-1">
+                          ICD Code:
+                        </div>
+                        <div className="col-span-1">
+                          <Autofill value="ICD_Code" callback={handleFilterChange}/>
+                        </div>
+                      </div>
+                    </Popover.Body>
+                  </Popover>
+                }>
+                  <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md  rounded-lg">Diagnosis</button>
+                </OverlayTrigger>
+              </div>
+            </div>
+          </div>
+
+          {/* Displaying active filters */}
+          <div className="flex flex-col mx-5 max-w-10xl overflow-x-auto overflow-y-hidden whitespace-normal">
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
+              Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
+            </span>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.matrix.value.length > 0 ? "" : "hidden"}`}>
+              Matrix:&nbsp;
+              {filter.matrix.value.map((item, i) => (
+                <>
+                  <>{(i !== 0) ? (<>, {item}</>) : (<>{item}</>)} </>
+                  <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, matrix: {value: filter.matrix.value.filter((_, index) => index !== i), mandatory: filter.matrix.mandatory }})) }}><BiX/></button>
+                </>
+              ))}
+              <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp1 = filter.matrix;  temp1.mandatory = !temp1.mandatory; setFilter(filter => ({...filter, matrix: temp1}))}}>{filter.matrix.mandatory ? "!": "?"}</button>     
+              </span>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.unit.value.length > 0 ? "" : "hidden"}`}>
+              Unit:&nbsp;
+              {filter.unit.value.map((item, i) => (
+                <>
+                  {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+                  <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, unit: {value: filter.unit.value.filter((_, index) => index !== i), mandatory: filter.unit.mandatory }})) }}><BiX/></button>
+                </>
+                
+              ))}
+              <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp2 = filter.unit;  temp2.mandatory = !temp2.mandatory; setFilter(filter => ({...filter, unit: temp2}))}}>{filter.unit.mandatory ? "!": "?"}</button>
+            </span>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.labParameter.value.length > 0 ? "" : "hidden"}`}>
+              Parameter:&nbsp;
+              {filter.labParameter.value.map((item, i) => (
+                <>
+                  {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+                  <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, labParameter: {value: filter.labParameter.value.filter((_, index) => index !== i), mandatory: filter.labParameter.mandatory }})) }}><BiX/></button>
+                </>
+              ))}
+              <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp3 = filter.labParameter;  temp3.mandatory = !temp3.mandatory; setFilter(filter => ({...filter, labParameter: temp3}))}}>{filter.labParameter.mandatory ? "!": "?"}</button>
+            </span>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.value.length > 0 ? "" : "hidden"}`}>
+              Res.Interpretation:&nbsp;
+              {filter.resultInterpretation.value.map((item, i) => (
+                <>
+                  {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+                  <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultInterpretation: {value: filter.resultInterpretation.value.filter((_, index) => index !== i), mandatory: filter.resultInterpretation.mandatory }})) }}><BiX/></button>
+                </>
+              ))}
+                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp4 = filter.resultInterpretation;  temp4.mandatory = !temp4.mandatory; setFilter(filter => ({...filter, resultInterpretation: temp4}))}}>{filter.resultInterpretation.mandatory ? "!": "?"}</button>
+            </span>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultUnit.value.length > 0 ? "" : "hidden"}`}>
+              Res.Unit:&nbsp;
+              {filter.resultUnit.value.map((item, i) => (
+                <>
+                  {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+                  <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultUnit: {value: filter.resultUnit.value.filter((_, index) => index !== i), mandatory: filter.resultUnit.mandatory }})) }}><BiX/></button>
+                </>
+              ))}
+              <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp5 = filter.resultUnit;  temp5.mandatory = !temp5.mandatory; setFilter(filter => ({...filter, resultUnit: temp5}))}}>{filter.resultUnit.mandatory ? "!": "?"}</button>
+            </span>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.diagnosis.value.length > 0 ? "" : "hidden"}`}>
+              Diagnosis:&nbsp;
+              {filter.diagnosis.value.map((item, i) => (
+                <>
+                  {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+                  <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, diagnosis: {value: filter.diagnosis.value.filter((_, index) => index !== i), mandatory: filter.diagnosis.mandatory }})) }}><BiX/></button>
+                </>
+              ))}
+              <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp6 = filter.diagnosis;  temp6.mandatory = !temp6.mandatory; setFilter(filter => ({...filter, diagnosis: temp6}))}}>{filter.diagnosis.mandatory ? "!": "?"}</button>      
+            </span>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICDCode.value.length > 0 ? "" : "hidden"}`}>
+              ICD:&nbsp;
+              {filter.ICDCode.value.map((item, i) => (
+                <>
+                  {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
+                  <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, ICDCode: {value: filter.ICDCode.value.filter((_, index) => index !== i), mandatory: filter.ICDCode.mandatory }})) }}><BiX/></button>
+                </>
+              ))}
+              <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp7 = filter.ICDCode;  temp7.mandatory = !temp7.mandatory; setFilter(filter => ({...filter, ICDCode: temp7}))}}>{filter.ICDCode.mandatory ? "!": "?"}</button>      
+            </span>
+          </div>
+        </>
+      )}
      
 
-    <div className="mx-4 my-2">
-        <Table filter={state} page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} expert={false} filterNormal={filter} setFilter={setFilter}/>
-    </div>
-
-      <div className="border-b-2 border-solid border-[#164A41] my-1 gradient">
-        <div className="grid grid-cols-3 items-center text-center justify-center justify-items-center text-white gap-8 font-poppins text-2xl">
-          <div className="mt-4 tracking-[0.1em]">COMPANY INFORMATION</div>
-          <div className="mt-4 tracking-[0.1em]">QUESTIONS?</div>
-          <div className="mt-4 tracking-[0.1em]">BECOME A SUPPLIER</div>
-          <button className="">Terms and Conditions</button>
-          <button className="">Shipping Information,</button>
-          <button className="">Sell at CBH</button>
-          <button className="">Privacy Policy</button>
-          <button className="">Career Opportunities</button>
-          <button className="">Supplier Login</button>
-          <button className="">Ethical Statement</button>
-          <button className="">and FAQ&apos;s</button>
-          <button className="">Marketing</button>
-          <button className="mb-8">Quality Management</button>
-          <button className="mb-8 border-2 border-solid border-[#164A41] text-[#164A41] w-fit rounded-lg bg-[#FFFFFF]/[0.45] py-2 px-40">Contact Us!</button>
-          <button className="mb-8">Sucess Stories</button>
-        </div>
+      <div className="mx-4 my-2">
+          <Table filter={state} page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} expert={false} filterNormal={filter} setFilter={setFilter}/>
       </div>
 
-      <div className="text-center">
-        <h1 className="mb-2 mt-4 font-poppins text-2xl text-[#164A41]">
-          Central BioHub GmbH, Neuendorfstrasse 17, 16761 Hennigsdorf, Germany |
-          Call: +49 3302 230 91 66 | Email: info@centralbiohub.com
-        </h1>
-        <h1 className="mb-2 font-poppins text-2xl text-[#164A41]">
-          © 2023 www.centralbiohub.de All Rights Reserved - Link to Imprint here
-        </h1>
-      </div>
+      <Footer/>
     </div>
   );
 };

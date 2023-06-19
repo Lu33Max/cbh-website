@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { BiSearch } from 'react-icons/bi';
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
+import ClickContext from "~/context/click";
+import { signOut, useSession } from "next-auth/react";
+
+import { BiCart, BiLogIn, BiLogOut, BiSearch } from "react-icons/bi";
 
 const HeaderNEW: React.FC = () => {
+  const { data: sessionData } = useSession();
+  const [cartSamples,] = useContext(ClickContext)
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeHeader, setActiveHeader] = useState<number>(0);
   const [buttonClicked, setButtonClicked] = useState<boolean>(false);
-  const [navigationColor, setNavigationColor] = useState<string>('gray-700');
-  const [contactColor, setContactColor] = useState<string>('gray-700');
+  const [contactColor, setContactColor] = useState<string>("gray-700");
 
   const router = useRouter();
 
@@ -21,103 +25,199 @@ const HeaderNEW: React.FC = () => {
   };
 
   const navigationButtons = [
-    { name: 'Home', link: '/' },
-    { name: 'Explore', link: '/search' },
-    { name: 'Expert Search', link: '/expertsearch' },
-    { name: 'Cart', link: '/Cart' },
-    { name: 'About Us', link: '/About' },
+    { name: "Home", link: "/" },
+    { name: "Explore", link: "/search/overall" },
+    { name: "Expert Search", link: "/search/expert" },
+    { name: "Cart", link: "/cart" },
+    { name: "About Us", link: "/about" },
   ];
 
   const handleButtonClick = (input: number) => {
     setActiveHeader(activeHeader === input ? 0 : input);
     setButtonClicked(activeHeader === input ? false : true);
-    setNavigationColor('#164A41');
-    setContactColor('#164A41');
+    setContactColor("#164A41");
   };
-  
 
   return (
     <>
       {/* Header */}
-      <div className={`${buttonClicked ? 'bg-[#164A41]' : 'bg-white'} transition duration-500 ease-in-out h-[80px] flex flex-row pl-10 pr-5 items-center font-body font-poppins text-xl text-[#164A41] font-thin relative z-[999]`}>
-        <Image src="/cbh_logos/logo_black.png" alt="Logo" width={200} height={80} className='z-20'/>
-        <div className='flex flex-row justify-between mx-auto gap-5 z-20'>
+      <div
+        className={`${buttonClicked ? "bg-[#164A41]" : "bg-white"} font-body relative z-[999] flex h-[80px] flex-row items-center pl-10 pr-5 font-poppins text-xl font-thin text-[#164A41] transition duration-500 ease-in-out`}
+      >
+        <a onClick={() => void router.push("/")}>
+          <Image
+            src="/cbh_logos/logo_black.png"
+            alt="Logo"
+            width={200}
+            height={80}
+            className="z-20 cursor-pointer"
+          />
+        </a>
+        <div className="z-20 mx-auto flex flex-row justify-between gap-2">
           <button
             onClick={() => handleButtonClick(1)}
-            className={`flex flex-row pl-2 pr-4 rounded-lg ${buttonClicked ? 'text-white' : 'text-[#164A41]'} ${activeHeader === 1 ? 'bg-[#9DC88D]' : ''}`}>
-
+            className={`flex flex-row rounded-lg pl-2 pr-4 ${buttonClicked ? "text-white" : "text-[#164A41]"} ${activeHeader === 1 ? "bg-[#9DC88D]" : ""}`}
+          >
             Services
-
-            <div className={` ${activeHeader === 1 ? 'rotate-180 pr-2 pb-2 -mr-3' : ''}`}>
-              <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transform translate-y-[4px] rotate-90 ml-2`}>
-                <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
-                <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
+            <div
+              className={` ${activeHeader === 1 ? "-mr-3 rotate-180 pb-2 pr-2" : ""}`}
+            >
+              <svg
+                width="12"
+                height="21"
+                viewBox="0 0 20 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className={`ml-2 translate-y-[4px] rotate-90 transform`}
+              >
+                <path
+                  opacity="0.4"
+                  d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+                  fill="black"
+                />
+                <path
+                  d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+                  fill="black"
+                />
               </svg>
             </div>
+          </button>
+
+          <button
+            onClick={() => handleButtonClick(2)}
+            className={`flex flex-row rounded-lg pl-2 pr-4 ${buttonClicked ? "text-white" : "text-[#164A41]"} ${activeHeader === 2 ? "bg-[#9DC88D]" : ""}`}
+          >
+            Navigation
+            <div
+              className={` ${activeHeader === 2 ? "-mr-3 rotate-180 pb-2 pr-2" : ""}`}
+            >
+              <svg
+                width="12"
+                height="21"
+                viewBox="0 0 20 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="ml-2 translate-y-[4px] rotate-90 transform"
+              >
+                <path
+                  opacity="0.4"
+                  d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+                  fill="black"
+                />
+                <path
+                  d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+                  fill="black"
+                />
+              </svg>
+            </div>
+          </button>
+
+          <button
+            className={`flex flex-row justify-center z-[999] w-[100px] text-center ${buttonClicked ? "text-white" : `text-${contactColor}`}`}
+          >
+            Contact
           </button>
 
           <button 
-            onClick={() => handleButtonClick(2)} 
-            className={`flex flex-row pl-2 pr-4 rounded-lg ${buttonClicked ? 'text-white' : 'text-[#164A41]'} ${activeHeader === 2 ? 'bg-[#9DC88D]' : ''}`}>
-            
-            Navigation
-
-            <div className={` ${activeHeader === 2 ? 'rotate-180 pr-2 pb-2 -mr-3' : ''}`}>
-              <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform rotate-90 translate-y-[4px] ml-2">
-                <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
-                <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
-              </svg>
-            </div>
-          </button>
-
-          <button className={`flex flex-row relative z-[999] ${buttonClicked ? 'text-white' : `text-${contactColor}`}`}>
-            
-            Contact
-            
+            className={`flex flex-row justify-center z-[999] w-[100px] text-center ${buttonClicked ? "text-white" : `text-${contactColor}`}`}
+            onClick={() => void router.push("/cart")}
+          >
+            <BiCart className="text-3xl text-center relative bottom-1"/>
+            Cart
+            <div className="ml-1">({cartSamples.length})</div>
           </button>
         </div>
-        <span className='relative block w-full max-w-[30%] z-20'>
+        <span className="relative z-20 block w-full max-w-[30%]">
           <form onSubmit={onSearch}>
-            <input 
-              value={searchQuery} 
-              onChange={event => setSearchQuery(event.target.value)} 
-              className='bg-[#9DC88D] w-[100%] bg-opacity-20 text-black pl-10 pr-5 py-1 text-lg rounded-m placeholder:italic placeholder:text-gray-700 placeholder-center focus:outline-none my-1 drop-shadow-lg' 
-              placeholder='Search for specimen...'
+            <input
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              className="rounded-m placeholder-center my-1 w-[100%] bg-[#9DC88D] bg-opacity-20 py-1 pl-10 pr-5 text-lg text-black drop-shadow-lg placeholder:italic placeholder:text-gray-700 focus:outline-none"
+              placeholder="Search for specimen..."
             />
           </form>
-          <div className='absolute inset-y-0 left-0 flex items-center pl-2'>
-            <BiSearch color='#555555'/>
+          <div className="absolute inset-y-0 left-0 flex items-center pl-2">
+            <BiSearch color="#555555" />
           </div>
         </span>
+        <button className={`ml-5 mr-2 flex flex-row ${buttonClicked ? "text-white" : `text-${contactColor}`}`} onClick={sessionData ? () => void signOut() : () => void router.push(`/auth/login?prev=${router.asPath}`)}>
+          {sessionData ? (
+            <>
+              <BiLogOut className="text-3xl mr-1 relative bottom-[0.125rem]"/>
+              Logout
+            </>
+          ) : (
+            <>
+              <BiLogIn className="text-3xl mr-1 relative bottom-[0.125rem]"/>
+              Login
+            </>
+          )}
+        </button>
       </div>
 
       {/* Services */}
-      <div className={`overflow-visible absolute top-0 w-full text-black bg-[#164A41] transition-height duration-500 ease-in-out ${activeHeader === 1 ? "z-[900] h-[450px]" : "h-0 opacity-0 -z-10"}`}>
-        <div className="flex flex-row w-full items-center justify-center mt-[5%]">
-          <div className="flex flex-col items-center border border-solid border-[#9DC88D] mx-3 rounded-lg">
-            <span className="text-center text-2xl text-white justify-center">Easy Online</span>
-            <span className="text-center text-2xl text-white justify-center">Ordering Process</span>
-            <Image src="/image 10.png" alt="Logo" width={200} height={200} className="mx-10" />
+      <div
+        className={`transition-height absolute top-0 w-full overflow-visible bg-[#164A41] text-black duration-500 ease-in-out ${
+          activeHeader === 1 ? "z-[900] h-[450px]" : "-z-10 h-0 opacity-0"
+        }`}
+      >
+        <div className="mt-[5%] flex w-full flex-row items-center justify-center">
+          <div className="mx-3 flex flex-col items-center rounded-lg border border-solid border-[#9DC88D]">
+            <span className="justify-center text-center text-2xl text-white">
+              Easy Online
+            </span>
+            <span className="justify-center text-center text-2xl text-white">
+              Ordering Process
+            </span>
+            <Image
+              src="/image 10.png"
+              alt="Logo"
+              width={200}
+              height={200}
+              className="mx-10"
+            />
           </div>
-          <div className="flex flex-col items-center border border-solid border-[#9DC88D] mx-3 rounded-lg">
-            <span className="text-center text-2xl text-white justify-center">Worldwide</span>
-            <span className="text-center text-2xl text-white justify-center">Express Delivery</span>
-            <Image src="/image 12.png" alt="Logo" width={200} height={200} className="mx-10" />
+          <div className="mx-3 flex flex-col items-center rounded-lg border border-solid border-[#9DC88D]">
+            <span className="justify-center text-center text-2xl text-white">
+              Worldwide
+            </span>
+            <span className="justify-center text-center text-2xl text-white">
+              Express Delivery
+            </span>
+            <Image
+              src="/image 12.png"
+              alt="Logo"
+              width={200}
+              height={200}
+              className="mx-10"
+            />
           </div>
-          <div className="flex flex-col items-center border border-solid border-[#9DC88D] mx-3 rounded-lg">
-           <span className="text-center text-2xl text-white justify-center">800.000+</span>
-           <span className="text-center text-2xl text-white justify-center">Samples in Stock</span>
-            <Image src="/image 11.png" alt="Logo" width={200} height={200} className="mx-10" />
+          <div className="mx-3 flex flex-col items-center rounded-lg border border-solid border-[#9DC88D]">
+            <span className="justify-center text-center text-2xl text-white">
+              800.000+
+            </span>
+            <span className="justify-center text-center text-2xl text-white">
+              Samples in Stock
+            </span>
+            <Image
+              src="/image 11.png"
+              alt="Logo"
+              width={200}
+              height={200}
+              className="mx-10"
+            />
           </div>
         </div>
-        <div className="flex flex-row w-full items-center justify-center absolute bottom-0 left-0 bg-white h-[15%] transition-transform ">
-          <div className="flex flex-col items-start mx-3">
-            <label style={{ fontSize: '18px' }}>Become a Part of us!</label>
+        <div className="absolute bottom-0 left-0 flex h-[15%] w-full flex-row items-center justify-center bg-white transition-transform ">
+          <div className="mx-3 flex flex-col items-start">
+            <label style={{ fontSize: "18px" }}>Become a Part of us!</label>
           </div>
-          <div className="flex flex-col items-center mx-3 border-solid rounded-lg border-2 border-[#164A41] pl-4 ">
-           <div className="flex">
-            <button className="bg-white mr-2" style={{ fontSize: '18px' }}>Register now!</button>
-             <button className="rounded-br-lg rounded-tr-lg bg-[#F1B24A] px-2 py-1 ml-8 text-lg">
+          <div className="mx-3 flex flex-col items-center rounded-lg border-2 border-solid border-[#164A41] pl-4 ">
+            <div className="flex">
+              <button className="mr-2 bg-white" style={{ fontSize: "18px" }}>
+                Register now!
+              </button>
+              <button className="ml-8 rounded-br-lg rounded-tr-lg bg-[#F1B24A] px-2 py-1 text-lg">
                 <svg
                   width="12"
                   height="21"
@@ -139,13 +239,15 @@ const HeaderNEW: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col items-end mx-3">
-            <label style={{ fontSize: '18px' }}>Don&apos;t miss out!</label>
+          <div className="mx-3 flex flex-col items-end">
+            <label style={{ fontSize: "18px" }}>Don&apos;t miss out!</label>
           </div>
-          <div className="flex flex-col items-center mx-3 border border-solid rounded-lg border-2 border-[#164A41] pl-4">
-           <div className="flex">
-            <button className="bg-white mr-2" style={{ fontSize: '18px' }}>Newsletter</button>
-             <button className="rounded-br-lg rounded-tr-lg bg-[#F1B24A] px-2 py-1 ml-8 text-lg">
+          <div className="mx-3 flex flex-col items-center rounded-lg border-2 border-solid border-[#164A41] pl-4">
+            <div className="flex">
+              <button className="mr-2 bg-white" style={{ fontSize: "18px" }}>
+                Newsletter
+              </button>
+              <button className="ml-8 rounded-br-lg rounded-tr-lg bg-[#F1B24A] px-2 py-1 text-lg">
                 <svg
                   width="12"
                   height="21"
@@ -170,27 +272,42 @@ const HeaderNEW: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <div className={`overflow-visible absolute top-0 w-full text-black bg-[#164A41] transition-height duration-500 ease-in-out ${activeHeader === 2 ? "z-[900] h-[450px]" : "h-0 opacity-0 -z-10"}`}>
-        <div className="flex flex-col items-center mt-[2%]">
-          <nav style={{ display: "flex", flexDirection: "column", justifyContent: "center" }} className="ml-[-317px] py-2 items-left border border-[#9DC88D] px-20 mt-14 rounded-lg">
+      <div
+        className={`transition-height absolute top-0 w-full overflow-visible bg-[#164A41] text-black duration-500 ease-in-out ${activeHeader === 2 ? "z-[900] h-[450px]" : "-z-10 h-0 opacity-0"}`}
+      >
+        <div className="mt-[2%] flex flex-col items-center">
+          <nav
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+            className="items-left ml-[-317px] mt-14 rounded-lg border border-[#9DC88D] px-20 py-2"
+          >
             {navigationButtons.map((link, index) => (
-              <Link key={index} href={link.link}> 
-                <div className={`tracking-wider ml-[-80px] relative block text-3xl w-auto h-full py-2 px-8 font-poppins text-white hover:bg-[#9DC88DBF] rounded-r-full transition duration-300 ease-in-out ${router.pathname === link.link ? 'bg-gray-200' : ''}`}>
-                  <div className={`activeButton absolute h-full w-[15%] ${activeHeader === 2 ? "bg-emerald-700" : ""} left-[-20%] ${router.pathname === link.link ? '' : 'hidden'}`}></div>
-                  {link.name}                                 
+              <Link key={index} href={link.link}>
+                <div
+                  className={`relative ml-[-80px] block h-full w-auto rounded-r-full px-8 py-2 font-poppins text-3xl tracking-wider text-white transition duration-300 ease-in-out hover:bg-[#9DC88DBF] ${router.pathname === link.link ? "bg-gray-200" : ""}`}
+                >
+                  <div
+                    className={`activeButton absolute h-full w-[15%] ${activeHeader === 2 ? "bg-emerald-700" : ""} left-[-20%] ${router.pathname === link.link ? "" : "hidden"}`}
+                  ></div>
+                  {link.name}
                 </div>
               </Link>
             ))}
           </nav>
         </div>
-        <div className="flex flex-row w-full items-center justify-center absolute bottom-0 left-0 bg-white h-[15%] transition-transform">
-          <div className="flex flex-col items-start mx-3">
-            <label style={{ fontSize: '18px' }}>Become a Part of us!</label>
+        <div className="absolute bottom-0 left-0 flex h-[15%] w-full flex-row items-center justify-center bg-white transition-transform">
+          <div className="mx-3 flex flex-col items-start">
+            <label style={{ fontSize: "18px" }}>Become a Part of us!</label>
           </div>
-          <div className="flex flex-col items-center mx-3 border-solid rounded-lg border-2 border-[#164A41] pl-4 ">
-           <div className="flex">
-            <button className="bg-white mr-2" style={{ fontSize: '18px' }}>Register now!</button>
-             <button className="rounded-br-lg rounded-tr-lg bg-[#F1B24A] px-2 py-1 ml-8 text-lg">
+          <div className="mx-3 flex flex-col items-center rounded-lg border-2 border-solid border-[#164A41] pl-4 ">
+            <div className="flex">
+              <button className="mr-2 bg-white" style={{ fontSize: "18px" }}>
+                Register now!
+              </button>
+              <button className="ml-8 rounded-br-lg rounded-tr-lg bg-[#F1B24A] px-2 py-1 text-lg">
                 <svg
                   width="12"
                   height="21"
@@ -212,13 +329,15 @@ const HeaderNEW: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col items-end mx-3">
-            <label style={{ fontSize: '18px' }}>Don&apos;t miss out!</label>
+          <div className="mx-3 flex flex-col items-end">
+            <label style={{ fontSize: "18px" }}>Don&apos;t miss out!</label>
           </div>
-          <div className="flex flex-col items-center mx-3 border border-solid rounded-lg border-2 border-[#164A41] pl-4">
-           <div className="flex">
-            <button className="bg-white mr-2" style={{ fontSize: '18px' }}>Newsletter</button>
-             <button className="rounded-br-lg rounded-tr-lg bg-[#F1B24A] px-2 py-1 ml-8 text-lg">
+          <div className="mx-3 flex flex-col items-center rounded-lg border-2 border-solid border-[#164A41] pl-4">
+            <div className="flex">
+              <button className="mr-2 bg-white" style={{ fontSize: "18px" }}>
+                Newsletter
+              </button>
+              <button className="ml-8 rounded-br-lg rounded-tr-lg bg-[#F1B24A] px-2 py-1 text-lg">
                 <svg
                   width="12"
                   height="21"

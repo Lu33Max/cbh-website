@@ -15,7 +15,7 @@ const buttonsSidebar = [
 
 const Sidebar: React.FC = () => {
   const router = useRouter();
-  const [cartSamples, addCartSamples] = useContext(ClickContext)
+  const [cartSamples,] = useContext(ClickContext)
 
   return(
     

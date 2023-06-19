@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import { Prisma, type Samples } from "@prisma/client";
-import { GroupFilterSchema, GroupSchema, NormalFilterSchema, type IGroup, INormalFilter } from "~/common/filter/filter";
+import { GroupFilterSchema, GroupSchema, NormalFilterSchema, type IGroup, type INormalFilter } from "~/common/filter/filter";
 import { type OptionalSamples } from "~/components/search/table";
 
 export const sampleRouter = createTRPCRouter({
