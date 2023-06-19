@@ -120,109 +120,120 @@ const Content: React.FC = () => {
   /*Search Bar function */
   const router = useRouter()
   const pathname = usePathname();
-  const { q, f } = router.query
+  const { q, f, c } = router.query
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
-
-  const [page, setPage] = useState<number>(1)
-  const [pagelength, setPagelength] = useState<number>(50)
-  const [search, setSearch] = useState<string | undefined>()
-  const [filter, setFilter] = useState<INormalFilter>(defaultFilter)
-  const [showSave, setShowSave] = useState(false);
-  const [showLoad, setShowLoad] = useState(false);
-  const [showFilter, setShowFilter] = useState<boolean>(false)
-
-  const state = useHookstate<IGroup>(defaultGroup);
-
-  for(let i = 0; i < pagelength; i++){
-    defaultShow.push(false)
-  }
-
-  const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
-    { pages: page, lines: pagelength, search: search, filter: filter }
-  )
-  const { data: count } = api.samples.countNormal.useQuery({ search: search, filter: filter })
   
-  useEffect(() => {
-    void refetchSamples()
-  }, [search, page, pagelength, filter, refetchSamples])
+    const [page, setPage] = useState<number>(1)
+    const [pagelength, setPagelength] = useState<number>(50)
+    const [search, setSearch] = useState<string | undefined>()
+    const [filter, setFilter] = useState<INormalFilter>(defaultFilter)
+    const [showSave, setShowSave] = useState(false);
+    const [showLoad, setShowLoad] = useState(false);
+    const [showFilter, setShowFilter] = useState<boolean>(false)
+    const [categoryQuery, setCategoryQuery] = useState<string>("");
+  
+    const state = useHookstate<IGroup>(defaultGroup);
 
-  useEffect(() => {
-    setPage(1)
-  }, [search, pagelength, filter])
-
-  useEffect(() => {
-    setSearch(q ? q.toString() : undefined)
-  }, [q])
-
-  useEffect(() => {
-    if(f !== undefined){
-      setFilter(NormalFilterSchema.parse(JSON.parse(f.toString())))
-      setIsLoaded(true)
+    const onCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const encodedCategoryQuery = encodeURI(event.target.value);
+      void router.push(`/search/newOverall?c=${encodedCategoryQuery}`, undefined, {shallow: true});
+      setCategoryQuery(event.target.value)
+    };
+  
+    for(let i = 0; i < pagelength; i++){
+      defaultShow.push(false)
     }
-  }, [f])
+  
+    const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
+      { pages: page, lines: pagelength, search: search, filter: filter }
+    )
+    const { data: count } = api.samples.countNormal.useQuery({ search: search, filter: filter })
+    
+    useEffect(() => {
+      void refetchSamples()
+    }, [search, page, pagelength, filter, refetchSamples])
+  
+    useEffect(() => {
+      setPage(1)
+    }, [search, pagelength, filter])
+  
+    useEffect(() => {
+      setSearch(q ? q.toString() : undefined)
+    }, [q])
 
-  useEffect(() => {
-    if(isLoaded && !(JSON.stringify(filter) === JSON.stringify(defaultFilter))){
-      void router.push(`${pathname}?${search ? encodeURIComponent(search) + "&" : ""}f=${encodeURIComponent(JSON.stringify(filter))}`, undefined, {shallow: true})
+    useEffect(() => {
+      setCategoryQuery(c ? c.toString() : "")
+    }, [c])
+  
+    useEffect(() => {
+      if(f !== undefined){
+        setFilter(NormalFilterSchema.parse(JSON.parse(f.toString())))
+        setIsLoaded(true)
+      }
+    }, [f])
+  
+    useEffect(() => {
+      if(isLoaded && !(JSON.stringify(filter) === JSON.stringify(defaultFilter))){
+        void router.push(`${pathname}?${search ? encodeURIComponent(search) + "&" : ""}f=${encodeURIComponent(JSON.stringify(filter))}`, undefined, {shallow: true})
+      }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filter, isLoaded])
+  
+    function handleFilterChange(value: string, column:string): void {
+      switch(column){
+        case "Matrix":
+          if(!filter.matrix.value.includes(value)){
+            const temp1 = filter.matrix
+            temp1.value.push(value)
+            setFilter(filter => ({...filter, matrix: temp1}))
+          }
+          break;
+        case "Unit":
+          if(!filter.unit.value.includes(value)){
+            const temp2 = filter.unit
+            temp2.value.push(value)
+            setFilter(filter => ({...filter, unit: temp2}))
+          }
+          break;
+        case "Lab_Parameter":
+          if(!filter.labParameter.value.includes(value)){
+            const temp3 = filter.labParameter
+            temp3.value.push(value)
+            setFilter(filter => ({...filter, labParameter: temp3}))
+          }
+          break;
+        case "Result_Interpretation":
+          if(!filter.resultInterpretation.value.includes(value)){
+            const temp4 = filter.resultInterpretation
+            temp4.value.push(value)
+            setFilter(filter => ({...filter, resultInterpretation: temp4}))
+          }
+          break;
+        case "Result_Unit":
+          if(!filter.resultUnit.value.includes(value)){
+            const temp5 = filter.resultUnit
+            temp5.value.push(value)
+            setFilter(filter => ({...filter, resultUnit: temp5}))
+          }
+          break;
+        case "Diagnosis":
+          if(!filter.diagnosis.value.includes(value)){
+            const temp6 = filter.diagnosis
+            temp6.value.push(value)
+            setFilter(filter => ({...filter, diagnosis: temp6}))
+          }
+          break;
+        case "ICD_Code":
+          if(!filter.ICDCode.value.includes(value)){
+            const temp7 = filter.ICDCode
+            temp7.value.push(value)
+            setFilter(filter => ({...filter, ICDCode: temp7}))
+          }
+          break;
+        default:
+          break;
+      }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, isLoaded])
-
-  function handleFilterChange(value: string, column:string): void {
-    switch(column){
-      case "Matrix":
-        if(!filter.matrix.value.includes(value)){
-          const temp1 = filter.matrix
-          temp1.value.push(value)
-          setFilter(filter => ({...filter, matrix: temp1}))
-        }
-        break;
-      case "Unit":
-        if(!filter.unit.value.includes(value)){
-          const temp2 = filter.unit
-          temp2.value.push(value)
-          setFilter(filter => ({...filter, unit: temp2}))
-        }
-        break;
-      case "Lab_Parameter":
-        if(!filter.labParameter.value.includes(value)){
-          const temp3 = filter.labParameter
-          temp3.value.push(value)
-          setFilter(filter => ({...filter, labParameter: temp3}))
-        }
-        break;
-      case "Result_Interpretation":
-        if(!filter.resultInterpretation.value.includes(value)){
-          const temp4 = filter.resultInterpretation
-          temp4.value.push(value)
-          setFilter(filter => ({...filter, resultInterpretation: temp4}))
-        }
-        break;
-      case "Result_Unit":
-        if(!filter.resultUnit.value.includes(value)){
-          const temp5 = filter.resultUnit
-          temp5.value.push(value)
-          setFilter(filter => ({...filter, resultUnit: temp5}))
-        }
-        break;
-      case "Diagnosis":
-        if(!filter.diagnosis.value.includes(value)){
-          const temp6 = filter.diagnosis
-          temp6.value.push(value)
-          setFilter(filter => ({...filter, diagnosis: temp6}))
-        }
-        break;
-      case "ICD_Code":
-        if(!filter.ICDCode.value.includes(value)){
-          const temp7 = filter.ICDCode
-          temp7.value.push(value)
-          setFilter(filter => ({...filter, ICDCode: temp7}))
-        }
-        break;
-      default:
-        break;
-    }
-  }
 
   return (
     <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins'>
@@ -240,40 +251,40 @@ const Content: React.FC = () => {
 
       <div className="flex flex-row w-full">
         <div className="ml-5 flex flex-row w-[50%] justify-start">
-          <button className={`text-xl mx-3 text-[${Colors.dark}] align-middle items-center flex flex-row pl-2 pr-4 rounded-lg`} onClick={() => setShowFilter(!showFilter)}>
-            filter
-            <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transform translate-y-[2px] rotate-90 ml-2`}>
-                <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
-                <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
-            </svg>
-          </button>
+        <button className={`text-xl mx-3 text-[${Colors.dark}] h-10 flex flex-row pl-2 pr-4 rounded-lg`} onClick={() => setShowFilter(!showFilter)}>
+          filter
+          <svg width="12" height="21" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transform translate-y-[4px] rotate-90 ml-2`}>
+              <path opacity="0.4" d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z" fill="black"/>
+              <path d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z" fill="black"/>
+          </svg>
+        </button>
 
-          <select className={`text-xl w-[10vw] mx-3 text-[${Colors.dark}] align-middle items-center flex flex-row pl-2 pr-4 rounded-lg bg-transparent appearance-none`}>
-            <option>category</option>
-            <option>overall</option>
-            <option>Pregnancy</option>
-            <option>Infection Diseases</option>
-            <option>Sexually Transmitted Diseases</option>
-            <option>Cancer Samples</option>
-            <option>Allergies</option>
-            <option>Autoimmune Diseases</option>
-            <option>Cardiovascular Diseases</option>
-            <option>Musculosketeletal System and Connective Tissue</option>
-            <option>Endocrine Disorders</option>
-            <option>COVID 19</option>
-            <option>Gynaecology</option>
-            <option>Healthy Donors (Self Reported)</option>
-            <option>Metabolic Disorders</option>
-            <option>Parasitology</option>
-            <option>Neurological Disorders</option>
-            <option>Respiratory Tract Infections</option>
-            <option>Tropical Infections</option>
-            <option>Other Vector Borne Diseases</option>
-            <option>Specimen Matrix</option>
-            <option>Tissue Bank</option>
-            <option>Cell Products</option>
-            <option>Other Biofluids</option>
-            <option>Dermatological Diseases</option>
+          <select className='text-xl mx-3 bg-[#9DC88D] text-white h-10 flex flex-row pl-2 pr-4 rounded-lg' value={categoryQuery} onChange={onCategoryChange}>
+            <option value="category" selected={categoryQuery === "category"}>categorie</option>
+            <option value="Overall" selected={categoryQuery === "Overall"}>Overall</option>
+            <option value="Pregnancy" selected={categoryQuery === "Pregnancy"}>Pregnancy</option>
+            <option value="Infection Diseases">Infection Diseases</option>
+            <option value="Sexually Transmitted Diseases">Sexually Transmitted Diseases</option>
+            <option value="Cancer Samples">Cancer Samples</option>
+            <option value="Allergies">Allergies</option>
+            <option value="Autoimmune Diseases">Autoimmune Diseases</option>
+            <option value="Cardiovascular Diseases">Cardiovascular Diseases</option>
+            <option value="Musculosketeletal System and Connective Tissue">Musculosketeletal System and Connective Tissue</option>
+            <option value="Endocrine Disorders">Endocrine Disorders</option>
+            <option value="COVID 19">COVID 19</option>
+            <option value="Gynaecology">Gynaecology</option>
+            <option value="Healthy Donors (Self Reported)">Healthy Donors (Self Reported)</option>
+            <option value="Metabolic Disorders">Metabolic Disorders</option>
+            <option value="Parasitology">Parasitology</option>
+            <option value="Neurological Disorders">Neurological Disorders</option>
+            <option value="Respiratory Tract Infections">Respiratory Tract Infections</option>
+            <option value="Tropical Infections">Tropical Infections</option>
+            <option value="Other Vector Borne Diseases">Other Vector Borne Diseases</option>
+            <option value="Specimen Matrix">Specimen Matrix</option>
+            <option value="Tissue Bank">Tissue Bank</option>
+            <option value="Cell Products">Cell Products</option>
+            <option value="Other Biofluids">Other Biofluids</option>
+            <option value="Dermatological Diseases">Dermatological Diseases</option>
           </select>
         </div>
 
