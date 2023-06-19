@@ -6,7 +6,7 @@ import { api } from "~/utils/api";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import Autofill from "~/components/search/normal/autofill";
-import { BiX } from "react-icons/bi";
+import { BiHome, BiX } from "react-icons/bi";
 
 import HeaderNEW from "~/components/overall/headerNEW";
 import { useEffect, useState } from "react";
@@ -19,6 +19,7 @@ import { type INormalFilter } from "~/common/filter/filter";
 import Footer from "~/components/overall/footer";
 import { usePathname } from "next/navigation";
 import { Colors } from "~/common/styles";
+import Link from "next/link";
 
 const defaultGroup: IGroup = {
     not: false,
@@ -130,7 +131,7 @@ const Content: React.FC = () => {
     const [showSave, setShowSave] = useState(false);
     const [showLoad, setShowLoad] = useState(false);
     const [showFilter, setShowFilter] = useState<boolean>(false)
-    const [categoryQuery, setCategoryQuery] = useState<string>("");
+    const [categoryQuery, setCategoryQuery] = useState<string>("Overall");
   
     const state = useHookstate<IGroup>(defaultGroup);
 
@@ -249,6 +250,14 @@ const Content: React.FC = () => {
         with a wide array of search options, helping to dive deeper into our bio inventory. <br/></i>
       </p>
 
+      <div className="flex flex-row text-4xl  my-2 ml-8 items-center">
+        <Link className="relative top-1" href={"/"}><BiHome/></Link>
+        <label>|</label>
+        <Link className="text-2xl relative top-1" href={"/search/newOverall"}>Overall Search</Link>
+        <label>|</label>
+        <Link className="text-2xl relative top-1" href={`search/newOverall?c=${encodeURI(categoryQuery)}`}>{categoryQuery}</Link>
+      </div>
+
       <div className="flex flex-row w-full">
         <div className="ml-5 flex flex-row w-[50%] justify-start">
         <button className={`text-xl mx-3 text-[${Colors.dark}] h-10 flex flex-row pl-2 pr-4 rounded-lg`} onClick={() => setShowFilter(!showFilter)}>
@@ -260,7 +269,6 @@ const Content: React.FC = () => {
         </button>
 
           <select className='text-xl mx-3 bg-[#9DC88D] text-white h-10 flex flex-row pl-2 pr-4 rounded-lg' value={categoryQuery} onChange={onCategoryChange}>
-            <option value="category" selected={categoryQuery === "category"}>categorie</option>
             <option value="Overall" selected={categoryQuery === "Overall"}>Overall</option>
             <option value="Pregnancy" selected={categoryQuery === "Pregnancy"}>Pregnancy</option>
             <option value="Infectious Diseases">Infectious Diseases</option>
