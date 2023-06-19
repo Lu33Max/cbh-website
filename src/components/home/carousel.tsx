@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React from "react";
 
 import Slider from "react-slick";
@@ -17,20 +18,31 @@ type props = {
 }
 
 const Carousel: React.FC<props> = ({type, settings, style}) => {
+
+  const router = useRouter()
+
   // Categories
   const categories = 24
   const categoryContents: JSX.Element[] = []
-  const categoryLabels = ["Overall", "Pregnancy", "Infectious Diseases", "Sexually Transmitted Diseases", "Cancer Samples", "Allergies", "Autoimmune Disease", "Cardiovascular Diseases", 
+  const categoryLabels = ["Overall", "Pregnancy", "Infectious Diseases", "Sexually Transmitted Diseases", "Cancer Samples", "Allergies", "Autoimmune Diseases", "Cardiovascular Diseases", 
   "Musculoskeletal System and Connective Tissue", "Endocrine Disorders", "COVID 19", "Gynaecology", "Healthy Donors", "Metabolic Disorders", "Parasitology", "Neurological Disorders", 
   "Respiratory Tract Infections", "Tropical Infections", "Other Vector Borne Diseases", "Specimen Matrix", "Tissue Bank", "Cell Products", "Other Biofluids", "Dermatological Diseases"]
 
   for(let i = 0; i < categories; i++){
     categoryContents.push(
-      <div key={100 + i} className="flex flex-col justify-start">
+      <div key={100 + i} className="flex flex-col justify-start cursor-pointer" onClick={() => category(i)}>
         <Image className="mx-auto mb-2" src={`/slider/categories/${i+1}.png`} alt={`category${i}`} width={80} height={80}/>
         {categoryLabels[i] || ""}
       </div>
     )
+  }
+
+  function category(i:number){
+    const labels = categoryLabels[i]
+    if (labels !== undefined){
+      const encodedCategoryQuery = encodeURI(labels);
+      void router.push(`/search/newOverall?c=${encodedCategoryQuery}`);
+    }
   }
 
   //Testimonials

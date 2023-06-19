@@ -263,17 +263,17 @@ const Content: React.FC = () => {
             <option value="category" selected={categoryQuery === "category"}>categorie</option>
             <option value="Overall" selected={categoryQuery === "Overall"}>Overall</option>
             <option value="Pregnancy" selected={categoryQuery === "Pregnancy"}>Pregnancy</option>
-            <option value="Infection Diseases">Infection Diseases</option>
+            <option value="Infectious Diseases">Infectious Diseases</option>
             <option value="Sexually Transmitted Diseases">Sexually Transmitted Diseases</option>
             <option value="Cancer Samples">Cancer Samples</option>
             <option value="Allergies">Allergies</option>
             <option value="Autoimmune Diseases">Autoimmune Diseases</option>
             <option value="Cardiovascular Diseases">Cardiovascular Diseases</option>
-            <option value="Musculosketeletal System and Connective Tissue">Musculosketeletal System and Connective Tissue</option>
+            <option value="Musculoskeletal System and Connective Tissue">Musculoskeletal System and Connective Tissue</option>
             <option value="Endocrine Disorders">Endocrine Disorders</option>
             <option value="COVID 19">COVID 19</option>
             <option value="Gynaecology">Gynaecology</option>
-            <option value="Healthy Donors (Self Reported)">Healthy Donors (Self Reported)</option>
+            <option value="Healthy Donors">Healthy Donors</option>
             <option value="Metabolic Disorders">Metabolic Disorders</option>
             <option value="Parasitology">Parasitology</option>
             <option value="Neurological Disorders">Neurological Disorders</option>
