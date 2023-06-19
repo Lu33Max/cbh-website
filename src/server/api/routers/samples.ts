@@ -339,11 +339,9 @@ export const sampleRouter = createTRPCRouter({
 
             const optionalsLength = allOptionals.length
 
-            console.log(input.filter)
-
             const mandatoryUniqueSampleIDs = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
-                take: anyOptionals(input.filter) ? input.lines - optionalUniqueSampleIDs.length : 0,
+                take: anyOptionalsNormal(input.filter) ? input.lines - optionalUniqueSampleIDs.length : 0,
                 skip: optionalUniqueSampleIDs.length > 0 ? 0 : (input.lines - optionalsLength % input.lines) + input.lines * (input.pages - (Math.floor(optionalsLength / input.lines) + 2)),
                 where: {
                     AND: [
@@ -573,8 +571,6 @@ export const sampleRouter = createTRPCRouter({
                 }
             });
 
-            console.log(mandatoryUniqueSampleIDs.length)
-
             const optionalUniqueSampleIDStrings : string[] = optionalUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
             const mandatoryUniqueSampleIDStrings : string[] = mandatoryUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
 
@@ -640,15 +636,13 @@ export const sampleRouter = createTRPCRouter({
     countExpert: publicProcedure
         .input( z.object({ group: GroupSchema }) )
         .query(async ({ input }) => {
-            const query = BuildQuery(input.group, true)
+            const mandatoryQuery = BuildQuery(input.group, true)
+            const optionalQuery = BuildQuery(input.group, false)
 
-            if(query === Prisma.empty){
-                const result = await prisma.$queryRaw<{ _count: number }[]>`SELECT COUNT(DISTINCT "CBH_Sample_ID")::integer as "_count" FROM "Samples";`
-                return result[0]?._count;
-            } else {
-                const result = await prisma.$queryRaw<{ _count: number }[]>`SELECT COUNT(DISTINCT "CBH_Sample_ID")::integer as "_count" FROM "Samples" WHERE ${query};`
-                return result[0]?._count;     
-            }     
+            const resultMandatory = anyOptionalsExpert(input.group) ? await prisma.$queryRaw<{ _count: number }[]>`SELECT COUNT(DISTINCT "CBH_Sample_ID")::integer as "_count" FROM "Samples" ${mandatoryQuery !== Prisma.empty ? Prisma.sql`WHERE ${mandatoryQuery}` : Prisma.empty};` : [{ _count: 0 }]
+            const resultOptional = await prisma.$queryRaw<{ _count: number }[]>`SELECT COUNT(DISTINCT "CBH_Sample_ID")::integer as "_count" FROM "Samples" ${optionalQuery !== Prisma.empty ? Prisma.sql`WHERE ${optionalQuery}` : Prisma.empty};`
+
+            return (resultMandatory[0]?._count ?? 0) + (resultOptional[0]?._count ?? 0);
         }),
 
     countNormal: publicProcedure
@@ -813,12 +807,12 @@ export const sampleRouter = createTRPCRouter({
         .input(z.object({ pagelength: z.number(), pages: z.number(), group: GroupSchema}))
         .query(async ({ ctx, input }) => {
 
-            //Pagination
             const offset = (input.pages && input.pagelength) ? (input.pages -1) * input.pagelength : 0
-
             const query = BuildQuery(input.group)
 
-            if (query === Prisma.empty) {
+            //Pagination
+            if (query === Prisma.empty) 
+            {
                 const uniqueSamples = await ctx.prisma.samples.findMany({
                     distinct: ['CBH_Sample_ID'],
                     take: input.pagelength,
@@ -842,35 +836,23 @@ export const sampleRouter = createTRPCRouter({
                 })
 
                 const entriesWithOptionals: OptionalSamples[] = entries.map(e =>{return {optional: true, data: e}}) 
-
                 return entriesWithOptionals
+            } 
+            else 
+            {
+                const queryForMandatory = BuildQuery(input.group, true)
 
+                const optionalUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ${query} ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
+                const allOptionals = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ${query} ORDER BY "CBH_Sample_ID" ASC;`
 
-            } else {
-                const allUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ${BuildQuery(input.group)} ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
-                
-                if (allUniqueSampleIDs.length = 50) {
-                    input.pagelength = 0
-                } else {
-                    if (input.pagelength && input.pagelength > allUniqueSampleIDs.length) {
-                        input.pagelength - allUniqueSampleIDs.length
-                    }
-                }
+                const optionalsLength = allOptionals.length
 
-                let mandatoryUniqueSampleIDs: { CBH_Sample_ID: string}[]
-               
-                if(BuildQuery(input.group, true) === Prisma.empty){
-                    mandatoryUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
-                } else {
-                    mandatoryUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" WHERE ${BuildQuery(input.group, true)} ORDER BY "CBH_Sample_ID" ASC LIMIT ${BigInt(input.pagelength)} OFFSET ${BigInt(offset)};`
-                }
+                const mandatoryUniqueSampleIDs = await prisma.$queryRaw<{ CBH_Sample_ID : string }[]>`SELECT DISTINCT "CBH_Sample_ID" FROM "Samples" ${queryForMandatory !== Prisma.empty ? Prisma.sql`WHERE ${queryForMandatory}` : Prisma.empty} ORDER BY "CBH_Sample_ID" ASC LIMIT ${anyOptionalsExpert(input.group) ? input.pagelength - optionalUniqueSampleIDs.length : 0} OFFSET ${optionalUniqueSampleIDs.length > 0 ? 0 : (input.pagelength - optionalsLength % input.pagelength) + input.pagelength * (input.pages - (Math.floor(optionalsLength / input.pagelength) + 2))};`
 
-                mandatoryUniqueSampleIDs = mandatoryUniqueSampleIDs.filter(val => !allUniqueSampleIDs.includes(val));
-
-                const allUniqueSampleIDStrings : string[] = allUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
+                const allUniqueSampleIDStrings : string[] = optionalUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
                 const mandatoryUniqueSampleIDStrings : string[] = mandatoryUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
 
-                const allEntries = await ctx.prisma.samples.findMany({
+                const optionalEntries = await ctx.prisma.samples.findMany({
                     where: {
                         CBH_Sample_ID: {
                             in: allUniqueSampleIDStrings
@@ -892,12 +874,12 @@ export const sampleRouter = createTRPCRouter({
                     },
                 })
 
-                const allEntriesWithOptionals: OptionalSamples[] = allEntries.map(e =>{return {optional: true, data: e}}) 
-                const mandatoryEntriesWithOptionals: OptionalSamples[] = mandatoryEntries.map(e =>{return {optional: false, data: e}}) 
+                const allEntriesWithOptionals: OptionalSamples[] = optionalEntries.map(e => {return {optional: true, data: e}})
+                const mandatoryEntriesWithOptionals: OptionalSamples[] = mandatoryEntries.map(e => {return {optional: false, data: e}}) 
 
                 allEntriesWithOptionals.push(...mandatoryEntriesWithOptionals)
 
-                return allEntriesWithOptionals              
+                return allEntriesWithOptionals           
             }
         }),
 })
@@ -913,10 +895,8 @@ function BuildQuery(group: IGroup, mandatoryOnly?: boolean): Prisma.Sql {
     if (group !== undefined && group.activated === true) {
         
         if (group.groups && group.groups.length > 0) {
-            group.groups.map((g, i) => {
-                if ((mandatoryOnly && group.groups[i]?.mandatory) || !mandatoryOnly) {
-                    sqlArray.push(BuildQuery(g, mandatoryOnly))
-                }
+            group.groups.map((g) => {
+                sqlArray.push(BuildQuery(g, mandatoryOnly))
             });
         }
 
@@ -929,43 +909,41 @@ function BuildQuery(group: IGroup, mandatoryOnly?: boolean): Prisma.Sql {
             const filterTypes = ["equal","in","less","lessequal","more","moreequal","between"]
 
             for (let i = 0; i < group.filter.length; i++) {
-                if ((mandatoryOnly && group.filter[i]?.mandatory) || !mandatoryOnly) {
-                    try {
-                        const currentFilter = GroupFilterSchema.parse(group.filter[i])
-                        currentFilter.values = currentFilter.values.filter(o => o !== "")
-                    
-                        if (currentFilter.values.length !== 0 && filterTypes.find(item => item === currentFilter.type) && currentFilter.activated && Object.getOwnPropertyNames(ExampleSample).find(item => item === currentFilter.col)) {
-                            switch(currentFilter.type){
-                                case "equal": 
-                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>) : fieldNameString<Samples>(currentFilter.col as FieldName<Samples>)} = ${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Number(currentFilter.values[0]) : currentFilter.values[0]?.toLowerCase()}`);
-                                    break;
-                                case "in": 
-                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>) : fieldNameString<Samples>(currentFilter.col as FieldName<Samples>)} IN (${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Prisma.join(currentFilter.values.map(v => Number(v))) : Prisma.join(currentFilter.values.map(v => {return(v.toLowerCase())}))})`);
-                                    break;
-                                case "less": 
-                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} < ${Number(currentFilter.values[0])}`);
-                                    break;
-                                case "lessequal":
-                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} <= ${Number(currentFilter.values[0])}`);
-                                    break;
-                                case "more": 
-                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} > ${Number(currentFilter.values[0])}`);
-                                    break;
-                                case "moreequal": 
-                                    sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} >= ${Number(currentFilter.values[0])}`);
-                                    break;
-                                case "between":
-                                    if (currentFilter.values[1] != undefined) {
-                                        sqlArray.push(Prisma.sql`${group.not || !group.mandatory ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} BETWEEN ${currentFilter.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
-                                    }
-                                    break;
-                                default:
-                                    throw Error("Type not found")
-                            }
-                        }                  
-                    } catch (error){
-                        sqlArray.push(Prisma.empty)
-                    }
+                try {
+                    const currentFilter = GroupFilterSchema.parse(group.filter[i])
+                    currentFilter.values = currentFilter.values.filter(o => o !== "")
+
+                    if (currentFilter.values.length !== 0 && filterTypes.find(item => item === currentFilter.type) && currentFilter.activated && Object.getOwnPropertyNames(ExampleSample).find(item => item === currentFilter.col)) {
+                        switch(currentFilter.type){
+                            case "equal": 
+                                sqlArray.push(Prisma.sql`${(!group.not && !currentFilter.mandatory && mandatoryOnly) || (group.not && currentFilter.mandatory && mandatoryOnly) || (group.not && !mandatoryOnly) ? Prisma.sql`NOT ` : Prisma.empty}${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>) : fieldNameString<Samples>(currentFilter.col as FieldName<Samples>)} = ${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Number(currentFilter.values[0]) : currentFilter.values[0]?.toLowerCase()}`);
+                                break;
+                            case "in": 
+                                sqlArray.push(Prisma.sql`${(!group.not && !currentFilter.mandatory && mandatoryOnly) || (group.not && currentFilter.mandatory && mandatoryOnly) || (group.not && !mandatoryOnly) ? Prisma.sql`NOT ` : Prisma.empty}${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>) : fieldNameString<Samples>(currentFilter.col as FieldName<Samples>)} IN (${typeof getProperty(ExampleSample, currentFilter.col as SampleKey) === "number" ? Prisma.join(currentFilter.values.map(v => Number(v))) : Prisma.join(currentFilter.values.map(v => {return(v.toLowerCase())}))})`);
+                                break;
+                            case "less": 
+                                sqlArray.push(Prisma.sql`${(!group.not && !currentFilter.mandatory && mandatoryOnly) || (group.not && currentFilter.mandatory && mandatoryOnly) || (group.not && !mandatoryOnly) ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} < ${Number(currentFilter.values[0])}`);
+                                break;
+                            case "lessequal":
+                                sqlArray.push(Prisma.sql`${(!group.not && !currentFilter.mandatory && mandatoryOnly) || (group.not && currentFilter.mandatory && mandatoryOnly) || (group.not && !mandatoryOnly) ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} <= ${Number(currentFilter.values[0])}`);
+                                break;
+                            case "more": 
+                                sqlArray.push(Prisma.sql`${(!group.not && !currentFilter.mandatory && mandatoryOnly) || (group.not && currentFilter.mandatory && mandatoryOnly) || (group.not && !mandatoryOnly) ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} > ${Number(currentFilter.values[0])}`);
+                                break;
+                            case "moreequal": 
+                                sqlArray.push(Prisma.sql`${(!group.not && !currentFilter.mandatory && mandatoryOnly) || (group.not && currentFilter.mandatory && mandatoryOnly) || (group.not && !mandatoryOnly) ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} >= ${Number(currentFilter.values[0])}`);
+                                break;
+                            case "between":
+                                if (currentFilter.values[1] != undefined) {
+                                    sqlArray.push(Prisma.sql`${(!group.not && !currentFilter.mandatory && mandatoryOnly) || (group.not && currentFilter.mandatory && mandatoryOnly) || (group.not && !mandatoryOnly) ? Prisma.sql`NOT ` : Prisma.empty}${fieldNameNumber<Samples>(currentFilter.col as FieldName<Samples>)} BETWEEN ${currentFilter.values.map(v => `'${Number(v)}'`).join(' AND ') ?? ""}`);
+                                }
+                                break;
+                            default:
+                                throw Error("Type not found")
+                        }
+                    }                  
+                } catch (error){
+                    sqlArray.push(Prisma.empty)
                 }
             }
         }
@@ -990,6 +968,28 @@ function BuildQuery(group: IGroup, mandatoryOnly?: boolean): Prisma.Sql {
     }
 }
 
-function anyOptionals (filter: INormalFilter): boolean {
+function anyOptionalsNormal (filter: INormalFilter): boolean {
     return !(filter.ICDCode.mandatory && filter.cbhDonorID.mandatory && filter.cbhMasterID.mandatory && filter.cbhSampleID.mandatory && filter.diagnosis.mandatory && filter.labParameter.mandatory && filter.matrix.mandatory && filter.price.mandatory && filter.quantity.mandatory && filter.resultInterpretation.mandatory && filter.resultNumerical.mandatory && filter.resultUnit.mandatory)
+}
+
+function anyOptionalsExpert (filter: IGroup): boolean {
+
+    let optional = false
+
+    if(!filter.mandatory)
+        optional = true
+
+    filter.filter.forEach(element => {
+        if(!element.mandatory){
+            optional = true
+        }
+    });
+
+    filter.groups.forEach(group => {
+        if(anyOptionalsExpert(group)){
+            optional = true
+        }
+    });
+
+    return optional
 }
