@@ -4,8 +4,6 @@ import { type NextPage } from 'next';
 
 import { BiX } from "react-icons/bi"
 import Head from 'next/head';
-import Header from '~/components/overall/header';
-import Sidebar from '~/components/overall/sidebar';
 import AutofillExpert from '~/components/search/expert/autofill_expert';
 
 import Table from '~/components/search/table';
@@ -18,6 +16,10 @@ import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 import { SampleSchema } from '~/common/database/samples';
 import HeaderNEW from '~/components/overall/headerNEW';
+import ModalSaveExpert from '~/components/search/expert/modalSave';
+import ModalLoadExpert from '~/components/search/expert/modalLoad';
+import { Colors } from '~/common/styles';
+import Footer from '~/components/overall/footer';
 
 export type TableSamples = {
   id:                                      string,
@@ -110,6 +112,8 @@ const ExpertSearch: NextPage = () => {
     }],
     groups: []
   })
+  const [showSave, setShowSave] = useState(false);
+  const [showLoad, setShowLoad] = useState(false);
 
   const state = useHookstate<IGroup>(defaultGroup);
 
@@ -150,45 +154,50 @@ const ExpertSearch: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-        <div className="min-h-screen overflow-hidden bg-gray-200">
-          <HeaderNEW />
-          <InitialContentEditor self={state}/>
-      
-          <Table filter={state} page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} applyFilter={applyFilter} expert={true}/>
-          
-          <div className="border-b-2 border-solid border-[#164A41] my-1 gradient">
-            <div className="grid grid-cols-3 items-center text-center justify-center justify-items-center text-white gap-8 font-poppins text-2xl">
-                <div className="mt-4 tracking-[0.1em]">COMPANY INFORMATION</div>
-                <div className="mt-4 tracking-[0.1em]">QUESTIONS?</div>
-                <div className="mt-4 tracking-[0.1em]">BECOME A SUPPLIER</div>
-                <button className="">Terms and Conditions</button>
-                <button className="">Shipping Information,</button>
-                <button className="">Sell at CBH</button>
-                <button className="">Privacy Policy</button>
-                <button className="">Career Opportunities</button>
-                <button className="">Supplier Login</button>
-                <button className="">Ethical Statement</button>
-                <button className="">and FAQ&apos;s</button>
-                <button className="">Marketing</button>
-                <button className="mb-8">Quality Management</button>
-                <button className="mb-8 border-2 border-solid border-[#164A41] text-[#164A41] w-fit rounded-lg bg-[#FFFFFF]/[0.45] py-2 px-40">Contact Us!</button>
-                <button className="mb-8">Sucess Stories</button>
+      <div className="min-h-screen max-h-screen overflow-hidden bg-gray-100 flex flex-col">
+        <HeaderNEW />
+        <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins'>
+          <div className="flex flex-row w-full items-center justify-center ">
+            <div className="w-full border-2 border-solid h-1 border-green-900 rounded-3xl m-5"></div>
+            <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900 flex-grow flex-shrink-0 whitespace-nowrap"><b>Expert PRODUCT SEARCH</b></h1>
+            <div className="w-full border-2 border-solid h-1 border-green-900 rounded-3xl m-5"></div>
+          </div>
+          <div className='px-16'>           
+            <p className={`my-7 text-xl text-center text-[${Colors.dark}]`}>
+              <i>Overall search is a tailor-made solution to improve your search by understanding the precise needs and search 
+              behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
+              to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
+              human tissue samples, and more for research purposes.</i>
+            </p>
+            <InitialContentEditor self={state}/>
+            <div className="flex flex-row w-full mt-3">
+              <div className='flex flex-row w-[50%] justify-start'>
+                <button className={`w-[10rem] px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-l-2xl border-solid border-2 bg-[#D8E9D1] hover:bg-[#bfdab4] transition-colors ease-in-out border-[${Colors.dark}] border-r-0`} onClick={() => applyFilter()}>Apply Filter</button>
+                <button className={`w-[10rem] px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-r-2xl border-solid border-2 bg-[#F7D59B] hover:bg-[#d8b475] transition-colors ease-in-out border-[${Colors.dark}]`} onClick={() => state.set({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true }], groups: [] },)}>Reset</button>
+              </div>
+              <div className='flex flex-row w-[50%] justify-end'>
+                <button className={`w-[10rem] px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-l-2xl border-solid border-2 bg-[#D8E9D1] hover:bg-[#bfdab4] transition-colors ease-in-out border-[${Colors.dark}] border-r-0`} onClick={() => setShowLoad(true)}>Load Filter</button>
+                <button className={`w-[10rem] px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-r-2xl border-solid border-2 bg-[#F7D59B] hover:bg-[#d8b475] transition-colors ease-in-out border-[${Colors.dark}]`} onClick={() => setShowSave(true)}>Save Filter</button>
+              </div>
+
+              <ModalSaveExpert showModal={showSave} setShowModal={setShowSave} filter={unfreeze(state)}/>
+              <ModalLoadExpert showModal={showLoad} setShowModal={setShowLoad} filter={state} />
             </div>
-        </div>
-        <div className="text-center">
-            <h1 className="mb-2 mt-4 font-poppins text-2xl text-[#164A41]">
-                Central BioHub GmbH, Neuendorfstrasse 17, 16761 Hennigsdorf, Germany |
-                Call: +49 3302 230 91 66 | Email: info@centralbiohub.com
-            </h1>
-            <h1 className="mb-2 font-poppins text-2xl text-[#164A41]">
-                © 2023 www.centralbiohub.de All Rights Reserved - Link to Imprint here
-            </h1>
+          </div>
+          <div className="mx-4 my-2">
+            <Table filter={state} page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} applyFilter={applyFilter} expert={true}/>
+          </div>
+          <Footer/>
         </div>
       </div>
     </>
   )
 }
 export default ExpertSearch;
+
+function unfreeze(group: State<IGroup>){
+  return GroupSchema.parse(JSON.parse(JSON.stringify(group.value)))
+}
 
 function InitialContentEditor(props: { self: State<IGroup> }) {
   const self = useHookstate(props.self)
@@ -205,19 +214,6 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
   }
 
   return <>
-   <div className="relative ">
-      <div className="flex flex-row w-full items-center justify-center ">
-        <div className="w-full border-2 border-solid h-1 border-green-900 rounded-3xl m-5"></div>
-        <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900 flex-grow flex-shrink-0 whitespace-nowrap"><b>Expert PRODUCT SEARCH</b></h1>
-        <div className="w-full border-2 border-solid h-1 border-green-900 rounded-3xl m-5"></div>
-      </div>
-      
-      <p className="px-5 my-7 text-lg text-center">expert search is a tailor-made solution to improve your search by <br/> 
-      understanding the precise needs and search behavior of researchers worldwide. Therefore, <br/> 
-      we provide you with a wide array of search options, helping to dive deeper into our bio inventory. <br/>
-      </p>
-    </div>
-
     <div className="w-full py-1 text-lg rounded-3xl mt-3 from-[#164A41] to-[#4D774E] bg-gradient-to-r">
       <div className='flex flex-row px-5 py-2 font-body font-poppins text-2xl font-thin'>
         <div className='flex flex-row justify-start items-center w-[50%]'>

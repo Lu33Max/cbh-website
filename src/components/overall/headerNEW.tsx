@@ -25,9 +25,9 @@ const HeaderNEW: React.FC = () => {
   };
 
   const navigationButtons = [
-    { name: "Home", link: "/" },
-    { name: "Explore", link: "/search/overall" },
-    { name: "Expert Search", link: "/search/expert" },
+    { name: "Home", link: "/newHomeLayout" },
+    { name: "Explore", link: "/search/newOverall" },
+    { name: "Expert Search", link: "/search/newExpert" },
     { name: "Cart", link: "/cart" },
     { name: "About Us", link: "/about" },
   ];
@@ -287,11 +287,8 @@ const HeaderNEW: React.FC = () => {
             {navigationButtons.map((link, index) => (
               <Link key={index} href={link.link}>
                 <div
-                  className={`relative ml-[-80px] block h-full w-auto rounded-r-full px-8 py-2 font-poppins text-3xl tracking-wider text-white transition duration-300 ease-in-out hover:bg-[#9DC88DBF] ${router.pathname === link.link ? "bg-gray-200" : ""}`}
+                  className={`relative ml-[-80px] block h-full w-auto rounded-r-full px-8 py-2 font-poppins text-3xl tracking-wider text-white transition duration-300 ease-in-out hover:bg-[#9DC88DBF]`}
                 >
-                  <div
-                    className={`activeButton absolute h-full w-[15%] ${activeHeader === 2 ? "bg-emerald-700" : ""} left-[-20%] ${router.pathname === link.link ? "" : "hidden"}`}
-                  ></div>
                   {link.name}
                 </div>
               </Link>

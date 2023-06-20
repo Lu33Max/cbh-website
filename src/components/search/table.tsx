@@ -3,7 +3,7 @@ import { type State } from '@hookstate/core';
 import { OverlayTrigger } from 'react-bootstrap';
 import Popover from 'react-bootstrap/Popover';
 
-import { BiCartAdd, BiDetail, BiCog } from "react-icons/bi"
+import { BiCartAdd, BiDetail, BiCog, BiInfoCircle } from "react-icons/bi"
 import Footer from "~/components/search/footer";
 import ModalSave from '~/components/search/normal/modalSave';
 import ModalLoad from '~/components/search/normal/modalLoad';
@@ -18,6 +18,7 @@ import { type Samples } from '@prisma/client';
 import ModalLoadExpert from '~/components/search/expert/modalLoad';
 import ModalSaveExpert from '~/components/search/expert/modalSave';
 import ClickContext from '~/context/click';
+import { Colors } from '~/common/styles';
 
 export type OptionalSamples = {
   optional: boolean,
@@ -367,16 +368,6 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
       })
       setShow(newArray)
     }
-  
-    function unfreeze(): IGroup {
-      const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(filter.value)))
-  
-      if(result.success){
-        return result.data
-      } else {
-        return defaultGroup
-      }
-    }
 
     function getProperty<T, K extends keyof T>(o: T, propertyName: K): T[K] {
       return o[propertyName]
@@ -436,114 +427,81 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
   
     return (
       <> 
-        <div className="mx-4 my-5">
-          <div className='flex flex-row'>
+        <div className="my-5 font-poppins">
+          <div className='px-16 mb-6'>         
+            <div className="flex flex-row w-full items-center mt-3 mb-2">
+              <Count count={count}/>
+              <OverlayTrigger trigger="click" placement="right" rootClose={true} overlay={
+                <Popover id="popover-basic" className={`bg-white rounded-xl p-2 text-center border-2 border-[${Colors.dark}]`}>
+                  <Popover.Header as="h3" className='mb-2'>Here you choose the first <br/> samples from the top.</Popover.Header>
+                  <Popover.Body>
+                    <div className='flex flex-row justify-center'>
+                      <select className='text-center text-xl w-[3vw]' onChange={(e) => setSamplesToAdd(Number(e.target.value))}>
+                        <option disabled selected hidden>0</option>
+                        <option value={pagelength/5}>{pagelength/5}</option>
+                        <option value={pagelength*2/5}>{pagelength*2/5}</option>
+                        <option value={pagelength*3/5}>{pagelength*3/5}</option>
+                        <option value={pagelength*4/5}>{pagelength*4/5}</option>
+                        <option value={pagelength}>all</option>
+                      </select>
+                      <button onClick={addSamplesToCart} className={`bg-[${Colors.light}] px-4 py-1 rounded-xl ml-2`}>Add</button>
+                    </div>
+                  </Popover.Body>
+                </Popover>
+              }>
+                <button className='bg-gray-300 text-3xl rounded-xl p-1 ml-2'><BiCartAdd/></button>
+              </OverlayTrigger>           
+    
+              <div className="mx-auto">
+                <Footer range={range} page={showPage} setPage={setPage} />
+              </div>     
+    
+              <ShowRows pagelength={pagelength} setPagelength={setPagelength} setPage={setPage}/>
+              {expert &&(
+                <button className='text-xl mx-3' onClick={() => setSettings(!settings)}><BiCog/></button>
+              )}
+            </div>
 
-            {(expert && applyFilter) && (
-              <>
-                <div className='flex flex-row w-[50%] justify-start'>
-                  <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => applyFilter()}>Apply Filter</button>
-                  <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-300 border-orange-300 border-l-white' onClick={() => filter.set({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true }], groups: [] },)}>Reset</button>
-                </div>
-                <div className='flex flex-row w-[50%] justify-end'>
-                  <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setShowLoad(true)}>Load Filter</button>
-                  <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] border-l-white' onClick={() => setShowSave(true)}>Save Filter</button>
-                </div>
-              </>
-            )}            
-          </div>
-
-              
-          {expert &&(
-            <>
-              <ModalSaveExpert showModal={showSave} setShowModal={setShowSave} filter={unfreeze()} />
-              <ModalLoadExpert showModal={showLoad} setShowModal={setShowLoad} filter={filter} />
-            </>
-          )}
-          {(!expert && filterNormal && setFilter) &&(
-              <>
-                <ModalSave showModal={showSave} setShowModal={setShowSave} filter={filterNormal}/>
-                <ModalLoad showModal={showLoad} setShowModal={setShowLoad} setFilter={setFilter} />
-              </>
-          )}
-          
-          <div className="flex flex-row w-full items-center mt-3 mb-2">
-            <Count count={count}/>
-            <OverlayTrigger trigger="click" placement="right" rootClose={true} overlay={
-              <Popover id="popover-basic" className='bg-gray-300 rounded-xl p-2 text-center'>
-                <Popover.Header as="h3">Here you choose the first <br/> samples from the top.</Popover.Header>
-                <Popover.Body>
-                  <select className='text-center text-xl' onChange={(e) => setSamplesToAdd(Number(e.target.value))}>
-                    <option disabled selected hidden>0</option>
-                    <option value={pagelength/5}>{pagelength/5}</option>
-                    <option value={pagelength*2/5}>{pagelength*2/5}</option>
-                    <option value={pagelength*3/5}>{pagelength*3/5}</option>
-                    <option value={pagelength*4/5}>{pagelength*4/5}</option>
-                    <option value={pagelength}>all</option>
-                  </select>
-                  <button onClick={addSamplesToCart} className='bg-green-200 p-2 rounded-xl ml-2'>Add</button>
-                </Popover.Body>
-              </Popover>
-            }>
-              <button className='bg-gray-300 text-3xl rounded-xl p-1'><BiCartAdd/></button>
-            </OverlayTrigger>           
-  
-            <div className="mx-auto">
-              <Footer range={range} page={showPage} setPage={setPage} />
-            </div> 
-
-            {!expert && (
-              <div className='mr-2'>
-                <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => setShowLoad(true)}>Load Filter</button>
-                <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] border-l-white' onClick={() => setShowSave(true)}>Save Filter</button>
+            {settings &&(
+              <div className='my-3'>
+                <h1 className='text-2xl'>Settings</h1>
+                <label>Auto-Formatting: </label><input type='checkbox' onChange={() => setFormatting(!formatting)} checked={formatting}></input>
+                <button onClick={() => {setActiveColumns(defaultColumns); setTempColumns(defaultColumns)}} className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-2xl border-solid border-2 bg-orange-300 border-orange-300'>Reset</button>
+                <br/>
+                {Object.getOwnPropertyNames(tableSamples[0]?.data).map((name, i) => {
+                  if (name !== "id") {
+                    return (
+                      <button key={i} onClick={() => showColumns(name)} disabled={formatting} className={`mx-1 my-1 rounded-lg p-2 ${activeColumns.find(c => c === name)? "bg-[#9DC88D]": "bg-gray-300"}`}>{name.replace(/_/g," ")}</button>
+                    )
+                  }              
+                })}
+                <br/>
               </div>
-            )}          
-  
-            <ShowRows pagelength={pagelength} setPagelength={setPagelength} setPage={setPage}/>
-            {expert &&(
-              <button className='text-xl mx-3' onClick={() => setSettings(!settings)}><BiCog/></button>
             )}
           </div>
-
-          {settings &&(
-            <div className='my-3'>
-              <h1 className='text-2xl'>Settings</h1>
-              <label>Auto-Formatting: </label><input type='checkbox' onChange={() => setFormatting(!formatting)} checked={formatting}></input>
-              <button onClick={() => {setActiveColumns(defaultColumns); setTempColumns(defaultColumns)}} className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-2xl border-solid border-2 bg-orange-300 border-orange-300'>Reset</button>
-              <br/>
-              {Object.getOwnPropertyNames(tableSamples[0]?.data).map((name, i) => {
-                if (name !== "id") {
-                  return (
-                    <button key={i} onClick={() => showColumns(name)} disabled={formatting} className={`mx-1 my-1 rounded-lg p-2 ${activeColumns.find(c => c === name)? "bg-[#9DC88D]": "bg-gray-300"}`}>{name.replace(/_/g," ")}</button>
-                  )
-                }              
-              })}
-              <br/>
-            </div>
-          )}
   
           <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
             <thead>
-              <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
-                <th className="py-2 font-extralight border-dotted rounded-l-xl border-black border-r-2">Cart</th>
+              <tr className={`bg-[${Colors.light_light}] text-black font-extralight`}>
+                <th className={`py-4 font-extralight border-dotted rounded-l-xl border-[${Colors.dark}] border-r-[1px]`}>Cart</th>
                 {activeColumns.map((column, i) => {
                   return(
-                    <th key={i} className="py-2 font-extralight border-dotted border-black border-r-2"><button onClick={() => {sortBy === "" ? setSortBy(column): setSortBy(""); handleSort(column as SampleKey)}}>{column.replace(/_/g," ")}</button></th>
+                    <th key={i} className="py-4 font-extralight border-dotted border-black border-r-[1px]"><button onClick={() => {sortBy === "" ? setSortBy(column): setSortBy(""); handleSort(column as SampleKey)}}>{column.replace(/_/g," ")}</button></th>
                   )
                 })}
-                <th className="py-2 font-extralight rounded-r-xl">Details</th>
+                <th className="py-4 font-extralight rounded-r-xl">Details</th>
               </tr>
             </thead>
             <tbody>
               {tableSamples.map((sample, index) => (
                 <>
                   <tr key={index} className="text-center">
-                    <td className={`${sample.optional ? "bg-[rgb(221,252,199)] items-center text-2xl rounded-l-xl" : "bg-gray-300 items-center text-2xl rounded-l-xl"}`} onClick={() => setCartSamples([...cartSamples, sample])}><button><BiCartAdd className="relative top-1" /></button></td>
+                    <td className={`bg-gray-200 items-center text-2xl rounded-l-xl ${sample.optional ? `border-l-8 border-[#9DC88D]` : ""}`} onClick={() => setCartSamples([...cartSamples, sample])}><button><BiCartAdd className="relative top-1" /></button></td>
                     
                     {activeColumns.map((column, i) => {
                       const prop = getProperty(sample.data, column as SampleKey)
                       return (
-                        <td key={i} className={`${sample.optional ? "bg-[rgb(221,252,199)]" : "bg-gray-300"}`}>
+                        <td key={i} className={`bg-gray-200`}>
                           {((!expert || (expert && formatting)) && (column === "Lab_Parameter" || column === "Diagnosis" || column === "Result_Interpretation") && Array.isArray(prop)) ? 
                             (prop as string[]).filter((item: string) => column === "Lab_Parameter" ? filterNormal?.labParameter.value.find(val => val === item) : column === "Diagnosis" ? filterNormal?.diagnosis.value.find(val => val === item) : filterNormal?.resultInterpretation.value.find(val => val === item))
                           :
@@ -552,9 +510,9 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
                         </td>
                       )
                     })}
-                    <td className={`${sample.optional ? "bg-[rgb(221,252,199)] py-2 px-3 rounded-r-xl" : "bg-gray-300 py-2 px-3 rounded-r-xl"}`}><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
+                    <td className={`bg-gray-200 py-2 px-3 rounded-r-xl`}><button onClick={() => { updateState(index) }}><BiInfoCircle className="relative top-1" /></button></td>
                   </tr>
-                  <tr className={`mx-5 ${show[index] ? "" : "hidden"}`}>
+                  <tr className={`bg-gray-200 ${show[index] ? "" : "hidden"}`}>
                     <td colSpan={2} className="px-5 bg-gray-200">
                       <div className="grid grid-cols-2">
                         <strong className="col-span-2">General Data</strong>
@@ -605,8 +563,31 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
             </tbody>
           </table>
         </div>
-        <div className="flex flex-row w-full justify-center items-center mt-2 mb-5">
-          <Footer range={range} page={showPage} setPage={setPage} />
+        <div className="flex flex-row w-full items-center mt-3 mb-4 px-16">
+          <Count count={count}/>
+          <OverlayTrigger trigger="click" placement="right" rootClose={true} overlay={
+            <Popover id="popover-basic" className='bg-gray-300 rounded-xl p-2 text-center'>
+              <Popover.Header as="h3">Here you choose the first <br/> samples from the top.</Popover.Header>
+              <Popover.Body>
+                <select className='text-center text-xl' onChange={(e) => setSamplesToAdd(Number(e.target.value))}>
+                  <option disabled selected hidden>0</option>
+                  <option value={pagelength/5}>{pagelength/5}</option>
+                  <option value={pagelength*2/5}>{pagelength*2/5}</option>
+                  <option value={pagelength*3/5}>{pagelength*3/5}</option>
+                  <option value={pagelength*4/5}>{pagelength*4/5}</option>
+                  <option value={pagelength}>all</option>
+                </select>
+                <button onClick={addSamplesToCart} className='bg-green-200 p-2 rounded-xl ml-2'>Add</button>
+              </Popover.Body>
+            </Popover>
+          }>
+            <button className='bg-gray-300 text-3xl rounded-xl p-1 ml-2'><BiCartAdd/></button>
+          </OverlayTrigger>           
+
+          <div className="mx-auto">
+            <Footer range={range} page={showPage} setPage={setPage} />
+          </div>     
+
           <ShowRows pagelength={pagelength} setPagelength={setPagelength} setPage={setPage}/>
         </div>
       </>

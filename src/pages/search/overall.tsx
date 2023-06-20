@@ -221,7 +221,7 @@ const Content: React.FC = () => {
     <div className="max-h-[95vh] overflow-y-scroll w-full overflow-x-hidden font-poppins">
       <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900"><b>Overall Search</b></h1>
 
-      <p className="px-5 my-7 text-lg">Explore the Abundance and Find the Perfect <b>Human Biospecimens</b> for You! Expert search is a tailor-made solution to improve your search by understanding the precise needs and search 
+      <p className="px-5 my-7 text-lg">Explore the Abundance and Find the Perfect <b>Human Biospecimens</b> for You! Overall search is a tailor-made solution to improve your search by understanding the precise needs and search 
         behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
         to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
         human tissue samples, and more for research purposes. Explore advanced search options to order human biospecimens online by clicking <b>CLINICAL DIAGNOSIS, ICD 10-CM CODES,</b> and <b>LABORATORY 
