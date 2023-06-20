@@ -253,7 +253,7 @@ const Content: React.FC = () => {
         </p>
 
         <div className="flex flex-row text-3xl mt-2 mb-4 items-center font-extralight">
-          <Link className="relative top-1" href={"/"}><BiHome/></Link>
+          <Link className="relative top-1" href={"/newHomeLayout"}><BiHome/></Link>
           <label className="mx-1">|</label>
           <Link className="text-xl relative top-1" href={"/search/newOverall"}>Overall Search</Link>
           <label className="mx-1">|</label>

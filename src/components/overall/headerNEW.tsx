@@ -21,7 +21,7 @@ const HeaderNEW: React.FC = () => {
     event.preventDefault();
 
     const encodedSearchQuery = encodeURI(searchQuery);
-    void router.push(`/search/overall?q=${encodedSearchQuery}`);
+    void router.push(`/search/newOverall?q=${encodedSearchQuery}`);
   };
 
   const navigationButtons = [
@@ -44,7 +44,7 @@ const HeaderNEW: React.FC = () => {
       <div
         className={`${buttonClicked ? "bg-[#164A41]" : "bg-white"} font-body relative z-[999] flex h-[80px] flex-row items-center pl-10 pr-5 font-poppins text-xl font-thin text-[#164A41] transition duration-500 ease-in-out`}
       >
-        <a onClick={() => void router.push("/")}>
+        <a onClick={() => void router.push("/newHomeLayout")}>
           <Image
             src="/cbh_logos/logo_black.png"
             alt="Logo"
