@@ -1,142 +1,51 @@
 import React, { useState, useEffect, useContext, type Dispatch, type SetStateAction } from 'react';
-import { type State } from '@hookstate/core';
 import { OverlayTrigger } from 'react-bootstrap';
 import Popover from 'react-bootstrap/Popover';
 
-import { BiCartAdd, BiDetail, BiCog, BiInfoCircle } from "react-icons/bi"
+import { BiCartAdd, BiCog, BiInfoCircle } from "react-icons/bi"
 import Footer from "~/components/search/footer";
-import ModalSave from '~/components/search/normal/modalSave';
-import ModalLoad from '~/components/search/normal/modalLoad';
 
 import ShowRows from '~/components/search/showRows';
 import Count from '~/components/search/count';
 
-import { type IGroup, GroupSchema, type INormalFilter } from '~/common/filter/filter';
+import { type INormalFilter } from '~/common/filter/filter';
 import { SampleSchema } from '~/common/database/samples';
 
-import { type Samples } from '@prisma/client';
-import ModalLoadExpert from '~/components/search/expert/modalLoad';
-import ModalSaveExpert from '~/components/search/expert/modalSave';
 import ClickContext from '~/context/click';
 import { Colors } from '~/common/styles';
+import { type IOptionalSample, type IOptionalTableSample, type ITableSample } from '~/common/types';
 
-export type OptionalSamples = {
-  optional: boolean,
-  data: Samples
+type props = { 
+  page: number,
+  pagelength: number ,
+  count: number | undefined,
+  optionalSamples: IOptionalSample[] | undefined,
+  setPage: Dispatch<SetStateAction<number>>,
+  setPagelength: Dispatch<SetStateAction<number>>,
+  expert: boolean,
+  filterNormal?: INormalFilter,
 }
 
-export type TableSamples = {
-    id:                                      string,
-    CBH_Donor_ID?:                           string,
-    CBH_Master_ID?:                          string,
-    CBH_Sample_ID?:                          string,
-    Price?:                                  number,
-    Quantity?:                               number,
-    Unit?:                                   string,
-    Matrix?:                                 string,
-    Storage_Temperature?:                    string,
-    Freeze_Thaw_Cycles?:                     number,
-    Sample_Condition?:                       string,
-    Infectious_Disease_Test_Result?:         string,
-    Gender?:                                 string,
-    Age?:                                    number,
-    Ethnicity?:                              string,
-    BMI?:                                    number,
-    Lab_Parameter?:                          string[],
-    Result_Interpretation?:                  string[],
-    Result_Raw?:                             string[],
-    Result_Numerical?:                       number[],
-    Result_Unit?:                            string[],
-    Cut_Off_Raw?:                            string[],
-    Cut_Off_Numerical?:                      number[],
-    Test_Method?:                            string[],
-    Test_System?:                            string[],
-    Test_System_Manufacturer?:               string[],
-    Result_Obtained_From?:                   string[],
-    Diagnosis?:                              string[],
-    Diagnosis_Remarks?:                      string[],
-    ICD_Code?:                               string[],
-    Pregnancy_Week?:                         number,
-    Pregnancy_Trimester?:                    string,
-    Medication?:                             string[],
-    Therapy?:                                string[],
-    Histological_Diagnosis?:                 string[],
-    Organ?:                                  string,
-    Disease_Presentation?:                   string,
-    TNM_Class_T?:                            string,
-    TNM_Class_N?:                            string,
-    TNM_Class_M?:                            string,
-    Tumour_Grade?:                           string,
-    Tumour_Stage?:                           string,
-    Viable_Cells__per_?:                     string,
-    Necrotic_Cells__per_?:                   string,
-    Tumour_Cells__per_ ?:                    string,
-    Proliferation_Rate__Ki67_per_?:          string,
-    Estrogen_Receptor?:                      string,
-    Progesteron_Receptor?:                   string,
-    HER_2_Receptor?:                         string,
-    Other_Gene_Mutations?:                   string[],
-    Country_of_Collection?:                  string,
-    Date_of_Collection?:                     Date,
-    Procurement_Type?:                       string,
-    Informed_Consent?:                       string,
-  }
-
-  export type OptionalTableSamples = {
-    optional: boolean,
-    data: TableSamples
-  }
-
-  const defaultGroup: IGroup = {
-    not: false,
-    link: 'AND',
-    activated: true,
-    mandatory: true,
-    filter: [{
-      col: 'CBH_Donor_ID',
-      type: 'equal',
-      values: [],
-      activated: true,
-      mandatory: true,
-    }],
-    groups: []
-  }  
-
-  type props = { 
-    filter: State<IGroup>,
-    page: number,
-    pagelength: number ,
-    count: number | undefined,
-    optionalSamples: OptionalSamples[] | undefined,
-    setPage: Dispatch<SetStateAction<number>>,
-    setPagelength: Dispatch<SetStateAction<number>>,
-    applyFilter?: () => void,
-    expert: boolean,
-    filterNormal?: INormalFilter,
-    setFilter?: Dispatch<SetStateAction<INormalFilter>>
-  }
-
-const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSamples, setPage, setPagelength, applyFilter, expert, filterNormal, setFilter}) => {
+const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setPage, setPagelength, expert, filterNormal}) => {
 
     const [cartSamples, setCartSamples] = useContext(ClickContext)
     const [range, setRange] = useState<number[]>([])
-    const [showSave, setShowSave] = useState(false);
-    const [showLoad, setShowLoad] = useState(false);
     const [sortBy, setSortBy] = useState('');
     const [showPage, setShowPage] = useState(page)
     const [samplesToAdd, setSamplesToAdd] = useState(0)
   
     const defaultShow: boolean[] = []
   
-    const [tableSamples, setTableSamples] = useState<OptionalTableSamples[]>([])
-    type SampleKey = keyof TableSamples
+    const [tableSamples, setTableSamples] = useState<IOptionalTableSample[]>([])
+    type SampleKey = keyof ITableSample
 
     const [settings, setSettings] = useState<boolean>(false)
     const [formatting, setFormatting] = useState<boolean>(false)
 
     const defaultColumns = ["CBH_Donor_ID","CBH_Sample_ID","Matrix","Quantity","Unit","Age","Gender","Price"]
     const [activeColumns, setActiveColumns] = useState<string[]>(defaultColumns)
-    const [tempColumns, setTempColumns] = useState<string[]>(defaultColumns)
+    const [bufferColumns, setBufferColumns] = useState<string[]>(defaultColumns)
+    const [filterState, setFilterState] = useState<INormalFilter | undefined>(filterNormal)
   
     for (let i = 0; i < pagelength; i++) {
       defaultShow.push(false)
@@ -144,85 +53,84 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
   
     const [show, setShow] = useState<boolean[]>(defaultShow)
 
-    const [filterTest, setFilterTest] = useState<INormalFilter | undefined>(filterNormal)
-
     useEffect(() => {
       setShowPage(page)
     }, [page])
 
     useEffect(() => {
-      setFilterTest(filterNormal)
+      setFilterState(filterNormal)
     }, [filterNormal])
 
     useEffect(() => {
-      if(filterTest != undefined){
-        let tempTemp = [...tempColumns]
+      if(filterState !== undefined){
+        let tempBuffer = [...bufferColumns]
         let count = 0
 
-        tempTemp = tempTemp.filter(item => item !== "Gender" && item !== "Age" && item !== "CBH_Donor_ID")
+        tempBuffer = tempBuffer.filter(item => item !== "Gender" && item !== "Age" && item !== "CBH_Donor_ID")
 
-        if(filterTest.labParameter && filterTest.labParameter.value.length > 0){
+        if(filterState.labParameter && filterState.labParameter.value.length > 0){
           if(!activeColumns.find(item => item === "Lab_Parameter")){
-            tempTemp.push("Lab_Parameter")
+            tempBuffer.push("Lab_Parameter")
           }
           count ++
         } else {
-          tempTemp = tempTemp.filter(item => item !== "Lab_Parameter")
+          tempBuffer = tempBuffer.filter(item => item !== "Lab_Parameter")
         }
 
-        if(filterTest.resultInterpretation && filterTest.resultInterpretation.value.length > 0){
+        if(filterState.resultInterpretation && filterState.resultInterpretation.value.length > 0){
           if(!activeColumns.find(item => item === "Result_Interpretation")){
-            tempTemp.push("Result_Interpretation")
+            tempBuffer.push("Result_Interpretation")
           }
           count ++
         } else {
-          tempTemp = tempTemp.filter(item => item !== "Result_Interpretation")
+          tempBuffer = tempBuffer.filter(item => item !== "Result_Interpretation")
         }
 
-        if(filterTest.diagnosis && filterTest.diagnosis.value.length > 0){
+        if(filterState.diagnosis && filterState.diagnosis.value.length > 0){
           if(!activeColumns.find(item => item === "Diagnosis")){
-            tempTemp.push("Diagnosis")
+            tempBuffer.push("Diagnosis")
           }
           count ++
         } else {
-          tempTemp = tempTemp.filter(item => item !== "Diagnosis")
+          tempBuffer = tempBuffer.filter(item => item !== "Diagnosis")
         }
 
         switch(count){
           case 0 : 
-            if(!tempTemp.find(col => col === "Gender")){
-              tempTemp.push("Gender")
+            if(!tempBuffer.find(col => col === "Gender")){
+              tempBuffer.push("Gender")
             }
 
-            if(!tempTemp.find(col => col === "Age")){
-              tempTemp.push("Age")
+            if(!tempBuffer.find(col => col === "Age")){
+              tempBuffer.push("Age")
             }
 
-            if(!tempTemp.find(col => col === "CBH_Donor_ID")){
-              tempTemp.push("CBH_Donor_ID")
+            if(!tempBuffer.find(col => col === "CBH_Donor_ID")){
+              tempBuffer.push("CBH_Donor_ID")
             }
            break
           case 1 :
-            if(!tempTemp.find(col => col === "Age")){
-              tempTemp.push("Age")
+            if(!tempBuffer.find(col => col === "Age")){
+              tempBuffer.push("Age")
             }
 
-            if(!tempTemp.find(col => col === "CBH_Donor_ID")){
-              tempTemp.push("CBH_Donor_ID")
+            if(!tempBuffer.find(col => col === "CBH_Donor_ID")){
+              tempBuffer.push("CBH_Donor_ID")
             }
             break
           case 2:
-            if(!tempTemp.find(col => col === "CBH_Donor_ID")){
-              tempTemp.push("CBH_Donor_ID")
+            if(!tempBuffer.find(col => col === "CBH_Donor_ID")){
+              tempBuffer.push("CBH_Donor_ID")
             }
             break
           default: 
             break
         }
 
-        setTempColumns(tempTemp)
+        setBufferColumns(tempBuffer)
       }
-    }, [filterTest])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filterState])
   
     useEffect(() => {
       const newRange = [];
@@ -244,7 +152,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
     }, [pagelength])
   
     useEffect(() => {
-      const newArray: OptionalTableSamples[] = []
+      const newArray: IOptionalTableSample[] = []
       if(optionalSamples !== undefined){
         optionalSamples.forEach(sample => {
           if(newArray.find(arraySample => arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID)){
@@ -290,21 +198,21 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
             newArray.push(
               {optional: sample.optional, data: 
                 { id:                               sample.data.id,
-                  CBH_Donor_ID:                     sample.data.CBH_Donor_ID ?? undefined,
-                  CBH_Master_ID:                    sample.data.CBH_Master_ID ?? undefined,
-                  CBH_Sample_ID:                    sample.data.CBH_Sample_ID ?? undefined,
-                  Price:                            sample.data.Price ?? undefined,
-                  Quantity:                         sample.data.Quantity ?? undefined,
-                  Unit:                             sample.data.Unit ?? undefined,
-                  Matrix:                           sample.data.Matrix ?? undefined,
-                  Storage_Temperature:              sample.data.Storage_Temperature ?? undefined,
-                  Freeze_Thaw_Cycles:               sample.data.Freeze_Thaw_Cycles ?? undefined,
-                  Sample_Condition:                 sample.data.Sample_Condition ?? undefined,
-                  Infectious_Disease_Test_Result:   sample.data.Infectious_Disease_Test_Result ?? undefined,
-                  Gender:                           sample.data.Gender ?? undefined,
-                  Age:                              sample.data.Age ?? undefined,
-                  Ethnicity:                        sample.data.Ethnicity ?? undefined,
-                  BMI:                              sample.data.BMI ?? undefined,
+                  CBH_Donor_ID:                     sample.data.CBH_Donor_ID,
+                  CBH_Master_ID:                    sample.data.CBH_Master_ID,
+                  CBH_Sample_ID:                    sample.data.CBH_Sample_ID,
+                  Price:                            sample.data.Price,
+                  Quantity:                         sample.data.Quantity,
+                  Unit:                             sample.data.Unit,
+                  Matrix:                           sample.data.Matrix ,
+                  Storage_Temperature:              sample.data.Storage_Temperature ,
+                  Freeze_Thaw_Cycles:               sample.data.Freeze_Thaw_Cycles ,
+                  Sample_Condition:                 sample.data.Sample_Condition ,
+                  Infectious_Disease_Test_Result:   sample.data.Infectious_Disease_Test_Result ,
+                  Gender:                           sample.data.Gender ,
+                  Age:                              sample.data.Age ,
+                  Ethnicity:                        sample.data.Ethnicity ,
+                  BMI:                              sample.data.BMI ,
                   Lab_Parameter:                    sample.data.Lab_Parameter ? [sample.data.Lab_Parameter] : [],
                   Result_Interpretation:            sample.data.Result_Interpretation ? [sample.data.Result_Interpretation] : [],
                   Result_Raw:                       sample.data.Result_Raw ? [sample.data.Result_Raw] : [],
@@ -319,30 +227,30 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
                   Diagnosis:                        sample.data.Diagnosis ? [sample.data.Diagnosis] : [],
                   Diagnosis_Remarks:                sample.data.Diagnosis_Remarks ? [sample.data.Diagnosis_Remarks] : [],
                   ICD_Code:                         sample.data.ICD_Code ? [sample.data.ICD_Code] : [],
-                  Pregnancy_Week:                   sample.data.Pregnancy_Week ?? undefined,
-                  Pregnancy_Trimester:              sample.data.Pregnancy_Trimester ?? undefined,
+                  Pregnancy_Week:                   sample.data.Pregnancy_Week ,
+                  Pregnancy_Trimester:              sample.data.Pregnancy_Trimester ,
                   Medication:                       sample.data.Medication ? [sample.data.Medication] : [],
                   Therapy:                          sample.data.Therapy ? [sample.data.Therapy] : [],
                   Histological_Diagnosis:           sample.data.Histological_Diagnosis ? [sample.data.Histological_Diagnosis] : [],
-                  Organ:                            sample.data.Organ ?? undefined,
-                  Disease_Presentation:             sample.data.Disease_Presentation ?? undefined,
-                  TNM_Class_T:                      sample.data.TNM_Class_T ?? undefined,
-                  TNM_Class_N:                      sample.data.TNM_Class_N ?? undefined,
-                  TNM_Class_M:                      sample.data.TNM_Class_M ?? undefined,
-                  Tumour_Grade:                     sample.data.Tumour_Grade ?? undefined,
-                  Tumour_Stage:                     sample.data.Tumour_Stage ?? undefined,
-                  Viable_Cells__per_:               sample.data.Viable_Cells__per_ ?? undefined,
-                  Necrotic_Cells__per_:             sample.data.Necrotic_Cells__per_ ?? undefined,
-                  Tumour_Cells__per_:               sample.data.Tumour_Cells__per_ ?? undefined,
-                  Proliferation_Rate__Ki67_per_:    sample.data.Proliferation_Rate__Ki67_per_ ?? undefined,
-                  Estrogen_Receptor:                sample.data.Estrogen_Receptor ?? undefined,
-                  Progesteron_Receptor:             sample.data.Progesteron_Receptor ?? undefined,
-                  HER_2_Receptor:                   sample.data.HER_2_Receptor ?? undefined,
+                  Organ:                            sample.data.Organ ,
+                  Disease_Presentation:             sample.data.Disease_Presentation ,
+                  TNM_Class_T:                      sample.data.TNM_Class_T ,
+                  TNM_Class_N:                      sample.data.TNM_Class_N ,
+                  TNM_Class_M:                      sample.data.TNM_Class_M ,
+                  Tumour_Grade:                     sample.data.Tumour_Grade ,
+                  Tumour_Stage:                     sample.data.Tumour_Stage ,
+                  Viable_Cells__per_:               sample.data.Viable_Cells__per_ ,
+                  Necrotic_Cells__per_:             sample.data.Necrotic_Cells__per_ ,
+                  Tumour_Cells__per_:               sample.data.Tumour_Cells__per_ ,
+                  Proliferation_Rate__Ki67_per_:    sample.data.Proliferation_Rate__Ki67_per_ ,
+                  Estrogen_Receptor:                sample.data.Estrogen_Receptor ,
+                  Progesteron_Receptor:             sample.data.Progesteron_Receptor ,
+                  HER_2_Receptor:                   sample.data.HER_2_Receptor ,
                   Other_Gene_Mutations:             sample.data.Other_Gene_Mutations ? [sample.data.Other_Gene_Mutations] : [],
-                  Country_of_Collection:            sample.data.Country_of_Collection ?? undefined,
-                  Date_of_Collection:               sample.data.Date_of_Collection ?? undefined,
-                  Procurement_Type:                 sample.data.Procurement_Type ?? undefined,
-                  Informed_Consent:                 sample.data.Informed_Consent ?? undefined,
+                  Country_of_Collection:            sample.data.Country_of_Collection ,
+                  Date_of_Collection:               sample.data.Date_of_Collection ,
+                  Procurement_Type:                 sample.data.Procurement_Type ,
+                  Informed_Consent:                 sample.data.Informed_Consent ,
                 }
               }
               
@@ -356,7 +264,8 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
 
     useEffect(() => {
       void sortColumns()
-    }, [tempColumns])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [bufferColumns])
   
     const updateState = (index: number) => {
       const newArray = show.map((item, i) => {
@@ -374,14 +283,14 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
     }
     
     const handleSort = (column: SampleKey) => {
-      let sortArray: OptionalTableSamples[]=[]
+      let sortArray: IOptionalTableSample[]=[]
 
-      sortArray = [...tableSamples].sort((a: OptionalTableSamples, b: OptionalTableSamples) => {
+      sortArray = [...tableSamples].sort((a: IOptionalTableSample, b: IOptionalTableSample) => {
 
         const a1 = getProperty(a.data, column)
         const b1 = getProperty(b.data, column)
 
-        if(a1 !== undefined && b1 !== undefined){
+        if(a1 !== null && b1 !== null){
           if(a1 > b1) return (column == sortBy) ? -1 : 1;
           else if (b1 > a1) return (column == sortBy) ? 1 :  -1;
           return 0;
@@ -393,17 +302,17 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
     }
 
     function showColumns (column:string):void {
-      if (tempColumns.find(c => c === column)) {
-        setTempColumns(tempColumns.filter(c => c !== column))
+      if (bufferColumns.find(c => c === column)) {
+        setBufferColumns(bufferColumns.filter(c => c !== column))
       } else {
-        setTempColumns([...tempColumns, column])
+        setBufferColumns([...bufferColumns, column])
       }
     }
 
     function sortColumns (){
       let sortArray: string[]=[]
 
-      sortArray = [...tempColumns].sort((a: string, b: string) => {
+      sortArray = [...bufferColumns].sort((a: string, b: string) => {
         if(Object.getOwnPropertyNames(SampleSchema.shape).findIndex(i => i === a) > Object.getOwnPropertyNames(SampleSchema.shape).findIndex(i => i === b)) return (1)
         else if (Object.getOwnPropertyNames(SampleSchema.shape).findIndex(i => i === b) > Object.getOwnPropertyNames(SampleSchema.shape).findIndex(i => i === a)) return (-1)
         return 0;
@@ -413,7 +322,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
     }
 
     function addSamplesToCart(){
-      const tempArray: OptionalTableSamples[] = []
+      const tempArray: IOptionalTableSample[] = []
 
       for (let i = 0; i < samplesToAdd; i++) {
         const tempSample = tableSamples[i]
@@ -466,7 +375,7 @@ const Table: React.FC<props> = ({ filter, page, pagelength, count, optionalSampl
               <div className='my-3'>
                 <h1 className='text-2xl'>Settings</h1>
                 <label>Auto-Formatting: </label><input type='checkbox' onChange={() => setFormatting(!formatting)} checked={formatting}></input>
-                <button onClick={() => {setActiveColumns(defaultColumns); setTempColumns(defaultColumns)}} className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-2xl border-solid border-2 bg-orange-300 border-orange-300'>Reset</button>
+                <button onClick={() => {setActiveColumns(defaultColumns); setBufferColumns(defaultColumns)}} className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-2xl border-solid border-2 bg-orange-300 border-orange-300'>Reset</button>
                 <br/>
                 {Object.getOwnPropertyNames(tableSamples[0]?.data).map((name, i) => {
                   if (name !== "id") {

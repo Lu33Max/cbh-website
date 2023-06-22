@@ -1,8 +1,7 @@
 import React, { createContext, useState, type ReactNode, type Dispatch, type SetStateAction } from 'react';
-import { type TableSamples, OptionalSamples } from '~/components/search/table';
-import { type OptionalTableSamples } from '~/components/search/table';
+import { type IOptionalTableSample } from '~/common/types';
 
-type ClickContextType = [OptionalTableSamples[], Dispatch<SetStateAction<OptionalTableSamples[]>>];
+type ClickContextType = [IOptionalTableSample[], Dispatch<SetStateAction<IOptionalTableSample[]>>];
 
 const ClickContext = createContext<ClickContextType>([[], () => ({})]);
 
@@ -11,7 +10,7 @@ interface ClickProviderProps {
 }
 
 export const ClickProvider: React.FC<ClickProviderProps> = ({ children }) => {
-  const [tableSamples, setTableSamples] = useState<OptionalTableSamples[]>([]);
+  const [tableSamples, setTableSamples] = useState<IOptionalTableSample[]>([]);
 
   return (
     <ClickContext.Provider value={[tableSamples, setTableSamples]}>

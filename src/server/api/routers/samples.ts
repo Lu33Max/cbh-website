@@ -46,7 +46,6 @@ export const sampleRouter = createTRPCRouter({
             filter: NormalFilterSchema
         }))
         .query(async ({ ctx, input }) => {
-
             const optionalUniqueSampleIDs = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
                 take: input.lines,
@@ -973,7 +972,6 @@ function anyOptionalsNormal (filter: INormalFilter): boolean {
 }
 
 function anyOptionalsExpert (filter: IGroup): boolean {
-
     let optional = false
 
     if(!filter.mandatory)
