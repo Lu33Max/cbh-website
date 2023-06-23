@@ -39,7 +39,7 @@ const Content: React.FC = () => {
   const onSearch = (event: React.FormEvent) => {
     event.preventDefault();
     const encodedSearchQuery = encodeURI(searchQuery);
-    void router.push(`/search/newOverall?q=${encodedSearchQuery}`);
+    void router.push(`/search/overall?q=${encodedSearchQuery}`);
   };
 
   // Slider Contents

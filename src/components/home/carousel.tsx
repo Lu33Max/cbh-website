@@ -41,7 +41,7 @@ const Carousel: React.FC<props> = ({type, settings, style}) => {
     const labels = categoryLabels[i]
     if (labels !== undefined){
       const encodedCategoryQuery = encodeURI(labels);
-      void router.push(`/search/newOverall?c=${encodedCategoryQuery}`);
+      void router.push(`/search/overall?c=${encodedCategoryQuery}`);
     }
   }
 
