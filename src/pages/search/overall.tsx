@@ -43,58 +43,58 @@ export default Home;
 
 const Content: React.FC = () => {
   const defaultFilter: INormalFilter = {
-    cbhMasterID: {
+    CBH_Master_ID: {
       value: undefined,
       mandatory: true
     },
-    cbhDonorID: {
+    CBH_Donor_ID: {
       value: undefined,
       mandatory: true
     },
-    cbhSampleID: {
+    CBH_Sample_ID: {
       value: undefined,
       mandatory: true
     },
-    price: { 
+    Price: { 
       min: undefined, 
       max: undefined,
       mandatory: true
     },
-    matrix: {
+    Matrix: {
       value: [],
       mandatory: true
     },
-    quantity: {
+    Quantity: {
       min: undefined,
       max: undefined,
       mandatory: true
     },
-    unit: {
+    Unit: {
       value: [],
       mandatory: true
     },
-    labParameter: {
+    Lab_Parameter: {
       value: [],
       mandatory: true
     }, 
-    resultInterpretation: {
+    Result_Interpretation: {
       value: [],
       mandatory: true
     }, 
-    resultUnit: {
+    Result_Unit: {
       value: [],
       mandatory: true
     }, 
-    resultNumerical: {
+    Result_Numerical: {
       min: undefined,
       max: undefined,
       mandatory: true
     }, 
-    diagnosis: {
+    Diagnosis: {
       value: [],
       mandatory: true
     }, 
-    ICDCode: {
+    ICD_Code: {
       value: [],
       mandatory: true
     } 
@@ -151,52 +151,52 @@ const Content: React.FC = () => {
   function handleFilterChange(value: string, column:string): void {
     switch(column){
       case "Matrix":
-        if(!filter.matrix.value.includes(value)){
-          const temp1 = filter.matrix
+        if(!filter.Matrix.value.includes(value)){
+          const temp1 = filter.Matrix
           temp1.value.push(value)
-          setFilter(filter => ({...filter, matrix: temp1}))
+          setFilter(filter => ({...filter, Matrix: temp1}))
         }
         break;
       case "Unit":
-        if(!filter.unit.value.includes(value)){
-          const temp2 = filter.unit
+        if(!filter.Unit.value.includes(value)){
+          const temp2 = filter.Unit
           temp2.value.push(value)
-          setFilter(filter => ({...filter, unit: temp2}))
+          setFilter(filter => ({...filter, Unit: temp2}))
         }
         break;
       case "Lab_Parameter":
-        if(!filter.labParameter.value.includes(value)){
-          const temp3 = filter.labParameter
+        if(!filter.Lab_Parameter.value.includes(value)){
+          const temp3 = filter.Lab_Parameter
           temp3.value.push(value)
-          setFilter(filter => ({...filter, labParameter: temp3}))
+          setFilter(filter => ({...filter, Lab_Parameter: temp3}))
         }
         break;
       case "Result_Interpretation":
-        if(!filter.resultInterpretation.value.includes(value)){
-          const temp4 = filter.resultInterpretation
+        if(!filter.Result_Interpretation.value.includes(value)){
+          const temp4 = filter.Result_Interpretation
           temp4.value.push(value)
-          setFilter(filter => ({...filter, resultInterpretation: temp4}))
+          setFilter(filter => ({...filter, Result_Interpretation: temp4}))
         }
         break;
       case "Result_Unit":
-        if(!filter.resultUnit.value.includes(value)){
-          const temp5 = filter.resultUnit
+        if(!filter.Result_Unit.value.includes(value)){
+          const temp5 = filter.Result_Unit
           temp5.value.push(value)
-          setFilter(filter => ({...filter, resultUnit: temp5}))
+          setFilter(filter => ({...filter, Result_Unit: temp5}))
         }
         break;
       case "Diagnosis":
-        if(!filter.diagnosis.value.includes(value)){
-          const temp6 = filter.diagnosis
+        if(!filter.Diagnosis.value.includes(value)){
+          const temp6 = filter.Diagnosis
           temp6.value.push(value)
-          setFilter(filter => ({...filter, diagnosis: temp6}))
+          setFilter(filter => ({...filter, Diagnosis: temp6}))
         }
         break;
       case "ICD_Code":
-        if(!filter.ICDCode.value.includes(value)){
-          const temp7 = filter.ICDCode
+        if(!filter.ICD_Code.value.includes(value)){
+          const temp7 = filter.ICD_Code
           temp7.value.push(value)
-          setFilter(filter => ({...filter, ICDCode: temp7}))
+          setFilter(filter => ({...filter, ICD_Code: temp7}))
         }
         break;
       default:
@@ -282,23 +282,23 @@ const Content: React.FC = () => {
               <div className="grid grid-cols-4 gap-2 max-w-full">
                 {/* CBH Master ID */}
                 <div className="items-center text-center w-full">
-                  <input type="text" value={filter.cbhMasterID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onChange={e => {
+                  <input type="text" value={filter.CBH_Master_ID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onChange={e => {
                     const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
-                    setFilter(filter => ({...filter, cbhMasterID: {value: temp, mandatory: filter.cbhMasterID.mandatory}}))
+                    setFilter(filter => ({...filter, CBH_Master_ID: {value: temp, mandatory: filter.CBH_Master_ID.mandatory}}))
                   }}/>
                 </div>
                 {/* CBH Donor ID */}
                 <div className="items-center text-center">
-                  <input type="text" value={filter.cbhDonorID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onChange={e => {
+                  <input type="text" value={filter.CBH_Donor_ID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onChange={e => {
                     const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
-                    setFilter(filter => ({...filter, cbhDonorID: {value: temp, mandatory: filter.cbhDonorID.mandatory}}))
+                    setFilter(filter => ({...filter, CBH_Donor_ID: {value: temp, mandatory: filter.CBH_Donor_ID.mandatory}}))
                   }}/>
                 </div>
                 {/* CBH Sample ID */}
                 <div className="items-center text-center">
-                  <input type="text" value={filter.cbhSampleID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onChange={e => {
+                  <input type="text" value={filter.CBH_Sample_ID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onChange={e => {
                     const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
-                    setFilter(filter => ({...filter, cbhSampleID: {value: temp, mandatory: filter.cbhSampleID.mandatory}}))
+                    setFilter(filter => ({...filter, CBH_Sample_ID: {value: temp, mandatory: filter.CBH_Sample_ID.mandatory}}))
                   }}/>
                 </div>
                 {/* Price */}
@@ -310,18 +310,18 @@ const Content: React.FC = () => {
                           <div className="col-span-1">
                             Min:
                           </div>
-                          <input type="number" value={filter.price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min price" onChange={e => {
-                            const temp = filter.price
+                          <input type="number" value={filter.Price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min price" onChange={e => {
+                            const temp = filter.Price
                             temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                            setFilter(filter => ({...filter, price: temp}))
+                            setFilter(filter => ({...filter, Price: temp}))
                           }}/>
                           <div className="col-span-1">
                             Max:
                           </div>
-                          <input type="number" value={filter.price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max price" onChange={e => {
-                            const temp = filter.price
+                          <input type="number" value={filter.Price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max price" onChange={e => {
+                            const temp = filter.Price
                             temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                            setFilter(filter => ({...filter, price: temp}))
+                            setFilter(filter => ({...filter, Price: temp}))
                           }}/>
                         </div>
                       </Popover.Body>
@@ -360,18 +360,18 @@ const Content: React.FC = () => {
                           <div className="col-span-1">
                             Min:
                           </div>
-                          <input type="number" value={filter.quantity.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min quantity" onChange={e => {
-                            const temp = filter.quantity
+                          <input type="number" value={filter.Quantity.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min quantity" onChange={e => {
+                            const temp = filter.Quantity
                             temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                            setFilter(filter => ({...filter, quantity: temp}))
+                            setFilter(filter => ({...filter, Quantity: temp}))
                           }}/>
                           <div className="col-span-1">
                             Max:
                           </div>
-                          <input type="number" value={filter.quantity.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max quantity" onChange={e => {
-                            const temp = filter.quantity
+                          <input type="number" value={filter.Quantity.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max quantity" onChange={e => {
+                            const temp = filter.Quantity
                             temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                            setFilter(filter => ({...filter, quantity: temp}))
+                            setFilter(filter => ({...filter, Quantity: temp}))
                           }}/>
                           <div className="col-span-1">
                             Unit:
@@ -407,18 +407,18 @@ const Content: React.FC = () => {
                           <div className="col-span-1">
                             Min:
                           </div>
-                          <input type="number" value={filter.price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min result" onChange={e => {
-                            const temp = filter.price
+                          <input type="number" value={filter.Price.min} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Min result" onChange={e => {
+                            const temp = filter.Price
                             temp.min = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                            setFilter(filter => ({...filter, resultNumerical: temp}))
+                            setFilter(filter => ({...filter, Result_Numerical: temp}))
                           }}/>
                           <div className="col-span-1">
                             Max:
                           </div>
-                          <input type="number" value={filter.price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max result" onChange={e => {
-                            const temp = filter.price
+                          <input type="number" value={filter.Price.max} className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" placeholder="Max result" onChange={e => {
+                            const temp = filter.Price
                             temp.max = e.currentTarget.value.length > 0 ? parseFloat(e.currentTarget.value) : undefined
-                            setFilter(filter => ({...filter, resultNumerical: temp}))
+                            setFilter(filter => ({...filter, Result_Numerical: temp}))
                           }}/>
                           <div className="col-span-1 text-right">
                             Unit:
@@ -466,76 +466,76 @@ const Content: React.FC = () => {
               <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
                 Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
               </span>
-              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.matrix.value.length > 0 ? "" : "hidden"}`}>
+              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.Matrix.value.length > 0 ? "" : "hidden"}`}>
                 Matrix:&nbsp;
-                {filter.matrix.value.map((item, i) => (
+                {filter.Matrix.value.map((item, i) => (
                   <>
                     <>{(i !== 0) ? (<>, {item}</>) : (<>{item}</>)} </>
-                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, matrix: {value: filter.matrix.value.filter((_, index) => index !== i), mandatory: filter.matrix.mandatory }})) }}><BiX/></button>
+                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, Matrix: {value: filter.Matrix.value.filter((_, index) => index !== i), mandatory: filter.Matrix.mandatory }})) }}><BiX/></button>
                   </>
                 ))}
-                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp1 = filter.matrix;  temp1.mandatory = !temp1.mandatory; setFilter(filter => ({...filter, matrix: temp1}))}}>{filter.matrix.mandatory ? "!": "?"}</button>     
+                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp1 = filter.Matrix;  temp1.mandatory = !temp1.mandatory; setFilter(filter => ({...filter, Matrix: temp1}))}}>{filter.Matrix.mandatory ? "!": "?"}</button>     
                 </span>
-              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.unit.value.length > 0 ? "" : "hidden"}`}>
+              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Unit.value.length > 0 ? "" : "hidden"}`}>
                 Unit:&nbsp;
-                {filter.unit.value.map((item, i) => (
+                {filter.Unit.value.map((item, i) => (
                   <>
                     {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, unit: {value: filter.unit.value.filter((_, index) => index !== i), mandatory: filter.unit.mandatory }})) }}><BiX/></button>
+                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, Unit: {value: filter.Unit.value.filter((_, index) => index !== i), mandatory: filter.Unit.mandatory }})) }}><BiX/></button>
                   </>
                   
                 ))}
-                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp2 = filter.unit;  temp2.mandatory = !temp2.mandatory; setFilter(filter => ({...filter, unit: temp2}))}}>{filter.unit.mandatory ? "!": "?"}</button>
+                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp2 = filter.Unit;  temp2.mandatory = !temp2.mandatory; setFilter(filter => ({...filter, Unit: temp2}))}}>{filter.Unit.mandatory ? "!": "?"}</button>
               </span>
-              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.labParameter.value.length > 0 ? "" : "hidden"}`}>
+              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Lab_Parameter.value.length > 0 ? "" : "hidden"}`}>
                 Parameter:&nbsp;
-                {filter.labParameter.value.map((item, i) => (
+                {filter.Lab_Parameter.value.map((item, i) => (
                   <>
                     {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, labParameter: {value: filter.labParameter.value.filter((_, index) => index !== i), mandatory: filter.labParameter.mandatory }})) }}><BiX/></button>
+                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, Lab_Parameter: {value: filter.Lab_Parameter.value.filter((_, index) => index !== i), mandatory: filter.Lab_Parameter.mandatory }})) }}><BiX/></button>
                   </>
                 ))}
-                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp3 = filter.labParameter;  temp3.mandatory = !temp3.mandatory; setFilter(filter => ({...filter, labParameter: temp3}))}}>{filter.labParameter.mandatory ? "!": "?"}</button>
+                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp3 = filter.Lab_Parameter;  temp3.mandatory = !temp3.mandatory; setFilter(filter => ({...filter, Lab_Parameter: temp3}))}}>{filter.Lab_Parameter.mandatory ? "!": "?"}</button>
               </span>
-              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultInterpretation.value.length > 0 ? "" : "hidden"}`}>
+              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Result_Interpretation.value.length > 0 ? "" : "hidden"}`}>
                 Res.Interpretation:&nbsp;
-                {filter.resultInterpretation.value.map((item, i) => (
+                {filter.Result_Interpretation.value.map((item, i) => (
                   <>
                     {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultInterpretation: {value: filter.resultInterpretation.value.filter((_, index) => index !== i), mandatory: filter.resultInterpretation.mandatory }})) }}><BiX/></button>
+                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, Result_Interpretation: {value: filter.Result_Interpretation.value.filter((_, index) => index !== i), mandatory: filter.Result_Interpretation.mandatory }})) }}><BiX/></button>
                   </>
                 ))}
-                  <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp4 = filter.resultInterpretation;  temp4.mandatory = !temp4.mandatory; setFilter(filter => ({...filter, resultInterpretation: temp4}))}}>{filter.resultInterpretation.mandatory ? "!": "?"}</button>
+                  <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp4 = filter.Result_Interpretation;  temp4.mandatory = !temp4.mandatory; setFilter(filter => ({...filter, Result_Interpretation: temp4}))}}>{filter.Result_Interpretation.mandatory ? "!": "?"}</button>
               </span>
-              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.resultUnit.value.length > 0 ? "" : "hidden"}`}>
+              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Result_Unit.value.length > 0 ? "" : "hidden"}`}>
                 Res.Unit:&nbsp;
-                {filter.resultUnit.value.map((item, i) => (
+                {filter.Result_Unit.value.map((item, i) => (
                   <>
                     {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, resultUnit: {value: filter.resultUnit.value.filter((_, index) => index !== i), mandatory: filter.resultUnit.mandatory }})) }}><BiX/></button>
+                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, Result_Unit: {value: filter.Result_Unit.value.filter((_, index) => index !== i), mandatory: filter.Result_Unit.mandatory }})) }}><BiX/></button>
                   </>
                 ))}
-                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp5 = filter.resultUnit;  temp5.mandatory = !temp5.mandatory; setFilter(filter => ({...filter, resultUnit: temp5}))}}>{filter.resultUnit.mandatory ? "!": "?"}</button>
+                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp5 = filter.Result_Unit;  temp5.mandatory = !temp5.mandatory; setFilter(filter => ({...filter, Result_Unit: temp5}))}}>{filter.Result_Unit.mandatory ? "!": "?"}</button>
               </span>
-              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.diagnosis.value.length > 0 ? "" : "hidden"}`}>
+              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Diagnosis.value.length > 0 ? "" : "hidden"}`}>
                 Diagnosis:&nbsp;
-                {filter.diagnosis.value.map((item, i) => (
+                {filter.Diagnosis.value.map((item, i) => (
                   <>
                     {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, diagnosis: {value: filter.diagnosis.value.filter((_, index) => index !== i), mandatory: filter.diagnosis.mandatory }})) }}><BiX/></button>
+                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, Diagnosis: {value: filter.Diagnosis.value.filter((_, index) => index !== i), mandatory: filter.Diagnosis.mandatory }})) }}><BiX/></button>
                   </>
                 ))}
-                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp6 = filter.diagnosis;  temp6.mandatory = !temp6.mandatory; setFilter(filter => ({...filter, diagnosis: temp6}))}}>{filter.diagnosis.mandatory ? "!": "?"}</button>      
+                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp6 = filter.Diagnosis;  temp6.mandatory = !temp6.mandatory; setFilter(filter => ({...filter, Diagnosis: temp6}))}}>{filter.Diagnosis.mandatory ? "!": "?"}</button>      
               </span>
-              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICDCode.value.length > 0 ? "" : "hidden"}`}>
+              <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICD_Code.value.length > 0 ? "" : "hidden"}`}>
                 ICD:&nbsp;
-                {filter.ICDCode.value.map((item, i) => (
+                {filter.ICD_Code.value.map((item, i) => (
                   <>
                     {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
-                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, ICDCode: {value: filter.ICDCode.value.filter((_, index) => index !== i), mandatory: filter.ICDCode.mandatory }})) }}><BiX/></button>
+                    <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, ICD_Code: {value: filter.ICD_Code.value.filter((_, index) => index !== i), mandatory: filter.ICD_Code.mandatory }})) }}><BiX/></button>
                   </>
                 ))}
-                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp7 = filter.ICDCode;  temp7.mandatory = !temp7.mandatory; setFilter(filter => ({...filter, ICDCode: temp7}))}}>{filter.ICDCode.mandatory ? "!": "?"}</button>      
+                <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp7 = filter.ICD_Code;  temp7.mandatory = !temp7.mandatory; setFilter(filter => ({...filter, ICD_Code: temp7}))}}>{filter.ICD_Code.mandatory ? "!": "?"}</button>      
               </span>
             </div>
           </>

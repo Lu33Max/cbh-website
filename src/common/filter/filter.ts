@@ -35,58 +35,58 @@ export const GroupSchema: z.ZodSchema<IGroup> = z.lazy(() =>
 )
 
 export const NormalFilterSchema = z.object({
-    cbhMasterID: z.object({
+    CBH_Master_ID: z.object({
       value: z.string().optional(),
       mandatory: z.boolean()
     }),
-    cbhDonorID: z.object({
+    CBH_Donor_ID: z.object({
       value: z.string().optional(),
       mandatory: z.boolean()
     }),
-    cbhSampleID: z.object({
+    CBH_Sample_ID: z.object({
       value: z.string().optional(),
       mandatory: z.boolean()
     }),
-    price: z.object({ 
+    Price: z.object({ 
       min: z.number().optional(), 
       max: z.number().optional(),
       mandatory: z.boolean()
     }),
-    matrix: z.object({
+    Matrix: z.object({
       value: z.string().array(),
       mandatory: z.boolean()
     }),
-    quantity: z.object({
+    Quantity: z.object({
       min: z.number().optional(),
       max: z.number().optional(),
       mandatory: z.boolean()
     }),
-    unit: z.object({
+    Unit: z.object({
       value: z.string().array(),
       mandatory: z.boolean()
     }),
-    labParameter: z.object({
+    Lab_Parameter: z.object({
       value: z.string().array(),
       mandatory: z.boolean()
     }),
-    resultInterpretation: z.object({
+    Result_Interpretation: z.object({
       value: z.string().array(),
       mandatory: z.boolean()
     }),
-    resultNumerical: z.object({
+    Result_Numerical: z.object({
       min: z.number().optional(),
       max: z.number().optional(),
       mandatory: z.boolean()
     }),
-    resultUnit: z.object({
+    Result_Unit: z.object({
       value: z.string().array(),
       mandatory: z.boolean()
     }),
-    diagnosis: z.object({
+    Diagnosis: z.object({
       value: z.string().array(),
       mandatory: z.boolean()
     }),
-    ICDCode: z.object({
+    ICD_Code: z.object({
       value: z.string().array(),
       mandatory: z.boolean()
     }),

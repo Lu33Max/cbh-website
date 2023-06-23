@@ -68,7 +68,7 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
 
         tempBuffer = tempBuffer.filter(item => item !== "Gender" && item !== "Age" && item !== "CBH_Donor_ID")
 
-        if(filterState.labParameter && filterState.labParameter.value.length > 0){
+        if(filterState.Lab_Parameter && filterState.Lab_Parameter.value.length > 0){
           if(!activeColumns.find(item => item === "Lab_Parameter")){
             tempBuffer.push("Lab_Parameter")
           }
@@ -77,7 +77,7 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
           tempBuffer = tempBuffer.filter(item => item !== "Lab_Parameter")
         }
 
-        if(filterState.resultInterpretation && filterState.resultInterpretation.value.length > 0){
+        if(filterState.Result_Interpretation && filterState.Result_Interpretation.value.length > 0){
           if(!activeColumns.find(item => item === "Result_Interpretation")){
             tempBuffer.push("Result_Interpretation")
           }
@@ -86,7 +86,7 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
           tempBuffer = tempBuffer.filter(item => item !== "Result_Interpretation")
         }
 
-        if(filterState.diagnosis && filterState.diagnosis.value.length > 0){
+        if(filterState.Diagnosis && filterState.Diagnosis.value.length > 0){
           if(!activeColumns.find(item => item === "Diagnosis")){
             tempBuffer.push("Diagnosis")
           }
@@ -412,7 +412,7 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
                       return (
                         <td key={i} className={`bg-gray-200`}>
                           {((!expert || (expert && formatting)) && (column === "Lab_Parameter" || column === "Diagnosis" || column === "Result_Interpretation") && Array.isArray(prop)) ? 
-                            (prop as string[]).filter((item: string) => column === "Lab_Parameter" ? filterNormal?.labParameter.value.find(val => val === item) : column === "Diagnosis" ? filterNormal?.diagnosis.value.find(val => val === item) : filterNormal?.resultInterpretation.value.find(val => val === item))
+                            (prop as string[]).filter((item: string) => column === "Lab_Parameter" ? filterNormal?.Lab_Parameter.value.find(val => val === item) : column === "Diagnosis" ? filterNormal?.Diagnosis.value.find(val => val === item) : filterNormal?.Result_Interpretation.value.find(val => val === item))
                           :
                             prop?.toString()
                           }

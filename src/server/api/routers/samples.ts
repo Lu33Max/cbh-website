@@ -5,7 +5,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import { Prisma, type Samples } from "@prisma/client";
 import { GroupFilterSchema, GroupSchema, NormalFilterSchema, type IGroup, type INormalFilter } from "~/common/filter/filter";
-import { type OptionalSamples } from "~/components/search/table";
+import { type IOptionalSample } from "~/common/types";
 
 export const sampleRouter = createTRPCRouter({
 
@@ -46,143 +46,10 @@ export const sampleRouter = createTRPCRouter({
             filter: NormalFilterSchema
         }))
         .query(async ({ ctx, input }) => {
-            const optionalUniqueSampleIDs = await ctx.prisma.samples.findMany({
+            const allOptionals = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
-                take: input.lines,
-                skip: (input.pages && input.lines) ? (input.pages - 1) * input.lines : 0,
                 where: {
-                    AND: [
-                        { 
-                            CBH_Master_ID: { 
-                                contains: input.filter.cbhMasterID.value, 
-                                mode: 'insensitive',
-                            }
-                        },
-                        { 
-                            CBH_Donor_ID: { 
-                                contains: input.filter.cbhDonorID.value, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            CBH_Sample_ID: { 
-                                contains: input.filter.cbhSampleID.value, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        {
-                            Price: {
-                                lte: input.filter.price.max,
-                                gte: input.filter.price.min
-                            }
-                        },
-                        { 
-                            Matrix: { 
-                                in: input.filter.matrix?.value.length > 0 ? input.filter.matrix.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        {
-                            Quantity: {
-                                lte: input.filter.quantity.max,
-                                gte: input.filter.quantity.min
-                            }
-                        },
-                        { 
-                            Unit: { 
-                                in: input.filter.unit?.value.length  > 0 ? input.filter.unit.value : undefined,
-                                mode: 'insensitive'
-                            }
-                        },
-                        { 
-                            Lab_Parameter: { 
-                                in: input.filter.labParameter?.value.length > 0 ? input.filter.labParameter.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Interpretation: { 
-                                in: input.filter.resultInterpretation?.value.length > 0 ? input.filter.resultInterpretation.value : undefined,
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Unit: { 
-                                in: input.filter.resultUnit?.value.length > 0 ? input.filter.resultUnit.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Diagnosis: { 
-                                in: input.filter.diagnosis?.value.length > 0 ? input.filter.diagnosis.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            ICD_Code: { 
-                                in: input.filter.ICDCode?.value.length > 0 ? input.filter.ICDCode.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        {
-                            OR: [
-                                {
-                                    CBH_Master_ID: {
-                                        contains: input.search,
-                                        mode: 'insensitive',
-                                    }
-                                },
-                                {
-                                    CBH_Donor_ID: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    CBH_Sample_ID: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Matrix: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Lab_Parameter: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Result_Interpretation: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Result_Unit: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Diagnosis: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    ICD_Code: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                            ]
-                        }
-                    ]
+                    AND: mapOptional(input.filter, input.search)
                 },
                 orderBy: {
                     CBH_Sample_ID: 'desc',
@@ -192,149 +59,7 @@ export const sampleRouter = createTRPCRouter({
                 }
             });
 
-            const allOptionals = await ctx.prisma.samples.findMany({
-                distinct: ['CBH_Sample_ID'],
-                where: {
-                    AND: [
-                        { 
-                            CBH_Master_ID: { 
-                                contains: input.filter.cbhMasterID.value, 
-                                mode: 'insensitive',
-                            }
-                        },
-                        { 
-                            CBH_Donor_ID: { 
-                                contains: input.filter.cbhDonorID.value, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            CBH_Sample_ID: { 
-                                contains: input.filter.cbhSampleID.value, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        {
-                            Price: {
-                                lte: input.filter.price.max,
-                                gte: input.filter.price.min
-                            }
-                        },
-                        { 
-                            Matrix: { 
-                                in: input.filter.matrix?.value.length > 0 ? input.filter.matrix.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        {
-                            Quantity: {
-                                lte: input.filter.quantity.max,
-                                gte: input.filter.quantity.min
-                            }
-                        },
-                        { 
-                            Unit: { 
-                                in: input.filter.unit?.value.length  > 0 ? input.filter.unit.value : undefined,
-                                mode: 'insensitive'
-                            }
-                        },
-                        { 
-                            Lab_Parameter: { 
-                                in: input.filter.labParameter?.value.length > 0 ? input.filter.labParameter.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Interpretation: { 
-                                in: input.filter.resultInterpretation?.value.length > 0 ? input.filter.resultInterpretation.value : undefined,
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Unit: { 
-                                in: input.filter.resultUnit?.value.length > 0 ? input.filter.resultUnit.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Diagnosis: { 
-                                in: input.filter.diagnosis?.value.length > 0 ? input.filter.diagnosis.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            ICD_Code: { 
-                                in: input.filter.ICDCode?.value.length > 0 ? input.filter.ICDCode.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        {
-                            OR: [
-                                {
-                                    CBH_Master_ID: {
-                                        contains: input.search,
-                                        mode: 'insensitive',
-                                    }
-                                },
-                                {
-                                    CBH_Donor_ID: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    CBH_Sample_ID: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Matrix: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Lab_Parameter: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Result_Interpretation: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Result_Unit: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Diagnosis: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    ICD_Code: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                            ]
-                        }
-                    ]
-                },
-                orderBy: {
-                    CBH_Sample_ID: 'desc',
-                },
-                select: {
-                    CBH_Sample_ID: true
-                }
-            });
+            const optionalUniqueSampleIDs = allOptionals.slice((input.pages-1) * input.lines, input.pages * input.lines)
 
             const optionalsLength = allOptionals.length
 
@@ -346,69 +71,69 @@ export const sampleRouter = createTRPCRouter({
                     AND: [
                         { 
                             CBH_Master_ID: {
-                                contains: input.filter.cbhMasterID.mandatory? input.filter.cbhMasterID.value : undefined,
+                                contains: input.filter.CBH_Master_ID.mandatory? input.filter.CBH_Master_ID.value : undefined,
                                 mode: 'insensitive',
                             }
                         },
                         { 
                             CBH_Donor_ID: { 
-                                contains: input.filter.cbhDonorID.mandatory? input.filter.cbhDonorID.value : undefined,
+                                contains: input.filter.CBH_Donor_ID.mandatory? input.filter.CBH_Donor_ID.value : undefined,
                                 mode: 'insensitive' 
                             } 
                         },
                         { 
                             CBH_Sample_ID: { 
-                                contains: input.filter.cbhSampleID.mandatory? input.filter.cbhSampleID.value : undefined,
+                                contains: input.filter.CBH_Sample_ID.mandatory? input.filter.CBH_Sample_ID.value : undefined,
                                 mode: 'insensitive' 
                             } 
                         },
                         { 
                             Price: { 
-                                lte: input.filter.price.mandatory? input.filter.price.max : undefined,
-                                gte: input.filter.price.mandatory? input.filter.price.min : undefined, 
+                                lte: input.filter.Price.mandatory? input.filter.Price.max : undefined,
+                                gte: input.filter.Price.mandatory? input.filter.Price.min : undefined, 
                             } 
                         },
                         { 
                             OR: [
                                 {
                                     Matrix: { 
-                                        in: (input.filter.matrix.mandatory && input.filter.matrix?.value.length > 0) ? input.filter.matrix.value : undefined,
+                                        in: (input.filter.Matrix.mandatory && input.filter.Matrix?.value.length > 0) ? input.filter.Matrix.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 }, 
                                 {
                                     Matrix: {
-                                        notIn: (!input.filter.matrix.mandatory && input.filter.matrix?.value.length > 0) ? input.filter.matrix.value : undefined,
+                                        notIn: (!input.filter.Matrix.mandatory && input.filter.Matrix?.value.length > 0) ? input.filter.Matrix.value : undefined,
                                         mode: 'insensitive'
                                     }
                                 },
                                 {
-                                    Matrix: !input.filter.matrix.mandatory ? null : undefined
+                                    Matrix: !input.filter.Matrix.mandatory ? null : undefined
                                 }
                             ]
                         },
                         { 
                             Quantity: { 
-                                lte: input.filter.quantity.mandatory? input.filter.quantity.max : undefined,
-                                gte: input.filter.quantity.mandatory? input.filter.quantity.min : undefined, 
+                                lte: input.filter.Quantity.mandatory? input.filter.Quantity.max : undefined,
+                                gte: input.filter.Quantity.mandatory? input.filter.Quantity.min : undefined, 
                             } 
                         },
                         { 
                             OR: [
                                 {
                                     Unit: { 
-                                        in: (input.filter.unit.mandatory && input.filter.unit?.value.length > 0) ? input.filter.unit.value : undefined,
+                                        in: (input.filter.Unit.mandatory && input.filter.Unit?.value.length > 0) ? input.filter.Unit.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 }, 
                                 {
                                     Unit: {
-                                        notIn: (!input.filter.unit.mandatory && input.filter.unit?.value.length > 0) ? input.filter.unit.value : undefined,
+                                        notIn: (!input.filter.Unit.mandatory && input.filter.Unit?.value.length > 0) ? input.filter.Unit.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 },
                                 {
-                                    Unit: !input.filter.unit.mandatory ? null : undefined
+                                    Unit: !input.filter.Unit.mandatory ? null : undefined
                                 }
                             ]
                         },
@@ -416,18 +141,18 @@ export const sampleRouter = createTRPCRouter({
                             OR: [
                                 {
                                     Lab_Parameter: { 
-                                        in: (input.filter.labParameter.mandatory && input.filter.labParameter?.value.length > 0) ? input.filter.labParameter.value : undefined,
+                                        in: (input.filter.Lab_Parameter.mandatory && input.filter.Lab_Parameter?.value.length > 0) ? input.filter.Lab_Parameter.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 }, 
                                 {
                                     Lab_Parameter: {
-                                        notIn: (!input.filter.labParameter.mandatory && input.filter.labParameter?.value.length > 0) ? input.filter.labParameter.value : undefined,
+                                        notIn: (!input.filter.Lab_Parameter.mandatory && input.filter.Lab_Parameter?.value.length > 0) ? input.filter.Lab_Parameter.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 },
                                 {
-                                    Lab_Parameter: !input.filter.labParameter.mandatory ? null : undefined
+                                    Lab_Parameter: !input.filter.Lab_Parameter.mandatory ? null : undefined
                                 }
                             ]
                         },
@@ -435,18 +160,18 @@ export const sampleRouter = createTRPCRouter({
                             OR: [
                                 {
                                     Result_Interpretation: { 
-                                        in: (input.filter.resultInterpretation.mandatory && input.filter.resultInterpretation?.value.length > 0) ? input.filter.resultInterpretation.value : undefined,
+                                        in: (input.filter.Result_Interpretation.mandatory && input.filter.Result_Interpretation?.value.length > 0) ? input.filter.Result_Interpretation.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 }, 
                                 {
                                     Result_Interpretation: {
-                                        notIn: (!input.filter.resultInterpretation.mandatory && input.filter.resultInterpretation?.value.length > 0) ? input.filter.resultInterpretation.value : undefined,
+                                        notIn: (!input.filter.Result_Interpretation.mandatory && input.filter.Result_Interpretation?.value.length > 0) ? input.filter.Result_Interpretation.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 },
                                 {
-                                    Result_Interpretation: !input.filter.resultInterpretation.mandatory ? null : undefined
+                                    Result_Interpretation: !input.filter.Result_Interpretation.mandatory ? null : undefined
                                 }
                             ]
                         },
@@ -454,18 +179,18 @@ export const sampleRouter = createTRPCRouter({
                             OR: [
                                 {
                                     Result_Unit: { 
-                                        in: (input.filter.resultUnit.mandatory && input.filter.resultUnit?.value.length > 0) ? input.filter.resultUnit.value : undefined,
+                                        in: (input.filter.Result_Unit.mandatory && input.filter.Result_Unit?.value.length > 0) ? input.filter.Result_Unit.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 }, 
                                 {
                                     Result_Unit: {
-                                        notIn: (!input.filter.resultUnit.mandatory && input.filter.resultUnit?.value.length > 0) ? input.filter.resultUnit.value : undefined,
+                                        notIn: (!input.filter.Result_Unit.mandatory && input.filter.Result_Unit?.value.length > 0) ? input.filter.Result_Unit.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 },
                                 {
-                                    Result_Unit: !input.filter.resultUnit.mandatory ? null : undefined
+                                    Result_Unit: !input.filter.Result_Unit.mandatory ? null : undefined
                                 }
                             ]
                         },
@@ -473,18 +198,18 @@ export const sampleRouter = createTRPCRouter({
                             OR: [
                                 {
                                     Diagnosis: { 
-                                        in: (input.filter.diagnosis.mandatory && input.filter.diagnosis?.value.length > 0) ? input.filter.diagnosis.value : undefined,
+                                        in: (input.filter.Diagnosis.mandatory && input.filter.Diagnosis?.value.length > 0) ? input.filter.Diagnosis.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 }, 
                                 {
                                     Diagnosis: {
-                                        notIn: (!input.filter.diagnosis.mandatory && input.filter.diagnosis?.value.length > 0) ? input.filter.diagnosis.value : undefined,
+                                        notIn: (!input.filter.Diagnosis.mandatory && input.filter.Diagnosis?.value.length > 0) ? input.filter.Diagnosis.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 },
                                 {
-                                    Diagnosis: !input.filter.diagnosis.mandatory ? null : undefined
+                                    Diagnosis: !input.filter.Diagnosis.mandatory ? null : undefined
                                 }
                             ]
                         },
@@ -492,73 +217,18 @@ export const sampleRouter = createTRPCRouter({
                             OR: [
                                 {
                                     ICD_Code: { 
-                                        in: (input.filter.ICDCode.mandatory && input.filter.ICDCode?.value.length > 0) ? input.filter.ICDCode.value : undefined,
-                                        notIn: (!input.filter.ICDCode.mandatory && input.filter.ICDCode?.value.length > 0) ? input.filter.ICDCode.value : undefined,
+                                        in: (input.filter.ICD_Code.mandatory && input.filter.ICD_Code?.value.length > 0) ? input.filter.ICD_Code.value : undefined,
+                                        notIn: (!input.filter.ICD_Code.mandatory && input.filter.ICD_Code?.value.length > 0) ? input.filter.ICD_Code.value : undefined,
                                         mode: 'insensitive' 
                                     }
                                 }, 
                                 {
-                                    ICD_Code: !input.filter.ICDCode.mandatory ? null : undefined
+                                    ICD_Code: !input.filter.ICD_Code.mandatory ? null : undefined
                                 }
                             ]
                         },
                         {
-                            OR: [
-                                { 
-                                    CBH_Master_ID: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive',
-                                    } 
-                                },
-                                { 
-                                    CBH_Donor_ID: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    CBH_Sample_ID: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Matrix: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Lab_Parameter: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Result_Interpretation: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Result_Unit: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    Diagnosis: { 
-                                        contains: input.search, 
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                                { 
-                                    ICD_Code: { 
-                                        contains: input.search,
-                                        mode: 'insensitive' 
-                                    } 
-                                },
-                            ]
+                            OR: mapSearch(input.filter, input.search)
                         },
                     ]
                 },
@@ -570,13 +240,10 @@ export const sampleRouter = createTRPCRouter({
                 }
             });
 
-            const optionalUniqueSampleIDStrings : string[] = optionalUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
-            const mandatoryUniqueSampleIDStrings : string[] = mandatoryUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? [];
-
             const optionalEntries = await ctx.prisma.samples.findMany({
                 where: {
                     CBH_Sample_ID: {
-                        in: optionalUniqueSampleIDStrings
+                        in: optionalUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? []
                     }
                 },
                 orderBy: {
@@ -587,7 +254,7 @@ export const sampleRouter = createTRPCRouter({
             const mandatoryEntries = await ctx.prisma.samples.findMany({
                 where: {
                     CBH_Sample_ID: {
-                        in: mandatoryUniqueSampleIDStrings
+                        in: mandatoryUniqueSampleIDs.map(item => item.CBH_Sample_ID?.toString() ?? "") ?? []
                     }
                 },
                 orderBy: {
@@ -595,8 +262,8 @@ export const sampleRouter = createTRPCRouter({
                 },
             })
 
-            const allEntriesWithOptionals: OptionalSamples[] = optionalEntries.map(e => {return {optional: true, data: e}})
-            const mandatoryEntriesWithOptionals: OptionalSamples[] = mandatoryEntries.map(e => {return {optional: false, data: e}}) 
+            const allEntriesWithOptionals: IOptionalSample[] = optionalEntries.map(e => {return {optional: true, data: e}})
+            const mandatoryEntriesWithOptionals: IOptionalSample[] = mandatoryEntries.map(e => {return {optional: false, data: e}}) 
 
             allEntriesWithOptionals.push(...mandatoryEntriesWithOptionals)
 
@@ -652,144 +319,13 @@ export const sampleRouter = createTRPCRouter({
             filter: NormalFilterSchema
         }))
         .query(async ({ctx, input}) => {
-
+            
             const result = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
                 take: input.lines, 
                 skip: (input.pages && input.lines) ? (input.pages -1) * input.lines : 0,
                 where: {
-                    AND: [
-                        { 
-                            CBH_Master_ID: {
-                                contains: input.filter.cbhMasterID.mandatory? input.filter.cbhMasterID.value : undefined,
-                                mode: 'insensitive',
-                            } 
-                        },
-                        { 
-                            CBH_Donor_ID: { 
-                                contains: input.filter.cbhDonorID.mandatory? input.filter.cbhDonorID.value : undefined,
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            CBH_Sample_ID: { 
-                                contains: input.filter.cbhDonorID.mandatory? input.filter.cbhSampleID.value : undefined,
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Price: { 
-                                lte: input.filter.price.mandatory? input.filter.price.max : undefined,
-                                gte: input.filter.price.mandatory? input.filter.price.min : undefined, 
-                            } 
-                        },
-                        { 
-                            Matrix: { 
-                                in: (input.filter.matrix.mandatory && input.filter.matrix?.value.length > 0) ? input.filter.matrix.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Quantity: { 
-                                lte: input.filter.quantity.mandatory? input.filter.quantity.max : undefined,
-                                gte: input.filter.quantity.mandatory? input.filter.quantity.min : undefined, 
-                            } 
-                        },
-                        { 
-                            Unit: { 
-                                in: (input.filter.unit.mandatory && input.filter.unit?.value.length > 0) ? input.filter.unit.value : undefined,
-                                mode: 'insensitive'
-                            } 
-                        },
-                        { 
-                            Lab_Parameter: { 
-                                in: (input.filter.labParameter.mandatory && input.filter.labParameter?.value.length > 0) ? input.filter.labParameter.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Interpretation: { 
-                                in: (input.filter.resultInterpretation.mandatory && input.filter.resultInterpretation?.value.length > 0) ? input.filter.resultInterpretation.value : undefined,
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Result_Unit: { 
-                                in: (input.filter.resultUnit.mandatory && input.filter.resultUnit?.value.length > 0) ? input.filter.resultUnit.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            Diagnosis: { 
-                                in: (input.filter.diagnosis.mandatory && input.filter.diagnosis?.value.length > 0) ? input.filter.diagnosis.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        { 
-                            ICD_Code: { 
-                                in: (input.filter.ICDCode.mandatory && input.filter.ICDCode?.value.length > 0) ? input.filter.ICDCode.value : undefined, 
-                                mode: 'insensitive' 
-                            } 
-                        },
-                        {
-                            OR: [
-                                {
-                                    CBH_Master_ID: {
-                                        contains: input.search,
-                                        mode: 'insensitive',
-                                    }
-                                },
-                                {
-                                    CBH_Donor_ID: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    CBH_Sample_ID: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Matrix: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Lab_Parameter: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Result_Interpretation: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Result_Unit: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    Diagnosis: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                                {
-                                    ICD_Code: {
-                                        contains: input.search,
-                                        mode: 'insensitive'
-                                    }
-                                },
-                            ]
-                        }
-                    ]
+                    AND: mapMandatory(input.filter, input.search)
                 },
                 orderBy: {
                     CBH_Sample_ID: 'desc',
@@ -809,7 +345,6 @@ export const sampleRouter = createTRPCRouter({
             const offset = (input.pages && input.pagelength) ? (input.pages -1) * input.pagelength : 0
             const query = BuildQuery(input.group)
 
-            //Pagination
             if (query === Prisma.empty) 
             {
                 const uniqueSamples = await ctx.prisma.samples.findMany({
@@ -834,7 +369,7 @@ export const sampleRouter = createTRPCRouter({
                     },
                 })
 
-                const entriesWithOptionals: OptionalSamples[] = entries.map(e =>{return {optional: true, data: e}}) 
+                const entriesWithOptionals: IOptionalSample[] = entries.map(e =>{return {optional: true, data: e}}) 
                 return entriesWithOptionals
             } 
             else 
@@ -873,10 +408,10 @@ export const sampleRouter = createTRPCRouter({
                     },
                 })
 
-                const allEntriesWithOptionals: OptionalSamples[] = optionalEntries.map(e => {return {optional: true, data: e}})
-                const mandatoryEntriesWithOptionals: OptionalSamples[] = mandatoryEntries.map(e => {return {optional: false, data: e}}) 
+                const allEntriesWithOptionals: IOptionalSample[] = optionalEntries.map(e => {return {optional: true, data: e}})
+                const mandatoryEntriesWithoutOptionals: IOptionalSample[] = mandatoryEntries.map(e => {return {optional: false, data: e}}) 
 
-                allEntriesWithOptionals.push(...mandatoryEntriesWithOptionals)
+                allEntriesWithOptionals.push(...mandatoryEntriesWithoutOptionals)
 
                 return allEntriesWithOptionals           
             }
@@ -968,7 +503,7 @@ function BuildQuery(group: IGroup, mandatoryOnly?: boolean): Prisma.Sql {
 }
 
 function anyOptionalsNormal (filter: INormalFilter): boolean {
-    return !(filter.ICDCode.mandatory && filter.cbhDonorID.mandatory && filter.cbhMasterID.mandatory && filter.cbhSampleID.mandatory && filter.diagnosis.mandatory && filter.labParameter.mandatory && filter.matrix.mandatory && filter.price.mandatory && filter.quantity.mandatory && filter.resultInterpretation.mandatory && filter.resultNumerical.mandatory && filter.resultUnit.mandatory)
+    return !(filter.ICD_Code.mandatory && filter.CBH_Donor_ID.mandatory && filter.CBH_Master_ID.mandatory && filter.CBH_Sample_ID.mandatory && filter.Diagnosis.mandatory && filter.Lab_Parameter.mandatory && filter.Matrix.mandatory && filter.Price.mandatory && filter.Quantity.mandatory && filter.Result_Interpretation.mandatory && filter.Result_Numerical.mandatory && filter.Result_Unit.mandatory)
 }
 
 function anyOptionalsExpert (filter: IGroup): boolean {
@@ -990,4 +525,115 @@ function anyOptionalsExpert (filter: IGroup): boolean {
     });
 
     return optional
+}
+
+function mapSearch(filter: INormalFilter, search: string | undefined): Prisma.SamplesWhereInput[] {
+    const map: Prisma.SamplesWhereInput[] = []
+    
+    type SampleKey = keyof Samples
+    type FilterKey = keyof INormalFilter
+    
+    Object.getOwnPropertyNames(filter).map((prop) => {
+        if(Object.getOwnPropertyNames(SampleSchema.shape).find(item => item === prop)){
+            if('value' in getProperty(filter, prop as FilterKey)){
+                map.push({ 
+                    [prop as SampleKey]: { 
+                        contains: search, mode: 'insensitive' 
+                    } 
+                })
+            }
+        }
+    })
+
+    return map
+}
+
+function mapOptional(filter: INormalFilter, search: string | undefined) : Prisma.SamplesWhereInput[] {
+    const map: Prisma.SamplesWhereInput[] = []
+
+    type SampleKey = keyof Samples
+    type FilterKey = keyof INormalFilter
+
+    Object.getOwnPropertyNames(filter).map((prop) => {
+        if(Object.getOwnPropertyNames(SampleSchema.shape).find(item => item === prop)){
+            const filterProp = getProperty(filter, prop as FilterKey)
+
+            if('value' in filterProp){
+                if(Array.isArray(filterProp.value)){
+                    map.push({
+                        [prop as SampleKey]: { 
+                            in: filterProp.value.length > 0 ? filterProp.value : undefined,
+                            mode: 'insensitive'
+                        }
+                    })
+                }
+                else
+                {
+                    map.push({
+                        [prop as SampleKey]: { 
+                            contains: filterProp.value,
+                            mode: 'insensitive'
+                        }
+                    })
+                }
+            }
+            else if('min' in filterProp && 'max' in filterProp){
+                map.push({
+                    [prop as SampleKey]: {
+                        lte: filterProp.min,
+                        gte: filterProp.max
+                    }
+                })
+            }
+        }
+    })
+
+    map.push({ OR: mapSearch(filter, search) })
+
+    return map
+}
+
+function mapMandatory(filter: INormalFilter, search: string | undefined) : Prisma.SamplesWhereInput[] {
+    const map: Prisma.SamplesWhereInput[] = []
+
+    type SampleKey = keyof Samples
+    type FilterKey = keyof INormalFilter
+
+    Object.getOwnPropertyNames(filter).map((prop) => {
+        if(Object.getOwnPropertyNames(SampleSchema.shape).find(item => item === prop)){
+            const filterProp = getProperty(filter, prop as FilterKey)
+
+            if('value' in filterProp){
+                if(Array.isArray(filterProp.value)){
+                    map.push({
+                        [prop as SampleKey]: { 
+                            in: filterProp.mandatory && filterProp.value.length > 0 ? filterProp.value : undefined,
+                            mode: 'insensitive'
+                        }
+                    })
+                }
+                else
+                {
+                    map.push({
+                        [prop as SampleKey]: { 
+                            contains: filterProp.mandatory ? filterProp.value : undefined,
+                            mode: 'insensitive'
+                        }
+                    })
+                }
+            }
+            else if('min' in filterProp && 'max' in filterProp){
+                map.push({
+                    [prop as SampleKey]: {
+                        lte: filterProp.mandatory ? filterProp.min : undefined,
+                        gte: filterProp.mandatory ? filterProp.max : undefined
+                    }
+                })
+            }
+        }
+    })
+
+    map.push({ OR: mapSearch(filter, search) })
+
+    return map
 }
