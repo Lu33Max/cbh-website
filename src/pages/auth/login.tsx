@@ -9,16 +9,19 @@ import { authOptions } from "~/server/auth";
 export default function LoginPage({ providers }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
-    <div className="bg-gradient-to-br from-[#1c6641] to-[#9DC88D]">
-    <img src="/public/bg.png" alt="Hintergrundbild" />
-    <section className="min-h-screen flex flex-col justify-center items-center  font-poppins">
-      <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
-        <div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10 backdrop-blur-sm shadow-xl shadow-black/30">
-          <LoginForm providers={providers} />
-        </div>
+    <div className="relative bg-gradient-to-br from-[#1c6641] to-[#9DC88D]">
+      <div className="absolute inset-0">
+        <img src="/bg.png" alt="Hintergrundbild" className="w-full h-full object-cover" />
       </div>
-    </section>
+      <section className="min-h-screen flex flex-col justify-center items-center  font-poppins">
+        <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
+          <div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10 backdrop-blur-sm shadow-xl shadow-black/30">
+            <LoginForm providers={providers} />
+          </div>
+        </div>
+      </section>
     </div>
+
     </>
   );
 }
@@ -112,10 +115,10 @@ export const LoginForm = ({ providers }: InferGetServerSidePropsType<typeof getS
 */}
 
 
-      <div className="text-center">
-        <button className="inline-block px-7 py-4 bg-[#F1B24A] rounded-lg text-[#164A41] font-semibolt font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-[#ea9812] hover:shadow-lg focus:bg-[#ffb735] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#ffb735] active:shadow-lg transition duration-150 ease-in-out w-80">
-          <Link href={`/auth/signup?prev=${callbackURL}`}>Sign Up</Link>
-        </button>
+      <div className="text-center flex items-center justify-center" onClick={()=>router.push(`/auth/signup?prev=${callbackURL}`)}>
+      <button className="block w-80 px-7 py-4 bg-[#F1B24A] rounded-lg text-[#164A41] font-semibold font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-[#ea9812] hover:shadow-lg focus:bg-[#ffb735] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#ffb735] active:shadow-lg transition duration-150 ease-in-out" >
+        <p>Sign Up</p>
+      </button>
       </div>
     </form>
   );
