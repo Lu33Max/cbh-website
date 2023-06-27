@@ -54,6 +54,12 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model Categories {
+  mainCategory  String @id
+  subCategory   String?
+  filter        String?
+}
+
 model Columns {
   name     String  @id
   category String?
