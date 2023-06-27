@@ -9,13 +9,16 @@ import { authOptions } from "~/server/auth";
 export default function LoginPage({ providers }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
-      <section className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-[#1c6641] to-[#9DC88D] font-poppins">
-        <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
-          <div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10 backdrop-blur-sm shadow-xl shadow-black/30">
-            <LoginForm providers={providers} />
-          </div>
+    <div className="bg-gradient-to-br from-[#1c6641] to-[#9DC88D]">
+    <img src="/public/bg.png" alt="Hintergrundbild" />
+    <section className="min-h-screen flex flex-col justify-center items-center  font-poppins">
+      <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
+        <div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10 backdrop-blur-sm shadow-xl shadow-black/30">
+          <LoginForm providers={providers} />
         </div>
-      </section>
+      </div>
+    </section>
+    </div>
     </>
   );
 }
