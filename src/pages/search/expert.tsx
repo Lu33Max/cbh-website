@@ -196,6 +196,18 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
             <button className="relative right-8 w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
           </div>
+          <div className="mx-10">
+            {(filterState.type.value === 'in') && (  
+              <>       
+                {filterState.values.value.map((value: string, i) => (
+                  <div key={i} className='bg-red-400 w-fit px-2 inline-block m-1'>
+                    {value}
+                    <button onClick={() => filterState.values.set((value) => value.filter((_, index) => index !== i))}><BiX /></button>
+                  </div>
+                ))}
+              </>
+            )}
+          </div> 
         </div>
       )}
 
@@ -248,7 +260,7 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))}>Delete</button>
             <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" disabled={!self.mandatory.value} onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
           </div>
-          <div>
+          <div className="mx-10">
             {(filterState.type.value === 'in') && (  
               <>       
                   {filterState.values.value.map((value: string, i) => (

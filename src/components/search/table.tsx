@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useContext, type Dispatch, type SetStateAction } from 'react';
-import { OverlayTrigger } from 'react-bootstrap';
-import Popover from 'react-bootstrap/Popover';
 
 import { BiCartAdd, BiCog, BiInfoCircle } from "react-icons/bi"
-import Footer from "~/components/search/footer";
-
-import ShowRows from '~/components/search/showRows';
-import Count from '~/components/search/count';
 
 import { type INormalFilter } from '~/common/filter/filter';
 import { SampleSchema } from '~/common/database/samples';
