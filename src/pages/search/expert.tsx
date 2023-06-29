@@ -136,6 +136,7 @@ const ExpertSearch: NextPage = () => {
     </>
   )
 }
+
 export default ExpertSearch;
 
 function unfreeze(group: State<IGroup>){
@@ -318,55 +319,55 @@ function ChooseValues(props: { values: State<string[]>, type: State<string>, col
   const values = useHookstate(props.values);
   const col = useHookstate(props.col);
 
-  function SetValues(value: string):void{
+  function SetValues(value: string): void{
     values.set([value])
   }
 
-  function SetValuesBetween1(value: string):void{
+  function SetValuesBetween1(value: string): void{
     values.set(a => [value, a[1] ?? ''])
   }
 
-  function SetValuesBetween2(value: string):void{
+  function SetValuesBetween2(value: string): void{
     values.set(a => [a[0] ?? '', value])
   }
 
-  function In(value: string):void{
+  function In(value: string): void{
     values.set(v => (v || []).concat([value]))
   }
 
   return (
     <>
-    <div className='w-full'>
-          {(type.value !== 'between' && type.value !== 'in') && (
-              <>
-                  <AutofillExpert col={col.value} callback={SetValues} value={values[0]} rounded={true} />
-              </>
-          )}
-          {(type.value === 'between') && (
-              <div className='flex flex-row'>
-                  <div className='w-full'>
-                      <AutofillExpert col={col.value} callback={SetValuesBetween1} value={values[0]} rounded={false} />
-                  </div>
-                  <div className='w-full'>
-                      <AutofillExpert col={col.value} callback={SetValuesBetween2} value={values[1]} rounded={true} />
-                  </div>
-              </div>
-          )}
-          {(type.value === 'in') && (
-              <>
-                  <AutofillExpert col={col.value} callback={In} value={values[values.length]} rounded={true} />
+      <div className='w-full'>
+        {(type.value !== 'between' && type.value !== 'in') && (
+          <>
+            <AutofillExpert col={col.value} callback={SetValues} value={values[0]} rounded={true} />
+          </>
+        )}
+        {(type.value === 'between') && (
+          <div className='flex flex-row'>
+            <div className='w-full'>
+              <AutofillExpert col={col.value} callback={SetValuesBetween1} value={values[0]} rounded={false} />
+            </div>
+            <div className='w-full'>
+              <AutofillExpert col={col.value} callback={SetValuesBetween2} value={values[1]} rounded={true} />
+            </div>
+          </div>
+        )}
+        {(type.value === 'in') && (
+          <>
+            <AutofillExpert col={col.value} callback={In} value={values[values.length]} rounded={true} />
 
-                  {values.value.map((value: string, i) => {
-                      return (
-                          <div key={i} className='bg-red-400 w-fit px-2'>
-                              {value}
-                              <button onClick={() => values.set((value) => value.filter((_, index) => index !== i))}><BiX /></button>
-                          </div>
-                      );
-                  })}
-              </>
-          )}
-    </div>
+            {values.value.map((value: string, i) => {
+              return (
+                <div key={i} className='bg-red-400 w-fit px-2'>
+                  {value}
+                  <button onClick={() => values.set((value) => value.filter((_, index) => index !== i))}><BiX /></button>
+                </div>
+              );
+            })}
+          </>
+        )}
+      </div>
     </>
   )
 }
