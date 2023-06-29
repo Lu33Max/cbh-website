@@ -4,7 +4,6 @@ import { NormalFilterSchema } from '~/common/filter/filter';
 import { api } from "~/utils/api";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import Autofill from "~/components/search/normal/autofill";
 import { BiHome, BiX } from "react-icons/bi";
 
 import HeaderNEW from "~/components/overall/header";
@@ -19,6 +18,7 @@ import Footer from "~/components/overall/footer";
 import { usePathname } from "next/navigation";
 import { Colors } from "~/common/styles";
 import Link from "next/link";
+import AutoComplete from "~/components/search/normal/autofill";
 
 const Home: NextPage = () => {
   return (
@@ -342,7 +342,7 @@ const Content: React.FC = () => {
                             Matrix:
                           </div>
                           <div className="col-span-1">
-                            <Autofill value="Matrix" callback={handleFilterChange}/>
+                            <AutoComplete col="Matrix" onSelect={handleFilterChange} value={filter.Matrix.value[filter.Matrix.value.length-1] ?? ""}/>
                           </div>
                         </div>
                       </Popover.Body>
@@ -377,7 +377,7 @@ const Content: React.FC = () => {
                             Unit:
                           </div>
                           <div className="col-span-1">
-                            <Autofill value="Unit" callback={handleFilterChange}/>
+                            <AutoComplete col="Unit" onSelect={handleFilterChange} value={filter.Unit.value[filter.Unit.value.length-1] ?? ""}/>
                           </div>
                         </div>
                       </Popover.Body>
@@ -396,13 +396,13 @@ const Content: React.FC = () => {
                             Parameter:
                           </div>
                           <div className="col-span-1">
-                            <Autofill value="Lab_Parameter" callback={handleFilterChange}/>
+                            <AutoComplete col="Lab_Parameter" onSelect={handleFilterChange} value={filter.Lab_Parameter.value[filter.Lab_Parameter.value.length-1] ?? ""}/>
                           </div>
                           <div className="col-span-1 text-right">
                             Result Interpretation:
                           </div>
                           <div className="col-span-1">
-                            <Autofill value="Result_Interpretation" callback={handleFilterChange}/>
+                            <AutoComplete col="Result_Interpretation" onSelect={handleFilterChange} value={filter.Result_Interpretation.value[filter.Result_Interpretation.value.length-1] ?? ""}/>
                           </div>
                           <div className="col-span-1">
                             Min:
@@ -424,7 +424,7 @@ const Content: React.FC = () => {
                             Unit:
                           </div>
                           <div className="col-span-1">
-                            <Autofill value="Result_Unit" callback={handleFilterChange}/>
+                            <AutoComplete col="Result_Unit" onSelect={handleFilterChange} value={filter.Result_Unit.value[filter.Result_Unit.value.length-1] ?? ""}/>
                           </div>
                         </div>
                       </Popover.Body>
@@ -443,13 +443,13 @@ const Content: React.FC = () => {
                             Diagnosis:
                           </div>
                           <div className="col-span-1">
-                            <Autofill value="Diagnosis" callback={handleFilterChange}/>
+                            <AutoComplete col="Diagnosis" onSelect={handleFilterChange} value={filter.Diagnosis.value[filter.Diagnosis.value.length-1] ?? ""}/>
                           </div>
                           <div className="col-span-1">
                             ICD Code:
                           </div>
                           <div className="col-span-1">
-                            <Autofill value="ICD_Code" callback={handleFilterChange}/>
+                            <AutoComplete col="ICD_Code" onSelect={handleFilterChange} value={filter.ICD_Code.value[filter.ICD_Code.value.length-1] ?? ""}/>
                           </div>
                         </div>
                       </Popover.Body>

@@ -4,7 +4,7 @@ import { type NextPage } from 'next';
 
 import { BiX } from "react-icons/bi"
 import Head from 'next/head';
-import AutofillExpert from '~/components/search/expert/autofill_expert';
+import AutoComplete from '~/components/search/expert/autofill_expert';
 
 import Table from '~/components/search/table';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
@@ -189,7 +189,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
       {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean, mandatory: boolean }>, i) =>
         <div key={i}>  
           <div className='flex flex-row ml-5 my-1'>
-            <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
+            <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated} values={filterState.values}/>
             <TypeSelect col={filterState.col} type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
@@ -241,13 +241,25 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
       {self.filter.map((filterState: State<{ col: string, type: string, values: string[], activated: boolean, mandatory: boolean }>, i) =>
         <div key={i}>  
           <div className='flex flex-row ml-5 my-1'>
-            <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
+            <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated} values={filterState.values}/>
             <TypeSelect col={filterState.col} type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" disabled={!self.activated.value} onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))}>Delete</button>
             <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" disabled={!self.mandatory.value} onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
-          </div>  
+          </div>
+          <div>
+            {(filterState.type.value === 'in') && (  
+              <>       
+                  {filterState.values.value.map((value: string, i) => (
+                    <div key={i} className='bg-red-400 w-fit px-2 inline-block m-1'>
+                      {value}
+                      <button onClick={() => filterState.values.set((value) => value.filter((_, index) => index !== i))}><BiX /></button>
+                    </div>
+                  ))}
+              </>
+            )}
+          </div> 
         </div>
       )}
     </div>
@@ -273,13 +285,19 @@ function GroupListEditor(props: { groups: State<IGroup> }) {
   )
 }
 
-function ColSelect(props: { col: State<string>, activated: State<boolean>, filterActivated: State<boolean>}) {
+function ColSelect(props: { col: State<string>, activated: State<boolean>, filterActivated: State<boolean>, values: State<string[]>}) {
   const col = useHookstate(props.col);
   const activated = useHookstate(props.activated);
   const filterActivated = useHookstate(props.filterActivated);
+  const values = useHookstate(props.values);
+
+  useEffect(() => {
+    values.set([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [col.value]);
 
   return (
-    <select name="col" id="col" className="w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" value={col.value} onChange={(e) => col.set(e.target.value)} disabled = {!(activated.value && filterActivated.value)}>
+    <select name="col" id="col" className="w-fit z-20 px-3 py-1 text-lg rounded-l-full border-2 border-gray-500 focus:border-gray-700 outline-none transition" value={col.value} onChange={(e) => {col.set(e.target.value); values.set([])}} disabled = {!(activated.value && filterActivated.value)}>
       {Object.getOwnPropertyNames(SampleSchema.shape).map((property, i) => {
         if (property !== "id") {
           return (
@@ -297,6 +315,7 @@ function TypeSelect(props: { type: State<string>, col: State<string>, values: St
   const activated = useHookstate(props.activated);
   const filterActivated = useHookstate(props.filterActivated);
   const numberCol = ["Age", "BMI", "Cut_Off_Numerical", "Freeze_Thaw_Cycles", "Pregnancy_Week", "Price", "Quantity", "Result_Numerical"]
+
   return (
     <select className="w-fit z-20 px-3 py-1 text-lg text-center border-y-2 border-gray-500 focus:border-gray-700 outline-none transition" value={type.value} onChange={(e) => { values.set([]); type.set(e.target.value)}} disabled = {!(activated.value && filterActivated.value)}>
       <option className='text-left' value={'equal'}>=</option>
@@ -319,20 +338,22 @@ function ChooseValues(props: { values: State<string[]>, type: State<string>, col
   const values = useHookstate(props.values);
   const col = useHookstate(props.col);
 
-  function SetValues(value: string): void{
+  function SetValues(value: string): void {
     values.set([value])
   }
 
-  function SetValuesBetween1(value: string): void{
+  function SetValuesBetween1(value: string): void {
     values.set(a => [value, a[1] ?? ''])
   }
 
-  function SetValuesBetween2(value: string): void{
+  function SetValuesBetween2(value: string): void {
     values.set(a => [a[0] ?? '', value])
   }
 
-  function In(value: string): void{
-    values.set(v => (v || []).concat([value]))
+  function In(value: string): void {
+    if (!values.value.find(v => v === value)) {
+      values.set(v => (v || []).concat([value]));
+    }
   }
 
   return (
@@ -340,31 +361,22 @@ function ChooseValues(props: { values: State<string[]>, type: State<string>, col
       <div className='w-full'>
         {(type.value !== 'between' && type.value !== 'in') && (
           <>
-            <AutofillExpert col={col.value} callback={SetValues} value={values[0]} rounded={true} />
+            <AutoComplete col={col.value} onSelect={SetValues} value={values[0]?.value ?? ""} />
           </>
         )}
         {(type.value === 'between') && (
           <div className='flex flex-row'>
             <div className='w-full'>
-              <AutofillExpert col={col.value} callback={SetValuesBetween1} value={values[0]} rounded={false} />
+              <AutoComplete col={col.value} onSelect={SetValuesBetween1} value={values[0]?.value ?? ""} />
             </div>
             <div className='w-full'>
-              <AutofillExpert col={col.value} callback={SetValuesBetween2} value={values[1]} rounded={true} />
+              <AutoComplete col={col.value} onSelect={SetValuesBetween2} value={values[1]?.value ?? ""} />
             </div>
           </div>
         )}
         {(type.value === 'in') && (
           <>
-            <AutofillExpert col={col.value} callback={In} value={values[values.length]} rounded={true} />
-
-            {values.value.map((value: string, i) => {
-              return (
-                <div key={i} className='bg-red-400 w-fit px-2'>
-                  {value}
-                  <button onClick={() => values.set((value) => value.filter((_, index) => index !== i))}><BiX /></button>
-                </div>
-              );
-            })}
+            <AutoComplete col={col.value} onSelect={In} value={values[values.length-1]?.value ?? ""} />
           </>
         )}
       </div>

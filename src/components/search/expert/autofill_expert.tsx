@@ -1,55 +1,61 @@
-import React, { useState,  useEffect } from 'react'
-import { api } from '~/utils/api'
-import { type State } from '@hookstate/core'
+import React, { useState, useEffect } from 'react';
+import { api } from '~/utils/api';
 
-type Props = {
+type AutoCompleteProps = {
     col: string,
-    callback: (value: string) => void,
-    value: State<string> | undefined,
-    rounded: boolean
+    onSelect: (value: string) => void,
+    value: string
 }
 
-const AutofillExpert = ({col, callback, value, rounded} : Props) => {
-    const { data: autofill } = api.samples.getDistinct.useQuery(col)
-
-    const [focus, setFocus] = useState<boolean>(false)
-    const [results, setResults] = useState<string[]>([])
-    const [resultsShown, setResultsShown] = useState<string[]>([])
+const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
+    const { data: autofill } = api.samples.getDistinct.useQuery(props.col);
+    const [lastVal, setLastVal] = useState<string | undefined>('')
+    const [currentVal, setCurrentVal] = useState<string>('')
+    const [results, setResults] = useState<string[]>([]);
 
     useEffect(() => {
         const tempArray: string[] = [];
         if(autofill){
-          for (let i = 0; i < autofill?.length; i++){
-            const test = autofill[i]
-            test ? tempArray.push(test.toString()) : void(0)
-          }
+            for (let i = 0; i < autofill?.length; i++){
+                const test = autofill[i]
+                test ? tempArray.push(test.toString()) : void(0)
+            }
         }
         setResults(tempArray)
-      }, [autofill])
+    }, [autofill])
+    
+    useEffect(() =>{
+        setCurrentVal(props.value)
+    }, [props.value])
 
-    useEffect(() => {
-        setResultsShown(results)
-    },[results])
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value
+        
+        const eventType = results.find(item => item === val) && lastVal !== undefined && lastVal.length < (val.length - 1) ? 'onSelect' : undefined
+        if (eventType !== undefined)
+        props[eventType] && props[eventType](val)
+        
+        setLastVal(val)
+        setCurrentVal(val)
+    }
 
     return (
-        <div>
-            <div tabIndex={1} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} className="relative">
-                <input value={value ? value.value : ""} onChange={(e) => {setResultsShown(results.filter((el) => el.toLowerCase().includes(e.target.value.toLowerCase()))); callback(e.target.value)}} type="text" className={`relative w-full px-3 py-1 text-lg ${rounded ? "rounded-r-full" : ""} border-2 border-gray-500 focus:border-gray-700 outline-none transition z-20`} placeholder="Search for value..."/>
-                {/* Search Results Container */}
-                {(focus && resultsShown.length > 0) && (
-                    <div className="absolute mt-1 w-full p-2 bg-white shadow-lg rounded-bl rounded-br max-h-56 overflow-y-auto z-50">
-                        {resultsShown.sort().map((item, index) => {
-                            return (
-                                <div key={index} onMouseDown={() => callback(item)} className="cursor-pointer hover:bg-black hover:bg-opacity-10 p-2">
-                                    {item}
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
-            </div>
-        </div>
-    );
+        <>
+            <input 
+                value={currentVal}
+                className={`relative w-full px-3 py-1 text-lg rounded-r-full border-2 border-gray-500 focus:border-gray-700 outline-none transition z-20`}
+                autoComplete='off' 
+                list="autocomplete-list" 
+                id="list" 
+                name="list" 
+                placeholder="Search" 
+                onChange={handleOnChange}  
+            />
+    
+            <datalist id="autocomplete-list" >
+                {results.map(item => <option key={item} value={item}/> )}
+            </datalist>
+        </>
+    )
 }
-
-export default AutofillExpert
+export default AutoComplete
