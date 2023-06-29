@@ -1,7 +1,6 @@
 import { type GetServerSidePropsContext, type InferGetServerSidePropsType } from "next";
 import { getServerSession } from "next-auth";
 import { getProviders, signIn } from "next-auth/react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { authOptions } from "~/server/auth";

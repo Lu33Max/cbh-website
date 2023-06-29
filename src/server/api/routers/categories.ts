@@ -78,40 +78,40 @@ export const categoriesRouter = createTRPCRouter ({
                         }
                     })
                 case "infectiousDiseases": 
-                return ctx.prisma.samples.findMany({
-                    where: {
-                        AND: [
-                            {
-                                Lab_Parameter: {
-                                    in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA" , "anti-Chlamydia trachomatis IgA", "Human Immunodeficiency Virus deoxyribonucleic acid HIV-DNA","Human Immunodeficiency Virus type 1 ribonucleic acid HIV-1-RNA", "Human Immunodeficiency Virus ribonucleic acid HIV-RNA", "Human Immunodeficiency Virus 1 HIV-1 p24 Ag", "Human Immunodeficiency Virus 1 HIV-1 GT", "Human Immunodeficiency Virus HIV-1 P24 Ab", "Human Immunodeficiency Virus 1 HIV-1 TITER", "Human Immunodeficiency Virus HIV Ab/Ag", "Human Immunodeficiency Virus HIV 1/2 Ab/Ag", "Human Immunodeficiency Virus HIV", "anti-Human Immunodeficiency Virus p24 HIV p24", "anti-Human Immunodeficiency Virus-1/2 HIV-1/2", "Syphilis SYPH", "Syphilis Treponema pallidum", "anti-Syphilis Treponema pallidum IgM", "anti-Syphilis Treponema pallidum IgG", "anti-Syphilis Treponema pallidum"],
+                    return ctx.prisma.samples.findMany({
+                        where: {
+                            AND: [
+                                {
+                                    Lab_Parameter: {
+                                        in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA" , "anti-Chlamydia trachomatis IgA", "Human Immunodeficiency Virus deoxyribonucleic acid HIV-DNA","Human Immunodeficiency Virus type 1 ribonucleic acid HIV-1-RNA", "Human Immunodeficiency Virus ribonucleic acid HIV-RNA", "Human Immunodeficiency Virus 1 HIV-1 p24 Ag", "Human Immunodeficiency Virus 1 HIV-1 GT", "Human Immunodeficiency Virus HIV-1 P24 Ab", "Human Immunodeficiency Virus 1 HIV-1 TITER", "Human Immunodeficiency Virus HIV Ab/Ag", "Human Immunodeficiency Virus HIV 1/2 Ab/Ag", "Human Immunodeficiency Virus HIV", "anti-Human Immunodeficiency Virus p24 HIV p24", "anti-Human Immunodeficiency Virus-1/2 HIV-1/2", "Syphilis SYPH", "Syphilis Treponema pallidum", "anti-Syphilis Treponema pallidum IgM", "anti-Syphilis Treponema pallidum IgG", "anti-Syphilis Treponema pallidum"],
+                                    }
+                                },
+                                {
+                                    Result_Interpretation: {
+                                        in: ["positve","reactive"],
+                                        mode: 'insensitive',
+                                    }
                                 }
-                            },
-                            {
-                                Result_Interpretation: {
-                                    in: ["positve","reactive"],
-                                    mode: 'insensitive',
-                                }
-                            }
-                        ]
-                    }
+                            ]
+                        }
                     })
                 case "1stTrimester":                        
-                return ctx.prisma.samples.findMany({
-                    where: {
-                        AND: [
-                            {
-                                Diagnosis: {
-                                    contains: "pregnant"
+                    return ctx.prisma.samples.findMany({
+                        where: {
+                            AND: [
+                                {
+                                    Diagnosis: {
+                                        contains: "pregnant"
+                                    },
                                 },
-                            },
-                            {
-                                Pregnancy_Week: {
-                                    gte: 1,
-                                    lte: 12
+                                {
+                                    Pregnancy_Week: {
+                                        gte: 1,
+                                        lte: 12
+                                    }
                                 }
-                            }
-                        ]
-                    }
+                            ]
+                        }
                     })
                 case "2ndTrimester":
                     return ctx.prisma.samples.findMany({
@@ -519,30 +519,16 @@ export const categoriesRouter = createTRPCRouter ({
                         })
                 }
             }
-
             return ctx.prisma.categories.findMany()
         }),
         
     //Update
     update: publicProcedure
-    .input(CategoriesSchema)
-    .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.categories.update({
-            where: {
-                mainCategory: input.mainCategory
-            },
-            data: input
-        })
-    }),
-
-    updateMany: publicProcedure
-        .input(CategoriesSchema.array())
+        .input(CategoriesSchema)
         .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.categories.updateMany({
+            return await ctx.prisma.categories.update({
                 where: {
-                    mainCategory: {
-                        in: input.map(column => column.mainCategory)
-                    }
+                    mainCategory: input.mainCategory
                 },
                 data: input
             })
