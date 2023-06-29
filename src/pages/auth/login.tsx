@@ -1,6 +1,7 @@
 import { type GetServerSidePropsContext, type InferGetServerSidePropsType } from "next";
 import { getServerSession } from "next-auth";
 import { getProviders, signIn } from "next-auth/react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { authOptions } from "~/server/auth";
@@ -9,8 +10,8 @@ export default function LoginPage({ providers }: InferGetServerSidePropsType<typ
   return (
     <>
     <div className="relative bg-gradient-to-br from-[#1c6641] to-[#9DC88D]">
-      <div className="absolute inset-0">
-        <img src="/bg.png" alt="Hintergrundbild" className="w-full h-full object-cover" />
+      <div className="absolute inset-0 w-full h-full object-cover">
+        <Image src="/bg.png" alt="background" fill={true}/>
       </div>
       <section className="min-h-screen flex flex-col justify-center items-center  font-poppins">
         <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
