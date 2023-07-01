@@ -1,22 +1,22 @@
 import React, { createContext, useState, type ReactNode, type Dispatch, type SetStateAction } from 'react';
 import { type IOptionalTableSample } from '~/common/types';
 
-type ClickContextType = [IOptionalTableSample[], Dispatch<SetStateAction<IOptionalTableSample[]>>];
+type CartContextType = [IOptionalTableSample[], Dispatch<SetStateAction<IOptionalTableSample[]>>];
 
-const ClickContext = createContext<ClickContextType>([[], () => ({})]);
+const CartContext = createContext<CartContextType>([[], () => ({})]);
 
-interface ClickProviderProps {
+interface CartProviderProps {
   children: ReactNode;
 }
 
-export const ClickProvider: React.FC<ClickProviderProps> = ({ children }) => {
+export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [tableSamples, setTableSamples] = useState<IOptionalTableSample[]>([]);
 
   return (
-    <ClickContext.Provider value={[tableSamples, setTableSamples]}>
+    <CartContext.Provider value={[tableSamples, setTableSamples]}>
       {children}
-    </ClickContext.Provider>
+    </CartContext.Provider>
   );
 };
 
-export default ClickContext;
+export default CartContext;

@@ -59,8 +59,21 @@ export const sampleRouter = createTRPCRouter({
                 }
             });
 
-            const optionalUniqueSampleIDs = allOptionals.slice((input.pages-1) * input.lines, input.pages * input.lines)
+            console.log(CategoryStringToObject(JSON.stringify([
+                {
+                    Diagnosis: {
+                        contains: "pregnant",
+                        equals: "test"
+                    },
+                },
+                {
+                    Pregnancy_Week: {
+                        gte: 1,
+                    }
+                }
+            ])))
 
+            const optionalUniqueSampleIDs = allOptionals.slice((input.pages-1) * input.lines, input.pages * input.lines)
             const optionalsLength = allOptionals.length
 
             const mandatoryUniqueSampleIDs = await ctx.prisma.samples.findMany({
@@ -230,6 +243,7 @@ export const sampleRouter = createTRPCRouter({
                         {
                             OR: mapSearch(input.filter, input.search)
                         },
+                        
                     ]
                 },
                 orderBy: {
@@ -636,4 +650,48 @@ function mapMandatory(filter: INormalFilter, search: string | undefined) : Prism
     map.push({ OR: mapSearch(filter, search) })
 
     return map
+}
+
+function CategoryStringToObject(input: string): Prisma.SamplesWhereInput[] {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const inputObject = JSON.parse(input)
+    const whereObject: Prisma.SamplesWhereInput[] = []
+
+    type SampleKey = keyof Samples
+    
+    if(Array.isArray(inputObject)){
+        inputObject.forEach((element: object) => {
+            if(typeof element === "object" && !Array.isArray(element) && element !== null){
+                
+                Object.entries(element).map((objProp) => {
+                    type NewProperty = {[key: string]: Prisma.StringNullableFilter | Prisma.IntNullableFilter | Prisma.FloatNullableFilter}
+                    const newProperty: NewProperty = {}
+                    
+                    Object.entries(objProp[1] as object).map(prop => {
+
+                        if(typeof prop[1] === "string" || (Array.isArray(prop[1]) && typeof prop[1][0] === "string")){
+                            newProperty[prop[0]] = prop[1] as Prisma.StringNullableFilter
+                            return
+                        }
+
+                        if(typeof prop[1] == "number" && Number.isInteger(prop[1])){
+                            newProperty[prop[0]] = prop[1] as Prisma.IntNullableFilter
+                            return
+                        }
+
+                        if(typeof prop[1] == "number" && !Number.isInteger(prop[1])){
+                            newProperty[prop[0]] = prop[1] as Prisma.FloatNullableFilter
+                            return
+                        }
+                    })
+
+                    if(!Array.isArray(element) && element !== null && typeof objProp[1] === "object"){
+                        whereObject.push({[objProp[0] as SampleKey]: newProperty} as Prisma.SamplesWhereInput)
+                    }
+                })
+            }
+        })
+    }
+
+    return whereObject
 }

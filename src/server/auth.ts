@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
     }),
   },
   adapter: PrismaAdapter(prisma),
-  secret: "amzaingSECRET",
+  secret: "amazingSecret",
   jwt: {
     maxAge: 15 * 24 * 60 * 60,
   },

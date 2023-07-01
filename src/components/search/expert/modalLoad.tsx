@@ -8,9 +8,9 @@ import { type State } from "@hookstate/core";
 import Link from "next/link";
 
 type CustomModalProps = {
-  showModal: boolean;
-  setShowModal: Dispatch<SetStateAction<boolean>>,
-  filter: State<IGroup>;
+    showModal: boolean;
+    setShowModal: Dispatch<SetStateAction<boolean>>,
+    filter: State<IGroup>;
 };
 
 const ModalLoadExpert: React.FC<CustomModalProps> = ({ showModal, setShowModal, filter }) => {
@@ -18,12 +18,12 @@ const ModalLoadExpert: React.FC<CustomModalProps> = ({ showModal, setShowModal, 
 
     const { data: sessionData } = useSession();
     const { data: sessionFilter, refetch: refetchFilter } = api.filter.getAll.useQuery(
-      {
-        type: FilterType.expert,
-      }, 
-      {
-        enabled: sessionData?.user !== undefined,
-      }
+        {
+            type: FilterType.expert,
+        }, 
+        {
+            enabled: sessionData?.user !== undefined,
+        }
     );
 
     useEffect(() => {

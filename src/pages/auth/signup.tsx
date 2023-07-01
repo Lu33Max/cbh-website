@@ -110,7 +110,7 @@ const SignUpForm = () => {
       </div>
       <div className="flex justify-center items-center">
         <button
-          className="inline-block px-7 py-4 bg-[#164A41] text-white rounded-lg font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-[#297753] hover:shadow-lg focus:bg-[#1c6641] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#164A41] active:shadow-lg transition duration-150 ease-in-out w-80"
+          className="inline-block px-7 py-4 bg-[#164A41] text-white rounded-lg font-medium text-sm leading-snug uppercase shadow-md hover:bg-[#297753] hover:shadow-lg focus:bg-[#1c6641] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#164A41] active:shadow-lg transition duration-150 ease-in-out w-80"
           onClick={() => void onSubmit()}
         >
           Sign Up
@@ -122,7 +122,7 @@ const SignUpForm = () => {
       </div>
 
       <div className="text-center flex justify-center items-center" onClick={() => void router.push(`/auth/login?prev=${callbackURL}`)}>
-        <button className="block w-80 px-7 py-4 bg-[#F1B24A] rounded-lg text-[#164A41] font-semibold font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-[#ea9812] hover:shadow-lg focus:bg-[#ffb735] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#ffb735] active:shadow-lg transition duration-150 ease-in-out">
+        <button className="block w-80 px-7 py-4 bg-[#F1B24A] rounded-lg text-[#164A41] font-semibold text-sm leading-snug uppercase shadow-md hover:bg-[#ea9812] hover:shadow-lg focus:bg-[#ffb735] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#ffb735] active:shadow-lg transition duration-150 ease-in-out">
           <p>Sign In</p>
         </button> 
       </div>

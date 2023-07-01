@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { CategoriesSchema } from "~/common/database/categories";
+import { Prisma, type Samples } from "@prisma/client";
 
 export const categoriesRouter = createTRPCRouter ({
 
@@ -35,7 +36,7 @@ export const categoriesRouter = createTRPCRouter ({
             }
 
             switch(input.category) {
-                case "pregnancy":                        
+                case "Pregnancy":                        
                     return ctx.prisma.samples.findMany({
                         where: {
                             AND: [
@@ -280,9 +281,7 @@ export const categoriesRouter = createTRPCRouter ({
 
                 switch(input.mainCategory) {
                     case "pregnancy":                        
-                        return ctx.prisma.samples.findMany({
-                            where: {
-                                AND: [
+                        const test = [
                                     {
                                         Diagnosis: {
                                             contains: "pregnant"
@@ -291,13 +290,12 @@ export const categoriesRouter = createTRPCRouter ({
                                     {
                                         Pregnancy_Week: {
                                             gte: 1,
-                                            lte: 40
                                         }
                                     }
                                 ]
-                            }
-                        })
-                    case "infectiousDiseases": 
+                                console.log(JSON.stringify(test))
+                                return test
+                    case "infectiousDiseases":
                         return ctx.prisma.samples.findMany({
                             where: {
                                 AND: [

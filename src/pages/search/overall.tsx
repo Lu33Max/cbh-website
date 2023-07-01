@@ -114,14 +114,10 @@ const Content: React.FC = () => {
   const [showFilter, setShowFilter] = useState<boolean>(false)
   const [categoryQuery, setCategoryQuery] = useState<string>("Overall");
 
-  const { data: samples, refetch: refetchSamples } = api.samples.getAll.useQuery(
+  const { data: samples } = api.samples.getAll.useQuery(
     { pages: page, lines: pagelength, search: search, filter: filter }
   )
   const { data: count } = api.samples.countNormal.useQuery({ search: search, filter: filter })
-  
-  useEffect(() => {
-    void refetchSamples()
-  }, [search, page, pagelength, filter, refetchSamples])
 
   useEffect(() => {
     setPage(1)
@@ -148,59 +144,15 @@ const Content: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, categoryQuery])
 
-  function handleFilterChange(value: string, column:string): void {
-    switch(column){
-      case "Matrix":
-        if(!filter.Matrix.value.includes(value)){
-          const temp1 = filter.Matrix
-          temp1.value.push(value)
-          setFilter(filter => ({...filter, Matrix: temp1}))
-        }
-        break;
-      case "Unit":
-        if(!filter.Unit.value.includes(value)){
-          const temp2 = filter.Unit
-          temp2.value.push(value)
-          setFilter(filter => ({...filter, Unit: temp2}))
-        }
-        break;
-      case "Lab_Parameter":
-        if(!filter.Lab_Parameter.value.includes(value)){
-          const temp3 = filter.Lab_Parameter
-          temp3.value.push(value)
-          setFilter(filter => ({...filter, Lab_Parameter: temp3}))
-        }
-        break;
-      case "Result_Interpretation":
-        if(!filter.Result_Interpretation.value.includes(value)){
-          const temp4 = filter.Result_Interpretation
-          temp4.value.push(value)
-          setFilter(filter => ({...filter, Result_Interpretation: temp4}))
-        }
-        break;
-      case "Result_Unit":
-        if(!filter.Result_Unit.value.includes(value)){
-          const temp5 = filter.Result_Unit
-          temp5.value.push(value)
-          setFilter(filter => ({...filter, Result_Unit: temp5}))
-        }
-        break;
-      case "Diagnosis":
-        if(!filter.Diagnosis.value.includes(value)){
-          const temp6 = filter.Diagnosis
-          temp6.value.push(value)
-          setFilter(filter => ({...filter, Diagnosis: temp6}))
-        }
-        break;
-      case "ICD_Code":
-        if(!filter.ICD_Code.value.includes(value)){
-          const temp7 = filter.ICD_Code
-          temp7.value.push(value)
-          setFilter(filter => ({...filter, ICD_Code: temp7}))
-        }
-        break;
-      default:
-        break;
+  function handleFilterChange(value: string, column: string): void {
+    type FilterKey = keyof INormalFilter
+
+    if(column in filter){
+      const temp = filter[column as FilterKey]
+      if('value' in temp && Array.isArray(temp.value)){
+        temp.value.push(value)
+        setFilter(filter => ({...filter, [column]: temp}))
+      }
     }
   }
 
@@ -214,10 +166,12 @@ const Content: React.FC = () => {
       
       <div className="px-20">
         <p className={`my-7 text-xl text-center text-[${Colors.dark}]`}>
-          <i>Overall search is a tailor-made solution to improve your search by understanding the precise needs and search 
-          behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
-          to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
-          human tissue samples, and more for research purposes.</i>
+          <i>
+            Overall search is a tailor-made solution to improve your search by understanding the precise needs and search 
+            behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
+            to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
+            human tissue samples, and more for research purposes.
+          </i>
         </p>
 
         <div className="flex flex-row text-3xl mt-2 mb-4 items-center font-extralight">
@@ -541,7 +495,7 @@ const Content: React.FC = () => {
           </>
         )}
       </div>
-     
+
       <div className="mx-4 my-2">
           <Table page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} expert={false} filterNormal={filter}/>
       </div>

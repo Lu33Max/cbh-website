@@ -6,13 +6,13 @@ import { FilterType, type IGroup } from "~/common/filter/filter";
 import { api } from "~/utils/api";
 
 type CustomModalProps = {
-  showModal: boolean;
-  setShowModal: Dispatch<SetStateAction<boolean>>,
-  filter: IGroup;
+    showModal: boolean;
+    setShowModal: Dispatch<SetStateAction<boolean>>,
+    filter: IGroup;
 };
 
 const ModalSaveExpert: React.FC<CustomModalProps> = ({ showModal, setShowModal , filter}) => {
-     const [filtername, setFiltername] = useState<string>('')
+    const [filtername, setFiltername] = useState<string>('')
 
     const { data: sessionData } = useSession();
     const { data: sessionFilter, refetch: refetchFilter } = api.filter.getAll.useQuery(
@@ -70,13 +70,13 @@ const ModalSaveExpert: React.FC<CustomModalProps> = ({ showModal, setShowModal ,
                                 </div>
                                 {/*body*/}
                                 {sessionData?.user ? (
-                                  <div className="relative p-5 flex-auto">
-                                      <input className='border-solid border-black border-2 mx-2 px-2 text-center py-1 rounded-xl text-lg' placeholder="Enter a name" onChange={e => setFiltername(e.target.value)}></input>
-                                  </div>
-                                ) : (
-                                  <div className="px-5 py-3">
-                                    <label className="flex flex-col text-center justify-center">Want to save your current filter?<br/> <Link href={"/auth/login"} className="text-blue-700"><b>Sign In</b></Link></label>
-                                  </div>
+                                    <div className="relative p-5 flex-auto">
+                                        <input className='border-solid border-black border-2 mx-2 px-2 text-center py-1 rounded-xl text-lg' placeholder="Enter a name" onChange={e => setFiltername(e.target.value)}></input>
+                                    </div>
+                                    ) : (
+                                    <div className="px-5 py-3">
+                                        <label className="flex flex-col text-center justify-center">Want to save your current filter?<br/> <Link href={"/auth/login"} className="text-blue-700"><b>Sign In</b></Link></label>
+                                    </div>
                                 )}
                                 {/*footer*/}
                                 <div className="flex items-center justify-center py-3 px-6 border-t border-solid border-slate-200 rounded-b">

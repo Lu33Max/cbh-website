@@ -7,9 +7,9 @@ import { type Filter } from "@prisma/client";
 import Link from "next/link";
 
 type CustomModalProps = {
-  showModal: boolean;
-  setShowModal: Dispatch<SetStateAction<boolean>>,
-  setFilter: Dispatch<SetStateAction<INormalFilter>>;
+    showModal: boolean;
+    setShowModal: Dispatch<SetStateAction<boolean>>,
+    setFilter: Dispatch<SetStateAction<INormalFilter>>;
 };
 
 const ModalLoad: React.FC<CustomModalProps> = ({ showModal, setShowModal, setFilter }) => {

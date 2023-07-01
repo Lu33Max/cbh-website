@@ -11,7 +11,7 @@ const Header: React.FC<{count: number | undefined, pagelength: number, range: nu
         <Cart pagelength={pagelength} setSamplesToAdd={setSamplesToAdd} addSamplesToCart={addSamplesToCart}/>
 
         <div className="mx-auto">
-          <Footer range={range} page={showPage} setPage={setPage} />
+          <Pages range={range} page={showPage} setPage={setPage} />
         </div>     
 
         <ShowRows pagelength={pagelength} setPagelength={setPagelength} setPage={setPage}/>
@@ -32,7 +32,6 @@ const Count: React.FC<{count: number | undefined}> = ({count}) => {
 }
 
 const Cart: React.FC<{pagelength: number, setSamplesToAdd: Dispatch<SetStateAction<number>>, addSamplesToCart: () => void}> = ({pagelength, setSamplesToAdd, addSamplesToCart}) => {
-
   return (
     <OverlayTrigger trigger="click" placement="right" rootClose={true} overlay={
         <Popover id="popover-basic" className={`bg-white rounded-xl p-2 text-center border-2 border-[${Colors.dark}]`}>
@@ -57,7 +56,7 @@ const Cart: React.FC<{pagelength: number, setSamplesToAdd: Dispatch<SetStateActi
   )
 }
 
-const Footer: React.FC<{range: number[], page: number, setPage: Dispatch<SetStateAction<number>>}> = ({range, page, setPage}) => {
+const Pages: React.FC<{range: number[], page: number, setPage: Dispatch<SetStateAction<number>>}> = ({range, page, setPage}) => {
   return (
     <div className='flex flex-row items-center'>          
       {range.map((el, index) => (
