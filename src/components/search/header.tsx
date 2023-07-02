@@ -42,9 +42,10 @@ const Header: React.FC<{count: number | undefined, pagelength: number, range: nu
 export default Header
   
 const Count: React.FC<{count: number | undefined}> = ({count}) => {
+  const windowSize = useWindowSize()
   return (
     <div className={`w-fit px-3 py-1 text-lg rounded-2xl border-2 border-[${Colors.light}] bg-white text-[${Colors.dark}]`}>
-      Search Results: {count ?? "0"}
+      {windowSize.width && windowSize.width < 600 ? "Res:" : "Search Results:"} {count ?? "0"}
     </div>
   )
 }
@@ -75,6 +76,8 @@ const Cart: React.FC<{pagelength: number, setSamplesToAdd: Dispatch<SetStateActi
 }
 
 const Pages: React.FC<{range: number[], page: number, setPage: Dispatch<SetStateAction<number>>}> = ({range, page, setPage}) => {
+  const windowSize = useWindowSize()
+
   return (
     <div className='flex flex-row items-center'>          
       {range.map((el, index) => (
@@ -82,18 +85,18 @@ const Pages: React.FC<{range: number[], page: number, setPage: Dispatch<SetState
           {(el === 1) && (
             <>
               <button key={index} className={`justify-center mx-1 rounded-xl px-3 py-1 border-2 border-solid border-[${Colors.dark}] text-lg text-[${Colors.dark}] ${page === index + 1 ? `bg-[${Colors.accent_light}]` : `bg-[${Colors.light_light}]`}`} onClick={() => setPage(el)}>{el}</button>
-              {(page-3 > 1) && (
-                  <label key={1000}>&nbsp;. . .&nbsp;</label>
+              {(windowSize.width && ((windowSize.width < 600 && page - 2 > 1) || ((windowSize.width >= 600 && page - 3 > 1)))) && (
+                  <label key={1000} className='whitespace-nowrap'>&nbsp;. . .&nbsp;</label>
               )}
             </>
           )}
-          {(el >= page - 2 && el <= page + 2 && el !== 1 && el !== range.length) && (
+          {(windowSize.width && ((windowSize.width < 600 && el >= page - 1 && el <= page + 1) || ((windowSize.width >= 600 && el >= page - 2 && el <= page + 2))) && el !== 1 && el !== range.length) && (
             <button key={1000 + index} className={`justify-center mx-1 rounded-xl px-3 py-1 border-2 border-solid border-[${Colors.dark}] text-lg text-[${Colors.dark}] ${page === index + 1 ? `bg-[${Colors.accent_light}]` : `bg-[${Colors.light_light}]`}`} onClick={() => setPage(el)}>{el}</button>
           )}
           {(el === range.length && range.length !== 1) && (
             <>
-              {(page + 3 < range.length) && (
-                  <label key={range.length + 1}>&nbsp;. . .&nbsp;</label>
+              {(windowSize.width && ((windowSize.width < 600 && page + 2 < range.length) || ((windowSize.width >= 600 && page + 3 < range.length)))) && (
+                  <label key={range.length + 1} className='whitespace-nowrap'>&nbsp;. . .&nbsp;</label>
               )}
               <button key={1000 + index} className={`justify-center mx-1 rounded-xl px-3 py-1 border-2 border-solid border-[${Colors.dark}] text-lg text-[${Colors.dark}] ${page === index + 1 ? `bg-[${Colors.accent_light}]` : `bg-[${Colors.light_light}]`}`} onClick={() => setPage(el)}>{el}</button>
             </>
@@ -105,6 +108,7 @@ const Pages: React.FC<{range: number[], page: number, setPage: Dispatch<SetState
 }
 
 const ShowRows: React.FC<{pagelength: number, setPagelength: Dispatch<SetStateAction<number>>, setPage: Dispatch<SetStateAction<number>>}> = ({pagelength, setPagelength, setPage}) => {
+  const windowSize = useWindowSize()
 
   const handlePageLengthChange = (length: number) => {
     setPagelength(length);
@@ -112,7 +116,7 @@ const ShowRows: React.FC<{pagelength: number, setPagelength: Dispatch<SetStateAc
 
   return (
     <>
-      <p className={`ml-4 w-fit px-3 py-1 text-lg rounded-l-2xl border-2 bg-white border-[${Colors.light}] text-[${Colors.dark}] outline-none transition h-10`}>Show rows</p>
+      <p className={`ml-2 w-fit px-3 py-1 text-lg rounded-l-2xl border-2 bg-white border-[${Colors.light}] text-[${Colors.dark}] outline-none transition h-10`}>{windowSize.width && windowSize.width < 600 ? "Rows" : "Show rows"}</p>
       <select className={`w-fit px-3 py-2 text-lg rounded-r-2xl border-2 border-l-0 bg-white border-[${Colors.light}] text-[${Colors.dark}] outline-none transition h-10`} name="pagelength" id="pagelength" value={pagelength} onChange={e => {handlePageLengthChange(parseInt(e.target.value)); setPage(1)}}>
         <option value={50}>50</option>
         <option value={100}>100</option>
