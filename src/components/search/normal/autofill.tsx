@@ -52,7 +52,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
                 onChange={handleOnChange}  
             />
     
-            <datalist id="autocomplete-list" >
+            <datalist id="autocomplete-list">
                 {results.map(item => <option key={item} value={item}/> )}
             </datalist>
         </>

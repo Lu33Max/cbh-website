@@ -29,7 +29,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen max-h-screen overflow-hidden bg-gray-100">
+      <div className="min-h-full max-h-full min-w-full max-w-full overflow-hidden bg-gray-100">
         <div className="flex flex-col">
           <HeaderNEW />
           <Content />
@@ -157,7 +157,7 @@ const Content: React.FC = () => {
   }
 
   return (
-    <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins'>
+    <div className='max-h-[calc(100dvh-80px)] overflow-y-scroll font-poppins'>
       <div className={`flex flex-row w-full items-center justify-center text-[${Colors.dark}] border-[${Colors.dark}]`}>
         <div className="w-full border-2 border-solid h-1 border-inherit rounded-3xl m-5"></div>
         <h1 className="text-5xl mt-5 ml-5 mb-2 flex-grow flex-shrink-0 whitespace-nowrap"><b>OVERALL PRODUCT SEARCH</b></h1>
@@ -229,10 +229,10 @@ const Content: React.FC = () => {
           <ModalLoad showModal={showLoad} setShowModal={setShowLoad} setFilter={setFilter} />
         </div>
 
-        {showFilter && (
-          <>
+        
+          <div className={`grid ${showFilter ? "grid-rows-[2fr] mt-4" : "grid-rows-[0fr]"} transition-all ease-in-out`}>
             {/* Input fields */}   
-            <div className="px-5 py-3 items-center justify-center">
+            <div className={`px-5 items-center justify-center overflow-hidden ${showFilter ? "mb-2" : ""}`}>
               <div className="grid grid-cols-4 gap-2 max-w-full">
                 {/* CBH Master ID */}
                 <div className="items-center text-center w-full">
@@ -416,7 +416,7 @@ const Content: React.FC = () => {
             </div>
 
             {/* Displaying active filters */}
-            <div className="flex flex-col mx-5 max-w-10xl overflow-x-auto overflow-y-hidden whitespace-normal">
+            <div className="mx-4 overflow-hidden">
               <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
                 Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
               </span>
@@ -492,8 +492,8 @@ const Content: React.FC = () => {
                 <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp7 = filter.ICD_Code;  temp7.mandatory = !temp7.mandatory; setFilter(filter => ({...filter, ICD_Code: temp7}))}}>{filter.ICD_Code.mandatory ? "!": "?"}</button>      
               </span>
             </div>
-          </>
-        )}
+          </div>
+        
       </div>
 
       <div className="mx-4 my-2">
