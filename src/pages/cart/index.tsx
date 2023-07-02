@@ -16,7 +16,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen max-h-screen overflow-hidden bg-gray-100">
+      <div className="min-h-full max-h-full min-w-full max-w-full overflow-hidden bg-gray-100 fixed">
         <div className="flex flex-col">
           <Header />
           <Content />

@@ -2,21 +2,39 @@ import React, { type Dispatch, type SetStateAction } from 'react'
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { BiCartAdd } from 'react-icons/bi';
 import { Colors } from '~/common/styles';
+import useWindowSize from '~/utils/window';
 
 const Header: React.FC<{count: number | undefined, pagelength: number, range: number[], showPage: number, setPage: Dispatch<SetStateAction<number>>, setPagelength: Dispatch<SetStateAction<number>>, children?: React.ReactNode | React.ReactNode[], setSamplesToAdd: Dispatch<SetStateAction<number>>, addSamplesToCart: () => void }> = ({count, pagelength, range, showPage, setPage, setPagelength, children, setSamplesToAdd, addSamplesToCart}) => {
+  const windowSize = useWindowSize()
+  
   return (
-    <div className='px-16 mb-6'>         
-      <div className="flex flex-row w-full items-center mt-3 mb-2">
-        <Count count={count}/>
-        <Cart pagelength={pagelength} setSamplesToAdd={setSamplesToAdd} addSamplesToCart={addSamplesToCart}/>
+    <div className={`${windowSize.width && windowSize.width < 900 ? "px-5" : "px-16"} mb-6`}>
+      {(windowSize.width && windowSize.width < 1100) ? ( 
+        <div className="mt-3">
+          <div className='flex flex-row w-full items-center mb-3'>
+            <Count count={count}/>
+            <Cart pagelength={pagelength} setSamplesToAdd={setSamplesToAdd} addSamplesToCart={addSamplesToCart}/>
+            <div className='mx-auto'></div>
+            <ShowRows pagelength={pagelength} setPagelength={setPagelength} setPage={setPage}/>
+            {children}
+          </div>
+          <div className='flex flex-row justify-center'>
+            <Pages range={range} page={showPage} setPage={setPage} />
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-row w-full items-center mt-3 mb-2">
+          <Count count={count}/>
+          <Cart pagelength={pagelength} setSamplesToAdd={setSamplesToAdd} addSamplesToCart={addSamplesToCart}/>
 
-        <div className="mx-auto">
-          <Pages range={range} page={showPage} setPage={setPage} />
-        </div>     
+          <div className="mx-auto">
+            <Pages range={range} page={showPage} setPage={setPage} />
+          </div>     
 
-        <ShowRows pagelength={pagelength} setPagelength={setPagelength} setPage={setPage}/>
-        {children}
-      </div>
+          <ShowRows pagelength={pagelength} setPagelength={setPagelength} setPage={setPage}/>
+          {children}
+        </div>
+      )}  
     </div>
   )
 }
@@ -35,10 +53,10 @@ const Cart: React.FC<{pagelength: number, setSamplesToAdd: Dispatch<SetStateActi
   return (
     <OverlayTrigger trigger="click" placement="right" rootClose={true} overlay={
         <Popover id="popover-basic" className={`bg-white rounded-xl p-2 text-center border-2 border-[${Colors.dark}]`}>
-          <Popover.Header as="h3" className='mb-2'>Here you choose the first <br/> samples from the top.</Popover.Header>
+          <Popover.Header as="h3" className='mb-2'>Choose how many samples<br/>from the top you want to<br/>add to the cart.</Popover.Header>
           <Popover.Body>
-            <div className='flex flex-row justify-center'>
-              <select className='text-center text-xl w-[3vw]' onChange={(e) => setSamplesToAdd(Number(e.target.value))}>
+            <div className='flex flex-row justify-center gap-3'>
+              <select className={`text-center w-fit text-lg rounded-lg border-2 border-[${Colors.dark}]`} onChange={(e) => setSamplesToAdd(Number(e.target.value))}>
                 <option disabled selected hidden>0</option>
                 <option value={pagelength/5}>{pagelength/5}</option>
                 <option value={pagelength*2/5}>{pagelength*2/5}</option>
@@ -46,12 +64,12 @@ const Cart: React.FC<{pagelength: number, setSamplesToAdd: Dispatch<SetStateActi
                 <option value={pagelength*4/5}>{pagelength*4/5}</option>
                 <option value={pagelength}>all</option>
               </select>
-              <button onClick={addSamplesToCart} className={`bg-[${Colors.light}] px-4 py-1 rounded-xl ml-2`}>Add</button>
+              <button onClick={addSamplesToCart} className={`w-fit px-3 py-1 text-lg rounded-lg border-2 border-[${Colors.dark}] bg-[#D8E9D1] hover:bg-[#bfdab4] transition-colors ease-in-out text-[${Colors.dark}]`}>Add</button>
             </div>
           </Popover.Body>
         </Popover>
       }>
-        <button className='bg-gray-300 text-3xl rounded-xl p-1 ml-2'><BiCartAdd/></button>
+        <button className={`bg-white text-[${Colors.dark}] hover:bg-[#bfdab4] transition-colors ease-in-out border-[${Colors.light}] border-2 text-3xl rounded-xl p-1 ml-2`}><BiCartAdd/></button>
       </OverlayTrigger>    
   )
 }

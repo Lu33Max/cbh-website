@@ -19,6 +19,7 @@ import { usePathname } from "next/navigation";
 import { Colors } from "~/common/styles";
 import Link from "next/link";
 import AutoComplete from "~/components/search/normal/autofill";
+import useWindowSize from "~/utils/window";
 
 const Home: NextPage = () => {
   return (
@@ -114,6 +115,8 @@ const Content: React.FC = () => {
   const [showFilter, setShowFilter] = useState<boolean>(false)
   const [categoryQuery, setCategoryQuery] = useState<string>("Overall");
 
+  const windowSize = useWindowSize()
+
   const { data: samples } = api.samples.getAll.useQuery(
     { pages: page, lines: pagelength, search: search, filter: filter }
   )
@@ -157,29 +160,46 @@ const Content: React.FC = () => {
   }
 
   return (
-    <div className='max-h-[calc(100dvh-80px)] overflow-y-scroll font-poppins'>
+    <div className='max-h-[calc(100dvh-80px)] overflow-y-scroll font-poppins overflow-x-hidden'>
       <div className={`flex flex-row w-full items-center justify-center text-[${Colors.dark}] border-[${Colors.dark}]`}>
-        <div className="w-full border-2 border-solid h-1 border-inherit rounded-3xl m-5"></div>
-        <h1 className="text-5xl mt-5 ml-5 mb-2 flex-grow flex-shrink-0 whitespace-nowrap"><b>OVERALL PRODUCT SEARCH</b></h1>
-        <div className="w-full border-2 border-solid h-1 border-inherit rounded-3xl m-5"></div>
+        {(windowSize.width && windowSize.width < 900) ? ( 
+          <>
+            <h1 className="text-5xl mt-5 ml-5 mb-2 text-center"><b>OVERALL PRODUCT SEARCH</b></h1>
+          </> 
+        ) : (
+          <>
+            <div className="w-full border-2 border-solid h-1 border-inherit rounded-3xl m-5"></div>
+            <h1 className="text-5xl mt-5 ml-5 mb-2 whitespace-nowrap"><b>OVERALL PRODUCT SEARCH</b></h1>
+            <div className="w-full border-2 border-solid h-1 border-inherit rounded-3xl m-5"></div>
+          </>
+        )}
       </div>
       
-      <div className="px-20">
-        <p className={`my-7 text-xl text-center text-[${Colors.dark}]`}>
+      <div className={`${windowSize.width && windowSize.width < 900 ? "px-5" : "px-20"}`}>
+        {(windowSize.width && windowSize.width < 900) ? ( 
+          <p className={`my-7 text-xl text-center text-[${Colors.dark}]`}>
           <i>
             Overall search is a tailor-made solution to improve your search by understanding the precise needs and search 
-            behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
-            to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
-            human tissue samples, and more for research purposes.
+            behavior of life science scientists and biomedical researchers worldwide.
           </i>
         </p>
+        ) : (
+          <p className={`my-7 text-xl text-center text-[${Colors.dark}]`}>
+            <i>
+              Overall search is a tailor-made solution to improve your search by understanding the precise needs and search 
+              behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
+              to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
+              human tissue samples, and more for research purposes.
+            </i>
+          </p>
+        )}
 
         <div className="flex flex-row text-3xl mt-2 mb-4 items-center font-extralight">
           <Link className="relative top-1" href={"/"}><BiHome/></Link>
           <label className="mx-1">|</label>
-          <Link className="text-xl relative top-1" href={"/search/newOverall"}>Overall Search</Link>
+          <Link className="text-xl relative top-1" href={"/search/overall"}>Overall Search</Link>
           <label className="mx-1">|</label>
-          <Link className="text-xl relative top-1" href={`search/newOverall?c=${encodeURI(categoryQuery)}`}>{categoryQuery}</Link>
+          <Link className="text-xl relative top-1" href={`/search/overall?c=${encodeURI(categoryQuery)}`}>{categoryQuery}</Link>
         </div>
 
         <div className="flex flex-row w-full">
@@ -192,7 +212,7 @@ const Content: React.FC = () => {
               </svg>
             </button>
 
-            <select className={`text-xl mx-3 text-[${Colors.dark}] h-10 flex flex-row pl-2 pr-8 rounded-lg bg-transparent appearance-none bg-[length:1.3rem_auto] bg-[url('/ArrowDown.png')] bg-no-repeat bg-[8.5vw] w-[10vw]`} value={categoryQuery} onChange={(e) => setCategoryQuery(e.target.value)}>
+            <select className={`text-xl mx-3 text-[${Colors.dark}] h-10 flex flex-row pl-2 pr-8 rounded-lg bg-transparent appearance-none bg-[length:1.3rem_auto] bg-[url('/ArrowDown.png')] bg-no-repeat bg-[170px] w-[200px]`} value={categoryQuery} onChange={(e) => setCategoryQuery(e.target.value)}>
               <option value="Overall">Overall</option>
               <option value="Pregnancy">Pregnancy</option>
               <option value="Infectious Diseases">Infectious Diseases</option>
@@ -233,24 +253,24 @@ const Content: React.FC = () => {
           <div className={`grid ${showFilter ? "grid-rows-[2fr] mt-4" : "grid-rows-[0fr]"} transition-all ease-in-out`}>
             {/* Input fields */}   
             <div className={`px-5 items-center justify-center overflow-hidden ${showFilter ? "mb-2" : ""}`}>
-              <div className="grid grid-cols-4 gap-2 max-w-full">
+              <div className={`grid ${windowSize.width && windowSize.width < 900 ? "grid-cols-2" : "grid-cols-4"} gap-2 max-w-full`}>
                 {/* CBH Master ID */}
-                <div className="items-center text-center w-full">
-                  <input type="text" value={filter.CBH_Master_ID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onChange={e => {
+                <div className="items-center text-center">
+                  <input type="text" value={filter.CBH_Master_ID.value} className="bg-gray-50 w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHMasterID" onChange={e => {
                     const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
                     setFilter(filter => ({...filter, CBH_Master_ID: {value: temp, mandatory: filter.CBH_Master_ID.mandatory}}))
                   }}/>
                 </div>
                 {/* CBH Donor ID */}
                 <div className="items-center text-center">
-                  <input type="text" value={filter.CBH_Donor_ID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1  items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onChange={e => {
+                  <input type="text" value={filter.CBH_Donor_ID.value} className="bg-gray-50 w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHDonorID" onChange={e => {
                     const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
                     setFilter(filter => ({...filter, CBH_Donor_ID: {value: temp, mandatory: filter.CBH_Donor_ID.mandatory}}))
                   }}/>
                 </div>
                 {/* CBH Sample ID */}
                 <div className="items-center text-center">
-                  <input type="text" value={filter.CBH_Sample_ID.value} className="bg-gray-50 min-w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onChange={e => {
+                  <input type="text" value={filter.CBH_Sample_ID.value} className="bg-gray-50 w-full rounded-lg px-2 py-1 items-center justify-center shadow-md text-center text-lg" placeholder="CBHSampleID" onChange={e => {
                     const temp = e.currentTarget.value.length > 0 ? e.currentTarget.value : undefined
                     setFilter(filter => ({...filter, CBH_Sample_ID: {value: temp, mandatory: filter.CBH_Sample_ID.mandatory}}))
                   }}/>
@@ -284,8 +304,6 @@ const Content: React.FC = () => {
                     <button className="border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 w-full shadow-md rounded-lg">Price</button>
                   </OverlayTrigger>
                 </div>
-              </div>
-              <div className="grid grid-cols-4 max-w-full gap-2 mt-2">
                 {/* General Data */}
                 <div className="items-center text-center">
                   <OverlayTrigger trigger="click" placement="bottom" rootClose={true} overlay={

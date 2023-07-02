@@ -9,7 +9,7 @@ import { authOptions } from "~/server/auth";
 export default function LoginPage({ providers }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
-      <div className="relative bg-gradient-to-br from-[#1c6641] to-[#9DC88D]">
+      <div className="min-h-full max-h-full min-w-full max-w-full overflow-hidden fixed bg-gradient-to-br from-[#1c6641] to-[#9DC88D]">
         <div className="absolute inset-0 w-full h-full object-cover">
           <Image src="/bg.png" alt="background" fill={true}/>
         </div>

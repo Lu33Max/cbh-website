@@ -11,18 +11,18 @@ import Image from "next/image";
 const SignUp: NextPage = () => {
   return (
     <>
-    <div className="relative bg-gradient-to-br from-[#1c6641] to-[#9DC88D]">
-      <div className="absolute inset-0 w-full h-full object-cover">
-        <Image src="/bg.png" alt="Hintergrundbild" fill={true} />
-      </div>
-      <section className="min-h-screen flex flex-col justify-center items-center  font-poppins">
-        <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
-          <div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10 backdrop-blur-sm shadow-xl shadow-black/30">
-            <SignUpForm />
-          </div>
+      <div className="min-h-full max-h-full min-w-full max-w-full overflow-hidden fixed bg-gradient-to-br from-[#1c6641] to-[#9DC88D]">
+        <div className="absolute inset-0 w-full h-full object-cover">
+          <Image src="/bg.png" alt="Hintergrundbild" fill={true} />
         </div>
-      </section>
-    </div>
+        <section className="min-h-screen flex flex-col justify-center items-center  font-poppins">
+          <div className="container mx-auto px-6 py-12 h-full flex justify-center items-center">
+            <div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10 backdrop-blur-sm shadow-xl shadow-black/30">
+              <SignUpForm />
+            </div>
+          </div>
+        </section>
+      </div>
     </>
   );
 };

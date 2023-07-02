@@ -9,6 +9,7 @@ import ClickContext from '~/context/click';
 import { Colors } from '~/common/styles';
 import { type IOptionalSample, type IOptionalTableSample, type ITableSample } from '~/common/types';
 import Header from './header';
+import useWindowSize from '~/utils/window';
 
 type props = { 
   page: number,
@@ -22,7 +23,6 @@ type props = {
 }
 
 const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setPage, setPagelength, expert, filterNormal}) => {
-
   const [cartSamples, setCartSamples] = useContext(ClickContext)
   const [range, setRange] = useState<number[]>([])
   const [sortBy, setSortBy] = useState('');
@@ -41,6 +41,8 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
   const [activeColumns, setActiveColumns] = useState<string[]>(defaultColumns)
   const [bufferColumns, setBufferColumns] = useState<string[]>(defaultColumns)
   const [filterState, setFilterState] = useState<INormalFilter | undefined>(filterNormal)
+
+  const windowSize = useWindowSize()
 
   for (let i = 0; i < pagelength; i++) {
     defaultShow.push(false)
@@ -308,7 +310,7 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
     setCartSamples([...cartSamples, ...tempArray])
   }
 
-  const test: React.ReactNode = <>
+  const settingsButton: React.ReactNode = <>
     {expert && (
       <button className='text-xl mx-3' onClick={() => setSettings(!settings)}><BiCog/></button>
     )}
@@ -318,7 +320,7 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
   return (
     <> 
       <div className="my-5 font-poppins">
-        <Header count={count} pagelength={pagelength} range={range} showPage={showPage} setPage={setPage} setPagelength={setPagelength} setSamplesToAdd={setSamplesToAdd} addSamplesToCart={addSamplesToCart}>{test}</Header>
+        <Header count={count} pagelength={pagelength} range={range} showPage={showPage} setPage={setPage} setPagelength={setPagelength} setSamplesToAdd={setSamplesToAdd} addSamplesToCart={addSamplesToCart}>{settingsButton}</Header>
         <div className='px-16 mb-6'>         
           {settings && (
             <div className='my-3'>
@@ -337,16 +339,17 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
             </div>
           )}
         </div>
-        <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto">
+        <div className={`${windowSize.width && windowSize.width < 1000 ? "max-w-[95dvw] overflow-x-auto" : "w-full"}`}>
+        <table className={`w-full text-lg border-separate border-spacing-y-1 overflow-y-auto`}>
           <thead>
             <tr className={`bg-[${Colors.light_light}] text-black font-extralight`}>
-              <th className={`py-4 font-extralight border-dotted rounded-l-xl border-[${Colors.dark}] border-r-[1px]`}>Cart</th>
+              <th className={`py-4 px-2 font-extralight border-dotted rounded-l-xl border-[${Colors.dark}] border-r-[1px]`}>Cart</th>
               {activeColumns.map((column, i) => {
                 return(
-                  <th key={i} className="py-4 font-extralight border-dotted border-black border-r-[1px]"><button onClick={() => {sortBy === "" ? setSortBy(column): setSortBy(""); handleSort(column as SampleKey)}}>{column.replace(/_/g," ")}</button></th>
+                  <th key={i} className="py-4 whitespace-nowrap px-2 font-extralight border-dotted border-black border-r-[1px]"><button onClick={() => {sortBy === "" ? setSortBy(column): setSortBy(""); handleSort(column as SampleKey)}}>{column.replace(/_/g," ")}</button></th>
                 )
               })}
-              <th className="py-4 font-extralight rounded-r-xl">Details</th>
+              <th className="py-4 px-2 font-extralight rounded-r-xl">Details</th>
             </tr>
           </thead>
           <tbody>
@@ -419,6 +422,7 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
             ))}
           </tbody>
         </table>
+        </div>
       </div>
       <Header count={count} pagelength={pagelength} range={range} showPage={showPage} setPage={setPage} setPagelength={setPagelength} setSamplesToAdd={setSamplesToAdd} addSamplesToCart={addSamplesToCart}/>
     </>

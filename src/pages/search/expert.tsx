@@ -97,7 +97,7 @@ const ExpertSearch: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen max-h-screen overflow-hidden bg-gray-100 flex flex-col">
+      <div className="min-h-full max-h-full min-w-full max-w-full overflow-hidden bg-gray-100 fixed flex flex-col">
         <HeaderNEW />
         <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins'>
           <div className="flex flex-row w-full items-center justify-center ">
