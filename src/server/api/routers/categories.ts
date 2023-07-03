@@ -519,27 +519,4 @@ export const categoriesRouter = createTRPCRouter ({
             }
             return ctx.prisma.categories.findMany()
         }),
-
-    //Delete
-    delete: publicProcedure
-        .input( z.string() )
-        .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.categories.delete({
-                where: {
-                    mainCategory: input
-                }
-            })
-        }),
-
-    deleteMany: publicProcedure
-        .input( z.string().array() )
-        .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.categories.deleteMany({
-                where: {
-                    mainCategory: {
-                        in: input
-                    }
-                }
-            })
-        }),
 })
