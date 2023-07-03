@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
-import { Prisma, type Samples } from "@prisma/client";
+import { Categories, Prisma, type Samples } from "@prisma/client";
 import { GroupFilterSchema, GroupSchema, NormalFilterSchema, type IGroup, type INormalFilter } from "~/common/filter/filter";
 import { type IOptionalSample } from "~/common/types";
 
@@ -43,13 +43,35 @@ export const sampleRouter = createTRPCRouter({
             pages: z.number(),
             lines: z.number(),
             search: z.string().optional(),
+            category: z.string(),
             filter: NormalFilterSchema
         }))
         .query(async ({ ctx, input }) => {
+            let category: Categories[] = await ctx.prisma.categories.findMany({where: { mainCategory: input.category } })
+
+            if(category === null || category.length === 0){
+                category = await ctx.prisma.categories.findMany({where: { subCategory: input.category }})
+            }
+
+            const categoryString: string[] = []
+            
+            category.map((cat, i) => {
+                const filter = cat.filter
+                if(i !== category.length && category.length > 1){
+                    filter?.slice(0, -1)
+
+                }
+                if(i !== 0){
+                    filter?.slice(0, 1)
+                }
+                if(filter)
+                    categoryString.push(filter)
+            })
+
             const allOptionals = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
                 where: {
-                    AND: mapOptional(input.filter, input.search)
+                    AND: [...mapOptional(input.filter, input.search), ...CategoryStringToObject(categoryString.join(", ") !== "" ? categoryString.join(", ") : "[]")]
                 },
                 orderBy: {
                     CBH_Sample_ID: 'desc',
@@ -58,20 +80,6 @@ export const sampleRouter = createTRPCRouter({
                     CBH_Sample_ID: true
                 }
             });
-
-            console.log(CategoryStringToObject(JSON.stringify([
-                {
-                    Diagnosis: {
-                        contains: "pregnant",
-                        equals: "test"
-                    },
-                },
-                {
-                    Pregnancy_Week: {
-                        gte: 1,
-                    }
-                }
-            ])))
 
             const optionalUniqueSampleIDs = allOptionals.slice((input.pages-1) * input.lines, input.pages * input.lines)
             const optionalsLength = allOptionals.length
@@ -243,7 +251,7 @@ export const sampleRouter = createTRPCRouter({
                         {
                             OR: mapSearch(input.filter, input.search)
                         },
-                        
+                        ...CategoryStringToObject(categoryString.join(", ") !== "" ? categoryString.join(", ") : "[]")
                     ]
                 },
                 orderBy: {
@@ -329,17 +337,38 @@ export const sampleRouter = createTRPCRouter({
         .input(z.object({ 
             pages: z.number().optional(), 
             lines: z.number().optional(), 
-            search: z.string().optional(), 
+            search: z.string().optional(),
+            category: z.string(),
             filter: NormalFilterSchema
         }))
         .query(async ({ctx, input}) => {
+            let category: Categories[] = await ctx.prisma.categories.findMany({where: { mainCategory: input.category } })
+
+            if(category === null || category.length === 0){
+                category = await ctx.prisma.categories.findMany({where: { subCategory: input.category }})
+            }
+
+            const categoryString: string[] = []
+            
+            category.map((cat, i) => {
+                const filter = cat.filter
+                if(i !== category.length && category.length > 1){
+                    filter?.slice(0, -1)
+
+                }
+                if(i !== 0){
+                    filter?.slice(0, 1)
+                }
+                if(filter)
+                    categoryString.push(filter)
+            })
             
             const result = await ctx.prisma.samples.findMany({
                 distinct: ['CBH_Sample_ID'],
                 take: input.lines, 
                 skip: (input.pages && input.lines) ? (input.pages -1) * input.lines : 0,
                 where: {
-                    AND: mapMandatory(input.filter, input.search)
+                    AND: [...mapMandatory(input.filter, input.search), ...CategoryStringToObject(categoryString.join(", ") !== "" ? categoryString.join(", ") : "[]")]
                 },
                 orderBy: {
                     CBH_Sample_ID: 'desc',

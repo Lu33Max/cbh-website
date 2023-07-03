@@ -311,7 +311,7 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
   }
 
   const settingsButton: React.ReactNode = <>
-    {expert && (
+    {(expert && windowSize.width && windowSize.width > 600) && (
       <button className='text-xl mx-3' onClick={() => setSettings(!settings)}><BiCog/></button>
     )}
   </>

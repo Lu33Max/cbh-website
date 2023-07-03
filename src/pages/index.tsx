@@ -46,18 +46,18 @@ const Content: React.FC = () => {
   const settings = {
     arrows: true,
     autoplay: true,
-    dots: true,
+    dots: windowSize.width && windowSize.width < 500 ? false : true,
     infinite: true,
     speed: 500,
     autoplaySpeed: 5000,
     slidesToShow: Math.floor(windowSize.width ? windowSize.width / 250 : 6),
-    slidesToScroll: 2,   
+    slidesToScroll: windowSize.width && windowSize.width < 500 ? 1 : 2,
   };
 
   const style = "items-center justify-center text-center mx-10 "
 
   return (
-    <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins'>
+    <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins overflow-x-hidden'>
       <div className={`relative w-full h-fit`}>
         <Image
           src="/home/BannerNoFont.png"
@@ -137,7 +137,7 @@ const Content: React.FC = () => {
       <div className="mt-5 pt-5">
         <Carousel type={CarouselType.categories} settings={settings} style={style}/>
       </div>
-      <div className="mt-10 flex w-full flex-row items-center justify-center">
+      <div className={`${windowSize.width && windowSize.width < 500 ? "mt-3" : "mt-10"} flex w-full flex-row items-center justify-center`}>
         <h1 className="relative">
           <span className="headline inline-block">
             Popular Samples
@@ -146,7 +146,7 @@ const Content: React.FC = () => {
         </h1>
       </div>
 
-      <div className="mb-10 mt-8 mx-40 grid w-auto grid-cols-3 items-center justify-center text-center justify-items-center">
+      <div className={`mb-10 mt-8 items-center text-center flex ${windowSize.width && windowSize.width < 600 ? "flex-col gap-12" : "flex-row"} justify-evenly`}>
         <div className="relative bottom-0 left-0 hover:bottom-2 hover:left-2 duration-300 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] hover:shadow-[-45px_45px_0px_0px_rgba(157,200,141,0.25)] transition-all ease-in-out">
           <div className="duration-300 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] hover:shadow-[-23px_23px_0px_0px_rgba(157,200,141,0.25)]">
             <Image
@@ -197,7 +197,7 @@ const Content: React.FC = () => {
               </div>
             </div>
           </div>
-          </div>
+        </div>
       </div>
       <div className="mb-10 mt-20 flex w-full flex-row items-center justify-center">
         <h1 className="relative">

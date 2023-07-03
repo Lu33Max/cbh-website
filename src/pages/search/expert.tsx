@@ -20,6 +20,7 @@ import ModalSaveExpert from '~/components/search/expert/modalSave';
 import ModalLoadExpert from '~/components/search/expert/modalLoad';
 import { Colors } from '~/common/styles';
 import Footer from '~/components/overall/footer';
+import useWindowSize from '~/utils/window';
 
 const defaultGroup: IGroup = {
   not: false,
@@ -64,6 +65,8 @@ const ExpertSearch: NextPage = () => {
   const pathname = usePathname();
   const { f } = router.query
 
+  const windowSize = useWindowSize()
+
   //Test
   const { data: samples, refetch: refetchSamples } = api.samples.applyFilter.useQuery({ group: newFilter, pages: page, pagelength: pagelength })
   const { data: count } = api.samples.countExpert.useQuery({ group: newFilter })
@@ -99,33 +102,53 @@ const ExpertSearch: NextPage = () => {
 
       <div className="min-h-full max-h-full min-w-full max-w-full overflow-hidden bg-gray-100 fixed flex flex-col">
         <HeaderNEW />
-        <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins'>
-          <div className="flex flex-row w-full items-center justify-center ">
-            <div className="w-full border-2 border-solid h-1 border-green-900 rounded-3xl m-5"></div>
-            <h1 className="text-5xl mt-5 ml-5 mb-2 text-green-900 flex-grow flex-shrink-0 whitespace-nowrap"><b>EXPERT PRODUCT SEARCH</b></h1>
-            <div className="w-full border-2 border-solid h-1 border-green-900 rounded-3xl m-5"></div>
+        <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins overflow-x-hidden'>
+          <div className={`flex flex-row w-full items-center justify-center text-[${Colors.dark}] border-[${Colors.dark}]`}>
+            {(windowSize.width && windowSize.width < 900) ? ( 
+              <>
+                <h1 className="text-5xl mt-5 ml-5 mb-2 text-center"><b>EXPERT PRODUCT SEARCH</b></h1>
+              </> 
+            ) : (
+              <>
+                <div className="w-full border-2 border-solid h-1 border-inherit rounded-3xl m-5"></div>
+                <h1 className="text-5xl mt-5 ml-5 mb-2 whitespace-nowrap"><b>EXPERT PRODUCT SEARCH</b></h1>
+                <div className="w-full border-2 border-solid h-1 border-inherit rounded-3xl m-5"></div>
+              </>
+            )}
           </div>
-          <div className='px-16'>           
-            <p className={`my-7 text-xl text-center text-[${Colors.dark}]`}>
-              <i>Expert search is a tailor-made solution to improve your search by understanding the precise needs and search 
-              behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
-              to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
-              human tissue samples, and more for research purposes.</i>
-            </p>
-            <InitialContentEditor self={state}/>
-            <div className="flex flex-row w-full mt-3">
-              <div className='flex flex-row w-[50%] justify-start'>
-                <button className={`w-[10rem] px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-l-2xl border-solid border-2 bg-[#D8E9D1] hover:bg-[#bfdab4] transition-colors ease-in-out border-[${Colors.dark}] border-r-0`} onClick={() => applyFilter()}>Apply Filter</button>
-                <button className={`w-[10rem] px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-r-2xl border-solid border-2 bg-[#F7D59B] hover:bg-[#d8b475] transition-colors ease-in-out border-[${Colors.dark}]`} onClick={() => state.set({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true }], groups: [] },)}>Reset</button>
+          <div className={`${windowSize.width && windowSize.width < 900 ? "px-5" : "px-20"}`}>
+            {(windowSize.width && windowSize.width < 900) ? ( 
+              <p className={`my-7 text-xl text-center text-[${Colors.dark}]`}>
+                <i>
+                  Expert search is a tailor-made solution to improve your search by understanding the precise needs and search 
+                  behavior of life science scientists and biomedical researchers worldwide.
+                </i>
+              </p>
+            ) : (
+              <p className={`my-7 text-xl text-center text-[${Colors.dark}]`}>
+                <i>
+                  Expert search is a tailor-made solution to improve your search by understanding the precise needs and search 
+                  behavior of life science scientists and biomedical researchers worldwide. Therefore, we provide you with a wide array of search options, helping to dive deeper into our bio inventory 
+                  to land on your matching human biospecimens within no time. Our inventory is vast, we offer well-annotated, high-quality biological specimens such as human serum, plasma, whole blood, 
+                  human tissue samples, and more for research purposes.
+                </i>
+              </p>
+            )}
+            <section className='max-w-[95dvw] w-full overflow-x-auto'>
+              <InitialContentEditor self={state}/>
+            </section>
+            <div className={`flex ${windowSize.width && windowSize.width < 800 ? "flex-col" : "flex-row"} w-full mt-3`}>
+              <div className={`flex flex-row ${windowSize.width && windowSize.width < 800 ? "min-w-full mb-2" : "w-[50%]"}`}>
+                <button className={`${windowSize.width && windowSize.width < 800 ? "w-full" : "w-[10rem]"} px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-l-2xl border-solid border-2 bg-[#D8E9D1] hover:bg-[#bfdab4] transition-colors ease-in-out border-[${Colors.dark}] border-r-0`} onClick={() => applyFilter()}>Apply Filter</button>
+                <button className={`${windowSize.width && windowSize.width < 800 ? "w-full" : "w-[10rem]"} px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-r-2xl border-solid border-2 bg-[#F7D59B] hover:bg-[#d8b475] transition-colors ease-in-out border-[${Colors.dark}]`} onClick={() => state.set({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: true }], groups: [] },)}>Reset</button>
               </div>
-              <div className='flex flex-row w-[50%] justify-end'>
-                <button className={`w-[10rem] px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-l-2xl border-solid border-2 bg-[#D8E9D1] hover:bg-[#bfdab4] transition-colors ease-in-out border-[${Colors.dark}] border-r-0`} onClick={() => setShowLoad(true)}>Load Filter</button>
-                <button className={`w-[10rem] px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-r-2xl border-solid border-2 bg-[#F7D59B] hover:bg-[#d8b475] transition-colors ease-in-out border-[${Colors.dark}]`} onClick={() => setShowSave(true)}>Save Filter</button>
+              <div className={`flex flex-row ${windowSize.width && windowSize.width < 800 ? "min-w-full mb-2" : "w-[50%] justify-end"}`}>
+                <button className={`${windowSize.width && windowSize.width < 800 ? "w-full" : "w-[10rem]"} px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-l-2xl border-solid border-2 bg-[#D8E9D1] hover:bg-[#bfdab4] transition-colors ease-in-out border-[${Colors.dark}] border-r-0`} onClick={() => setShowLoad(true)}>Load Filter</button>
+                <button className={`${windowSize.width && windowSize.width < 800 ? "w-full" : "w-[10rem]"} px-4 py-1 text-xl text-center text-[${Colors.dark}] rounded-r-2xl border-solid border-2 bg-[#F7D59B] hover:bg-[#d8b475] transition-colors ease-in-out border-[${Colors.dark}]`} onClick={() => setShowSave(true)}>Save Filter</button>
               </div>
-
-              <ModalSaveExpert showModal={showSave} setShowModal={setShowSave} filter={unfreeze(state)}/>
-              <ModalLoadExpert showModal={showLoad} setShowModal={setShowLoad} filter={state} />
             </div>
+            <ModalSaveExpert showModal={showSave} setShowModal={setShowSave} filter={unfreeze(state)}/>
+            <ModalLoadExpert showModal={showLoad} setShowModal={setShowLoad} filter={state} />
           </div>
           <div className="mx-4 my-2">
             <Table page={page} pagelength={pagelength} count={count} optionalSamples={samples} setPage={setPage} setPagelength={setPagelength} expert={true}/>
@@ -158,7 +181,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
   }
 
   return <>
-    <div className="w-full py-1 text-lg rounded-3xl mt-3 from-[#164A41] to-[#4D774E] bg-gradient-to-r">
+    <div className="w-fit min-w-full py-1 text-lg rounded-3xl mt-3 from-[#164A41] to-[#4D774E] bg-gradient-to-r">
       <div className='flex flex-row px-5 py-2 font-body font-poppins text-2xl font-thin'>
         <div className='flex flex-row justify-start items-center w-[50%]'>
           <button className={`ml-5 w-[6rem] px-4 py-1 text-lg text-center rounded-l-2xl border-solid border-2 border-[#F1B24A] ${self.not.value === true ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"} `} onClick={() => self.not.set(!self.not.value)}>NOT</button>
@@ -179,10 +202,10 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
           </OverlayTrigger>
         </div>
         <div className='flex flex-row justify-end items-center w-[50%] pr-3'>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: self.mandatory.value === true ? true : false}], groups: [] }))}>New Group</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: self.mandatory.value === true ? true : false}]))}>New Rule</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-400 border-orange-400' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "deactivate": "activate"}</button>
-          <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {SetOptional(self, !self.mandatory.value)}}>{self.mandatory.value ? "!": "?"}</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] whitespace-nowrap' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: true, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: self.mandatory.value === true ? true : false}], groups: [] }))}>New Group</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D] whitespace-nowrap' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: self.mandatory.value === true ? true : false}]))}>New Rule</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-r-2xl border-solid border-2 bg-orange-400 border-orange-400 whitespace-nowrap' onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "deactivate": "activate"}</button>
+          <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition whitespace-nowrap" onClick={() => {SetOptional(self, !self.mandatory.value)}}>{self.mandatory.value ? "!": "?"}</button>
         </div>
       </div>
 
@@ -192,9 +215,9 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated} values={filterState.values}/>
             <TypeSelect col={filterState.col} type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
-            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
-            <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
-            <button className="relative right-8 w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
+            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition whitespace-nowrap" onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
+            <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition whitespace-nowrap" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))} >delete</button>
+            <button className="relative right-8 w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition whitespace-nowrap" onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
           </div>
           <div className="mx-10">
             {(filterState.type.value === 'in') && (  
@@ -237,16 +260,16 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
     <div className="w-full py-1 text-lg rounded-3xl mt-1 bg-[rgb(131,182,94)] to-[#4D774E] bg-gradient-to-r">
       <div className='flex flex-row px-5 py-2 font-body font-poppins text-2xl font-thin'>
         <div className='flex flex-row justify-start items-center w-[50%]'>
-          <button className={`ml-5 w-[6rem] px-4 py-1 text-lg text-center rounded-l-2xl border-solid border-2 border-[#F1B24A] ${self.not.value === true ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"} `} onClick={() => self.not.set(!self.not.value)}>NOT</button>
-          <button className={`w-[6rem] px-4 py-1 text-lg text-center border-solid border-y-2 border-[#F1B24A] ${self.link.value === "AND" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('AND')}>AND</button>
-          <button className={`w-[6rem] px-4 py-1 text-lg text-center rounded-r-2xl border-solid border-2 border-[#F1B24A] ${self.link.value === "OR" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('OR')}>OR</button>
+          <button className={`ml-5 w-[6rem] px-4 py-1 text-lg text-center rounded-l-2xl border-solid border-2 border-[#F1B24A] whitespace-nowrap ${self.not.value === true ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"} `} onClick={() => self.not.set(!self.not.value)}>NOT</button>
+          <button className={`w-[6rem] px-4 py-1 text-lg text-center border-solid border-y-2 border-[#F1B24A] whitespace-nowrap ${self.link.value === "AND" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('AND')}>AND</button>
+          <button className={`w-[6rem] px-4 py-1 text-lg text-center rounded-r-2xl border-solid border-2 border-[#F1B24A] whitespace-nowrap ${self.link.value === "OR" ? "bg-[#F1B24A] text-white" : "bg-transparent text-white"}`} onClick={() => self.link.set('OR')}>OR</button>
         </div>
         <div className='flex flex-row justify-end items-center w-[50%] pr-3'>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D]' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: self.mandatory.value === true ? true : false, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: self.mandatory.value === true ? true : false}], groups: [] }))}>New Group</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D]' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: self.mandatory.value === true ? true : false}]))}>New Rule</button>
-          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-orange-400 border-y-orange-400 border-l-orange-400' disabled={!parent.activated.value} onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "Deactivate": "Activate"}</button>
-          <button className="w-[6rem] border-2 bg-red-500 hover:bg-red-400 border-red-500 hover:border-red-400 text-white py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => parent.groups.set((group) => group.filter((_, index) => index !== i))} >Delete</button>
-          <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" disabled={!parent.mandatory.value} onClick={() => {SetOptional(self, !self.mandatory.value)}}>{self.mandatory.value ? "!": "?"}</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white rounded-l-2xl border-solid border-2 bg-[#9DC88D] border-[#9DC88D] whitespace-nowrap' onClick={() => self.groups.set(groups => (groups || []).concat({ not: false, link: 'AND', activated: true, mandatory: self.mandatory.value === true ? true : false, filter: [{ col: 'CBH_Donor_ID', type: 'equal', values: [] , activated: true, mandatory: self.mandatory.value === true ? true : false}], groups: [] }))}>New Group</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-[#9DC88D] border-y-[#9DC88D] whitespace-nowrap' onClick={() => self.filter.set(filters => (filters || []).concat([{ col: 'CBH_Donor_ID', type: 'equal', values: [], activated: true, mandatory: self.mandatory.value === true ? true : false}]))}>New Rule</button>
+          <button className='w-[10rem] px-4 py-1 text-lg text-center text-white border-solid border-2 bg-orange-400 border-y-orange-400 border-l-orange-400 whitespace-nowrap' disabled={!parent.activated.value} onClick={() => {SetActivated(self, !self.activated.value)}}>{self.activated.value ? "Deactivate": "Activate"}</button>
+          <button className="w-[6rem] border-2 bg-red-500 hover:bg-red-400 border-red-500 hover:border-red-400 text-white py-1 text-lg text-center rounded-r-2xl outline-none transition whitespace-nowrap" onClick={() => parent.groups.set((group) => group.filter((_, index) => index !== i))} >Delete</button>
+          <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition whitespace-nowrap" disabled={!parent.mandatory.value} onClick={() => {SetOptional(self, !self.mandatory.value)}}>{self.mandatory.value ? "!": "?"}</button>
         </div>
       </div>
 
@@ -256,9 +279,9 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
             <ColSelect col={filterState.col} activated={self.activated} filterActivated={filterState.activated} values={filterState.values}/>
             <TypeSelect col={filterState.col} type={filterState.type} values={filterState.values} activated={self.activated} filterActivated={filterState.activated}/>
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
-            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" disabled={!self.activated.value} onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
-            <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))}>Delete</button>
-            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" disabled={!self.mandatory.value} onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
+            <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition whitespace-nowrap" disabled={!self.activated.value} onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
+            <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition whitespace-nowrap" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))}>Delete</button>
+            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition whitespace-nowrap" disabled={!self.mandatory.value} onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
           </div>
           <div className="mx-10">
             {(filterState.type.value === 'in') && (  

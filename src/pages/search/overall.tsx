@@ -118,9 +118,9 @@ const Content: React.FC = () => {
   const windowSize = useWindowSize()
 
   const { data: samples } = api.samples.getAll.useQuery(
-    { pages: page, lines: pagelength, search: search, filter: filter }
+    { pages: page, lines: pagelength, search: search, filter: filter, category: categoryQuery }
   )
-  const { data: count } = api.samples.countNormal.useQuery({ search: search, filter: filter })
+  const { data: count } = api.samples.countNormal.useQuery({ search: search, filter: filter, category: categoryQuery })
 
   useEffect(() => {
     setPage(1)
@@ -143,6 +143,9 @@ const Content: React.FC = () => {
   useEffect(() => {
     if(!(JSON.stringify(filter) === JSON.stringify(defaultFilter))){
       void router.push(`${pathname}?${search ? `q=${encodeURIComponent(search)}&` : ""}f=${encodeURIComponent(JSON.stringify(filter))}&c=${encodeURIComponent(categoryQuery)}`, undefined, {shallow: true})
+    }
+    else {
+      void router.push(`${pathname}?${search ? `q=${encodeURIComponent(search)}&` : ""}c=${encodeURIComponent(categoryQuery)}`, undefined, {shallow: true})
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, categoryQuery])
