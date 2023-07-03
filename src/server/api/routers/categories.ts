@@ -84,7 +84,7 @@ export const categoriesRouter = createTRPCRouter ({
                             AND: [
                                 {
                                     Lab_Parameter: {
-                                        in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA" , "anti-Chlamydia trachomatis IgA", "Human Immunodeficiency Virus deoxyribonucleic acid HIV-DNA","Human Immunodeficiency Virus type 1 ribonucleic acid HIV-1-RNA", "Human Immunodeficiency Virus ribonucleic acid HIV-RNA", "Human Immunodeficiency Virus 1 HIV-1 p24 Ag", "Human Immunodeficiency Virus 1 HIV-1 GT", "Human Immunodeficiency Virus HIV-1 P24 Ab", "Human Immunodeficiency Virus 1 HIV-1 TITER", "Human Immunodeficiency Virus HIV Ab/Ag", "Human Immunodeficiency Virus HIV 1/2 Ab/Ag", "Human Immunodeficiency Virus HIV", "anti-Human Immunodeficiency Virus p24 HIV p24", "anti-Human Immunodeficiency Virus-1/2 HIV-1/2", "Syphilis SYPH", "Syphilis Treponema pallidum", "anti-Syphilis Treponema pallidum IgM", "anti-Syphilis Treponema pallidum IgG", "anti-Syphilis Treponema pallidum"],
+                                        in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA", "anti-Chlamydia trachomatis IgA", "Human Immunodeficiency Virus deoxyribonucleic acid HIV-DNA","Human Immunodeficiency Virus type 1 ribonucleic acid HIV-1-RNA", "Human Immunodeficiency Virus ribonucleic acid HIV-RNA", "Human Immunodeficiency Virus 1 HIV-1 p24 Ag", "Human Immunodeficiency Virus 1 HIV-1 GT", "Human Immunodeficiency Virus HIV-1 P24 Ab", "Human Immunodeficiency Virus 1 HIV-1 TITER", "Human Immunodeficiency Virus HIV Ab/Ag", "Human Immunodeficiency Virus HIV 1/2 Ab/Ag", "Human Immunodeficiency Virus HIV", "anti-Human Immunodeficiency Virus p24 HIV p24", "anti-Human Immunodeficiency Virus-1/2 HIV-1/2", "Syphilis SYPH", "Syphilis Treponema pallidum", "anti-Syphilis Treponema pallidum IgM", "anti-Syphilis Treponema pallidum IgG", "anti-Syphilis Treponema pallidum"],
                                     }
                                 },
                                 {
@@ -220,7 +220,7 @@ export const categoriesRouter = createTRPCRouter ({
                             AND: [
                                 {
                                     Lab_Parameter: {
-                                        in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA" , "anti-Chlamydia trachomatis IgA"],
+                                        in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA", "anti-Chlamydia trachomatis IgA"],
                                         mode: 'insensitive',
                                     },
                                 },
@@ -325,7 +325,7 @@ export const categoriesRouter = createTRPCRouter ({
                             AND: [
                                 {
                                     Lab_Parameter: {
-                                        in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA" , "anti-Chlamydia trachomatis IgA", "Human Immunodeficiency Virus deoxyribonucleic acid HIV-DNA","Human Immunodeficiency Virus type 1 ribonucleic acid HIV-1-RNA", "Human Immunodeficiency Virus ribonucleic acid HIV-RNA", "Human Immunodeficiency Virus 1 HIV-1 p24 Ag", "Human Immunodeficiency Virus 1 HIV-1 GT", "Human Immunodeficiency Virus HIV-1 P24 Ab", "Human Immunodeficiency Virus 1 HIV-1 TITER", "Human Immunodeficiency Virus HIV Ab/Ag", "Human Immunodeficiency Virus HIV 1/2 Ab/Ag", "Human Immunodeficiency Virus HIV", "anti-Human Immunodeficiency Virus p24 HIV p24", "anti-Human Immunodeficiency Virus-1/2 HIV-1/2", "Syphilis SYPH", "Syphilis Treponema pallidum", "anti-Syphilis Treponema pallidum IgM", "anti-Syphilis Treponema pallidum IgG", "anti-Syphilis Treponema pallidum"],
+                                        in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA", "anti-Chlamydia trachomatis IgA", "Human Immunodeficiency Virus deoxyribonucleic acid HIV-DNA","Human Immunodeficiency Virus type 1 ribonucleic acid HIV-1-RNA", "Human Immunodeficiency Virus ribonucleic acid HIV-RNA", "Human Immunodeficiency Virus 1 HIV-1 p24 Ag", "Human Immunodeficiency Virus 1 HIV-1 GT", "Human Immunodeficiency Virus HIV-1 P24 Ab", "Human Immunodeficiency Virus 1 HIV-1 TITER", "Human Immunodeficiency Virus HIV Ab/Ag", "Human Immunodeficiency Virus HIV 1/2 Ab/Ag", "Human Immunodeficiency Virus HIV", "anti-Human Immunodeficiency Virus p24 HIV p24", "anti-Human Immunodeficiency Virus-1/2 HIV-1/2", "Syphilis SYPH", "Syphilis Treponema pallidum", "anti-Syphilis Treponema pallidum IgM", "anti-Syphilis Treponema pallidum IgG", "anti-Syphilis Treponema pallidum"],
                                     }
                                 },
                                 {
@@ -464,7 +464,7 @@ export const categoriesRouter = createTRPCRouter ({
                                 AND: [
                                     {
                                         Lab_Parameter: {
-                                            in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA" , "anti-Chlamydia trachomatis IgA"],
+                                            in: ["Chlamydia pneumoniae IgM","Chlamydia pneumoniae IgG", " anti-Chlamydia trachomatis IgM", "anti-Chlamydia pneumoniae IgG", "anti-Chlamydia trachomatis IgG", "anti-Chlamydia pneumoniae IgA", "anti-Chlamydia trachomatis IgA"],
                                             mode: 'insensitive',
                                         },
                                     },

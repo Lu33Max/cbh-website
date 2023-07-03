@@ -281,7 +281,7 @@ function GroupContentEditor(props: { self: State<IGroup>, parent: State<IGroup>,
             <ChooseValues type={filterState.type} values={filterState.values} col={filterState.col} activated={self.activated} filterActivated={filterState.activated}/>
             <button className="relative w-[10rem] z-10 right-4 bg-orange-400 hover:bg-orange-300 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition whitespace-nowrap" disabled={!self.activated.value} onClick={() => filterState.activated.set(!filterState.activated.value)} >{(!self.activated.value || !filterState.activated.value) ? "Activate" : "Deactivate"}</button>
             <button className="relative right-8 w-fit bg-red-500 hover:bg-red-400 text-white pr-3 pl-6 py-1 text-lg text-center rounded-r-2xl outline-none transition whitespace-nowrap" onClick={() => self.filter.set((filter) => filter.filter((_, index) => index !== i))}>Delete</button>
-            <button className="relative w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition whitespace-nowrap" disabled={!self.mandatory.value} onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
+            <button className="relative right-8 w-fit bg-[#F1B24A] hover:bg-[#e8b25b] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition whitespace-nowrap" disabled={!self.mandatory.value} onClick={() => filterState.mandatory.set(!filterState.mandatory.value)} >{(!self.mandatory.value || !filterState.mandatory.value) ? "?" : "!"}</button>
           </div>
           <div className="mx-10">
             {(filterState.type.value === 'in') && (  
