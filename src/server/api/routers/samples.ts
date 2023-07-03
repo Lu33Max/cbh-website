@@ -110,8 +110,8 @@ export const sampleRouter = createTRPCRouter({
                         },
                         { 
                             Price: { 
-                                lte: input.filter.Price.mandatory? input.filter.Price.max : undefined,
-                                gte: input.filter.Price.mandatory? input.filter.Price.min : undefined, 
+                                lte: input.filter.Price.mandatory ? input.filter.Price.max : undefined,
+                                gte: input.filter.Price.mandatory ? input.filter.Price.min : undefined, 
                             } 
                         },
                         { 
@@ -135,8 +135,8 @@ export const sampleRouter = createTRPCRouter({
                         },
                         { 
                             Quantity: { 
-                                lte: input.filter.Quantity.mandatory? input.filter.Quantity.max : undefined,
-                                gte: input.filter.Quantity.mandatory? input.filter.Quantity.min : undefined, 
+                                lte: input.filter.Quantity.mandatory ? input.filter.Quantity.max : undefined,
+                                gte: input.filter.Quantity.mandatory ? input.filter.Quantity.min : undefined, 
                             } 
                         },
                         { 
@@ -620,11 +620,11 @@ function mapOptional(filter: INormalFilter, search: string | undefined) : Prisma
                     })
                 }
             }
-            else if('min' in filterProp && 'max' in filterProp){
+            else if('min' in filterProp || 'max' in filterProp){
                 map.push({
                     [prop as SampleKey]: {
-                        lte: filterProp.min,
-                        gte: filterProp.max
+                        lte: filterProp.max,
+                        gte: filterProp.min
                     }
                 })
             }
@@ -665,11 +665,11 @@ function mapMandatory(filter: INormalFilter, search: string | undefined) : Prism
                     })
                 }
             }
-            else if('min' in filterProp && 'max' in filterProp){
+            else if('min' in filterProp || 'max' in filterProp){
                 map.push({
                     [prop as SampleKey]: {
-                        lte: filterProp.mandatory ? filterProp.min : undefined,
-                        gte: filterProp.mandatory ? filterProp.max : undefined
+                        lte: filterProp.mandatory ? filterProp.max : undefined,
+                        gte: filterProp.mandatory ? filterProp.min : undefined
                     }
                 })
             }
