@@ -483,7 +483,7 @@ const Content: React.FC = () => {
             <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
               Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
             </span>
-            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-2 ${filter.Matrix.value.length > 0 ? "" : "hidden"}`}>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-3 ${filter.Matrix.value.length > 0 ? "" : "hidden"}`}>
               Matrix:&nbsp;
               {filter.Matrix.value.map((item, i) => (
                 <>
@@ -493,18 +493,17 @@ const Content: React.FC = () => {
               ))}
               <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp1 = filter.Matrix;  temp1.mandatory = !temp1.mandatory; setFilter(filter => ({...filter, Matrix: temp1}))}}>{filter.Matrix.mandatory ? "!": "?"}</button>     
               </span>
-            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Unit.value.length > 0 ? "" : "hidden"}`}>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-3 ${filter.Unit.value.length > 0 ? "" : "hidden"}`}>
               Unit:&nbsp;
               {filter.Unit.value.map((item, i) => (
                 <>
                   {(i !== 0) ? (<>, {item}</>) : (<>{item}</>)}
                   <button className="text-xl relative top-1" onClick={() => {setFilter((filter) =>( {...filter, Unit: {value: filter.Unit.value.filter((_, index) => index !== i), mandatory: filter.Unit.mandatory }})) }}><BiX/></button>
                 </>
-                
               ))}
               <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp2 = filter.Unit;  temp2.mandatory = !temp2.mandatory; setFilter(filter => ({...filter, Unit: temp2}))}}>{filter.Unit.mandatory ? "!": "?"}</button>
             </span>
-            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Lab_Parameter.value.length > 0 ? "" : "hidden"}`}>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-3 ${filter.Lab_Parameter.value.length > 0 ? "" : "hidden"}`}>
               Parameter:&nbsp;
               {filter.Lab_Parameter.value.map((item, i) => (
                 <>
@@ -514,7 +513,7 @@ const Content: React.FC = () => {
               ))}
               <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp3 = filter.Lab_Parameter;  temp3.mandatory = !temp3.mandatory; setFilter(filter => ({...filter, Lab_Parameter: temp3}))}}>{filter.Lab_Parameter.mandatory ? "!": "?"}</button>
             </span>
-            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Result_Interpretation.value.length > 0 ? "" : "hidden"}`}>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-3 ${filter.Result_Interpretation.value.length > 0 ? "" : "hidden"}`}>
               Res.Interpretation:&nbsp;
               {filter.Result_Interpretation.value.map((item, i) => (
                 <>
@@ -524,7 +523,7 @@ const Content: React.FC = () => {
               ))}
                 <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp4 = filter.Result_Interpretation;  temp4.mandatory = !temp4.mandatory; setFilter(filter => ({...filter, Result_Interpretation: temp4}))}}>{filter.Result_Interpretation.mandatory ? "!": "?"}</button>
             </span>
-            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Result_Unit.value.length > 0 ? "" : "hidden"}`}>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-3 ${filter.Result_Unit.value.length > 0 ? "" : "hidden"}`}>
               Res.Unit:&nbsp;
               {filter.Result_Unit.value.map((item, i) => (
                 <>
@@ -534,7 +533,7 @@ const Content: React.FC = () => {
               ))}
               <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp5 = filter.Result_Unit;  temp5.mandatory = !temp5.mandatory; setFilter(filter => ({...filter, Result_Unit: temp5}))}}>{filter.Result_Unit.mandatory ? "!": "?"}</button>
             </span>
-            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.Diagnosis.value.length > 0 ? "" : "hidden"}`}>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-3 ${filter.Diagnosis.value.length > 0 ? "" : "hidden"}`}>
               Diagnosis:&nbsp;
               {filter.Diagnosis.value.map((item, i) => (
                 <>
@@ -544,7 +543,7 @@ const Content: React.FC = () => {
               ))}
               <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp6 = filter.Diagnosis;  temp6.mandatory = !temp6.mandatory; setFilter(filter => ({...filter, Diagnosis: temp6}))}}>{filter.Diagnosis.mandatory ? "!": "?"}</button>      
             </span>
-            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${filter.ICD_Code.value.length > 0 ? "" : "hidden"}`}>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-3 ${filter.ICD_Code.value.length > 0 ? "" : "hidden"}`}>
               ICD:&nbsp;
               {filter.ICD_Code.value.map((item, i) => (
                 <>
