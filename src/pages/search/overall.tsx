@@ -144,9 +144,6 @@ const Content: React.FC = () => {
     if(!(JSON.stringify(filter) === JSON.stringify(defaultFilter))){
       void router.push(`${pathname}?${search ? `q=${encodeURIComponent(search)}&` : ""}f=${encodeURIComponent(JSON.stringify(filter))}&c=${encodeURIComponent(categoryQuery)}`, undefined, {shallow: true})
     }
-    else {
-      void router.push(`${pathname}?${search ? `q=${encodeURIComponent(search)}&` : ""}c=${encodeURIComponent(categoryQuery)}`, undefined, {shallow: true})
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, categoryQuery])
 
