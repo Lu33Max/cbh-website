@@ -519,18 +519,6 @@ export const categoriesRouter = createTRPCRouter ({
             }
             return ctx.prisma.categories.findMany()
         }),
-        
-    //Update
-    update: publicProcedure
-        .input(CategoriesSchema)
-        .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.categories.update({
-                where: {
-                    mainCategory: input.mainCategory
-                },
-                data: input
-            })
-        }),
 
     //Delete
     delete: publicProcedure
