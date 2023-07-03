@@ -480,7 +480,7 @@ const Content: React.FC = () => {
 
           {/* Displaying active filters */}
           <div className="mx-4 overflow-hidden">
-            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-2 ${search ? "" : "hidden"}`}>
+            <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-3 ${search ? "" : "hidden"}`}>
               Search: {search} <button className="text-xl relative top-1" onClick={() => setSearch(undefined)}><BiX/></button>
             </span>
             <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg px-3 py-3 ${filter.Matrix.value.length > 0 ? "" : "hidden"}`}>
@@ -492,7 +492,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button className="relative w-fit bg-[rgb(165,207,134)] hover:bg-[rgb(183,224,153)] text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition" onClick={() => {const temp1 = filter.Matrix;  temp1.mandatory = !temp1.mandatory; setFilter(filter => ({...filter, Matrix: temp1}))}}>{filter.Matrix.mandatory ? "!": "?"}</button>     
-              </span>
+            </span>
             <span className={`bg-[rgb(174,207,150)] justify-center mx-1 rounded-lg mb-5 px-3 py-3 ${filter.Unit.value.length > 0 ? "" : "hidden"}`}>
               Unit:&nbsp;
               {filter.Unit.value.map((item, i) => (
@@ -555,7 +555,6 @@ const Content: React.FC = () => {
             </span>
           </div>
         </div>
-        
       </div>
 
       <div className="mx-4 my-2">
