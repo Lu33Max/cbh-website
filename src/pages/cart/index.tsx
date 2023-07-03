@@ -82,10 +82,10 @@ const Content: React.FC = () => {
       <div className="mx-4 my-5">
         {cartSamples.length > 0 ? (
           <>
-        <button onClick={() => setCartSamples([])} className="relative w-fit bg-red-500 hover:bg-red-400 text-white px-3 py-1 text-lg text-center rounded-2xl outline-none transition">delete all</button>
+        <button onClick={() => setCartSamples([])} className="relative w-fit bg-red-500 hover:bg-red-400 text-white px-3 py-1 mb-2 text-lg text-center rounded-2xl outline-none transition border-2 border-black">delete all</button>
           <table className="w-full text-lg border-separate border-spacing-y-1 max-h-[50vh] overflow-y-auto ">
             <thead>
-              <tr className="bg-[rgb(131,182,94)] text-gray-100 font-extralight">
+              <tr className="bg-[#e0ecd4] text-black font-extralight">
                 <th className="py-2 font-extralight border-dotted rounded-l-xl border-black border-r-2">Cart</th>
                 {activeColumns.map((column, i) => {
                   return(
@@ -99,13 +99,13 @@ const Content: React.FC = () => {
               {cartSamples.map((sample, index) => (
                 <>
                   <tr key={index} className="text-center">
-                    <td className="items-center text-2xl bg-gray-300 rounded-l-xl"><button onClick={() => deleteCartItem(sample.data)}><BiX className="relative top-1" /></button></td>        
+                    <td className="border-l-8 border-[#9DC88D] items-center text-2xl bg-gray-200 rounded-l-xl"><button onClick={() => deleteCartItem(sample.data)}><BiX className="relative top-1 border-2 border-[#164A41] rounded-lg" /></button></td>        
                     {activeColumns.map((column, i) => {
                       return (
-                        <td key={i} className="py-2 px-3 bg-gray-300">{getProperty(sample.data, column as SampleKey)?.toString()}</td>
+                        <td key={i} className="py-2 px-3 bg-gray-200">{getProperty(sample.data, column as SampleKey)?.toString()}</td>
                       )
                     })}
-                    <td className="py-2 px-3 bg-gray-300 rounded-r-xl"><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
+                    <td className="py-2 px-3 bg-gray-200 rounded-r-xl"><button onClick={() => { updateState(index) }}><BiDetail className="relative top-1" /></button></td>
                   </tr>
                   <tr className={`mx-5 ${show[index] ? "" : "hidden"}`}>
                     <td colSpan={2} className="px-5 bg-gray-200">
