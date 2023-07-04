@@ -7,7 +7,7 @@ import Popover from 'react-bootstrap/Popover';
 import { BiHome, BiX } from "react-icons/bi";
 
 import HeaderNEW from "~/components/overall/header";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Table from "~/components/search/table";
 import ModalLoad from "~/components/search/normal/modalLoad";
@@ -104,7 +104,7 @@ const Content: React.FC = () => {
   /*Search Bar function */
   const router = useRouter()
   const pathname = usePathname();
-  const { q, f, c } = router.query
+  const { q, f, c } = router.query;
   
   const [page, setPage] = useState<number>(1)
   const [pagelength, setPagelength] = useState<number>(50)
@@ -123,22 +123,22 @@ const Content: React.FC = () => {
   const { data: count } = api.samples.countNormal.useQuery({ search: search, filter: filter, category: categoryQuery })
 
   useEffect(() => {
-    setPage(1)
-  }, [search, pagelength, filter])
-
+    setPage(1);
+  }, [search, pagelength, filter]);
+  
   useEffect(() => {
-    setSearch(q ? q.toString() : undefined)
-  }, [q])
-
+    setSearch(q?.toString());
+  }, [q]);
+  
   useEffect(() => {
-    setCategoryQuery(c ? c.toString() : "Overall")
-  }, [c])
-
+    setCategoryQuery(c?.toString() ?? "Overall");
+  }, [c]);
+  
   useEffect(() => {
-    if(f !== undefined){
-      setFilter(NormalFilterSchema.parse(JSON.parse(f.toString())))
+    if (f !== undefined) {
+      setFilter(NormalFilterSchema.parse(JSON.parse(f.toString())));
     }
-  }, [f])
+  }, [f]);
 
   useEffect(() => {
     if(!(JSON.stringify(filter) === JSON.stringify(defaultFilter))){
@@ -152,7 +152,7 @@ const Content: React.FC = () => {
 
     if(column in filter){
       const temp = filter[column as FilterKey]
-      if('value' in temp && Array.isArray(temp.value)){
+      if('value' in temp && Array.isArray(temp.value) && !temp.value.find(e => e === value)){
         temp.value.push(value)
         setFilter(filter => ({...filter, [column]: temp}))
       }

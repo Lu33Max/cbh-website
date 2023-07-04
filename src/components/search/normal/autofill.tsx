@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer, useMemo } from 'react';
 import { api } from '~/utils/api';
 
 type AutoCompleteProps = {
@@ -7,53 +7,80 @@ type AutoCompleteProps = {
     value: string
 }
 
+type AutoCompleteState = {
+    currentVal: string;
+    results: string[];
+};
+
+type AutoCompleteAction =
+    | { type: 'SET_CURRENT_VAL'; payload: string }
+    | { type: 'SET_RESULTS'; payload: string[] };
+
+const initialState: AutoCompleteState = {
+    currentVal: '',
+    results: [],
+};
+
+const autoCompleteReducer = (state: AutoCompleteState, action: AutoCompleteAction): AutoCompleteState => {
+    switch (action.type) {
+        case 'SET_CURRENT_VAL':
+            return { ...state, currentVal: action.payload };
+        case 'SET_RESULTS':
+            return { ...state, results: action.payload };
+        default:
+            return state;
+    }
+};
+
 const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
     const { data: autofill } = api.samples.getDistinct.useQuery(props.col);
-    const [lastVal, setLastVal] = useState<string | undefined>('')
-    const [currentVal, setCurrentVal] = useState<string>('')
-    const [results, setResults] = useState<string[]>([]);
+
+    const [state, dispatch] = useReducer(autoCompleteReducer, initialState);
 
     useEffect(() => {
         const tempArray: string[] = [];
-        if(autofill){
-            for (let i = 0; i < autofill?.length; i++){
-                const test = autofill[i]
-                test ? tempArray.push(test.toString()) : void(0)
+        if (autofill) {
+            for (let i = 0; i < autofill?.length; i++) {
+                const test = autofill[i];
+                test ? tempArray.push(test.toString()) : void 0;
             }
         }
-        setResults(tempArray)
-    }, [autofill])
+        dispatch({ type: 'SET_RESULTS', payload: tempArray });
+    }, [autofill]);
     
-    useEffect(() =>{
-        setCurrentVal(props.value)
-    }, [props.value])
-
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value
-    
-        const eventType = results.find(item => item === val) && lastVal !== undefined && lastVal.length < (val.length - 1) ? 'onSelect' : undefined
-        if (eventType !== undefined)
-        props[eventType] && props[eventType](val, props.col)
+        const val = e.target.value;
+        dispatch({ type: 'SET_CURRENT_VAL', payload: val });
+    };
 
-        setLastVal(val)
-        setCurrentVal(val)
-    }
+    const handleOnBlur = () => {
+        const eventType = state.results.includes(state.currentVal) ? 'onSelect' : undefined;
+
+        if (eventType !== undefined) {
+            props[eventType] && props[eventType](state.currentVal, props.col);
+        }
+    };
+
+    useMemo(() => {
+        dispatch({ type: 'SET_CURRENT_VAL', payload: props.value });
+    }, [props.value]);
 
     return (
         <>
             <input 
-                value={currentVal}
+                value={state.currentVal}
                 className="w-[200px] px-3 py-1 text-lg rounded-full border-2 border-gray-500 focus:border-gray-700 outline-none transition"
                 autoComplete='off' 
                 list="autocomplete-list" 
                 id="list" 
                 name="list" 
                 placeholder="Search" 
-                onChange={handleOnChange}  
+                onChange={handleOnChange}
+                onBlur={handleOnBlur}
             />
     
             <datalist id="autocomplete-list">
-                {results.map(item => <option key={item} value={item}/> )}
+                {state.results.map(item => <option key={item} value={item}/> )}
             </datalist>
         </>
     )

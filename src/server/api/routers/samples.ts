@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
-import { Categories, Prisma, type Samples } from "@prisma/client";
+import { type Categories, Prisma, type Samples } from "@prisma/client";
 import { GroupFilterSchema, GroupSchema, NormalFilterSchema, type IGroup, type INormalFilter } from "~/common/filter/filter";
 import { type IOptionalSample } from "~/common/types";
 
@@ -587,7 +587,6 @@ function mapSearch(filter: INormalFilter, search: string | undefined): Prisma.Sa
             }
         }
     })
-
     return map
 }
 

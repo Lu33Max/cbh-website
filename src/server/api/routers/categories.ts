@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { CategoriesSchema } from "~/common/database/categories";
-import { Prisma, type Samples } from "@prisma/client";
 
 export const categoriesRouter = createTRPCRouter ({
 

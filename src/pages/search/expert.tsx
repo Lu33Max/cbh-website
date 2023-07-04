@@ -55,6 +55,7 @@ const ExpertSearch: NextPage = () => {
     }],
     groups: []
   })
+
   const [showSave, setShowSave] = useState(false);
   const [showLoad, setShowLoad] = useState(false);
 
@@ -84,7 +85,6 @@ const ExpertSearch: NextPage = () => {
   }, [f])
 
   function applyFilter () {
-    console.log(JSON.stringify(state.value))
     void router.push(`${pathname}?f=${encodeURIComponent(JSON.stringify(state.value))}`, undefined, {shallow: true})
     const result = GroupSchema.safeParse(JSON.parse(JSON.stringify(state.value)))
     if(result.success){
@@ -373,6 +373,8 @@ function ChooseValues(props: { values: State<string[]>, type: State<string>, col
   const values = useHookstate(props.values);
   const col = useHookstate(props.col);
 
+  const empty = useHookstate("")
+
   function SetValues(value: string): void {
     values.set([value])
   }
@@ -396,22 +398,22 @@ function ChooseValues(props: { values: State<string[]>, type: State<string>, col
       <div className='w-full'>
         {(type.value !== 'between' && type.value !== 'in') && (
           <>
-            <AutoComplete col={col.value} onSelect={SetValues} value={values[0]?.value ?? ""} />
+            <AutoComplete col={col.value} onSelect={SetValues} value={values[0] ?? empty} />
           </>
         )}
         {(type.value === 'between') && (
           <div className='flex flex-row'>
             <div className='w-full'>
-              <AutoComplete col={col.value} onSelect={SetValuesBetween1} value={values[0]?.value ?? ""} />
+              <AutoComplete col={col.value} onSelect={SetValuesBetween1} value={values[0] ?? empty} />
             </div>
             <div className='w-full'>
-              <AutoComplete col={col.value} onSelect={SetValuesBetween2} value={values[1]?.value ?? ""} />
+              <AutoComplete col={col.value} onSelect={SetValuesBetween2} value={values[1] ?? empty} />
             </div>
           </div>
         )}
         {(type.value === 'in') && (
           <>
-            <AutoComplete col={col.value} onSelect={In} value={values[values.length-1]?.value ?? ""} />
+            <AutoComplete col={col.value} onSelect={In} value={values[values.length-1] ?? empty} />
           </>
         )}
       </div>
