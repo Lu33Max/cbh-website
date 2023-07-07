@@ -77,7 +77,6 @@ const Cart: React.FC<{pagelength: number, setSamplesToAdd: Dispatch<SetStateActi
 
 const Pages: React.FC<{range: number[], page: number, setPage: Dispatch<SetStateAction<number>>}> = ({range, page, setPage}) => {
   const windowSize = useWindowSize()
-
   return (
     <div className='flex flex-row items-center'>          
       {range.map((el, index) => (
