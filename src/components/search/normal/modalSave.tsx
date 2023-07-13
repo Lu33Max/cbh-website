@@ -1,110 +1,142 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import React, { type Dispatch, type SetStateAction, useState, useEffect } from "react";
+import React, {
+  type Dispatch,
+  type SetStateAction,
+  useState,
+  useEffect,
+} from "react";
 
 import { type INormalFilter, FilterType } from "~/common/filter/filter";
 import { api } from "~/utils/api";
 
 type CustomModalProps = {
-    showModal: boolean;
-    setShowModal: Dispatch<SetStateAction<boolean>>,
-    filter: INormalFilter;
+  showModal: boolean;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  filter: INormalFilter;
 };
 
-const ModalSave: React.FC<CustomModalProps> = ({ showModal, setShowModal , filter}) => {
-    const [filtername, setFiltername] = useState<string>('')
+const ModalSave: React.FC<CustomModalProps> = ({
+  showModal,
+  setShowModal,
+  filter,
+}) => {
+  const [filtername, setFiltername] = useState<string>("");
 
-    const { data: sessionData } = useSession();
-    const { data: sessionFilter, refetch: refetchFilter } = api.filter.getAll.useQuery(
-        {
-            type: FilterType.normal,
-        }, 
-        {
-            enabled: sessionData?.user !== undefined,
-        }
+  const { data: sessionData } = useSession();
+  const { data: sessionFilter, refetch: refetchFilter } =
+    api.filter.getAll.useQuery(
+      {
+        type: FilterType.normal,
+      },
+      {
+        enabled: sessionData?.user !== undefined,
+      }
     );
-    const createFilter = api.filter.create.useMutation()
+  const createFilter = api.filter.create.useMutation();
 
-    useEffect(() => {
-        if (showModal) {
-            void refetchFilter()
-        }
-    }, [showModal, refetchFilter])
-
-    function onClose() {
-        setShowModal(false)
-        setFiltername("")
+  useEffect(() => {
+    if (showModal) {
+      void refetchFilter();
     }
+  }, [showModal, refetchFilter]);
 
-    function onSubmit() {
-        if(filtername !== ""){
-            if(sessionFilter && sessionFilter.find(e => e.name === filtername) === undefined){
-                createFilter.mutate({ filter: JSON.stringify(filter), name: filtername, type: FilterType.normal})
+  function onClose() {
+    setShowModal(false);
+    setFiltername("");
+  }
 
-                if(!createFilter.isError){
-                    setFiltername("")
-                    setShowModal(false)
-                } else {
-                    alert("Something went wrong. Please try again.")
-                }
+  function onSubmit() {
+    if (filtername !== "") {
+      if (
+        sessionFilter &&
+        sessionFilter.find((e) => e.name === filtername) === undefined
+      ) {
+        createFilter.mutate({
+          filter: JSON.stringify(filter),
+          name: filtername,
+          type: FilterType.normal,
+        });
 
-            } else {
-                alert("Name already taken")
-            }
+        if (!createFilter.isError) {
+          setFiltername("");
+          setShowModal(false);
         } else {
-            alert("Please enter a valid name")
+          alert("Something went wrong. Please try again.");
         }
+      } else {
+        alert("Name already taken");
+      }
+    } else {
+      alert("Please enter a valid name");
     }
+  }
 
-    return (
+  return (
+    <>
+      {showModal ? (
         <>
-            {showModal ? (
-                <>
-                    <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                        <div className="relative w-auto my-6 mx-auto max-w-3xl">
-                            {/*content*/}
-                            <div className="border-0 shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none rounded-2xl">
-                                {/*header*/}
-                                <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 bg-[rgb(131,182,94)] rounded-t-2xl">
-                                    <h3 className="text-3xl font-semibold w-full text-center">Save filter</h3>
-                                </div>
-                                {/*body*/}
-                                {sessionData?.user ? (
-                                    <div className="relative p-5 flex-auto">
-                                        <input className='border-solid border-black border-2 mx-2 px-2 text-center py-1 rounded-xl text-lg' placeholder="Enter a name" onChange={e => setFiltername(e.target.value)}></input>
-                                    </div>
-                                ) : (
-                                    <div className="px-5 py-3">
-                                        <label className="flex flex-col text-center justify-center">Want to save your current filter?<br/> <Link href={"/auth/login"} className="text-blue-700"><b>Sign In</b></Link></label>
-                                    </div>
-                                )}
-                                {/*footer*/}
-                                <div className="flex items-center justify-center py-3 px-6 border-t border-solid border-slate-200 rounded-b">
-                                    <button
-                                        className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                        type="button"
-                                        onClick={onClose}
-                                    >
-                                        Close
-                                    </button>
-                                    <button
-                                        className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                        type="button"
-                                        onClick={() => {filtername !== "" ? onSubmit() : alert("Please enter a name")}}
-                                    >
-                                        Save Filter
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-                </>
-            ) : (
-                <></>
-            )}
+          <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
+            <div className="relative mx-auto my-6 w-auto max-w-3xl">
+              {/*content*/}
+              <div className="relative flex w-full flex-col rounded-2xl border-0 bg-white shadow-lg outline-none focus:outline-none">
+                {/*header*/}
+                <div className="flex items-start justify-between rounded-t-2xl border-b border-solid border-slate-200 bg-[rgb(131,182,94)] p-5">
+                  <h3 className="w-full text-center text-3xl font-semibold">
+                    Save filter
+                  </h3>
+                </div>
+                {/*body*/}
+                {sessionData?.user ? (
+                  <div className="relative flex-auto p-5">
+                    <input
+                      className="mx-2 rounded-xl border-2 border-solid border-black px-2 py-1 text-center text-lg"
+                      placeholder="Enter a name"
+                      onChange={(e) => setFiltername(e.target.value)}
+                    ></input>
+                  </div>
+                ) : (
+                  <div className="px-5 py-3">
+                    <label className="flex flex-col justify-center text-center">
+                      Want to save your current filter?
+                      <br />{" "}
+                      <Link href={"/auth/login"} className="text-blue-700">
+                        <b>Sign In</b>
+                      </Link>
+                    </label>
+                  </div>
+                )}
+                {/*footer*/}
+                <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 px-6 py-3">
+                  <button
+                    className="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
+                    type="button"
+                    onClick={onClose}
+                  >
+                    Close
+                  </button>
+                  <button
+                    className="mb-1 mr-1 rounded bg-emerald-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-emerald-600"
+                    type="button"
+                    onClick={() => {
+                      filtername !== ""
+                        ? onSubmit()
+                        : alert("Please enter a name");
+                    }}
+                  >
+                    Save Filter
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
         </>
-    );
+      ) : (
+        <></>
+      )}
+    </>
+  );
 };
 
 export default ModalSave;

@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 15 * 24 * 60 * 60,
   },
   providers: [
+    //If you want to add a new provider, add an entry to this array
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
@@ -56,7 +57,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
     Credentials({
-      name: 'credentials',
+      name: "credentials",
       credentials: {
         email: {
           label: "Email",
@@ -65,27 +66,27 @@ export const authOptions: NextAuthOptions = {
         },
         password: {
           label: "Password",
-          type: "password"
+          type: "password",
         },
       },
       authorize: async (credentials) => {
-        const creds = await loginSchema.parseAsync(credentials)
+        const creds = await loginSchema.parseAsync(credentials);
 
         const user = await prisma.user.findUnique({
           where: {
-            email: creds.email
-          }
-        })
-        
-        if(user && user.password === SHA256(creds.password).toString()){
-          return user
+            email: creds.email,
+          },
+        });
+
+        if (user && user.password === SHA256(creds.password).toString()) {
+          return user;
         } else {
-          return null
+          return null;
         }
       },
-    })
+    }),
   ],
-  pages:  {
+  pages: {
     signIn: "/auth/login",
     newUser: "/auth/signup",
   },

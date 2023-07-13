@@ -15,47 +15,47 @@ datasource db {
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String  @id @default(cuid())
+  userId              String
+  type                String
+  provider            String
+  providerAccountId   String
+  refresh_token       String?
+  access_token        String?
+  expires_at          Int?
+  token_type          String?
+  scope               String?
+  id_token            String?
+  session_state       String?
+  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String   @id @default(cuid())
+  sessionToken  String   @unique
+  userId        String
+  expires       DateTime
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  accounts      Account[]
-  filter        Filter[]
-  sessions      Session[]
+  id              String    @id @default(cuid())
+  name            String?
+  email           String?   @unique
+  emailVerified   DateTime?
+  image           String?
+  password        String?
+  accounts        Account[]
+  filter          Filter[]
+  sessions        Session[]
 }
 
 model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+  identifier  String
+  token       String   @unique
+  expires     DateTime
 
   @@unique([identifier, token])
 }
@@ -68,72 +68,72 @@ model Categories {
 }
 
 model Columns {
-  name     String  @id
-  category String?
+  name      String  @id
+  category  String?
 }
 
 model Samples {
-  id                             String    @id @default(cuid())
-  Age                            Int?
-  BMI                            Int?
-  CBH_Donor_ID                   String?
-  CBH_Master_ID                  String?
-  CBH_Sample_ID                  String?
-  Country_of_Collection          String?
-  Cut_Off_Numerical              Float?
-  Cut_Off_Raw                    String?
-  Date_of_Collection             DateTime?
-  Diagnosis                      String?
-  Diagnosis_Remarks              String?
-  Disease_Presentation           String?
-  Estrogen_Receptor              String?
-  Ethnicity                      String?
-  Freeze_Thaw_Cycles             Int?
-  Gender                         String?
-  HER_2_Receptor                 String?
-  Histological_Diagnosis         String?
-  ICD_Code                       String?
-  Infectious_Disease_Test_Result String?
-  Informed_Consent               String?
-  Lab_Parameter                  String?
-  Matrix                         String?
-  Medication                     String?
-  Necrotic_Cells__per_           String?
-  Organ                          String?
-  Other_Gene_Mutations           String?
-  Pregnancy_Trimester            String?
-  Pregnancy_Week                 Int?
-  Price                          Int?
-  Procurement_Type               String?
-  Progesteron_Receptor           String?
-  Proliferation_Rate__Ki67_per_  String?
-  Quantity                       Float?
-  Result_Interpretation          String?
-  Result_Numerical               Float?
-  Result_Obtained_From           String?
-  Result_Raw                     String?
-  Result_Unit                    String?
-  Sample_Condition               String?
-  Storage_Temperature            String?
-  TNM_Class_M                    String?
-  TNM_Class_N                    String?
-  TNM_Class_T                    String?
-  Test_System                    String?
-  Test_System_Manufacturer       String?
-  Therapy                        String?
-  Tumour_Cells__per_             String?
-  Tumour_Grade                   String?
-  Tumour_Stage                   String?
-  Unit                           String?
-  Viable_Cells__per_             String?
-  Test_Method                    String?
+  id                              String    @id @default(cuid())
+  Age                             Int?
+  BMI                             Int?
+  CBH_Donor_ID                    String?
+  CBH_Master_ID                   String?
+  CBH_Sample_ID                   String?
+  Country_of_Collection           String?
+  Cut_Off_Numerical               Float?
+  Cut_Off_Raw                     String?
+  Date_of_Collection              DateTime?
+  Diagnosis                       String?
+  Diagnosis_Remarks               String?
+  Disease_Presentation            String?
+  Estrogen_Receptor               String?
+  Ethnicity                       String?
+  Freeze_Thaw_Cycles              Int?
+  Gender                          String?
+  HER_2_Receptor                  String?
+  Histological_Diagnosis          String?
+  ICD_Code                        String?
+  Infectious_Disease_Test_Result  String?
+  Informed_Consent                String?
+  Lab_Parameter                   String?
+  Matrix                          String?
+  Medication                      String?
+  Necrotic_Cells__per_            String?
+  Organ                           String?
+  Other_Gene_Mutations            String?
+  Pregnancy_Trimester             String?
+  Pregnancy_Week                  Int?
+  Price                           Int?
+  Procurement_Type                String?
+  Progesteron_Receptor            String?
+  Proliferation_Rate__Ki67_per_   String?
+  Quantity                        Float?
+  Result_Interpretation           String?
+  Result_Numerical                Float?
+  Result_Obtained_From            String?
+  Result_Raw                      String?
+  Result_Unit                     String?
+  Sample_Condition                String?
+  Storage_Temperature             String?
+  TNM_Class_M                     String?
+  TNM_Class_N                     String?
+  TNM_Class_T                     String?
+  Test_System                     String?
+  Test_System_Manufacturer        String?
+  Therapy                         String?
+  Tumour_Cells__per_              String?
+  Tumour_Grade                    String?
+  Tumour_Stage                    String?
+  Unit                            String?
+  Viable_Cells__per_              String?
+  Test_Method                     String?
 }
 
 model Filter {
-  id     String @id @default(cuid())
-  name   String
-  type   String
-  filter String
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id        String @id @default(cuid())
+  name      String
+  type      String
+  filter    String
+  userId    String
+  user      User   @relation(fields: [userId], references: [id])
 }

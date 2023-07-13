@@ -1,28 +1,116 @@
-# Create T3 App
+# Documentation
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Installation
 
-## What's next? How do I make an app with this?
+1. Download the repository from Git-Hub
+2. Downlaod and install the lastest version of Visual Studio Code
+3. Download and install Node.js
+4. Create a new .env file by copying the .env.example file
+5. In the new .env file, add the database link and GitHub Client Authentication
+GITHUB_CLIENT_ID="1c0c448d94dd6fc85469"
+GITHUB_CLIENT_SECRET="1972da0b3e2377d01d22a51f48bbc425ccf7261e"
+6. Install packages with the following command in the terminal: npm install
+7. Use npx prisma generate to genereate a new prisma client
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+8. Start the website with npm run dev
+9. open localhost:3000 in your browser
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Project Structure
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+This paragraph is supposed to give you a rough idea of the projekt strukture. Important files are being listed and described here.
 
-## Learn More
+- prisma
+  - schema.prisma               
+  Contains all models used for data struktures
+- src
+    - common
+        - database
+            - ...               
+            Contains the schemas of the database tables
+        - filter        
+            - filter.ts        
+             Contains the structure of the filter object
+        - validation   
+            - validation.ts     
+            Contains the schema for the login and signup
+        - types.ts              
+        Contains the strukture for the optional and mandatory funcitonality
+    - components
+        - home                  
+        Contains the elements of the Home Page
+        - overall               
+        Contains the baisc elements of the Search
+        - search
+            - expert            
+            Contains the elements unique for the expert search
+            - normal            
+            Contains the elements unique for the nornmal search
+            - header.tsx        
+            The Header
+            - table.tsx         
+            The table being displayed on the expert and normal search
+    - pages                     
+    Contains all pages used in this project 
+    - server
+    Backend of the project
+        - api
+        Contains all api functionality
+            - routers
+            The controllers managing api requests
+            - root.ts
+            Used to register api controllers
+        - auth.ts
+        Used to add providers for authentication
+- .env
+Contains basic settings for the project
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Tech List
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+The following list containst all used technologies and their license
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+- @builder.io/react MIT
+- @hookstate/core MIT
+- @next-auth/prisma-adapter ISC
+- @nextui-org/react MIT
+- @prisma/client    Apache-2.0
+- @tanstack/react-query MIT
+- @trendyol-js/react-carousel MIT
+- @trpc/client MIT
+- @trpc/next MIT
+- @trpc/react-query MIT
+- @trpc/server MIT
+- @types/crypto-js MIT
+- @types/react-native-snap-carousel MIT
+- caniuse-lite  CC-BY-4.0
+- crypto-js MIT
+- next MIT
+- next-auth ISC
+- react MIT
+- react-bootstrap MIT
+- react-dom MIT
+- react-icons MIT
+- react-slick MIT
+- slick-carousel MIT
+- superjson MIT
+- zod MIT
+- zod-prisma-types MIT
+- @types/eslint MIT
+- @types/node MIT
+- @types/prettier MIT
+- @types/react MIT
+- @types/react-dom MIT
+- @types/react-slick MIT
+- @typescript-eslint/eslint-plugin MIT
+- @typescript-eslint/parser BSD-2-Clause
+- autoprefixer MIT
+- eslint MIT
+- eslint-config-next MIT
+- postcss MIT
+- prettier MIT
+- prettier-plugin-tailwindcss MIT
+- prisma Apache-2.0
+- tailwindcss MIT
+- typescript Apache-2.0
 
-## How do I deploy this?
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
