@@ -47,10 +47,10 @@ export const sampleRouter = createTRPCRouter({
             filter: NormalFilterSchema
         }))
         .query(async ({ ctx, input }) => {
-            let category: Categories[] = await ctx.prisma.categories.findMany({where: { mainCategory: input.category } })
+            let category: Categories[] = await ctx.prisma.categories.findMany({ where: { mainCategory: input.category } })
 
             if(category === null || category.length === 0){
-                category = await ctx.prisma.categories.findMany({where: { subCategory: input.category }})
+                category = await ctx.prisma.categories.findMany({ where: { subCategory: input.category } })
             }
 
             const categoryString: string[] = []
@@ -59,7 +59,6 @@ export const sampleRouter = createTRPCRouter({
                 const filter = cat.filter
                 if(i !== category.length && category.length > 1){
                     filter?.slice(0, -1)
-
                 }
                 if(i !== 0){
                     filter?.slice(0, 1)
