@@ -9,7 +9,7 @@ import { BiCart, BiLogIn, BiLogOut, BiSearch } from "react-icons/bi";
 
 const Header: React.FC = () => {
   const { data: sessionData } = useSession();
-  const [cartSamples,] = useContext(ClickContext)
+  const [cartSamples] = useContext(ClickContext);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeHeader, setActiveHeader] = useState<number>(0);
   const [buttonClicked, setButtonClicked] = useState<boolean>(false);
@@ -42,7 +42,9 @@ const Header: React.FC = () => {
     <>
       {/* Header */}
       <div
-        className={`${buttonClicked ? "bg-[#164A41]" : "bg-white"} font-body relative z-[999] flex h-[80px] flex-row items-center pl-10 pr-5 font-poppins text-xl font-thin text-[#164A41] transition duration-500 ease-in-out`}
+        className={`${
+          buttonClicked ? "bg-[#164A41]" : "bg-white"
+        } font-body relative z-[999] flex h-[80px] flex-row items-center pl-10 pr-5 font-poppins text-xl font-thin text-[#164A41] transition duration-500 ease-in-out`}
       >
         <a onClick={() => void router.push("/")}>
           <Image
@@ -56,11 +58,15 @@ const Header: React.FC = () => {
         <div className="z-20 mx-auto flex flex-row justify-between gap-2">
           <button
             onClick={() => handleButtonClick(1)}
-            className={`flex flex-row rounded-lg pl-2 pr-4 ${buttonClicked ? "text-white" : "text-[#164A41]"} ${activeHeader === 1 ? "bg-[#9DC88D]" : ""}`}
+            className={`flex flex-row rounded-lg pl-2 pr-4 ${
+              buttonClicked ? "text-white" : "text-[#164A41]"
+            } ${activeHeader === 1 ? "bg-[#9DC88D]" : ""}`}
           >
             Services
             <div
-              className={` ${activeHeader === 1 ? "-mr-3 rotate-180 pb-2 pr-2" : ""}`}
+              className={` ${
+                activeHeader === 1 ? "-mr-3 rotate-180 pb-2 pr-2" : ""
+              }`}
             >
               <svg
                 width="12"
@@ -85,11 +91,15 @@ const Header: React.FC = () => {
 
           <button
             onClick={() => handleButtonClick(2)}
-            className={`flex flex-row rounded-lg pl-2 pr-4 ${buttonClicked ? "text-white" : "text-[#164A41]"} ${activeHeader === 2 ? "bg-[#9DC88D]" : ""}`}
+            className={`flex flex-row rounded-lg pl-2 pr-4 ${
+              buttonClicked ? "text-white" : "text-[#164A41]"
+            } ${activeHeader === 2 ? "bg-[#9DC88D]" : ""}`}
           >
             Navigation
             <div
-              className={` ${activeHeader === 2 ? "-mr-3 rotate-180 pb-2 pr-2" : ""}`}
+              className={` ${
+                activeHeader === 2 ? "-mr-3 rotate-180 pb-2 pr-2" : ""
+              }`}
             >
               <svg
                 width="12"
@@ -113,16 +123,20 @@ const Header: React.FC = () => {
           </button>
 
           <button
-            className={`flex flex-row justify-center z-[999] w-[100px] text-center ${buttonClicked ? "text-white" : `text-${contactColor}`}`}
+            className={`z-[999] flex w-[100px] flex-row justify-center text-center ${
+              buttonClicked ? "text-white" : `text-${contactColor}`
+            }`}
           >
             Contact
           </button>
 
-          <button 
-            className={`flex flex-row justify-center z-[999] w-[100px] text-center ${buttonClicked ? "text-white" : `text-${contactColor}`}`}
+          <button
+            className={`z-[999] flex w-[100px] flex-row justify-center text-center ${
+              buttonClicked ? "text-white" : `text-${contactColor}`
+            }`}
             onClick={() => void router.push("/cart")}
           >
-            <BiCart className="text-3xl text-center relative bottom-1"/>
+            <BiCart className="relative bottom-1 text-center text-3xl" />
             Cart
             <div className="ml-1">({cartSamples.length})</div>
           </button>
@@ -140,15 +154,24 @@ const Header: React.FC = () => {
             <BiSearch color="#555555" />
           </div>
         </span>
-        <button className={`ml-5 mr-2 flex flex-row ${buttonClicked ? "text-white" : `text-${contactColor}`}`} onClick={sessionData ? () => void signOut() : () => void router.push(`/auth/login?prev=${router.asPath}`)}>
+        <button
+          className={`ml-5 mr-2 flex flex-row ${
+            buttonClicked ? "text-white" : `text-${contactColor}`
+          }`}
+          onClick={
+            sessionData
+              ? () => void signOut()
+              : () => void router.push(`/auth/login?prev=${router.asPath}`)
+          }
+        >
           {sessionData ? (
             <>
-              <BiLogOut className="text-3xl mr-1 relative bottom-[0.125rem]"/>
+              <BiLogOut className="relative bottom-[0.125rem] mr-1 text-3xl" />
               Logout
             </>
           ) : (
             <>
-              <BiLogIn className="text-3xl mr-1 relative bottom-[0.125rem]"/>
+              <BiLogIn className="relative bottom-[0.125rem] mr-1 text-3xl" />
               Login
             </>
           )}
@@ -273,7 +296,9 @@ const Header: React.FC = () => {
 
       {/* Navigation */}
       <div
-        className={`transition-height absolute top-0 w-full overflow-visible bg-[#164A41] text-black duration-500 ease-in-out ${activeHeader === 2 ? "z-[900] h-[450px]" : "-z-10 h-0 opacity-0"}`}
+        className={`transition-height absolute top-0 w-full overflow-visible bg-[#164A41] text-black duration-500 ease-in-out ${
+          activeHeader === 2 ? "z-[900] h-[450px]" : "-z-10 h-0 opacity-0"
+        }`}
       >
         <div className="mt-[2%] flex flex-col items-center">
           <nav

@@ -1,7 +1,16 @@
-import React, { createContext, useState, type ReactNode, type Dispatch, type SetStateAction } from 'react';
-import { type IOptionalTableSample } from '~/common/types';
+import React, {
+  createContext,
+  useState,
+  type ReactNode,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
+import { type IOptionalTableSample } from "~/common/types";
 
-type CartContextType = [IOptionalTableSample[], Dispatch<SetStateAction<IOptionalTableSample[]>>];
+type CartContextType = [
+  IOptionalTableSample[],
+  Dispatch<SetStateAction<IOptionalTableSample[]>>
+];
 
 const CartContext = createContext<CartContextType>([[], () => ({})]);
 

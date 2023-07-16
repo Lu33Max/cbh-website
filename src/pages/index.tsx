@@ -19,7 +19,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-full max-h-full min-w-full max-w-full overflow-hidden bg-gray-100 fixed">
+      <div className="fixed max-h-full min-h-full min-w-full max-w-full overflow-hidden bg-gray-100">
         <div className="flex flex-col">
           <HeaderNEW />
           <Content />
@@ -34,7 +34,7 @@ export default Home;
 const Content: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
-  const windowSize = useWindowSize()
+  const windowSize = useWindowSize();
 
   const onSearch = (event: React.FormEvent) => {
     event.preventDefault();
@@ -54,11 +54,11 @@ const Content: React.FC = () => {
     slidesToScroll: windowSize.width && windowSize.width < 500 ? 1 : 2,
   };
 
-  const style = "items-center justify-center text-center mx-10 "
+  const style = "items-center justify-center text-center mx-10 ";
 
   return (
-    <div className='max-h-[calc(100vh-80px)] overflow-y-scroll font-poppins overflow-x-hidden'>
-      <div className={`relative w-full h-fit`}>
+    <div className="max-h-[calc(100vh-80px)] overflow-x-hidden overflow-y-scroll font-poppins">
+      <div className={`relative h-fit w-full`}>
         <Image
           src="/home/BannerNoFont.png"
           alt="Banner"
@@ -66,10 +66,10 @@ const Content: React.FC = () => {
           width={windowSize.width ? windowSize.width : 1920}
           height={windowSize.height ? windowSize.height : 700}
         />
-        <div className="absolute inset-20 flex justify-center flex-col">
+        <div className="absolute inset-20 flex flex-col justify-center">
           <div className="text-center">
-            <h1 
-              className="text-6xl font-bold text-white drop-shadow-sm" 
+            <h1
+              className="text-6xl font-bold text-white drop-shadow-sm"
               style={{
                 textShadow: "0px 0px 4px rgba(0, 0, 0, 0.2)",
                 WebkitTextStroke: "0.2px black",
@@ -77,7 +77,7 @@ const Content: React.FC = () => {
             >
               Explore the Abundance
             </h1>
-            <p 
+            <p
               className="mt-4 text-2xl font-bold text-white"
               style={{
                 textShadow: "0px 0px 4px rgba(0, 0, 0, 0.2)",
@@ -94,11 +94,14 @@ const Content: React.FC = () => {
                 <input
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
-                  className="flex-grow-1 text-center rounded-l-lg border-b border-l border-t border-solid border-white bg-white bg-opacity-60 text-lg font-semibold text-[#164A41] placeholder-[#164A41]"
+                  className="flex-grow-1 rounded-l-lg border-b border-l border-t border-solid border-white bg-white bg-opacity-60 text-center text-lg font-semibold text-[#164A41] placeholder-[#164A41]"
                   placeholder="Start exploring"
                 ></input>
               </form>
-              <button className="rounded-br-lg rounded-tr-lg bg-[#164A41] px-2 py-1 text-lg" onClick={onSearch}>
+              <button
+                className="rounded-br-lg rounded-tr-lg bg-[#164A41] px-2 py-1 text-lg"
+                onClick={onSearch}
+              >
                 <svg
                   width="12"
                   height="21"
@@ -135,20 +138,32 @@ const Content: React.FC = () => {
         </h1>
       </div>
       <div className="mt-5 pt-5">
-        <Carousel type={CarouselType.categories} settings={settings} style={style}/>
+        <Carousel
+          type={CarouselType.categories}
+          settings={settings}
+          style={style}
+        />
       </div>
-      <div className={`${windowSize.width && windowSize.width < 500 ? "mt-3" : "mt-10"} flex w-full flex-row items-center justify-center`}>
+      <div
+        className={`${
+          windowSize.width && windowSize.width < 500 ? "mt-3" : "mt-10"
+        } flex w-full flex-row items-center justify-center`}
+      >
         <h1 className="relative">
-          <span className="headline inline-block">
-            Popular Samples
-          </span>
+          <span className="headline inline-block">Popular Samples</span>
           <span className="absolute -bottom-1 left-1/2 h-[2px] w-20 -translate-x-1/2 transform rounded-full bg-[#164A41]"></span>
         </h1>
       </div>
 
-      <div className={`mb-10 mt-8 items-center text-center flex ${windowSize.width && windowSize.width < 600 ? "flex-col gap-12" : "flex-row"} justify-evenly`}>
-        <div className="relative bottom-0 left-0 hover:bottom-2 hover:left-2 duration-300 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] hover:shadow-[-45px_45px_0px_0px_rgba(157,200,141,0.25)] transition-all ease-in-out">
-          <div className="duration-300 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] hover:shadow-[-23px_23px_0px_0px_rgba(157,200,141,0.25)]">
+      <div
+        className={`mb-10 mt-8 flex items-center text-center ${
+          windowSize.width && windowSize.width < 600
+            ? "flex-col gap-12"
+            : "flex-row"
+        } justify-evenly`}
+      >
+        <div className="relative bottom-0 left-0 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] transition-all duration-300 ease-in-out hover:bottom-2 hover:left-2 hover:shadow-[-45px_45px_0px_0px_rgba(157,200,141,0.25)]">
+          <div className="shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] duration-300 hover:shadow-[-23px_23px_0px_0px_rgba(157,200,141,0.25)]">
             <Image
               src="/home/cards/allergy.png"
               alt="allergy"
@@ -166,8 +181,8 @@ const Content: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="relative bottom-0 left-0 hover:bottom-2 hover:left-2 duration-300 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] hover:shadow-[-45px_45px_0px_0px_rgba(157,200,141,0.25)] transition-all ease-in-out">
-          <div className="duration-300 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] hover:shadow-[-23px_23px_0px_0px_rgba(157,200,141,0.25)]">
+        <div className="relative bottom-0 left-0 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] transition-all duration-300 ease-in-out hover:bottom-2 hover:left-2 hover:shadow-[-45px_45px_0px_0px_rgba(157,200,141,0.25)]">
+          <div className="shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] duration-300 hover:shadow-[-23px_23px_0px_0px_rgba(157,200,141,0.25)]">
             <Image
               src="/home/cards/pink.png"
               alt="pink stuff"
@@ -182,8 +197,8 @@ const Content: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="relative bottom-0 left-0 hover:bottom-2 hover:left-2 duration-300 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] hover:shadow-[-45px_45px_0px_0px_rgba(157,200,141,0.25)] transition-all ease-in-out">
-          <div className="duration-300 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] hover:shadow-[-23px_23px_0px_0px_rgba(157,200,141,0.25)]">
+        <div className="relative bottom-0 left-0 shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] transition-all duration-300 ease-in-out hover:bottom-2 hover:left-2 hover:shadow-[-45px_45px_0px_0px_rgba(157,200,141,0.25)]">
+          <div className="shadow-[-30px_30px_0px_0px_rgba(157,200,141,0.25)] duration-300 hover:shadow-[-23px_23px_0px_0px_rgba(157,200,141,0.25)]">
             <Image
               src="/home/cards/mosquito.png"
               alt="mosquito"
@@ -208,33 +223,64 @@ const Content: React.FC = () => {
         </h1>
       </div>
       <div>
-        <div className="my-5 flex h-[250px] flex-row justify-items-center justify-center items-center relative bg-[rgba(157,200,141,0.25)]">
+        <div className="relative my-5 flex h-[250px] flex-row items-center justify-center justify-items-center bg-[rgba(157,200,141,0.25)]">
           <Image
             src="/slider/partners/1.png"
             alt="Eastern Research Solutions"
-            className="absolute opacity-100 grayscale hover:grayscale-0 transition ease-in-out duration-500"
+            className="absolute opacity-100 grayscale transition duration-500 ease-in-out hover:grayscale-0"
             width={windowSize.width ? windowSize.width - 800 : 1200}
             height={200}
           />
-          
         </div>
       </div>
       <div className="m-auto mb-10 mt-5 flex items-center justify-center">
         <div className="headline mx-4 text-center text-[#164A41]">
           <div className="inline-block px-32 ">Follow Our Journey!</div>
           <div className="mt-2 flex w-full flex-wrap rounded-lg border-2 border-[#164A41] p-4">
-            <Image src="/facebook.png" alt="" className="mx-4" width={32} height={60} />
-            <Image src="/twitter.png" alt="" className="mx-4" width={75} height={60} />
-            <Image src="/youtube.png" alt="" className="mx-4" width={75} height={60} />
-            <Image src="/instagram.png" alt="" className="mx-4" width={60} height={60} />
-            <Image src="/linkedin.png" alt="" className="mx-4" width={66} height={60} />
+            <Image
+              src="/facebook.png"
+              alt=""
+              className="mx-4"
+              width={32}
+              height={60}
+            />
+            <Image
+              src="/twitter.png"
+              alt=""
+              className="mx-4"
+              width={75}
+              height={60}
+            />
+            <Image
+              src="/youtube.png"
+              alt=""
+              className="mx-4"
+              width={75}
+              height={60}
+            />
+            <Image
+              src="/instagram.png"
+              alt=""
+              className="mx-4"
+              width={60}
+              height={60}
+            />
+            <Image
+              src="/linkedin.png"
+              alt=""
+              className="mx-4"
+              width={66}
+              height={60}
+            />
           </div>
         </div>
         <div className="headline mx-16 text-center text-[#164A41]">
           <div className="inline-block px-[140px] ">Testimonials</div>
           <div className="mt-2 flex w-full justify-end rounded-lg border-2 border-[#164A41]">
             <div className="flex flex-1 flex-col justify-center text-center text-2xl font-semibold">
-              Look What People<br/>Say About Us!
+              Look What People
+              <br />
+              Say About Us!
             </div>
             <button className="flex h-full rounded-br-lg rounded-tr-lg border-[#F1B24A] bg-[#F1B24A] px-8 py-[32px] text-lg">
               <svg
@@ -261,17 +307,50 @@ const Content: React.FC = () => {
         <div className="headline mx-4 text-center text-[#164A41]">
           <div className="inline-block px-[140px]">Payment Methods</div>
           <div className="mt-2 flex w-full flex-wrap rounded-lg border-2 border-[#164A41] p-4">
-            <Image src="/Paypal.png" alt="" className="ml-4 mr-6" width={55} height={60} />
-            <Image src="/amex.png" alt="" className="mx-6" width={67} height={60} />
-            <Image src="/Visa.png" alt="" className="mx-6" width={90} height={60} />
-            <Image src="/Mastercard.png" alt="" className="ml-6 mr-4" width={91} height={60} />
+            <Image
+              src="/Paypal.png"
+              alt=""
+              className="ml-4 mr-6"
+              width={55}
+              height={60}
+            />
+            <Image
+              src="/amex.png"
+              alt=""
+              className="mx-6"
+              width={67}
+              height={60}
+            />
+            <Image
+              src="/Visa.png"
+              alt=""
+              className="mx-6"
+              width={90}
+              height={60}
+            />
+            <Image
+              src="/Mastercard.png"
+              alt=""
+              className="ml-6 mr-4"
+              width={91}
+              height={60}
+            />
           </div>
         </div>
       </div>
-      <div className="headline italic justify-center text-center text-[#164A41] border-2 border-[#164A41] p-4 mx-10 mb-4 rounded-lg relative">
-        <Carousel type={CarouselType.testimonials} settings={{...settings, slidesToShow: 1, dots: false, slidesToScroll: 1}} style={style}/>
+      <div className="headline relative mx-10 mb-4 justify-center rounded-lg border-2 border-[#164A41] p-4 text-center italic text-[#164A41]">
+        <Carousel
+          type={CarouselType.testimonials}
+          settings={{
+            ...settings,
+            slidesToShow: 1,
+            dots: false,
+            slidesToScroll: 1,
+          }}
+          style={style}
+        />
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
