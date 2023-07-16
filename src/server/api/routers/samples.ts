@@ -64,17 +64,6 @@ export const sampleRouter = createTRPCRouter({
         where: { mainCategory: input.category },
       });
 
-    getAll: publicProcedure
-        .input(z.object({
-            pages: z.number(),
-            lines: z.number(),
-            search: z.string().optional(),
-            category: z.string(),
-            filter: NormalFilterSchema
-        }))
-        .query(async ({ ctx, input }) => {
-            let category: Categories[] = await ctx.prisma.categories.findMany({ where: { mainCategory: input.category } })
-
       //If there is no category declared, use the sub Categories instead
       if (category === null || category.length === 0) {
         category = await ctx.prisma.categories.findMany({
