@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -13,9 +14,13 @@ export const AccountOrderByRelevanceFieldEnumSchema = z.enum(['id','userId','typ
 
 export const AccountScalarFieldEnumSchema = z.enum(['id','userId','type','provider','providerAccountId','refresh_token','access_token','expires_at','token_type','scope','id_token','session_state']);
 
-export const CategoriesOrderByRelevanceFieldEnumSchema = z.enum(['id','mainCategory','subCategory','filter']);
+export const BingOrderByRelevanceFieldEnumSchema = z.enum(['id','Term','Date']);
 
-export const CategoriesScalarFieldEnumSchema = z.enum(['id','mainCategory','subCategory','filter']);
+export const BingScalarFieldEnumSchema = z.enum(['id','Term','Impressions','Clicks','Date']);
+
+export const CategoriesOrderByRelevanceFieldEnumSchema = z.enum(['mainCategory','subCategory','filter','id']);
+
+export const CategoriesScalarFieldEnumSchema = z.enum(['mainCategory','subCategory','filter','id']);
 
 export const ColumnsOrderByRelevanceFieldEnumSchema = z.enum(['name','category']);
 
@@ -24,6 +29,18 @@ export const ColumnsScalarFieldEnumSchema = z.enum(['name','category']);
 export const FilterOrderByRelevanceFieldEnumSchema = z.enum(['id','name','type','filter','userId']);
 
 export const FilterScalarFieldEnumSchema = z.enum(['id','name','type','filter','userId']);
+
+export const GoogleOrderByRelevanceFieldEnumSchema = z.enum(['id','Term','Date']);
+
+export const GoogleScalarFieldEnumSchema = z.enum(['id','Term','Impressions','Clicks','Date']);
+
+export const LeadOrderByRelevanceFieldEnumSchema = z.enum(['id','Lead_Number','Lead_Status','Field_of_Interest','Specification_of_Interest','Parameter_of_Interest','Diagnosis_of_Interest','Matrix_of_Interest','Quantity_of_Interest']);
+
+export const LeadScalarFieldEnumSchema = z.enum(['id','Lead_ID','Lead_Number','Lead_Status','Lead_Date','Organisation_ID','Country_ID','Channel','Field_of_Interest','Specification_of_Interest','Parameter_of_Interest','Diagnosis_of_Interest','Matrix_of_Interest','Quantity_of_Interest']);
+
+export const OrderOrderByRelevanceFieldEnumSchema = z.enum(['id','Storage_Temperature','CBH_Donor_ID','CBH_Sample_ID','Matrix','Supplier_ID','Supplier_Sample_ID','Product_ID','Country_ID','Unit','Gender','Ethnicity','Lab_Parameter','Result_Unit','Result_Interpretation','Test_Method','Test_Kit_Manufacturer','Test_System_Manufacturer','Diagnosis','ICD_Code','Histological_Diagnosis','Organ','Country_of_Collection','Date_of_Collection']);
+
+export const OrderScalarFieldEnumSchema = z.enum(['id','Customer_ID','Order_ID','Price','Order_Date','Storage_Temperature','CBH_Donor_ID','CBH_Sample_ID','Matrix','Supplier_ID','Supplier_Sample_ID','Product_ID','Country_ID','Quantity','Unit','Age','Gender','Ethnicity','Lab_Parameter','Result_Numerical','Result_Unit','Result_Interpretation','Test_Method','Test_Kit_Manufacturer','Test_System_Manufacturer','Diagnosis','ICD_Code','Histological_Diagnosis','Organ','Country_of_Collection','Date_of_Collection']);
 
 export const QueryModeSchema = z.enum(['default','insensitive']);
 
@@ -116,10 +133,10 @@ export type VerificationToken = z.infer<typeof VerificationTokenSchema>
 /////////////////////////////////////////
 
 export const CategoriesSchema = z.object({
-  id: z.string().cuid(),
   mainCategory: z.string(),
   subCategory: z.string().nullable(),
   filter: z.string().nullable(),
+  id: z.string().cuid(),
 })
 
 export type Categories = z.infer<typeof CategoriesSchema>
@@ -211,3 +228,94 @@ export const FilterSchema = z.object({
 })
 
 export type Filter = z.infer<typeof FilterSchema>
+
+/////////////////////////////////////////
+// BING SCHEMA
+/////////////////////////////////////////
+
+export const BingSchema = z.object({
+  id: z.string(),
+  Term: z.string(),
+  Impressions: z.number().int(),
+  Clicks: z.number().int(),
+  Date: z.string(),
+})
+
+export type Bing = z.infer<typeof BingSchema>
+
+/////////////////////////////////////////
+// GOOGLE SCHEMA
+/////////////////////////////////////////
+
+export const GoogleSchema = z.object({
+  id: z.string(),
+  Term: z.string(),
+  Impressions: z.number().int(),
+  Clicks: z.number().int(),
+  Date: z.string(),
+})
+
+export type Google = z.infer<typeof GoogleSchema>
+
+/////////////////////////////////////////
+// LEAD SCHEMA
+/////////////////////////////////////////
+
+export const LeadSchema = z.object({
+  id: z.string(),
+  Lead_ID: z.number().int(),
+  Lead_Number: z.string(),
+  Lead_Status: z.string(),
+  Lead_Date: z.coerce.date(),
+  Organisation_ID: z.number().int(),
+  Country_ID: z.number().int(),
+  Channel: z.number().int(),
+  Field_of_Interest: z.string().nullable(),
+  Specification_of_Interest: z.string().nullable(),
+  Parameter_of_Interest: z.string().nullable(),
+  Diagnosis_of_Interest: z.string().nullable(),
+  Matrix_of_Interest: z.string().nullable(),
+  Quantity_of_Interest: z.string().nullable(),
+})
+
+export type Lead = z.infer<typeof LeadSchema>
+
+/////////////////////////////////////////
+// ORDER SCHEMA
+/////////////////////////////////////////
+
+export const OrderSchema = z.object({
+  id: z.string(),
+  Customer_ID: z.number().int(),
+  Order_ID: z.number().int(),
+  Price: z.number().int(),
+  Order_Date: z.coerce.date(),
+  Storage_Temperature: z.string().nullable(),
+  CBH_Donor_ID: z.string(),
+  CBH_Sample_ID: z.string(),
+  Matrix: z.string().nullable(),
+  Supplier_ID: z.string().nullable(),
+  Supplier_Sample_ID: z.string().nullable(),
+  Product_ID: z.string().nullable(),
+  Country_ID: z.string().nullable(),
+  Quantity: z.number().nullable(),
+  Unit: z.string().nullable(),
+  Age: z.number().int().nullable(),
+  Gender: z.string().nullable(),
+  Ethnicity: z.string().nullable(),
+  Lab_Parameter: z.string().nullable(),
+  Result_Numerical: z.number().nullable(),
+  Result_Unit: z.string().nullable(),
+  Result_Interpretation: z.string().nullable(),
+  Test_Method: z.string().nullable(),
+  Test_Kit_Manufacturer: z.string().nullable(),
+  Test_System_Manufacturer: z.string().nullable(),
+  Diagnosis: z.string().nullable(),
+  ICD_Code: z.string().nullable(),
+  Histological_Diagnosis: z.string().nullable(),
+  Organ: z.string().nullable(),
+  Country_of_Collection: z.string().nullable(),
+  Date_of_Collection: z.string().nullable(),
+})
+
+export type Order = z.infer<typeof OrderSchema>

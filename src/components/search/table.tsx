@@ -10,6 +10,8 @@ import { Colors } from '~/common/styles';
 import { type IOptionalSample, type IOptionalTableSample, type ITableSample } from '~/common/types';
 import Header from './header';
 import useWindowSize from '~/utils/window';
+import { api } from '~/utils/api';
+import { Samples } from '@prisma/client';
 
 type props = { 
   page: number,
@@ -44,11 +46,17 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
 
   const windowSize = useWindowSize()
 
+  const {data: columns} = api.columns.getAll.useQuery()
+
   for (let i = 0; i < pagelength; i++) {
     defaultShow.push(false)
   }
 
   const [show, setShow] = useState<boolean[]>(defaultShow)
+
+  useEffect(() => {
+    setShow(defaultShow)
+  }, [page])
 
   useEffect(() => {
     setShowPage(page)
@@ -310,6 +318,14 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
     setCartSamples([...cartSamples, ...tempArray])
   }
 
+  function getColumnValue(sample: ITableSample, column: string) {
+    const value = getProperty(sample, column as keyof typeof sample)
+    if (value !== null && value !== undefined) {
+      return(value.toString())
+    }
+    return('nothing')
+  }
+
   const settingsButton: React.ReactNode = <>
     {(expert && windowSize.width && windowSize.width > 600) && (
       <button className='text-xl mx-3' onClick={() => setSettings(!settings)}><BiCog/></button>
@@ -373,49 +389,20 @@ const Table: React.FC<props> = ({ page, pagelength, count, optionalSamples, setP
                     <td className={`bg-gray-200 py-2 px-3 rounded-r-xl`}><button onClick={() => { updateState(index) }}><BiInfoCircle className="relative top-1" /></button></td>
                   </tr>
                   <tr className={`bg-gray-200 ${show[index] ? "" : "hidden"}`}>
-                    <td colSpan={2} className="px-5 bg-gray-200">
-                      <div className="grid grid-cols-2">
-                        <strong className="col-span-2">General Data</strong>
-                        <span>CBH Master ID:</span> {sample.data.CBH_Master_ID ?? "NaN"}
-                        <span>Storage Temperature:</span> {sample.data.Storage_Temperature ?? "NaN"}
-                        <span>Freeze Thaw Cycles:</span> {sample.data.Freeze_Thaw_Cycles ?? "NaN"}
-                        <span>Infectious Disease Test Result:</span> {(sample.data.Infectious_Disease_Test_Result !== null && sample.data.Infectious_Disease_Test_Result !== "") ? sample.data.Infectious_Disease_Test_Result : "NaN"}
-                        <span>Sample Condition:</span> {sample.data.Sample_Condition ?? "NaN"}
-                      </div>
-                    </td>
-                    <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
-                      <div className="grid grid-cols-2 ">
-                        <strong className="col-span-2">Donor</strong>
-                        <span>Age:</span> {sample.data.Age ?? "NaN"}
-                        <span>Gender:</span> {sample.data.Gender ?? "NaN"}
-                        <span>Ethnicity:</span> {sample.data.Ethnicity ?? "NaN"}
-                        <strong className="col-span-2 mt-2">Ethics</strong>
-                        <span>Procurement Type:</span> {sample.data.Procurement_Type ?? "NaN"}
-                      </div>
-                    </td>
-                    <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={2}>
-                      <div className="grid grid-cols-2">
-                      <strong className="col-span-2">Laboratory</strong>
-                        <span>Lab Parameter</span> {(sample.data.Lab_Parameter && sample.data.Lab_Parameter.length > 0) ? sample.data.Lab_Parameter.join(", "): "NaN"}
-                        <span>Result Raw:</span> {(sample.data.Result_Raw && sample.data.Result_Raw.length > 0) ? sample.data.Result_Raw.join(", "): "NaN"}
-                        <span>Result Unit:</span> {(sample.data.Result_Unit && sample.data.Result_Unit.length > 0) ? sample.data.Result_Unit.join(", "): "NaN"}
-                        <span>Interpretation:</span> {(sample.data.Result_Interpretation && sample.data.Result_Interpretation.length > 0) ? sample.data.Result_Interpretation.join(", "): "NaN"}
-                        <span>Cut Off Raw:</span> {sample.data.Cut_Off_Raw ? sample.data.Cut_Off_Raw.join(", "): "NaN"}
-                        <span>Test Method:</span> {(sample.data.Test_Method && sample.data.Test_Method.length > 0) ? sample.data.Test_Method.join(", "): "NaN"}
-                        <span>Test System:</span> {(sample.data.Test_System && sample.data.Test_System.length > 0) ? sample.data.Test_System.join(", "): "NaN"}
-                        <span>Test System Manuf.:</span> {(sample.data.Test_System_Manufacturer && sample.data.Test_System_Manufacturer.length > 0) ? sample.data.Test_System_Manufacturer.join(", "): "NaN"}
-                      </div>
-                    </td>
-                    <td className="border-l-2 border-solid border-gray-300 px-2" colSpan={4}>
-                      <div className="grid grid-cols-2">
-                        <strong className="col-span-2">Clinical Diagnosis</strong>
-                        <span>Diagnosis:</span> {(sample.data.Diagnosis && sample.data.Diagnosis.length > 0) ? sample.data.Diagnosis.join(", "): "NaN"}
-                        <span>Diagnosis Remarks:</span> {(sample.data.Diagnosis_Remarks && sample.data.Diagnosis_Remarks.length > 0) ? sample.data.Diagnosis_Remarks.join(", "): "NaN"}
-                        <span>ICD:</span> {(sample.data.ICD_Code && sample.data.ICD_Code.length > 0) ? sample.data.ICD_Code.join(", ") : "NaN"}
-                        <strong className="col-span-2 mt-2">Preanalytics</strong>
-                        <span>Collection Country:</span> {sample.data.Country_of_Collection ?? "NaN"}
-                        <span>Collection Date:</span> {sample.data.Date_of_Collection?.toDateString() ?? "NaN"}
-                      </div>
+                    <td colSpan={activeColumns.length+2}>
+                      {columns?.map((column, i) => {
+                        return(
+                          <>                        
+                          {                        
+                            (i === 0 || column.category !== columns[i-1]?.category) && (                          
+                              <h2><b>{column.category}</b></h2>                          
+                            )
+                          }                        
+                          <label className=''>{column.name}:</label>
+                          <label className='mx-2'>{getColumnValue(sample.data, column.name)}</label>
+                          </>
+                        )                        
+                      })}
                     </td>
                   </tr>
                 </>
