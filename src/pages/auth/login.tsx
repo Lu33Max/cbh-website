@@ -113,7 +113,7 @@ export const LoginForm = ({
 
       <div className="my-4 flex items-center  before:mt-0.5 before:flex-1 before:border-t before:border-[#164A41] after:mt-0.5 after:flex-1 after:border-t after:border-[#164A41]">
         <p className="mx-4 mb-0 text-center italic">
-          Don't have an account yet?
+          Don&apos;t have an account yet?
         </p>
       </div>
 

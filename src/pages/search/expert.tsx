@@ -873,7 +873,7 @@ function ColSelect(props: {
         if (property !== "id") {
           return (
             <option key={1000 + i} value={property}>
-              {property.replaceAll("_", " ")}  // Display the column name with underscores replaced by spaces
+              {property.replaceAll("_", " ")}  {/*Display the column name with underscores replaced by spaces*/}
             </option>
           );
         }
