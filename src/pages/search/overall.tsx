@@ -250,12 +250,15 @@ const Content: React.FC = () => {
         {windowSize.width && windowSize.width < 700 ? (
           <div className="flex flex-col">
             <div className="flex flex-row items-stretch justify-center">
+              {/*load filter button*/}
               <button
                 className={`w-full px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl border-2 border-solid bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-[${Colors.dark}] border-r-0`}
                 onClick={() => setShowLoad(true)}
               >
                 Load Filter
               </button>
+
+              {/*save filter button*/}
               <button
                 className={`w-full px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-r-2xl border-2 border-solid bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475] border-[${Colors.dark}]`}
                 onClick={() => setShowSave(true)}
@@ -264,6 +267,7 @@ const Content: React.FC = () => {
               </button>
             </div>
             <div className="mt-2 flex flex-row items-center">
+              {/*button to show the filter options*/}
               <button
                 className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4`}
                 onClick={() => setShowFilter(!showFilter)}
@@ -289,6 +293,7 @@ const Content: React.FC = () => {
                 </svg>
               </button>
 
+              {/*choose category*/}
               <select
                 className={`mx-3 text-xl text-[${Colors.dark}] flex h-10 w-[200px] appearance-none flex-row rounded-lg bg-transparent bg-[url('/ArrowDown.png')] bg-[length:1.3rem_auto] bg-[170px] bg-no-repeat pl-2 pr-8`}
                 value={categoryQuery}
@@ -363,6 +368,7 @@ const Content: React.FC = () => {
                 </svg>
               </button>
 
+              {/*choose category*/}
               <select
                 className={`mx-3 text-xl text-[${Colors.dark}] flex h-10 w-[200px] appearance-none flex-row rounded-lg bg-transparent bg-[url('/ArrowDown.png')] bg-[length:1.3rem_auto] bg-[170px] bg-no-repeat pl-2 pr-8`}
                 value={categoryQuery}
@@ -410,12 +416,14 @@ const Content: React.FC = () => {
             </div>
 
             <div className="flex w-[50%] flex-row justify-end">
+              {/*load filter button*/}
               <button
                 className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl border-2 border-solid bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-[${Colors.dark}] border-r-0`}
                 onClick={() => setShowLoad(true)}
               >
                 Load Filter
               </button>
+              {/*save filter button*/}
               <button
                 className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-r-2xl border-2 border-solid bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475] border-[${Colors.dark}]`}
                 onClick={() => setShowSave(true)}

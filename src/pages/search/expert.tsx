@@ -184,6 +184,7 @@ const ExpertSearch: NextPage = () => {
                     : "w-[50%]"
                 }`}
               >
+                {/*apply filter button*/}
                 <button
                   className={`${
                     windowSize.width && windowSize.width < 800
@@ -198,6 +199,8 @@ const ExpertSearch: NextPage = () => {
                 >
                   Apply Filter
                 </button>
+
+                {/*reset filter button*/}
                 <button
                   className={`${
                     windowSize.width && windowSize.width < 800
@@ -237,6 +240,7 @@ const ExpertSearch: NextPage = () => {
                     : "w-[50%] justify-end"
                 }`}
               >
+                {/*load filter button*/}
                 <button
                   className={`${
                     windowSize.width && windowSize.width < 800
@@ -251,6 +255,8 @@ const ExpertSearch: NextPage = () => {
                 >
                   Load Filter
                 </button>
+
+                {/*save filter button*/}
                 <button
                   className={`${
                     windowSize.width && windowSize.width < 800
@@ -267,6 +273,8 @@ const ExpertSearch: NextPage = () => {
                 </button>
               </div>
             </div>
+
+            {/*modals to save and load the filters*/}
             <ModalSaveExpert
               showModal={showSave}
               setShowModal={setShowSave}
@@ -305,6 +313,7 @@ function unfreeze(group: State<IGroup>) {
 function InitialContentEditor(props: { self: State<IGroup> }) {
   const self = useHookstate(props.self);
 
+  // Function to set the activated state of the group and its child groups
   function SetActivated(groupState: State<IGroup>, activated: boolean): void {
     groupState.activated.set(activated);
     groupState.groups.map((group: State<IGroup>) => {
@@ -312,6 +321,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
     });
   }
 
+  // Function to set the optional state of the group and its child groups
   function SetOptional(groupState: State<IGroup>, optional: boolean): void {
     groupState.groups.map((group: State<IGroup>) => {
       SetOptional(group, optional);
@@ -327,6 +337,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
       <div className="mt-3 w-fit min-w-full rounded-3xl bg-gradient-to-r from-[#164A41] to-[#4D774E] py-1 text-lg">
         <div className="font-body flex flex-row px-5 py-2 font-poppins text-2xl font-thin">
           <div className="flex w-[50%] flex-row items-center justify-start">
+            {/* Button to toggle the NOT state */}
             <button
               className={`ml-5 w-[6rem] rounded-l-2xl border-2 border-solid border-[#F1B24A] px-4 py-1 text-center text-lg ${
                 self.not.value === true
@@ -337,6 +348,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             >
               NOT
             </button>
+            {/* Button to set the link state to AND */}
             <button
               className={`w-[6rem] border-y-2 border-solid border-[#F1B24A] px-4 py-1 text-center text-lg ${
                 self.link.value === "AND"
@@ -347,6 +359,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             >
               AND
             </button>
+            {/* Button to set the link state to OR */}
             <button
               className={`w-[6rem] rounded-r-2xl border-2 border-solid border-[#F1B24A] px-4 py-1 text-center text-lg ${
                 self.link.value === "OR"
@@ -358,6 +371,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
               OR
             </button>
 
+            {/* Help button with popover explaining the buttons */}
             <OverlayTrigger
               trigger="hover"
               placement="bottom"
@@ -366,10 +380,8 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                 <Popover id="popover-basic" className="z-30">
                   <Popover.Body className="items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center shadow-md">
                     <div>
-                      The buttons for AND or OR indicate how the different
-                      filters should be connected within the group. <br />
-                      Underneath you select the column which should be filtered
-                      and in which form and then you enter the value.
+                      The buttons for AND or OR indicate how the different filters should be connected within the group. <br />
+                      Underneath you select the column which should be filtered and in which form and then you enter the value.
                     </div>
                   </Popover.Body>
                 </Popover>
@@ -381,6 +393,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             </OverlayTrigger>
           </div>
           <div className="flex w-[50%] flex-row items-center justify-end pr-3">
+            {/* Button to add a new group */}
             <button
               className="w-[10rem] whitespace-nowrap rounded-l-2xl border-2 border-solid border-[#9DC88D] bg-[#9DC88D] px-4 py-1 text-center text-lg text-white"
               onClick={() =>
@@ -406,6 +419,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             >
               New Group
             </button>
+            {/* Button to add a new filter rule */}
             <button
               className="w-[10rem] whitespace-nowrap border-2 border-solid border-y-[#9DC88D] bg-[#9DC88D] px-4 py-1 text-center text-lg text-white"
               onClick={() =>
@@ -424,6 +438,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             >
               New Rule
             </button>
+            {/* Button to toggle the activated state of the group */}
             <button
               className="w-[10rem] whitespace-nowrap rounded-r-2xl border-2 border-solid border-orange-400 bg-orange-400 px-4 py-1 text-center text-lg text-white"
               onClick={() => {
@@ -432,6 +447,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             >
               {self.activated.value ? "deactivate" : "activate"}
             </button>
+            {/* Button to toggle the optional state of the group */}
             <button
               className="relative w-fit whitespace-nowrap rounded-2xl bg-[#F1B24A] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[#e8b25b]"
               onClick={() => {
@@ -443,6 +459,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
           </div>
         </div>
 
+        {/* Render the filter list */}
         {self.filter.map(
           (
             filterState: State<{
@@ -456,12 +473,14 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
           ) => (
             <div key={i}>
               <div className="my-1 ml-5 flex flex-row">
+                {/* Render the column select component */}
                 <ColSelect
                   col={filterState.col}
                   activated={self.activated}
                   filterActivated={filterState.activated}
                   values={filterState.values}
                 />
+                {/* Render the type select component */}
                 <TypeSelect
                   col={filterState.col}
                   type={filterState.type}
@@ -469,6 +488,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                   activated={self.activated}
                   filterActivated={filterState.activated}
                 />
+                {/* Render the choose values component */}
                 <ChooseValues
                   type={filterState.type}
                   values={filterState.values}
@@ -476,6 +496,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                   activated={self.activated}
                   filterActivated={filterState.activated}
                 />
+                {/* Button to toggle the activated state of the filter */}
                 <button
                   className="relative right-4 z-10 w-[10rem] whitespace-nowrap rounded-r-2xl bg-orange-400 py-1 pl-6 pr-3 text-center text-lg text-white outline-none transition hover:bg-orange-300"
                   onClick={() =>
@@ -486,6 +507,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                     ? "Activate"
                     : "Deactivate"}
                 </button>
+                {/* Button to delete the filter */}
                 <button
                   className="relative right-8 w-fit whitespace-nowrap rounded-r-2xl bg-red-500 py-1 pl-6 pr-3 text-center text-lg text-white outline-none transition hover:bg-red-400"
                   onClick={() =>
@@ -496,6 +518,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                 >
                   delete
                 </button>
+                {/* Button to toggle the mandatory state of the filter */}
                 <button
                   className="relative right-8 w-fit whitespace-nowrap rounded-2xl bg-[#F1B24A] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[#e8b25b]"
                   onClick={() =>
@@ -508,6 +531,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                 </button>
               </div>
               <div className="mx-10">
+                {/* Render the values for 'in' type filters */}
                 {filterState.type.value === "in" && (
                   <>
                     {filterState.values.value.map((value: string, i) => (
@@ -516,6 +540,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                         className="m-1 inline-block w-fit bg-red-400 px-2"
                       >
                         {value}
+                        {/* Button to remove a value from 'in' type filters */}
                         <button
                           onClick={() =>
                             filterState.values.set((value) =>
@@ -534,11 +559,13 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
           )
         )}
 
+        {/* Render the group list editor */}
         <GroupListEditor groups={self} />
       </div>
     </>
   );
 }
+
 
 function GroupContentEditor(props: {
   self: State<IGroup>;
@@ -550,6 +577,7 @@ function GroupContentEditor(props: {
 
   const i = props.index;
 
+  // Function to set the activated state of the group and its child groups
   function SetActivated(groupState: State<IGroup>, activated: boolean): void {
     groupState.activated.set(activated);
     groupState.groups.map((group: State<IGroup>) => {
@@ -557,6 +585,7 @@ function GroupContentEditor(props: {
     });
   }
 
+  // Function to set the optional state of the group and its child groups
   function SetOptional(groupState: State<IGroup>, optional: boolean): void {
     groupState.groups.map((group: State<IGroup>) => {
       SetOptional(group, optional);
@@ -572,6 +601,7 @@ function GroupContentEditor(props: {
       <div className="mt-1 w-full rounded-3xl bg-[rgb(131,182,94)] bg-gradient-to-r to-[#4D774E] py-1 text-lg">
         <div className="font-body flex flex-row px-5 py-2 font-poppins text-2xl font-thin">
           <div className="flex w-[50%] flex-row items-center justify-start">
+            {/* Button to toggle the NOT state */}
             <button
               className={`ml-5 w-[6rem] whitespace-nowrap rounded-l-2xl border-2 border-solid border-[#F1B24A] px-4 py-1 text-center text-lg ${
                 self.not.value === true
@@ -582,6 +612,7 @@ function GroupContentEditor(props: {
             >
               NOT
             </button>
+            {/* Button to set the link state to AND */}
             <button
               className={`w-[6rem] whitespace-nowrap border-y-2 border-solid border-[#F1B24A] px-4 py-1 text-center text-lg ${
                 self.link.value === "AND"
@@ -592,6 +623,7 @@ function GroupContentEditor(props: {
             >
               AND
             </button>
+            {/* Button to set the link state to OR */}
             <button
               className={`w-[6rem] whitespace-nowrap rounded-r-2xl border-2 border-solid border-[#F1B24A] px-4 py-1 text-center text-lg ${
                 self.link.value === "OR"
@@ -604,6 +636,7 @@ function GroupContentEditor(props: {
             </button>
           </div>
           <div className="flex w-[50%] flex-row items-center justify-end pr-3">
+            {/* Button to add a new group */}
             <button
               className="w-[10rem] whitespace-nowrap rounded-l-2xl border-2 border-solid border-[#9DC88D] bg-[#9DC88D] px-4 py-1 text-center text-lg text-white"
               onClick={() =>
@@ -629,6 +662,7 @@ function GroupContentEditor(props: {
             >
               New Group
             </button>
+            {/* Button to add a new filter rule */}
             <button
               className="w-[10rem] whitespace-nowrap border-2 border-solid border-y-[#9DC88D] bg-[#9DC88D] px-4 py-1 text-center text-lg text-white"
               onClick={() =>
@@ -647,6 +681,7 @@ function GroupContentEditor(props: {
             >
               New Rule
             </button>
+            {/* Button to toggle the activated state of the group */}
             <button
               className="w-[10rem] whitespace-nowrap border-2 border-solid border-y-orange-400 border-l-orange-400 bg-orange-400 px-4 py-1 text-center text-lg text-white"
               disabled={!parent.activated.value}
@@ -656,6 +691,7 @@ function GroupContentEditor(props: {
             >
               {self.activated.value ? "Deactivate" : "Activate"}
             </button>
+            {/* Button to delete the group */}
             <button
               className="w-[6rem] whitespace-nowrap rounded-r-2xl border-2 border-red-500 bg-red-500 py-1 text-center text-lg text-white outline-none transition hover:border-red-400 hover:bg-red-400"
               onClick={() =>
@@ -666,6 +702,7 @@ function GroupContentEditor(props: {
             >
               Delete
             </button>
+            {/* Button to toggle the mandatory state of the group */}
             <button
               className="relative w-fit whitespace-nowrap rounded-2xl bg-[#F1B24A] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[#e8b25b]"
               disabled={!parent.mandatory.value}
@@ -678,6 +715,7 @@ function GroupContentEditor(props: {
           </div>
         </div>
 
+        {/* Render the filter list */}
         {self.filter.map(
           (
             filterState: State<{
@@ -691,12 +729,14 @@ function GroupContentEditor(props: {
           ) => (
             <div key={i}>
               <div className="my-1 ml-5 flex flex-row">
+                {/* Render the column select component */}
                 <ColSelect
                   col={filterState.col}
                   activated={self.activated}
                   filterActivated={filterState.activated}
                   values={filterState.values}
                 />
+                {/* Render the type select component */}
                 <TypeSelect
                   col={filterState.col}
                   type={filterState.type}
@@ -704,6 +744,7 @@ function GroupContentEditor(props: {
                   activated={self.activated}
                   filterActivated={filterState.activated}
                 />
+                {/* Render the choose values component */}
                 <ChooseValues
                   type={filterState.type}
                   values={filterState.values}
@@ -711,6 +752,7 @@ function GroupContentEditor(props: {
                   activated={self.activated}
                   filterActivated={filterState.activated}
                 />
+                {/* Button to toggle the activated state of the filter */}
                 <button
                   className="relative right-4 z-10 w-[10rem] whitespace-nowrap rounded-r-2xl bg-orange-400 py-1 pl-6 pr-3 text-center text-lg text-white outline-none transition hover:bg-orange-300"
                   disabled={!self.activated.value}
@@ -722,6 +764,7 @@ function GroupContentEditor(props: {
                     ? "Activate"
                     : "Deactivate"}
                 </button>
+                {/* Button to delete the filter */}
                 <button
                   className="relative right-8 w-fit whitespace-nowrap rounded-r-2xl bg-red-500 py-1 pl-6 pr-3 text-center text-lg text-white outline-none transition hover:bg-red-400"
                   onClick={() =>
@@ -732,6 +775,7 @@ function GroupContentEditor(props: {
                 >
                   Delete
                 </button>
+                {/* Button to toggle the mandatory state of the filter */}
                 <button
                   className="relative right-8 w-fit whitespace-nowrap rounded-2xl bg-[#F1B24A] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[#e8b25b]"
                   disabled={!self.mandatory.value}
@@ -745,6 +789,7 @@ function GroupContentEditor(props: {
                 </button>
               </div>
               <div className="mx-10">
+                {/* Render the values for 'in' type filters */}
                 {filterState.type.value === "in" && (
                   <>
                     {filterState.values.value.map((value: string, i) => (
@@ -753,6 +798,7 @@ function GroupContentEditor(props: {
                         className="m-1 inline-block w-fit bg-red-400 px-2"
                       >
                         {value}
+                        {/* Button to remove a value from 'in' type filters */}
                         <button
                           onClick={() =>
                             filterState.values.set((value) =>
@@ -775,6 +821,7 @@ function GroupContentEditor(props: {
   );
 }
 
+
 function GroupListEditor(props: { groups: State<IGroup> }) {
   const state = useHookstate(props.groups);
 
@@ -795,15 +842,15 @@ function GroupListEditor(props: { groups: State<IGroup> }) {
 }
 
 function ColSelect(props: {
-  col: State<string>;
-  activated: State<boolean>;
-  filterActivated: State<boolean>;
-  values: State<string[]>;
+  col: State<string>;  
+  activated: State<boolean>; 
+  filterActivated: State<boolean>;  
+  values: State<string[]>;  
 }) {
-  const col = useHookstate(props.col);
-  const activated = useHookstate(props.activated);
-  const filterActivated = useHookstate(props.filterActivated);
-  const values = useHookstate(props.values);
+  const col = useHookstate(props.col);  
+  const activated = useHookstate(props.activated); 
+  const filterActivated = useHookstate(props.filterActivated); 
+  const values = useHookstate(props.values);  
 
   useEffect(() => {
     values.set([]);
@@ -815,18 +862,18 @@ function ColSelect(props: {
       name="col"
       id="col"
       className="z-20 w-fit rounded-l-full border-2 border-gray-500 px-3 py-1 text-lg outline-none transition focus:border-gray-700"
-      value={col.value}
+      value={col.value}  // Set the selected value of the dropdown to the selected column
       onChange={(e) => {
-        col.set(e.target.value);
+        col.set(e.target.value);  // Update the selected column when a different option is chosen
         values.set([]);
       }}
-      disabled={!(activated.value && filterActivated.value)}
+      disabled={!(activated.value && filterActivated.value)}  // Disable the dropdown if activation or filter activation is false
     >
       {Object.getOwnPropertyNames(SampleSchema.shape).map((property, i) => {
         if (property !== "id") {
           return (
             <option key={1000 + i} value={property}>
-              {property.replaceAll("_", " ")}
+              {property.replaceAll("_", " ")}  // Display the column name with underscores replaced by spaces
             </option>
           );
         }
@@ -834,6 +881,7 @@ function ColSelect(props: {
     </select>
   );
 }
+
 
 function TypeSelect(props: {
   type: State<string>;
@@ -867,6 +915,7 @@ function TypeSelect(props: {
       }}
       disabled={!(activated.value && filterActivated.value)}
     >
+      {/*choose of the type of the filter*/}
       <option className="text-left" value={"equal"}>
         =
       </option>

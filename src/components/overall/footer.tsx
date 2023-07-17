@@ -6,6 +6,7 @@ const Footer: React.FC = () => {
 
   return (
     <>
+    {/*Information that can be found at the bottom of the page*/}
       <div className="mt-1 border-y-2 border-solid border-[#164A41] bg-gradient-to-b from-[#164A41] to-[#9DC88D] py-4 text-center text-xl text-white">
         {windowSize.width && windowSize.width < 800 ? (
           <div className="mb-4 flex flex-col">
@@ -79,6 +80,7 @@ const Footer: React.FC = () => {
         )}
       </div>
 
+      {/*address and contact information*/}
       <div className="bg-[#fff] py-2 text-center text-lg">
         <label className=" flex flex-wrap justify-center">
           <p>Central BioHub GmbH,</p>&nbsp;<p>Neuendorfstrasse 17,</p>&nbsp;

@@ -1,10 +1,8 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/router";
-
 import HeaderNEW from "~/components/overall/header";
 import Carousel, { CarouselType } from "~/components/home/carousel";
 import useWindowSize from "~/utils/window";
@@ -137,6 +135,7 @@ const Content: React.FC = () => {
           the world`s smartest biospecimen marketplace
         </h1>
       </div>
+      {/*category carousel*/}
       <div className="mt-5 pt-5">
         <Carousel
           type={CarouselType.categories}
@@ -236,6 +235,7 @@ const Content: React.FC = () => {
       <div className="m-auto mb-10 mt-5 flex items-center justify-center">
         <div className="headline mx-4 text-center text-[#164A41]">
           <div className="inline-block px-32 ">Follow Our Journey!</div>
+          {/*social media icons*/}
           <div className="mt-2 flex w-full flex-wrap rounded-lg border-2 border-[#164A41] p-4">
             <Image
               src="/facebook.png"
@@ -306,6 +306,7 @@ const Content: React.FC = () => {
         </div>
         <div className="headline mx-4 text-center text-[#164A41]">
           <div className="inline-block px-[140px]">Payment Methods</div>
+          {/*payment icons*/}
           <div className="mt-2 flex w-full flex-wrap rounded-lg border-2 border-[#164A41] p-4">
             <Image
               src="/Paypal.png"

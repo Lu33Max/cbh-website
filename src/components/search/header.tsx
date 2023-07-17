@@ -36,13 +36,18 @@ const Header: React.FC<{
       {windowSize.width && windowSize.width < 1100 ? (
         <div className="mt-3">
           <div className="mb-3 flex w-full flex-row items-center">
+            {/*display of found results*/}
             <Count count={count} />
+
+            {/*Settings cart*/}
             <Cart
               pagelength={pagelength}
               setSamplesToAdd={setSamplesToAdd}
               addSamplesToCart={addSamplesToCart}
             />
             <div className="mx-auto"></div>
+
+            {/*selection of how many entries should be displayed per page*/}
             <ShowRows
               pagelength={pagelength}
               setPagelength={setPagelength}
@@ -51,12 +56,16 @@ const Header: React.FC<{
             {children}
           </div>
           <div className="flex flex-row justify-center">
+            {/*selection of page*/}
             <Pages range={range} page={showPage} setPage={setPage} />
           </div>
         </div>
       ) : (
         <div className="mb-2 mt-3 flex w-full flex-row items-center">
+          {/*display of found results*/}
           <Count count={count} />
+
+          {/*Settings cart*/}
           <Cart
             pagelength={pagelength}
             setSamplesToAdd={setSamplesToAdd}
@@ -64,9 +73,11 @@ const Header: React.FC<{
           />
 
           <div className="mx-auto">
+            {/*selection of page*/}
             <Pages range={range} page={showPage} setPage={setPage} />
           </div>
 
+          {/*selection of how many entries should be displayed per page*/}
           <ShowRows
             pagelength={pagelength}
             setPagelength={setPagelength}
@@ -93,6 +104,7 @@ const Count: React.FC<{ count: number | undefined }> = ({ count }) => {
   );
 };
 
+//settings for cart
 const Cart: React.FC<{
   pagelength: number;
   setSamplesToAdd: Dispatch<SetStateAction<number>>;
@@ -117,6 +129,7 @@ const Cart: React.FC<{
           </Popover.Header>
           <Popover.Body>
             <div className="flex flex-row justify-center gap-3">
+              {/*how many samples to add to the cart*/}
               <select
                 className={`w-fit rounded-lg border-2 text-center text-lg border-[${Colors.dark}]`}
                 onChange={(e) => setSamplesToAdd(Number(e.target.value))}
@@ -164,6 +177,7 @@ const Pages: React.FC<{
   const windowSize = useWindowSize();
   return (
     <div className="flex flex-row items-center">
+      {/*selection of page*/}
       {range.map((el, index) => (
         <>
           {el === 1 && (
@@ -252,6 +266,7 @@ const ShowRows: React.FC<{
 
   return (
     <>
+    {/*selection of how many entries should be displayed per page*/}
       <p
         className={`ml-2 w-fit rounded-l-2xl border-2 bg-white px-3 py-1 text-lg border-[${Colors.light}] text-[${Colors.dark}] h-10 outline-none transition`}
       >

@@ -14,10 +14,12 @@ export default function LoginPage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
+      {/* Background */}
       <div className="fixed max-h-full min-h-full min-w-full max-w-full overflow-hidden bg-gradient-to-br from-[#1c6641] to-[#9DC88D]">
         <div className="absolute inset-0 h-full w-full object-cover">
           <Image src="/bg.png" alt="background" fill={true} />
         </div>
+        {/* Login Form */}
         <section className="flex min-h-screen flex-col items-center justify-center  font-poppins">
           <div className="container mx-auto flex h-full items-center justify-center px-6 py-12">
             <div className="bg-white px-8 py-10 shadow-xl shadow-black/30 backdrop-blur-sm md:w-8/12 lg:w-5/12">
@@ -67,9 +69,11 @@ export const LoginForm = ({
 
   return (
     <form onSubmit={(e) => void onSubmit(e)}>
+      {/* Error message */}
       {error && (
         <p className="mb-6 rounded bg-red-300 py-4 text-center">{error}</p>
       )}
+      {/* Email input */}
       <div className="mb-6 rounded border-2 border-solid border-[#1c6641]">
         <input
           required
@@ -83,6 +87,7 @@ export const LoginForm = ({
           className={`${input_style}`}
         />
       </div>
+      {/* Password input */}
       <div className="mb-6 rounded border-2 border-solid border-[#1c6641]">
         <input
           required
@@ -96,6 +101,7 @@ export const LoginForm = ({
           className={`${input_style}`}
         />
       </div>
+      {/* Sign In button */}
       <div className="flex items-center justify-center">
         <button
           type="submit"
@@ -107,10 +113,11 @@ export const LoginForm = ({
 
       <div className="my-4 flex items-center  before:mt-0.5 before:flex-1 before:border-t before:border-[#164A41] after:mt-0.5 after:flex-1 after:border-t after:border-[#164A41]">
         <p className="mx-4 mb-0 text-center italic">
-          Don´t have an account yet?
+          Don't have an account yet?
         </p>
       </div>
 
+      {/* Sign in with external providers */}
       {Object.values(providers)
         .filter((provider) => provider.name !== "credentials")
         .map((provider) => (
@@ -125,6 +132,7 @@ export const LoginForm = ({
           </>
         ))}
 
+      {/* Sign Up button */}
       <div
         className="flex items-center justify-center text-center"
         onClick={() => router.push(`/auth/signup?prev=${callbackURL}`)}

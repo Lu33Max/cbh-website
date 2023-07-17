@@ -1,8 +1,8 @@
-import { type NextPage } from "next";
+import { NextPage } from "next";
 import Head from "next/head";
 import { useContext, useState } from "react";
 import { BiDetail, BiX } from "react-icons/bi";
-import { type IOptionalTableSample, type ITableSample } from "~/common/types";
+import { IOptionalTableSample, ITableSample } from "~/common/types";
 
 import Header from "~/components/overall/header";
 import ClickContext from "~/context/click";
@@ -29,7 +29,10 @@ const Home: NextPage = () => {
 export default Home;
 
 const Content: React.FC = () => {
+  // Retrieve and update cart samples from context
   const [cartSamples, setCartSamples] = useContext(ClickContext);
+
+  // Define active columns
   const activeColumns = [
     "CBH_Donor_ID",
     "CBH_Sample_ID",
@@ -40,15 +43,19 @@ const Content: React.FC = () => {
     "Gender",
     "Price",
   ];
+
+  // State variables
   const [sortBy, setSortBy] = useState("");
   type SampleKey = keyof ITableSample;
   const defaultShow: boolean[] = [];
   const [show, setShow] = useState<boolean[]>(defaultShow);
 
+  // Initialize default show values
   for (let i = 0; i < cartSamples.length; i++) {
     defaultShow.push(false);
   }
 
+  // Update show state for expanding/collapsing sample details
   const updateState = (index: number) => {
     const newArray = show.map((item, i) => {
       if (index === i) {
@@ -60,16 +67,19 @@ const Content: React.FC = () => {
     setShow(newArray);
   };
 
+  // Helper function to get property value from an object
   function getProperty<T, K extends keyof T>(o: T, propertyName: K): T[K] {
     return o[propertyName];
   }
 
+  // Delete a cart item from the cart samples
   function deleteCartItem(cartSample: ITableSample) {
     setCartSamples((current) =>
       current.filter((item) => item.data.id !== cartSample.id)
     );
   }
 
+  // Handle sorting of cart samples
   const handleSort = (column: SampleKey) => {
     const sortArray = [...cartSamples].sort(
       (a: IOptionalTableSample, b: IOptionalTableSample) => {
@@ -94,26 +104,34 @@ const Content: React.FC = () => {
         <b>Cart</b>
       </h1>
       <div className="mx-4 my-5">
+        {/* Display cart items */}
         {cartSamples.length > 0 ? (
           <>
+            {/* Delete all button */}
             <button
               onClick={() => setCartSamples([])}
               className="relative mb-2 w-fit rounded-2xl border-2 border-black bg-red-500 px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-red-400"
             >
               delete all
             </button>
+
+            {/* Cart table */}
             <table className="max-h-[50vh] w-full border-separate border-spacing-y-1 overflow-y-auto text-lg ">
               <thead>
                 <tr className="bg-[#e0ecd4] font-extralight text-black">
+                  {/* Cart column */}
                   <th className="rounded-l-xl border-r-2 border-dotted border-black py-2 font-extralight">
                     Cart
                   </th>
+
+                  {/* Active columns */}
                   {activeColumns.map((column, i) => {
                     return (
                       <th
                         key={i}
                         className="border-r-2 border-dotted border-black py-2 font-extralight"
                       >
+                        {/* Column header with sorting functionality */}
                         <button
                           onClick={() => {
                             sortBy === "" ? setSortBy(column) : setSortBy("");
@@ -125,10 +143,13 @@ const Content: React.FC = () => {
                       </th>
                     );
                   })}
+
+                  {/* Details column */}
                   <th className="rounded-r-xl py-2 font-extralight">Details</th>
                 </tr>
               </thead>
               <tbody>
+                {/* Render cart samples */}
                 {cartSamples.map((sample, index) => (
                   <>
                     <tr key={index} className="text-center">
@@ -137,9 +158,12 @@ const Content: React.FC = () => {
                           <BiX className="relative top-1 rounded-lg border-2 border-[#164A41]" />
                         </button>
                       </td>
+
+                      {/* Active columns cells */}
                       {activeColumns.map((column, i) => {
                         return (
                           <td key={i} className="bg-gray-200 px-3 py-2">
+                            {/* Display property value */}
                             {getProperty(
                               sample.data,
                               column as SampleKey
@@ -147,6 +171,8 @@ const Content: React.FC = () => {
                           </td>
                         );
                       })}
+
+                      {/* Details cell */}
                       <td className="rounded-r-xl bg-gray-200 px-3 py-2">
                         <button
                           onClick={() => {
@@ -157,7 +183,10 @@ const Content: React.FC = () => {
                         </button>
                       </td>
                     </tr>
+
+                    {/* Expanded details row */}
                     <tr className={`mx-5 ${show[index] ? "" : "hidden"}`}>
+                      {/* General Data */}
                       <td colSpan={2} className="bg-gray-200 px-5">
                         <div className="grid grid-cols-2">
                           <strong className="col-span-2">General Data</strong>
@@ -177,6 +206,8 @@ const Content: React.FC = () => {
                           {sample.data.Sample_Condition ?? "NaN"}
                         </div>
                       </td>
+
+                      {/* Donor */}
                       <td
                         className="border-l-2 border-solid border-gray-300 px-2"
                         colSpan={2}
@@ -192,6 +223,8 @@ const Content: React.FC = () => {
                           {sample.data.Procurement_Type ?? "NaN"}
                         </div>
                       </td>
+
+                      {/* Laboratory */}
                       <td
                         className="border-l-2 border-solid border-gray-300 px-2"
                         colSpan={2}
@@ -239,6 +272,8 @@ const Content: React.FC = () => {
                             : "NaN"}
                         </div>
                       </td>
+
+                      {/* Clinical Diagnosis */}
                       <td
                         className="border-l-2 border-solid border-gray-300 px-2"
                         colSpan={4}
@@ -277,6 +312,8 @@ const Content: React.FC = () => {
                 ))}
               </tbody>
             </table>
+
+            {/* Delete all button */}
             <button
               onClick={() => setCartSamples([])}
               className="relative w-fit rounded-2xl bg-red-500 px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-red-400"
