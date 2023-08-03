@@ -83,7 +83,7 @@ const Table: React.FC<props> = ({
   useEffect(() => {
     setShowPage(page);
     setShow(defaultShow);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   useEffect(() => {
@@ -91,102 +91,98 @@ const Table: React.FC<props> = ({
   }, [filterNormal]);
 
   // Define a useEffect hook that triggers when the filterState variable changes
-useEffect(() => {
-  // Check if filterState is not undefined
-  if (filterState !== undefined) {
-    let tempBuffer = [...bufferColumns];
-    let count = 0;
+  useEffect(() => {
+    // Check if filterState is not undefined
+    if (filterState !== undefined) {
+      let tempBuffer = [...bufferColumns];
+      let count = 0;
 
-    // Remove specific items from tempBuffer (excluding "Gender", "Age", and "CBH_Donor_ID")
-    tempBuffer = tempBuffer.filter(
-      (item) =>
-        item !== "Gender" &&
-        item !== "Age" &&
-        item !== "CBH_Donor_ID"
-    );
-
-    // Check if filterState.Lab_Parameter has a value
-    if (
-      filterState.Lab_Parameter &&
-      filterState.Lab_Parameter.value.length > 0
-    ) {
-      // If "Lab_Parameter" is not in activeColumns, add it to tempBuffer
-      if (!activeColumns.find((item) => item === "Lab_Parameter")) {
-        tempBuffer.push("Lab_Parameter");
-      }
-      count++;
-    } else {
-      // If "Lab_Parameter" doesn't have a value, remove it from tempBuffer
-      tempBuffer = tempBuffer.filter((item) => item !== "Lab_Parameter");
-    }
-
-    // Check if filterState.Result_Interpretation has a value
-    if (
-      filterState.Result_Interpretation &&
-      filterState.Result_Interpretation.value.length > 0
-    ) {
-      // If "Result_Interpretation" is not in activeColumns, add it to tempBuffer
-      if (!activeColumns.find((item) => item === "Result_Interpretation")) {
-        tempBuffer.push("Result_Interpretation");
-      }
-      count++;
-    } else {
-      // If "Result_Interpretation" doesn't have a value, remove it from tempBuffer
+      // Remove specific items from tempBuffer (excluding "Gender", "Age", and "CBH_Donor_ID")
       tempBuffer = tempBuffer.filter(
-        (item) => item !== "Result_Interpretation"
+        (item) => item !== "Gender" && item !== "Age" && item !== "CBH_Donor_ID"
       );
-    }
 
-    // Check if filterState.Diagnosis has a value
-    if (filterState.Diagnosis && filterState.Diagnosis.value.length > 0) {
-      // If "Diagnosis" is not in activeColumns, add it to tempBuffer
-      if (!activeColumns.find((item) => item === "Diagnosis")) {
-        tempBuffer.push("Diagnosis");
+      // Check if filterState.Lab_Parameter has a value
+      if (
+        filterState.Lab_Parameter &&
+        filterState.Lab_Parameter.value.length > 0
+      ) {
+        // If "Lab_Parameter" is not in activeColumns, add it to tempBuffer
+        if (!activeColumns.find((item) => item === "Lab_Parameter")) {
+          tempBuffer.push("Lab_Parameter");
+        }
+        count++;
+      } else {
+        // If "Lab_Parameter" doesn't have a value, remove it from tempBuffer
+        tempBuffer = tempBuffer.filter((item) => item !== "Lab_Parameter");
       }
-      count++;
-    } else {
-      // If "Diagnosis" doesn't have a value, remove it from tempBuffer
-      tempBuffer = tempBuffer.filter((item) => item !== "Diagnosis");
+
+      // Check if filterState.Result_Interpretation has a value
+      if (
+        filterState.Result_Interpretation &&
+        filterState.Result_Interpretation.value.length > 0
+      ) {
+        // If "Result_Interpretation" is not in activeColumns, add it to tempBuffer
+        if (!activeColumns.find((item) => item === "Result_Interpretation")) {
+          tempBuffer.push("Result_Interpretation");
+        }
+        count++;
+      } else {
+        // If "Result_Interpretation" doesn't have a value, remove it from tempBuffer
+        tempBuffer = tempBuffer.filter(
+          (item) => item !== "Result_Interpretation"
+        );
+      }
+
+      // Check if filterState.Diagnosis has a value
+      if (filterState.Diagnosis && filterState.Diagnosis.value.length > 0) {
+        // If "Diagnosis" is not in activeColumns, add it to tempBuffer
+        if (!activeColumns.find((item) => item === "Diagnosis")) {
+          tempBuffer.push("Diagnosis");
+        }
+        count++;
+      } else {
+        // If "Diagnosis" doesn't have a value, remove it from tempBuffer
+        tempBuffer = tempBuffer.filter((item) => item !== "Diagnosis");
+      }
+
+      // Update tempBuffer based on the count
+      switch (count) {
+        case 0:
+          // If count is 0, add "Gender", "Age", and "CBH_Donor_ID" to tempBuffer if they're not already present
+          if (!tempBuffer.find((col) => col === "Gender")) {
+            tempBuffer.push("Gender");
+          }
+          if (!tempBuffer.find((col) => col === "Age")) {
+            tempBuffer.push("Age");
+          }
+          if (!tempBuffer.find((col) => col === "CBH_Donor_ID")) {
+            tempBuffer.push("CBH_Donor_ID");
+          }
+          break;
+        case 1:
+          // If count is 1, add "Age" and "CBH_Donor_ID" to tempBuffer if they're not already present
+          if (!tempBuffer.find((col) => col === "Age")) {
+            tempBuffer.push("Age");
+          }
+          if (!tempBuffer.find((col) => col === "CBH_Donor_ID")) {
+            tempBuffer.push("CBH_Donor_ID");
+          }
+          break;
+        case 2:
+          // If count is 2, add "CBH_Donor_ID" to tempBuffer if it's not already present
+          if (!tempBuffer.find((col) => col === "CBH_Donor_ID")) {
+            tempBuffer.push("CBH_Donor_ID");
+          }
+          break;
+        default:
+          break;
+      }
+
+      setBufferColumns(tempBuffer);
     }
-
-    // Update tempBuffer based on the count
-    switch (count) {
-      case 0:
-        // If count is 0, add "Gender", "Age", and "CBH_Donor_ID" to tempBuffer if they're not already present
-        if (!tempBuffer.find((col) => col === "Gender")) {
-          tempBuffer.push("Gender");
-        }
-        if (!tempBuffer.find((col) => col === "Age")) {
-          tempBuffer.push("Age");
-        }
-        if (!tempBuffer.find((col) => col === "CBH_Donor_ID")) {
-          tempBuffer.push("CBH_Donor_ID");
-        }
-        break;
-      case 1:
-        // If count is 1, add "Age" and "CBH_Donor_ID" to tempBuffer if they're not already present
-        if (!tempBuffer.find((col) => col === "Age")) {
-          tempBuffer.push("Age");
-        }
-        if (!tempBuffer.find((col) => col === "CBH_Donor_ID")) {
-          tempBuffer.push("CBH_Donor_ID");
-        }
-        break;
-      case 2:
-        // If count is 2, add "CBH_Donor_ID" to tempBuffer if it's not already present
-        if (!tempBuffer.find((col) => col === "CBH_Donor_ID")) {
-          tempBuffer.push("CBH_Donor_ID");
-        }
-        break;
-      default:
-        break;
-    }
-
-    setBufferColumns(tempBuffer);
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [filterState]);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterState]);
 
   useEffect(() => {
     const newRange = [];
@@ -208,191 +204,191 @@ useEffect(() => {
   }, [pagelength]);
 
   // Define a useEffect hook that triggers when the optionalSamples variable changes
-useEffect(() => {
-  // Create a new array to store the modified data
-  const newArray: IOptionalTableSample[] = [];
+  useEffect(() => {
+    // Create a new array to store the modified data
+    const newArray: IOptionalTableSample[] = [];
 
-  // Check if optionalSamples is not undefined
-  if (optionalSamples !== undefined) {
-    // Iterate over each sample in optionalSamples
-    optionalSamples.forEach((sample) => {
-      // Check if the sample with the same CBH_Sample_ID already exists in the newArray
-      if (
-        newArray.find(
-          (arraySample) =>
-            arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID
-        )
-      ) {
-        // Get the index of the existing sample in newArray
-        const sampleIndex = newArray.findIndex(
-          (arraySample) =>
-            arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID
-        );
+    // Check if optionalSamples is not undefined
+    if (optionalSamples !== undefined) {
+      // Iterate over each sample in optionalSamples
+      optionalSamples.forEach((sample) => {
+        // Check if the sample with the same CBH_Sample_ID already exists in the newArray
+        if (
+          newArray.find(
+            (arraySample) =>
+              arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID
+          )
+        ) {
+          // Get the index of the existing sample in newArray
+          const sampleIndex = newArray.findIndex(
+            (arraySample) =>
+              arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID
+          );
 
-        // Update the arrays in the existing sample based on specific conditions
-        if (
-          sample.data.Lab_Parameter &&
-          !newArray[sampleIndex]?.data.Lab_Parameter?.find(
-            (item) => item === sample.data.Lab_Parameter
+          // Update the arrays in the existing sample based on specific conditions
+          if (
+            sample.data.Lab_Parameter &&
+            !newArray[sampleIndex]?.data.Lab_Parameter?.find(
+              (item) => item === sample.data.Lab_Parameter
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Lab_Parameter?.push(
-            sample.data.Lab_Parameter
-          );
-        if (
-          sample.data.Result_Interpretation &&
-          !newArray[sampleIndex]?.data.Result_Interpretation?.find(
-            (item) => item === sample.data.Result_Interpretation
+            newArray[sampleIndex]?.data.Lab_Parameter?.push(
+              sample.data.Lab_Parameter
+            );
+          if (
+            sample.data.Result_Interpretation &&
+            !newArray[sampleIndex]?.data.Result_Interpretation?.find(
+              (item) => item === sample.data.Result_Interpretation
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Result_Interpretation?.push(
-            sample.data.Result_Interpretation
-          );
-        if (
-          sample.data.Result_Raw &&
-          !newArray[sampleIndex]?.data.Result_Raw?.find(
-            (item) => item === sample.data.Result_Raw
+            newArray[sampleIndex]?.data.Result_Interpretation?.push(
+              sample.data.Result_Interpretation
+            );
+          if (
+            sample.data.Result_Raw &&
+            !newArray[sampleIndex]?.data.Result_Raw?.find(
+              (item) => item === sample.data.Result_Raw
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Result_Raw?.push(
-            sample.data.Result_Raw
-          );
-        if (
-          sample.data.Result_Numerical &&
-          !newArray[sampleIndex]?.data.Result_Numerical?.find(
-            (item) => item === sample.data.Result_Numerical
+            newArray[sampleIndex]?.data.Result_Raw?.push(
+              sample.data.Result_Raw
+            );
+          if (
+            sample.data.Result_Numerical &&
+            !newArray[sampleIndex]?.data.Result_Numerical?.find(
+              (item) => item === sample.data.Result_Numerical
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Result_Numerical?.push(
-            sample.data.Result_Numerical ?? 0
-          );
-        if (
-          sample.data.Result_Unit &&
-          !newArray[sampleIndex]?.data.Result_Unit?.find(
-            (item) => item === sample.data.Result_Unit
+            newArray[sampleIndex]?.data.Result_Numerical?.push(
+              sample.data.Result_Numerical ?? 0
+            );
+          if (
+            sample.data.Result_Unit &&
+            !newArray[sampleIndex]?.data.Result_Unit?.find(
+              (item) => item === sample.data.Result_Unit
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Result_Unit?.push(
-            sample.data.Result_Unit
-          );
-        if (
-          sample.data.Cut_Off_Raw &&
-          !newArray[sampleIndex]?.data.Cut_Off_Raw?.find(
-            (item) => item === sample.data.Cut_Off_Raw
+            newArray[sampleIndex]?.data.Result_Unit?.push(
+              sample.data.Result_Unit
+            );
+          if (
+            sample.data.Cut_Off_Raw &&
+            !newArray[sampleIndex]?.data.Cut_Off_Raw?.find(
+              (item) => item === sample.data.Cut_Off_Raw
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Cut_Off_Raw?.push(
-            sample.data.Cut_Off_Raw
-          );
-        if (
-          sample.data.Cut_Off_Numerical &&
-          !newArray[sampleIndex]?.data.Cut_Off_Numerical?.find(
-            (item) => item === sample.data.Cut_Off_Numerical
+            newArray[sampleIndex]?.data.Cut_Off_Raw?.push(
+              sample.data.Cut_Off_Raw
+            );
+          if (
+            sample.data.Cut_Off_Numerical &&
+            !newArray[sampleIndex]?.data.Cut_Off_Numerical?.find(
+              (item) => item === sample.data.Cut_Off_Numerical
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Cut_Off_Numerical?.push(
-            sample.data.Cut_Off_Numerical ?? 0
-          );
-        if (
-          sample.data.Test_Method &&
-          !newArray[sampleIndex]?.data.Test_Method?.find(
-            (item) => item === sample.data.Test_Method
+            newArray[sampleIndex]?.data.Cut_Off_Numerical?.push(
+              sample.data.Cut_Off_Numerical ?? 0
+            );
+          if (
+            sample.data.Test_Method &&
+            !newArray[sampleIndex]?.data.Test_Method?.find(
+              (item) => item === sample.data.Test_Method
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Test_Method?.push(
-            sample.data.Test_Method
-          );
-        if (
-          sample.data.Test_System &&
-          !newArray[sampleIndex]?.data.Test_System?.find(
-            (item) => item === sample.data.Test_System
+            newArray[sampleIndex]?.data.Test_Method?.push(
+              sample.data.Test_Method
+            );
+          if (
+            sample.data.Test_System &&
+            !newArray[sampleIndex]?.data.Test_System?.find(
+              (item) => item === sample.data.Test_System
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Test_System?.push(
-            sample.data.Test_System
-          );
-        if (
-          sample.data.Test_System_Manufacturer &&
-          !newArray[sampleIndex]?.data.Test_System_Manufacturer?.find(
-            (item) => item === sample.data.Test_System_Manufacturer
+            newArray[sampleIndex]?.data.Test_System?.push(
+              sample.data.Test_System
+            );
+          if (
+            sample.data.Test_System_Manufacturer &&
+            !newArray[sampleIndex]?.data.Test_System_Manufacturer?.find(
+              (item) => item === sample.data.Test_System_Manufacturer
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Test_System_Manufacturer?.push(
-            sample.data.Test_System_Manufacturer
-          );
-        if (
-          sample.data.Result_Obtained_From &&
-          !newArray[sampleIndex]?.data.Result_Obtained_From?.find(
-            (item) => item === sample.data.Result_Obtained_From
+            newArray[sampleIndex]?.data.Test_System_Manufacturer?.push(
+              sample.data.Test_System_Manufacturer
+            );
+          if (
+            sample.data.Result_Obtained_From &&
+            !newArray[sampleIndex]?.data.Result_Obtained_From?.find(
+              (item) => item === sample.data.Result_Obtained_From
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Result_Obtained_From?.push(
-            sample.data.Result_Obtained_From
-          );
-        if (
-          sample.data.Diagnosis &&
-          !newArray[sampleIndex]?.data.Diagnosis?.find(
-            (item) => item === sample.data.Diagnosis
+            newArray[sampleIndex]?.data.Result_Obtained_From?.push(
+              sample.data.Result_Obtained_From
+            );
+          if (
+            sample.data.Diagnosis &&
+            !newArray[sampleIndex]?.data.Diagnosis?.find(
+              (item) => item === sample.data.Diagnosis
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Diagnosis?.push(sample.data.Diagnosis);
-        if (
-          sample.data.Diagnosis_Remarks &&
-          !newArray[sampleIndex]?.data.Diagnosis_Remarks?.find(
-            (item) => item === sample.data.Diagnosis_Remarks
+            newArray[sampleIndex]?.data.Diagnosis?.push(sample.data.Diagnosis);
+          if (
+            sample.data.Diagnosis_Remarks &&
+            !newArray[sampleIndex]?.data.Diagnosis_Remarks?.find(
+              (item) => item === sample.data.Diagnosis_Remarks
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Diagnosis_Remarks?.push(
-            sample.data.Diagnosis_Remarks
-          );
-        if (
-          sample.data.ICD_Code &&
-          !newArray[sampleIndex]?.data.ICD_Code?.find(
-            (item) => item === sample.data.ICD_Code
+            newArray[sampleIndex]?.data.Diagnosis_Remarks?.push(
+              sample.data.Diagnosis_Remarks
+            );
+          if (
+            sample.data.ICD_Code &&
+            !newArray[sampleIndex]?.data.ICD_Code?.find(
+              (item) => item === sample.data.ICD_Code
+            )
           )
-        )
-          newArray[sampleIndex]?.data.ICD_Code?.push(sample.data.ICD_Code);
-        if (
-          sample.data.Medication &&
-          !newArray[sampleIndex]?.data.Medication?.find(
-            (item) => item === sample.data.Medication
+            newArray[sampleIndex]?.data.ICD_Code?.push(sample.data.ICD_Code);
+          if (
+            sample.data.Medication &&
+            !newArray[sampleIndex]?.data.Medication?.find(
+              (item) => item === sample.data.Medication
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Medication?.push(
-            sample.data.Medication
-          );
-        if (
-          sample.data.Therapy &&
-          !newArray[sampleIndex]?.data.Therapy?.find(
-            (item) => item === sample.data.Therapy
+            newArray[sampleIndex]?.data.Medication?.push(
+              sample.data.Medication
+            );
+          if (
+            sample.data.Therapy &&
+            !newArray[sampleIndex]?.data.Therapy?.find(
+              (item) => item === sample.data.Therapy
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Therapy?.push(sample.data.Therapy);
-        if (
-          sample.data.Histological_Diagnosis &&
-          !newArray[sampleIndex]?.data.Histological_Diagnosis?.find(
-            (item) => item === sample.data.Histological_Diagnosis
+            newArray[sampleIndex]?.data.Therapy?.push(sample.data.Therapy);
+          if (
+            sample.data.Histological_Diagnosis &&
+            !newArray[sampleIndex]?.data.Histological_Diagnosis?.find(
+              (item) => item === sample.data.Histological_Diagnosis
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Histological_Diagnosis?.push(
-            sample.data.Histological_Diagnosis
-          );
-        if (
-          sample.data.Other_Gene_Mutations &&
-          !newArray[sampleIndex]?.data.Other_Gene_Mutations?.find(
-            (item) => item === sample.data.Other_Gene_Mutations
+            newArray[sampleIndex]?.data.Histological_Diagnosis?.push(
+              sample.data.Histological_Diagnosis
+            );
+          if (
+            sample.data.Other_Gene_Mutations &&
+            !newArray[sampleIndex]?.data.Other_Gene_Mutations?.find(
+              (item) => item === sample.data.Other_Gene_Mutations
+            )
           )
-        )
-          newArray[sampleIndex]?.data.Other_Gene_Mutations?.push(
-            sample.data.Other_Gene_Mutations
-          );
-      } else {
-        // If the sample doesn't exist in newArray, add it as a new entry
-        newArray.push({
-          optional: sample.optional,
-          data: {
-            // Assign the data properties from the sample to the new entry
-            id: sample.data.id,
+            newArray[sampleIndex]?.data.Other_Gene_Mutations?.push(
+              sample.data.Other_Gene_Mutations
+            );
+        } else {
+          // If the sample doesn't exist in newArray, add it as a new entry
+          newArray.push({
+            optional: sample.optional,
+            data: {
+              // Assign the data properties from the sample to the new entry
+              id: sample.data.id,
               CBH_Donor_ID: sample.data.CBH_Donor_ID,
               CBH_Master_ID: sample.data.CBH_Master_ID,
               CBH_Sample_ID: sample.data.CBH_Sample_ID,
@@ -478,16 +474,15 @@ useEffect(() => {
               Date_of_Collection: sample.data.Date_of_Collection,
               Procurement_Type: sample.data.Procurement_Type,
               Informed_Consent: sample.data.Informed_Consent,
-          },
-        });
-      }
-    });
-  }
+            },
+          });
+        }
+      });
+    }
 
-  // Update the tableSamples state with the modified newArray
-  setTableSamples(newArray);
-}, [optionalSamples]);
-
+    // Update the tableSamples state with the modified newArray
+    setTableSamples(newArray);
+  }, [optionalSamples]);
 
   useEffect(() => {
     void sortColumns();
@@ -512,7 +507,6 @@ useEffect(() => {
   const handleSort = (column: SampleKey) => {
     let sortArray: IOptionalTableSample[] = [];
 
-    {/*sort the array*/}
     sortArray = [...tableSamples].sort(
       (a: IOptionalTableSample, b: IOptionalTableSample) => {
         const a1 = getProperty(a.data, column);
@@ -541,7 +535,9 @@ useEffect(() => {
   function sortColumns() {
     let sortArray: string[] = [];
 
-    {/*sort the columns*/}
+    {
+      /*sort the columns*/
+    }
     sortArray = [...bufferColumns].sort((a: string, b: string) => {
       if (
         Object.getOwnPropertyNames(SampleSchema.shape).findIndex(
@@ -566,7 +562,9 @@ useEffect(() => {
   function addSamplesToCart() {
     const tempArray: IOptionalTableSample[] = [];
 
-    {/*add samples to cart*/}
+    {
+      /*add samples to cart*/
+    }
     for (let i = 0; i < samplesToAdd; i++) {
       const tempSample = tableSamples[i];
       if (tempSample) {
