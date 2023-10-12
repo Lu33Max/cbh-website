@@ -70,7 +70,7 @@ const ModalLoadExpert: React.FC<CustomModalProps> = ({
               {/*content*/}
               <div className="relative w-full rounded-2xl border-0 bg-white shadow-lg outline-none focus:outline-none">
                 {/*header*/}
-                <div className="flex w-full rounded-t-2xl border-b border-solid border-slate-200 bg-[rgb(131,182,94)] p-5 text-center">
+                <div className="flex w-full rounded-t-2xl border-b border-solid border-slate-200 bg-[#D8E9D1] p-5 text-center">
                   <h3 className="w-full text-center text-3xl font-semibold">
                     Load filters
                   </h3>
@@ -85,7 +85,7 @@ const ModalLoadExpert: React.FC<CustomModalProps> = ({
                           onClick={() => setSelected(filter)}
                           className={`my-1 rounded-2xl py-1 ${
                             filter.name === selected?.name
-                              ? "bg-[#9DC88D]"
+                              ? "bg-[#D8E9D1]"
                               : "bg-slate-100"
                           }`}
                         >
@@ -117,7 +117,7 @@ const ModalLoadExpert: React.FC<CustomModalProps> = ({
                     Close
                   </button>
                   <button
-                    className="mb-1 mr-1 rounded bg-emerald-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-emerald-600"
+                    className="mb-1 mr-1 rounded bg-[#D8E9D1] px-6 py-3 text-sm font-bold uppercase shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-[#aabda3]"
                     type="button"
                     onClick={applyFilter}
                   >

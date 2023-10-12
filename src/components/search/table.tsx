@@ -705,7 +705,7 @@ const Table: React.FC<props> = ({
                       onClick={() => setCartSamples([...cartSamples, sample])}
                     >
                       <button>
-                        <BiCartAdd className="relative top-1" />
+                        <BiCartAdd className="relative top-1 active:bg-[#aabda3]" />
                       </button>
                     </td>
 
