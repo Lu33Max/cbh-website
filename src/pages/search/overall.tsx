@@ -115,6 +115,9 @@ const Content: React.FC = () => {
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [categoryQuery, setCategoryQuery] = useState<string>("Overall");
 
+  const [categories, setCategories] = useState<boolean>(false);
+
+
   const windowSize = useWindowSize();
 
   const { data: samples } = api.samples.getAll.useQuery({
@@ -179,6 +182,31 @@ const Content: React.FC = () => {
     }
   }
 
+  const categoriesButton: React.ReactNode = (
+    <>
+      {
+        <button className="mx-3 text-xl" onClick={() => setCategories(!categories)}>
+          Categories
+        </button>
+      }
+    </>
+  );
+
+  const gridData = [
+    { id: 1, imageSrc: '/slider/categories/1.png', label: 'Overall' },
+    { id: 2, imageSrc: '/slider/categories/2.png', label: 'Pregnancy' },
+    { id: 3, imageSrc: '/slider/categories/3.png', label: 'Infectious Diseases' },
+    { id: 4, imageSrc: '/slider/categories/4.png', label: 'Sexually Transmitted Diseases' },
+    { id: 5, imageSrc: '/slider/categories/5.png', label: 'COVID 19' },
+    { id: 6, imageSrc: '/slider/categories/6.png', label: 'Allergies' },
+    { id: 7, imageSrc: '/slider/categories/7.png', label: 'Autoimmune Diseases' },
+    { id: 8, imageSrc: '/slider/categories/8.png', label: 'Cardiovascular Diseases' },
+    { id: 9, imageSrc: '/slider/categories/9.png', label: 'Musculosketetal System and Connective Tissue' },
+    { id: 10, imageSrc: '/slider/categories/22.png', label: 'Cell Products' },
+    { id: 10, imageSrc: '/slider/categories/10.png', label: 'Endocrine Disorders' },
+    { id: 10, imageSrc: '/slider/categories/12.png', label: 'Gynaecology' },
+  ];
+
   return (
     <div className="max-h-[calc(100dvh-80px)] overflow-x-hidden overflow-y-scroll font-poppins">
       <div
@@ -239,12 +267,34 @@ const Content: React.FC = () => {
             Overall Search
           </Link>
           <label className="mx-1">|</label>
+          <div>
+          {categoriesButton}
+          </div>          
+
+          {/*
           <Link
             className="relative top-1 text-xl"
             href={`/search/overall?c=${encodeURI(categoryQuery)}`}
           >
             {categoryQuery}
           </Link>
+          */}
+
+        </div>
+
+        <div>
+          {categories && (
+            <div className="my-3 w-full">
+              <div className="w-full flex flex-wrap">
+                {gridData.map((item) => (
+                  <div key={item.id} className="w-1/6 p-4">
+                    <p>{item.label}</p>
+                    <img src={item.imageSrc} alt={item.label} width="100" height="100" className=""/>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {windowSize.width && windowSize.width < 700 ? (
