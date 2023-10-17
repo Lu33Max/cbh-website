@@ -185,6 +185,7 @@ const Content: React.FC = () => {
   const categoriesButton: React.ReactNode = (
     <>
       {
+        //categories button
         <button className="mx-3 text-xl" onClick={() => setCategories(!categories)}>
           Categories
         </button>
@@ -192,19 +193,32 @@ const Content: React.FC = () => {
     </>
   );
 
+  //data to fill the grid for the categories
   const gridData = [
-    { id: 1, imageSrc: '/slider/categories/1.png', label: 'Overall' },
-    { id: 2, imageSrc: '/slider/categories/2.png', label: 'Pregnancy' },
-    { id: 3, imageSrc: '/slider/categories/3.png', label: 'Infectious Diseases' },
-    { id: 4, imageSrc: '/slider/categories/4.png', label: 'Sexually Transmitted Diseases' },
-    { id: 5, imageSrc: '/slider/categories/5.png', label: 'COVID 19' },
-    { id: 6, imageSrc: '/slider/categories/6.png', label: 'Allergies' },
-    { id: 7, imageSrc: '/slider/categories/7.png', label: 'Autoimmune Diseases' },
-    { id: 8, imageSrc: '/slider/categories/8.png', label: 'Cardiovascular Diseases' },
-    { id: 9, imageSrc: '/slider/categories/9.png', label: 'Musculosketetal System and Connective Tissue' },
-    { id: 10, imageSrc: '/slider/categories/22.png', label: 'Cell Products' },
-    { id: 10, imageSrc: '/slider/categories/10.png', label: 'Endocrine Disorders' },
-    { id: 10, imageSrc: '/slider/categories/12.png', label: 'Gynaecology' },
+    { id: 1, imageSrc: '/slider/categories/1.png', label: 'Overall', subCategory: 'overall'},
+    { id: 2, imageSrc: '/slider/categories/2.png', label: 'Pregnancy', subCategory: '1st Trimester', subCategory2: '2nd Trimester', subCategory3: '3nd Trimester' },
+    { id: 3, imageSrc: '/slider/categories/3.png', label: 'Infectious Diseases', subCategory: 'Hepatitis', subCategory2: 'Influenza', subCategory3: 'Sepsis', subCategory4: 'Influenza A Swabs' },
+    { id: 4, imageSrc: '/slider/categories/4.png', label: 'Sexually Transmitted Diseases', subCategory: 'Chlamydia', subCategory2: 'HIV', subCategory3: 'Syphilis'},
+    { id: 5, imageSrc: '/slider/categories/5.png', label: 'cancer samples', subCategory: 'Cancer Inventory', subCategory2: 'FFPE Samples', subCategory3: 'Triple Negative Breast Cancer' },  
+    { id: 6, imageSrc: '/slider/categories/6.png', label: 'Allergies', subCategory: 'Food Allergens', subCategory2: 'Grass Pollen', subCategory3: 'Animal Allergens', subCategory4: 'Stinging Insect Allergens' },
+    { id: 7, imageSrc: '/slider/categories/7.png', label: 'Autoimmune Diseases', subCategory: 'Rheumatoid arthritis', subCategory2: 'Coeliac Disease', subCategory3: 'Autoimmune Thyroid Disorders', subCategory4: 'Inflammatory Bowel disease'},
+    { id: 8, imageSrc: '/slider/categories/8.png', label: 'Cardiovascular Diseases', subCategory: 'Hypertensive Disease', subCategory2: 'Hyperlipidaemia', subCategory3: 'Myocardial Infarction' },
+    { id: 9, imageSrc: '/slider/categories/9.png', label: 'Musculoskeletal System and Connective Tissue', subCategory: 'Arthrosis', subCategory2: 'Osteoporosis' },
+    { id: 10, imageSrc: '/slider/categories/10.png', label: 'Endocrine Disorders', subCategory: 'Hypothyroidism', subCategory2: 'Hyperthyroidism', subCategory3: 'Addisons Disease' },
+    { id: 11, imageSrc: '/slider/categories/11.png', label: 'COVID 19', subCategory: 'Vaccinated Donors', subCategory2: 'Variants', subCategory3: 'Clinically Confirmed' },
+    { id: 12, imageSrc: '/slider/categories/12.png', label: 'Gynaecology', subCategory: 'Endometriosis' },
+    { id: 13, imageSrc: '/slider/categories/13.png', label: 'Healthy Donors (Self Reported)' },
+    { id: 14, imageSrc: '/slider/categories/14.png', label: 'Metabolic Disorders', subCategory: 'Diabetes I', subCategory2: 'Diabetes II' },
+    { id: 15, imageSrc: '/slider/categories/15.png', label: 'Parasitology', subCategory: 'Chagas', subCategory2: 'Toxoplamosis' },
+    { id: 16, imageSrc: '/slider/categories/16.png', label: 'Neurological Disorders', subCategory: 'Parkinson' },
+    { id: 17, imageSrc: '/slider/categories/17.png', label: 'Respiratory Tract Infections', subCategory: 'Pneumonia', subCategory2: 'Tuberculosis' },
+    { id: 18, imageSrc: '/slider/categories/18.png', label: 'Tropical Infections', subCategory: 'Chikungunya Virus', subCategory2: 'Dengue Fever', subCategory3: 'West Nile Virus' },
+    { id: 19, imageSrc: '/slider/categories/19.png', label: 'Other Vector Borne Diseases', subCategory: 'Lyme disease' },
+    { id: 20, imageSrc: '/slider/categories/20.png', label: 'Specimen Matrix', subCategory: 'Human Serum Samples', subCategory2: 'Plasma Samples', subCategory3: 'Whole Blood Samples', subCategory4: 'Urine Samples' },
+    { id: 21, imageSrc: '/slider/categories/21.png', label: 'Tissue Bank', subCategory: 'Human Tissue Samples', subCategory2: 'Frozen Tissue'  },
+    { id: 22, imageSrc: '/slider/categories/22.png', label: 'Cell Products', subCategory: 'PBMC', subCategory2: 'B Cells', subCategory3: 'T Cells'  },
+    { id: 23, imageSrc: '/slider/categories/23.png', label: 'Other Biofluids', subCategory: 'Cerebrospinal Fluid (CSF)', subCategory2: 'Saliva', subCategory3: 'Aqueous Humor' },
+    { id: 24, imageSrc: '/slider/categories/24.png', label: 'Dermatological Diseases', subCategory: 'Atopic Dermatitis', subCategory2: 'Psoriasis'  },    
   ];
 
   return (
@@ -266,36 +280,16 @@ const Content: React.FC = () => {
           <Link className="relative top-1 text-xl" href={"/search/overall"}>
             Overall Search
           </Link>
-          <label className="mx-1">|</label>
-          <div>
-          {categoriesButton}
-          </div>          
-
-          {/*
+          <label className="mx-1">|</label>          
           <Link
             className="relative top-1 text-xl"
             href={`/search/overall?c=${encodeURI(categoryQuery)}`}
           >
             {categoryQuery}
           </Link>
-          */}
-
         </div>
 
-        <div>
-          {categories && (
-            <div className="my-3 w-full">
-              <div className="w-full flex flex-wrap">
-                {gridData.map((item) => (
-                  <div key={item.id} className="w-1/6 p-4">
-                    <p>{item.label}</p>
-                    <img src={item.imageSrc} alt={item.label} width="100" height="100" className=""/>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        
 
         {windowSize.width && windowSize.width < 700 ? (
           <div className="flex flex-col">
@@ -344,6 +338,13 @@ const Content: React.FC = () => {
               </button>
 
               {/*choose category*/}
+              <div>
+                {categoriesButton}
+              </div>   
+
+              
+
+              {/*             
               <select
                 className={`mx-3 text-xl text-[${Colors.dark}] flex h-10 w-[200px] appearance-none flex-row rounded-lg bg-transparent bg-[url('/ArrowDown.png')] bg-[length:1.3rem_auto] bg-[170px] bg-no-repeat pl-2 pr-8`}
                 value={categoryQuery}
@@ -388,9 +389,12 @@ const Content: React.FC = () => {
                   Dermatological Diseases
                 </option>
               </select>
+              */}
+
             </div>
           </div>
         ) : (
+          <>
           <div className="flex w-full flex-row">
             <div className="flex w-[50%] flex-row items-center justify-start">
               <button
@@ -418,7 +422,15 @@ const Content: React.FC = () => {
                 </svg>
               </button>
 
+
               {/*choose category*/}
+              <div>
+                {categoriesButton}
+              </div> 
+
+              
+              
+              {/*
               <select
                 className={`mx-3 text-xl text-[${Colors.dark}] flex h-10 w-[200px] appearance-none flex-row rounded-lg bg-transparent bg-[url('/ArrowDown.png')] bg-[length:1.3rem_auto] bg-[170px] bg-no-repeat pl-2 pr-8`}
                 value={categoryQuery}
@@ -463,7 +475,9 @@ const Content: React.FC = () => {
                   Dermatological Diseases
                 </option>
               </select>
+              */}
             </div>
+            
 
             <div className="flex w-[50%] flex-row justify-end">
               {/*load filter button*/}
@@ -481,7 +495,28 @@ const Content: React.FC = () => {
                 Save Filter
               </button>
             </div>
+            
           </div>
+          <div>
+          {categories && (
+            <div className="my-3 w-full">
+              <div className="w-full flex flex-wrap">
+                {gridData.map((item) => (
+                  <div key={item.id} className="w-1/6 p-4">
+                    <p><b>{item.label}</b></p>
+                    <img src={item.imageSrc} alt={item.label} width="100" height="100" className="py-2"/>
+                    <p>{item.subCategory}</p>
+                    <p>{item.subCategory2}</p>
+                    <p>{item.subCategory3}</p>
+                    <p>{item.subCategory4}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        </>
+
         )}
 
         <ModalSave
