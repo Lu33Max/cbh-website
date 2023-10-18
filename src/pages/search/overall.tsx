@@ -498,23 +498,23 @@ const Content: React.FC = () => {
             
           </div>
           <div>
-          {categories && (
-            <div className="my-3 w-full">
+            {categories && (          
+            <div className="w-full my-3 flex flex-col items-start">
               <div className="w-full flex flex-wrap">
                 {gridData.map((item) => (
-                  <div key={item.id} className="w-1/6 p-4">
-                    <p><b>{item.label}</b></p>
+                  <div key={item.id} className="w-1/6 p-4 flex flex-col items-start">
+                    <button value={item?.label} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}><b>{item.label}</b></button>
                     <img src={item.imageSrc} alt={item.label} width="100" height="100" className="py-2"/>
-                    <p>{item.subCategory}</p>
-                    <p>{item.subCategory2}</p>
-                    <p>{item.subCategory3}</p>
-                    <p>{item.subCategory4}</p>
+                    <button value={item.subCategory} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory}</button>
+                    <button value={item.subCategory2} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory2}</button>
+                    <button value={item.subCategory3} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory3}</button>
+                    <button value={item.subCategory4} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory4}</button>
                   </div>
                 ))}
               </div>
             </div>
-          )}
-        </div>
+            )}
+          </div>
         </>
 
         )}
