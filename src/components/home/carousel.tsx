@@ -77,6 +77,49 @@ const Carousel: React.FC<props> = ({ type, settings, style }) => {
     }
   }
 
+  //Partners
+  const partnerContents: JSX.Element[] = [
+    <div key={301} className="mx-auto mb-2">
+      <Image
+        src="/slider/categories/1.png"
+        alt="Eastern Research Solutions"
+        className="absolute opacity-100 grayscale transition duration-500 ease-in-out hover:grayscale-0"
+        width={200}
+        height={200}
+      />
+    </div>,
+      <div key={302} className="mx-auto mb-2">
+      <Image
+        src="/slider/partners/1.png"
+        alt="Eastern Research Solutions"
+        className="absolute opacity-100 grayscale transition duration-500 ease-in-out hover:grayscale-0"
+        width={200}
+        height={200}
+      />
+    </div>,
+  ];
+
+    // Categories
+    const test = 24;
+    const testContents: JSX.Element[] = [];
+  
+    for (let i = 0; i < test; i++) {
+      testContents.push(
+        <div
+          key={300 + i}
+          className="flex cursor-pointer flex-col justify-start"          
+        >
+          <Image
+            className="mx-auto mb-2"
+            src={`/slider/categories/${i + 1}.png`}
+            alt={`category${i}`}
+            width={80}
+            height={80}
+          />
+        </div>
+      );
+    }
+
   //Testimonials
   const testimonialContents: JSX.Element[] = [
     <div key={201} className="text-2xl">
@@ -147,6 +190,11 @@ const Carousel: React.FC<props> = ({ type, settings, style }) => {
       {type === CarouselType.categories && (
         <Slider {...settings} className={style}>
           {categoryContents.map((el) => el)}
+        </Slider>
+      )}
+      {type === CarouselType.partners && (
+        <Slider {...settings} className={style}>
+          {partnerContents.map((el) => el)}
         </Slider>
       )}
       {type === CarouselType.testimonials && (

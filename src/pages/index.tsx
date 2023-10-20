@@ -223,13 +223,23 @@ const Content: React.FC = () => {
       </div>
       <div>
         <div className="relative my-5 flex h-[250px] flex-row items-center justify-center justify-items-center bg-[rgba(157,200,141,0.25)]">
-          <Image
+          {/* <Image
             src="/slider/partners/1.png"
             alt="Eastern Research Solutions"
             className="absolute opacity-100 grayscale transition duration-500 ease-in-out hover:grayscale-0"
             width={windowSize.width ? windowSize.width - 800 : 1200}
             height={200}
-          />
+          /> */}
+          <Carousel
+          type={CarouselType.partners}
+          settings={{
+            ...settings,
+            slidesToShow: 1,
+            dots: false,
+            slidesToScroll: 1,
+          }}
+          style={style}
+        />
         </div>
       </div>
       <div className="m-auto mb-10 mt-5 flex items-center justify-center">
