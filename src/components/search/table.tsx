@@ -21,6 +21,7 @@ import {
 import Header from "./header";
 import useWindowSize from "~/utils/window";
 import { api } from "~/utils/api";
+import { array, object } from "zod";
 
 type props = {
   page: number;
@@ -32,6 +33,63 @@ type props = {
   expert: boolean;
   filterNormal?: INormalFilter;
 };
+
+export const ExampleSample: ITableSample = {
+  id: "",
+  CBH_Donor_ID:                   "",
+  CBH_Master_ID:                  "",
+  CBH_Sample_ID:                  "",
+  Price:                          0,
+  Quantity:                       0,
+  Unit:                           "",
+  Matrix:                         "",
+  Storage_Temperature:            "",
+  Freeze_Thaw_Cycles:             0,
+  Sample_Condition:               "",
+  Infectious_Disease_Test_Result: "",
+  Gender:                         "",
+  Age:                            0,
+  Ethnicity:                      "",
+  BMI:                            0,
+  Lab_Parameter:                  [],
+  Result_Interpretation:          [],
+  Result_Raw:                     [],
+  Result_Numerical:               [],
+  Result_Unit:                    [],
+  Cut_Off_Raw:                    [],
+  Cut_Off_Numerical:              [],
+  Test_Method:                    [],
+  Test_System:                    [],
+  Test_System_Manufacturer:       [],
+  Result_Obtained_From:           [],
+  Diagnosis:                      [],
+  Diagnosis_Remarks:              [],
+  ICD_Code:                       [],
+  Pregnancy_Week:                 0,
+  Pregnancy_Trimester:            "",
+  Medication:                     [],
+  Therapy:                        [],
+  Histological_Diagnosis:         [],
+  Organ:                          "",
+  Disease_Presentation:           "",
+  TNM_Class_T:                    "",
+  TNM_Class_N:                    "",
+  TNM_Class_M:                    "",
+  Tumour_Grade:                   "",
+  Tumour_Stage:                   "",
+  Viable_Cells__per_:             "",
+  Necrotic_Cells__per_:           "",
+  Tumour_Cells__per_:             "",
+  Proliferation_Rate__Ki67_per_:  "",
+  Estrogen_Receptor:              "",
+  Progesteron_Receptor:           "",
+  HER_2_Receptor:                 "",
+  Other_Gene_Mutations:           [],
+  Country_of_Collection:          "",
+  Date_of_Collection:             new Date(),
+  Procurement_Type:               "",
+  Informed_Consent:               "",
+}
 
 const Table: React.FC<props> = ({
   page,
@@ -203,286 +261,59 @@ const Table: React.FC<props> = ({
     setShow(newShow);
   }, [pagelength]);
 
-  // Define a useEffect hook that triggers when the optionalSamples variable changes
-  useEffect(() => {
-    // Create a new array to store the modified data
-    const newArray: IOptionalTableSample[] = [];
+useEffect(() => {
+  if (optionalSamples === undefined) return;
 
-    // Check if optionalSamples is not undefined
-    if (optionalSamples !== undefined) {
-      // Iterate over each sample in optionalSamples
-      optionalSamples.forEach((sample) => {
-        // Check if the sample with the same CBH_Sample_ID already exists in the newArray
-        if (
-          newArray.find(
-            (arraySample) =>
-              arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID
-          )
-        ) {
-          // Get the index of the existing sample in newArray
-          const sampleIndex = newArray.findIndex(
-            (arraySample) =>
-              arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID
-          );
+  // Erstellen Sie ein neues Array, um die modifizierten Daten zu speichern
+  const newArray: IOptionalTableSample[] = [];
 
-          // Update the arrays in the existing sample based on specific conditions
-          if (
-            sample.data.Lab_Parameter &&
-            !newArray[sampleIndex]?.data.Lab_Parameter?.find(
-              (item) => item === sample.data.Lab_Parameter
-            )
-          )
-            newArray[sampleIndex]?.data.Lab_Parameter?.push(
-              sample.data.Lab_Parameter
-            );
-          if (
-            sample.data.Result_Interpretation &&
-            !newArray[sampleIndex]?.data.Result_Interpretation?.find(
-              (item) => item === sample.data.Result_Interpretation
-            )
-          )
-            newArray[sampleIndex]?.data.Result_Interpretation?.push(
-              sample.data.Result_Interpretation
-            );
-          if (
-            sample.data.Result_Raw &&
-            !newArray[sampleIndex]?.data.Result_Raw?.find(
-              (item) => item === sample.data.Result_Raw
-            )
-          )
-            newArray[sampleIndex]?.data.Result_Raw?.push(
-              sample.data.Result_Raw
-            );
-          if (
-            sample.data.Result_Numerical &&
-            !newArray[sampleIndex]?.data.Result_Numerical?.find(
-              (item) => item === sample.data.Result_Numerical
-            )
-          )
-            newArray[sampleIndex]?.data.Result_Numerical?.push(
-              sample.data.Result_Numerical ?? 0
-            );
-          if (
-            sample.data.Result_Unit &&
-            !newArray[sampleIndex]?.data.Result_Unit?.find(
-              (item) => item === sample.data.Result_Unit
-            )
-          )
-            newArray[sampleIndex]?.data.Result_Unit?.push(
-              sample.data.Result_Unit
-            );
-          if (
-            sample.data.Cut_Off_Raw &&
-            !newArray[sampleIndex]?.data.Cut_Off_Raw?.find(
-              (item) => item === sample.data.Cut_Off_Raw
-            )
-          )
-            newArray[sampleIndex]?.data.Cut_Off_Raw?.push(
-              sample.data.Cut_Off_Raw
-            );
-          if (
-            sample.data.Cut_Off_Numerical &&
-            !newArray[sampleIndex]?.data.Cut_Off_Numerical?.find(
-              (item) => item === sample.data.Cut_Off_Numerical
-            )
-          )
-            newArray[sampleIndex]?.data.Cut_Off_Numerical?.push(
-              sample.data.Cut_Off_Numerical ?? 0
-            );
-          if (
-            sample.data.Test_Method &&
-            !newArray[sampleIndex]?.data.Test_Method?.find(
-              (item) => item === sample.data.Test_Method
-            )
-          )
-            newArray[sampleIndex]?.data.Test_Method?.push(
-              sample.data.Test_Method
-            );
-          if (
-            sample.data.Test_System &&
-            !newArray[sampleIndex]?.data.Test_System?.find(
-              (item) => item === sample.data.Test_System
-            )
-          )
-            newArray[sampleIndex]?.data.Test_System?.push(
-              sample.data.Test_System
-            );
-          if (
-            sample.data.Test_System_Manufacturer &&
-            !newArray[sampleIndex]?.data.Test_System_Manufacturer?.find(
-              (item) => item === sample.data.Test_System_Manufacturer
-            )
-          )
-            newArray[sampleIndex]?.data.Test_System_Manufacturer?.push(
-              sample.data.Test_System_Manufacturer
-            );
-          if (
-            sample.data.Result_Obtained_From &&
-            !newArray[sampleIndex]?.data.Result_Obtained_From?.find(
-              (item) => item === sample.data.Result_Obtained_From
-            )
-          )
-            newArray[sampleIndex]?.data.Result_Obtained_From?.push(
-              sample.data.Result_Obtained_From
-            );
-          if (
-            sample.data.Diagnosis &&
-            !newArray[sampleIndex]?.data.Diagnosis?.find(
-              (item) => item === sample.data.Diagnosis
-            )
-          )
-            newArray[sampleIndex]?.data.Diagnosis?.push(sample.data.Diagnosis);
-          if (
-            sample.data.Diagnosis_Remarks &&
-            !newArray[sampleIndex]?.data.Diagnosis_Remarks?.find(
-              (item) => item === sample.data.Diagnosis_Remarks
-            )
-          )
-            newArray[sampleIndex]?.data.Diagnosis_Remarks?.push(
-              sample.data.Diagnosis_Remarks
-            );
-          if (
-            sample.data.ICD_Code &&
-            !newArray[sampleIndex]?.data.ICD_Code?.find(
-              (item) => item === sample.data.ICD_Code
-            )
-          )
-            newArray[sampleIndex]?.data.ICD_Code?.push(sample.data.ICD_Code);
-          if (
-            sample.data.Medication &&
-            !newArray[sampleIndex]?.data.Medication?.find(
-              (item) => item === sample.data.Medication
-            )
-          )
-            newArray[sampleIndex]?.data.Medication?.push(
-              sample.data.Medication
-            );
-          if (
-            sample.data.Therapy &&
-            !newArray[sampleIndex]?.data.Therapy?.find(
-              (item) => item === sample.data.Therapy
-            )
-          )
-            newArray[sampleIndex]?.data.Therapy?.push(sample.data.Therapy);
-          if (
-            sample.data.Histological_Diagnosis &&
-            !newArray[sampleIndex]?.data.Histological_Diagnosis?.find(
-              (item) => item === sample.data.Histological_Diagnosis
-            )
-          )
-            newArray[sampleIndex]?.data.Histological_Diagnosis?.push(
-              sample.data.Histological_Diagnosis
-            );
-          if (
-            sample.data.Other_Gene_Mutations &&
-            !newArray[sampleIndex]?.data.Other_Gene_Mutations?.find(
-              (item) => item === sample.data.Other_Gene_Mutations
-            )
-          )
-            newArray[sampleIndex]?.data.Other_Gene_Mutations?.push(
-              sample.data.Other_Gene_Mutations
-            );
-        } else {
-          // If the sample doesn't exist in newArray, add it as a new entry
-          newArray.push({
-            optional: sample.optional,
-            data: {
-              // Assign the data properties from the sample to the new entry
-              id: sample.data.id,
-              CBH_Donor_ID: sample.data.CBH_Donor_ID,
-              CBH_Master_ID: sample.data.CBH_Master_ID,
-              CBH_Sample_ID: sample.data.CBH_Sample_ID,
-              Price: sample.data.Price,
-              Quantity: sample.data.Quantity,
-              Unit: sample.data.Unit,
-              Matrix: sample.data.Matrix,
-              Storage_Temperature: sample.data.Storage_Temperature,
-              Freeze_Thaw_Cycles: sample.data.Freeze_Thaw_Cycles,
-              Sample_Condition: sample.data.Sample_Condition,
-              Infectious_Disease_Test_Result:
-                sample.data.Infectious_Disease_Test_Result,
-              Gender: sample.data.Gender,
-              Age: sample.data.Age,
-              Ethnicity: sample.data.Ethnicity,
-              BMI: sample.data.BMI,
-              Lab_Parameter: sample.data.Lab_Parameter
-                ? [sample.data.Lab_Parameter]
-                : [],
-              Result_Interpretation: sample.data.Result_Interpretation
-                ? [sample.data.Result_Interpretation]
-                : [],
-              Result_Raw: sample.data.Result_Raw
-                ? [sample.data.Result_Raw]
-                : [],
-              Result_Numerical: sample.data.Result_Numerical
-                ? [sample.data.Result_Numerical ?? 0]
-                : [],
-              Result_Unit: sample.data.Result_Unit
-                ? [sample.data.Result_Unit]
-                : [],
-              Cut_Off_Raw: sample.data.Cut_Off_Raw
-                ? [sample.data.Cut_Off_Raw]
-                : [],
-              Cut_Off_Numerical: sample.data.Cut_Off_Numerical
-                ? [sample.data.Cut_Off_Numerical ?? 0]
-                : [],
-              Test_Method: sample.data.Test_Method
-                ? [sample.data.Test_Method]
-                : [],
-              Test_System: sample.data.Test_System
-                ? [sample.data.Test_System]
-                : [],
-              Test_System_Manufacturer: sample.data.Test_System_Manufacturer
-                ? [sample.data.Test_System_Manufacturer]
-                : [],
-              Result_Obtained_From: sample.data.Result_Obtained_From
-                ? [sample.data.Result_Obtained_From]
-                : [],
-              Diagnosis: sample.data.Diagnosis ? [sample.data.Diagnosis] : [],
-              Diagnosis_Remarks: sample.data.Diagnosis_Remarks
-                ? [sample.data.Diagnosis_Remarks]
-                : [],
-              ICD_Code: sample.data.ICD_Code ? [sample.data.ICD_Code] : [],
-              Pregnancy_Week: sample.data.Pregnancy_Week,
-              Pregnancy_Trimester: sample.data.Pregnancy_Trimester,
-              Medication: sample.data.Medication
-                ? [sample.data.Medication]
-                : [],
-              Therapy: sample.data.Therapy ? [sample.data.Therapy] : [],
-              Histological_Diagnosis: sample.data.Histological_Diagnosis
-                ? [sample.data.Histological_Diagnosis]
-                : [],
-              Organ: sample.data.Organ,
-              Disease_Presentation: sample.data.Disease_Presentation,
-              TNM_Class_T: sample.data.TNM_Class_T,
-              TNM_Class_N: sample.data.TNM_Class_N,
-              TNM_Class_M: sample.data.TNM_Class_M,
-              Tumour_Grade: sample.data.Tumour_Grade,
-              Tumour_Stage: sample.data.Tumour_Stage,
-              Viable_Cells__per_: sample.data.Viable_Cells__per_,
-              Necrotic_Cells__per_: sample.data.Necrotic_Cells__per_,
-              Tumour_Cells__per_: sample.data.Tumour_Cells__per_,
-              Proliferation_Rate__Ki67_per_:
-                sample.data.Proliferation_Rate__Ki67_per_,
-              Estrogen_Receptor: sample.data.Estrogen_Receptor,
-              Progesteron_Receptor: sample.data.Progesteron_Receptor,
-              HER_2_Receptor: sample.data.HER_2_Receptor,
-              Other_Gene_Mutations: sample.data.Other_Gene_Mutations
-                ? [sample.data.Other_Gene_Mutations]
-                : [],
-              Country_of_Collection: sample.data.Country_of_Collection,
-              Date_of_Collection: sample.data.Date_of_Collection,
-              Procurement_Type: sample.data.Procurement_Type,
-              Informed_Consent: sample.data.Informed_Consent,
-            },
-          });
+  optionalSamples.forEach((sample) => {
+    const existingSample = newArray.find((arraySample) =>
+      arraySample.data.CBH_Sample_ID === sample.data.CBH_Sample_ID
+    );
+
+    if (existingSample) {
+      // Update mehrwertige Eigenschaften
+      const multiValueProps: (keyof IOptionalTableSample['data'])[] = [
+        'Lab_Parameter',
+        'Result_Interpretation',
+        // ...
+        'Other_Gene_Mutations',
+      ];
+
+      multiValueProps.forEach((prop) => {
+        if (Array.isArray(existingSample.data[prop]) && typeof sample.data[prop] !== 'undefined' && typeof sample.data[prop] !== null && (typeof sample.data[prop] === 'string' && sample.data[prop] !== '')) {
+          // Wenn beide Arrays sind, fügen Sie sie zusammen
+          //@ts-ignore
+          existingSample.data[prop] = existingSample.data[prop].push(sample.data[prop]);
         }
       });
-    }
+    } else {
+      let newTablesample = ExampleSample;
 
-    // Update the tableSamples state with the modified newArray
-    setTableSamples(newArray);
-  }, [optionalSamples]);
+      Object.getOwnPropertyNames(newTablesample).forEach(prop => {
+        if (Array.isArray(getProperty(newTablesample, prop as keyof typeof newTablesample))) {
+          newTablesample[prop as keyof typeof newTablesample].push(sample.data[prop as keyof typeof sample.data])
+        } else {
+          if (typeof newTablesample[prop as keyof typeof newTablesample] === typeof sample.data[prop as keyof typeof sample.data]) {
+            newTablesample[prop as keyof typeof newTablesample] = sample.data[prop as keyof typeof sample.data]
+          }          
+        }
+      })
+
+      // Hinzufügen eines neuen Eintrags, falls der Sample nicht existiert
+      newArray.push({
+        optional: sample.optional,
+        data: {
+          ...newTablesample,
+        },
+      });
+    }
+  });
+
+  // Aktualisieren Sie den tableSamples-Zustand mit dem modifizierten newArray
+  setTableSamples(newArray);
+}, [optionalSamples]);
 
   useEffect(() => {
     void sortColumns();
