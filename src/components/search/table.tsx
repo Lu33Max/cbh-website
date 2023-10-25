@@ -22,6 +22,9 @@ import Header from "./header";
 import useWindowSize from "~/utils/window";
 import { api } from "~/utils/api";
 
+import { z } from "zod";
+import { useRouter } from "next/router";
+
 type props = {
   page: number;
   pagelength: number;
@@ -57,6 +60,10 @@ const Table: React.FC<props> = ({
 
   const [settings, setSettings] = useState<boolean>(false);
   const [formatting, setFormatting] = useState<boolean>(false);
+  
+  const router = useRouter();
+  const fo = router.query.formatting;
+
 
   const defaultColumns = [
     "CBH_Donor_ID",
@@ -488,6 +495,29 @@ const Table: React.FC<props> = ({
     void sortColumns();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bufferColumns]);
+
+  useEffect(() => {
+    router.push(
+      {
+        ...router,
+        query: {
+          ...router.query,
+          formatting: formatting,
+        },
+      },
+      undefined,
+      { shallow: true },
+    );
+  }, [formatting]);
+
+  useEffect(() => {
+    if (fo !== undefined) {
+      const temp = z.boolean().safeParse(fo)
+      if(temp.success){
+        setFormatting(temp.data)
+      }
+    }
+  }, [fo]);
 
   const updateState = (index: number) => {
     const newArray = show.map((item, i) => {
