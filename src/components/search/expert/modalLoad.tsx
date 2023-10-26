@@ -3,6 +3,7 @@ import React, {
   type SetStateAction,
   type Dispatch,
   useState,
+  useContext,
 } from "react";
 
 import { type IGroup, GroupSchema, FilterType } from "~/common/filter/filter";
@@ -11,6 +12,7 @@ import { api } from "~/utils/api";
 import { type Filter } from "@prisma/client";
 import { type State } from "@hookstate/core";
 import Link from "next/link";
+import SettingsContext from "~/context/settings";
 
 type CustomModalProps = {
   showModal: boolean;
@@ -36,6 +38,9 @@ const ModalLoadExpert: React.FC<CustomModalProps> = ({
       }
     );
 
+  const [settings, setSettings] = useContext(SettingsContext)
+
+
   useEffect(() => {
     if (showModal) {
       void refetchFilter();
@@ -54,6 +59,7 @@ const ModalLoadExpert: React.FC<CustomModalProps> = ({
         filter.set(parseFilter);
         setSelected(undefined);
         setShowModal(false);
+        setSettings({formatting: selected.formatting, activeColumns: selected.activeColumns});
       } catch (error) {
         console.error(error);
         alert("Something went wrong. Please try again.");

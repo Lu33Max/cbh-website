@@ -11,7 +11,7 @@ import { BiCartAdd, BiCog, BiInfoCircle } from "react-icons/bi";
 import { type INormalFilter } from "~/common/filter/filter";
 import { SampleSchema } from "~/common/database/samples";
 
-import ClickContext from "~/context/click";
+import ClickContext from "~/context/cart";
 import { Colors } from "~/common/styles";
 import {
   type IOptionalSample,
@@ -21,6 +21,7 @@ import {
 import Header from "./header";
 import useWindowSize from "~/utils/window";
 import { api } from "~/utils/api";
+import SettingsContext from "~/context/settings";
 
 type props = {
   page: number;
@@ -55,8 +56,17 @@ const Table: React.FC<props> = ({
   const [tableSamples, setTableSamples] = useState<IOptionalTableSample[]>([]);
   type SampleKey = keyof ITableSample;
 
-  const [settings, setSettings] = useState<boolean>(false);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [settings, setSettings] = useContext(SettingsContext)
+
+  /*
   const [formatting, setFormatting] = useState<boolean>(false);
+
+  
+  
+  const [activeColumns, setActiveColumns] = useState<string[]>(defaultColumns);
+  const [bufferColumns, setBufferColumns] = useState<string[]>(defaultColumns);
+  */
 
   const defaultColumns = [
     "CBH_Donor_ID",
@@ -68,8 +78,7 @@ const Table: React.FC<props> = ({
     "Gender",
     "Price",
   ];
-  const [activeColumns, setActiveColumns] = useState<string[]>(defaultColumns);
-  const [bufferColumns, setBufferColumns] = useState<string[]>(defaultColumns);
+
   const [filterState, setFilterState] = useState(filterNormal);
 
   const windowSize = useWindowSize();
@@ -94,7 +103,7 @@ const Table: React.FC<props> = ({
   useEffect(() => {
     // Check if filterState is not undefined
     if (filterState !== undefined) {
-      let tempBuffer = [...bufferColumns];
+      let tempBuffer = [...settings.activeColumns];
       let count = 0;
 
       // Remove specific items from tempBuffer (excluding "Gender", "Age", and "CBH_Donor_ID")
@@ -108,7 +117,7 @@ const Table: React.FC<props> = ({
         filterState.Lab_Parameter.value.length > 0
       ) {
         // If "Lab_Parameter" is not in activeColumns, add it to tempBuffer
-        if (!activeColumns.find((item) => item === "Lab_Parameter")) {
+        if (!settings.activeColumns.find((item) => item === "Lab_Parameter")) {
           tempBuffer.push("Lab_Parameter");
         }
         count++;
@@ -123,7 +132,7 @@ const Table: React.FC<props> = ({
         filterState.Result_Interpretation.value.length > 0
       ) {
         // If "Result_Interpretation" is not in activeColumns, add it to tempBuffer
-        if (!activeColumns.find((item) => item === "Result_Interpretation")) {
+        if (!settings.activeColumns.find((item) => item === "Result_Interpretation")) {
           tempBuffer.push("Result_Interpretation");
         }
         count++;
@@ -137,7 +146,7 @@ const Table: React.FC<props> = ({
       // Check if filterState.Diagnosis has a value
       if (filterState.Diagnosis && filterState.Diagnosis.value.length > 0) {
         // If "Diagnosis" is not in activeColumns, add it to tempBuffer
-        if (!activeColumns.find((item) => item === "Diagnosis")) {
+        if (!settings.activeColumns.find((item) => item === "Diagnosis")) {
           tempBuffer.push("Diagnosis");
         }
         count++;
@@ -179,7 +188,7 @@ const Table: React.FC<props> = ({
           break;
       }
 
-      setBufferColumns(tempBuffer);
+      setSettings({formatting: settings.formatting, activeColumns: tempBuffer});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterState]);
@@ -487,7 +496,7 @@ const Table: React.FC<props> = ({
   useEffect(() => {
     void sortColumns();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bufferColumns]);
+  }, [settings.activeColumns]);
 
   const updateState = (index: number) => {
     const newArray = show.map((item, i) => {
@@ -525,10 +534,10 @@ const Table: React.FC<props> = ({
   };
 
   function showColumns(column: string): void {
-    if (bufferColumns.find((c) => c === column)) {
-      setBufferColumns(bufferColumns.filter((c) => c !== column));
+    if (settings.activeColumns.find((c) => c === column)) {
+      setSettings({formatting: settings.formatting, activeColumns: settings.activeColumns.filter((c) => c !== column)});
     } else {
-      setBufferColumns([...bufferColumns, column]);
+      setSettings({activeColumns: [...settings.activeColumns, column], formatting: settings.formatting});
     }
   }
 
@@ -538,7 +547,7 @@ const Table: React.FC<props> = ({
     {
       /*sort the columns*/
     }
-    sortArray = [...bufferColumns].sort((a: string, b: string) => {
+    sortArray = [...settings.activeColumns].sort((a: string, b: string) => {
       if (
         Object.getOwnPropertyNames(SampleSchema.shape).findIndex(
           (i) => i === a
@@ -556,7 +565,7 @@ const Table: React.FC<props> = ({
       return 0;
     });
 
-    setActiveColumns(sortArray);
+    setSettings({activeColumns: sortArray, formatting: settings.formatting});
   }
 
   function addSamplesToCart() {
@@ -585,7 +594,7 @@ const Table: React.FC<props> = ({
   const settingsButton: React.ReactNode = (
     <>
       {expert && windowSize.width && windowSize.width > 600 && (
-        <button className="mx-3 text-xl" onClick={() => setSettings(!settings)}>
+        <button className="mx-3 text-xl" onClick={() => setShowSettings(!showSettings)}>
           <BiCog />
         </button>
       )}
@@ -609,19 +618,18 @@ const Table: React.FC<props> = ({
         </Header>
         <div className="mb-6 px-16">
           {/*settings*/}
-          {settings && (
+          {showSettings && (
             <div className="my-3">
               <h1 className="text-2xl">Settings</h1>
               <label>Auto-Formatting: </label>
               <input
                 type="checkbox"
-                onChange={() => setFormatting(!formatting)}
-                checked={formatting}
+                onChange={() => setSettings({formatting: !settings.formatting, activeColumns: settings.activeColumns})}
+                checked={settings.formatting}
               ></input>
               <button
                 onClick={() => {
-                  setActiveColumns(defaultColumns);
-                  setBufferColumns(defaultColumns);
+                  setSettings({formatting: settings.formatting, activeColumns: defaultColumns});
                 }}
                 className="w-[10rem] rounded-2xl border-2 border-solid border-orange-300 bg-orange-300 px-4 py-1 text-center text-lg text-white"
               >
@@ -635,9 +643,9 @@ const Table: React.FC<props> = ({
                       <button
                         key={i}
                         onClick={() => showColumns(name)}
-                        disabled={formatting}
+                        disabled={settings.formatting}
                         className={`mx-1 my-1 rounded-lg p-2 ${
-                          activeColumns.find((c) => c === name)
+                          settings.activeColumns.find((c) => c === name)
                             ? "bg-[#9DC88D]"
                             : "bg-gray-300"
                         }`}
@@ -672,7 +680,7 @@ const Table: React.FC<props> = ({
                 >
                   Cart
                 </th>
-                {activeColumns.map((column, i) => {
+                {settings.activeColumns.map((column, i) => {
                   return (
                     <th
                       key={i}
@@ -709,14 +717,14 @@ const Table: React.FC<props> = ({
                       </button>
                     </td>
 
-                    {activeColumns.map((column, i) => {
+                    {settings.activeColumns.map((column, i) => {
                       const prop = getProperty(
                         sample.data,
                         column as SampleKey
                       );
                       return (
                         <td key={i} className={`bg-gray-200`}>
-                          {(!expert || (expert && formatting)) &&
+                          {(!expert || (expert && settings.formatting)) &&
                           (column === "Lab_Parameter" ||
                             column === "Diagnosis" ||
                             column === "Result_Interpretation") &&
@@ -749,7 +757,7 @@ const Table: React.FC<props> = ({
                     </td>
                   </tr>
                   <tr className={`bg-gray-200 ${show[index] ? "" : "hidden"}`}>
-                    <td colSpan={activeColumns.length + 2}>
+                    <td colSpan={settings.activeColumns.length + 2}>
                       {columns?.map((column, i) => {
                         return (
                           <>
