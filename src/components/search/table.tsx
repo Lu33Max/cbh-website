@@ -188,7 +188,7 @@ const Table: React.FC<props> = ({
           break;
       }
 
-      setSettings({formatting: settings.formatting, activeColumns: tempBuffer});
+      setSettings({formatting: settings.formatting, activeColumns: sortColumns(tempBuffer)});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterState]);
@@ -205,6 +205,7 @@ const Table: React.FC<props> = ({
   }, [count, pagelength]);
 
   useEffect(() => {
+
     const newShow: boolean[] = [];
     for (let i = 0; i < pagelength; i++) {
       newShow.push(false);
@@ -493,11 +494,6 @@ const Table: React.FC<props> = ({
     setTableSamples(newArray);
   }, [optionalSamples]);
 
-  useEffect(() => {
-    void sortColumns();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.activeColumns]);
-
   const updateState = (index: number) => {
     const newArray = show.map((item, i) => {
       if (index === i) {
@@ -535,19 +531,16 @@ const Table: React.FC<props> = ({
 
   function showColumns(column: string): void {
     if (settings.activeColumns.find((c) => c === column)) {
-      setSettings({formatting: settings.formatting, activeColumns: settings.activeColumns.filter((c) => c !== column)});
+      setSettings({formatting: settings.formatting, activeColumns: sortColumns(settings.activeColumns.filter((c) => c !== column))});
     } else {
-      setSettings({activeColumns: [...settings.activeColumns, column], formatting: settings.formatting});
+      setSettings({activeColumns: sortColumns([...settings.activeColumns, column]), formatting: settings.formatting});
     }
   }
 
-  function sortColumns() {
+  function sortColumns(arrayToSort: string[]): string[] {
     let sortArray: string[] = [];
 
-    {
-      /*sort the columns*/
-    }
-    sortArray = [...settings.activeColumns].sort((a: string, b: string) => {
+    sortArray = [...arrayToSort].sort((a: string, b: string) => {
       if (
         Object.getOwnPropertyNames(SampleSchema.shape).findIndex(
           (i) => i === a
@@ -565,7 +558,7 @@ const Table: React.FC<props> = ({
       return 0;
     });
 
-    setSettings({activeColumns: sortArray, formatting: settings.formatting});
+    return sortArray
   }
 
   function addSamplesToCart() {
@@ -629,7 +622,7 @@ const Table: React.FC<props> = ({
               ></input>
               <button
                 onClick={() => {
-                  setSettings({formatting: settings.formatting, activeColumns: defaultColumns});
+                  setSettings({formatting: settings.formatting, activeColumns: sortColumns(defaultColumns)});
                 }}
                 className="w-[10rem] rounded-2xl border-2 border-solid border-orange-300 bg-orange-300 px-4 py-1 text-center text-lg text-white"
               >

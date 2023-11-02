@@ -1,11 +1,10 @@
 import React, {
-    createContext,
-    useState,
-    type ReactNode,
-    type Dispatch,
-    type SetStateAction,
-  } from "react";
-  import { type IOptionalTableSample } from "~/common/types";
+  createContext,
+  useState,
+  type ReactNode,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
   
   type Settings = {
     formatting: boolean, 
