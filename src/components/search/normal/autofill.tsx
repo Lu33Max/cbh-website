@@ -54,6 +54,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
         test ? tempArray.push(test.toString()) : void 0;
       }
     }
+
+    tempArray.sort();
     
     dispatch({ type: "SET_RESULTS", payload: tempArray });
   }, [autofill]);
