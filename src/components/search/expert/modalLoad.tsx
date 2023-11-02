@@ -59,7 +59,7 @@ const ModalLoadExpert: React.FC<CustomModalProps> = ({
         filter.set(parseFilter);
         setSelected(undefined);
         setShowModal(false);
-        setSettings({formatting: selected.formatting, activeColumns: selected.activeColumns});
+        setSettings({formatting: settings.formatting, activeColumns: settings.activeColumns});
       } catch (error) {
         console.error(error);
         alert("Something went wrong. Please try again.");
