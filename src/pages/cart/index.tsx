@@ -5,7 +5,7 @@ import { BiDetail, BiX } from "react-icons/bi";
 import { IOptionalTableSample, ITableSample } from "~/common/types";
 
 import Header from "~/components/overall/header";
-import ClickContext from "~/context/click";
+import ClickContext from "~/context/cart";
 
 const Home: NextPage = () => {
   return (

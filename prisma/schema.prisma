@@ -1,14 +1,10 @@
+// Define the generator for the Prisma client
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
-generator zod {
-  provider         = "zod-prisma-types"
-  output           = "./generated/zod"
-  createInputTypes = "false"
-}
-
+// Define the dta source for the Prisma client
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -49,6 +45,7 @@ model User {
   password        String?
   accounts        Account[]
   filter          Filter[]
+  mappings        Mapping[]
   sessions        Session[]
 }
 
@@ -130,12 +127,14 @@ model Samples {
 }
 
 model Filter {
-  id        String @id @default(cuid())
-  name      String
-  type      String
-  filter    String
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
+  id              String @id @default(cuid())
+  name            String
+  type            String
+  filter          String
+  userId          String
+  user            User   @relation(fields: [userId], references: [id])
+  formatting      Boolean?
+  activeColumns   String[]
 }
 
 model Bing {
@@ -203,4 +202,41 @@ model Order {
   Organ                    String?
   Country_of_Collection    String?
   Date_of_Collection       String?
+}
+
+// This is the model for the mapping of the sample ID
+model SampleIDMapping {
+  id               String @id @default(cuid())
+  Input_Sample_ID  String
+  Mapped_Sample_ID String
+}
+
+// This is the model for the mapping of the donor ID
+model DonorIDMapping {
+  id              String @id @default(cuid())
+  Input_Donor_ID  String
+  Mapped_Donor_ID String
+}
+
+// This is the model for the mapping of the master ID
+model MasterIDMapping {
+  id               String @id @default(cuid())
+  Input_Master_ID  String
+  Mapped_Master_ID String
+}
+
+// This is the model for the saved presets
+model SavedPresets {
+  id          String @id @default(cuid())
+  Preset_Name String
+  Preset      Int[]
+}
+
+// This is the model for the mapping
+model Mapping {
+  id      String @id @default(cuid())
+  name    String
+  mapping String
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
 }

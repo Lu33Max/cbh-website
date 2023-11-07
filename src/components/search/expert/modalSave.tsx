@@ -5,9 +5,11 @@ import React, {
   type SetStateAction,
   useState,
   useEffect,
+  useContext,
 } from "react";
 
 import { FilterType, type IGroup } from "~/common/filter/filter";
+import SettingsContext from "~/context/settings";
 import { api } from "~/utils/api";
 
 type CustomModalProps = {
@@ -35,6 +37,8 @@ const ModalSaveExpert: React.FC<CustomModalProps> = ({
     );
   const createFilter = api.filter.create.useMutation();
 
+  const [settings] = useContext(SettingsContext)
+
   useEffect(() => {
     if (showModal) {
       void refetchFilter();
@@ -56,6 +60,8 @@ const ModalSaveExpert: React.FC<CustomModalProps> = ({
           filter: JSON.stringify(filter),
           name: filtername,
           type: FilterType.expert,
+          formatting: settings.formatting,
+          activeColumns: settings.activeColumns,
         });
 
         if (!createFilter.isError) {

@@ -26,9 +26,9 @@ export const ColumnsOrderByRelevanceFieldEnumSchema = z.enum(['name','category']
 
 export const ColumnsScalarFieldEnumSchema = z.enum(['name','category']);
 
-export const FilterOrderByRelevanceFieldEnumSchema = z.enum(['id','name','type','filter','userId']);
+export const FilterOrderByRelevanceFieldEnumSchema = z.enum(['id','name','type','filter','userId','activeColumns']);
 
-export const FilterScalarFieldEnumSchema = z.enum(['id','name','type','filter','userId']);
+export const FilterScalarFieldEnumSchema = z.enum(['id','name','type','filter','userId','formatting','activeColumns']);
 
 export const GoogleOrderByRelevanceFieldEnumSchema = z.enum(['id','Term','Date']);
 
@@ -225,6 +225,8 @@ export const FilterSchema = z.object({
   type: z.string(),
   filter: z.string(),
   userId: z.string(),
+  formatting: z.boolean(),
+  activeColumns: z.string().array(),
 })
 
 export type Filter = z.infer<typeof FilterSchema>

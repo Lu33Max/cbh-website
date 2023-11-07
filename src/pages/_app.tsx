@@ -1,11 +1,12 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { CartProvider } from "~/context/click";
+import { CartProvider } from "~/context/cart";
 
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import { SettingsProvider } from "~/context/settings";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -14,7 +15,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <CartProvider>
-        <Component {...pageProps} />
+        <SettingsProvider>
+          <Component {...pageProps} />
+        </SettingsProvider>
       </CartProvider>
     </SessionProvider>
   );
