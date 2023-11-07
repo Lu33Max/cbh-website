@@ -62,15 +62,12 @@ const Table: React.FC<props> = ({
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [settings, setSettings] = useContext(SettingsContext)
 
-  /*
   const [formatting, setFormatting] = useState<boolean>(false);
-  
   const router = useRouter();
   const fo = router.query.formatting;
+  const ac = router.query.activeColumns;
 
-
-  
-  
+  /*
   const [activeColumns, setActiveColumns] = useState<string[]>(defaultColumns);
   const [bufferColumns, setBufferColumns] = useState<string[]>(defaultColumns);
   */
@@ -502,23 +499,19 @@ const Table: React.FC<props> = ({
   }, [optionalSamples]);
 
   useEffect(() => {
-    void sortColumns();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bufferColumns]);
-
-  useEffect(() => {
     router.push(
       {
         ...router,
         query: {
           ...router.query,
-          formatting: formatting,
+          formatting: settings.formatting,
+          activeColumns: settings.activeColumns,
         },
       },
       undefined,
       { shallow: true },
     );
-  }, [formatting]);
+  }, [settings]);
 
   useEffect(() => {
     if (fo !== undefined) {
@@ -528,6 +521,15 @@ const Table: React.FC<props> = ({
       }
     }
   }, [fo]);
+
+  useEffect(() => {
+    if (ac !== undefined) {
+      const temp = z.string().array().safeParse(ac)
+      if(temp.success){
+        setSettings({formatting: settings.formatting, activeColumns: temp.data})
+      }
+    }
+  }, [ac]);
 
   const updateState = (index: number) => {
     const newArray = show.map((item, i) => {
@@ -560,7 +562,7 @@ const Table: React.FC<props> = ({
         return -1;
       }
     );
-
+      
     setTableSamples(sortArray);
   };
 
