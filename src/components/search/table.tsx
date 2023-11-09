@@ -8,7 +8,7 @@ import React, {
 
 import { BiCartAdd, BiCog, BiInfoCircle } from "react-icons/bi";
 
-import { type INormalFilter } from "~/common/filter/filter";
+import { IGroup, type INormalFilter } from "~/common/filter/filter";
 import { SampleSchema } from "~/common/database/samples";
 
 import ClickContext from "~/context/cart";
@@ -22,6 +22,7 @@ import Header from "./header";
 import useWindowSize from "~/utils/window";
 import { api } from "~/utils/api";
 import SettingsContext from "~/context/settings";
+import { ImmutableObject } from "@hookstate/core";
 
 type props = {
   page: number;
@@ -32,6 +33,7 @@ type props = {
   setPagelength: Dispatch<SetStateAction<number>>;
   expert: boolean;
   filterNormal?: INormalFilter;
+  filterExpert?: ImmutableObject<IGroup>;
 };
 
 const Table: React.FC<props> = ({
@@ -43,6 +45,7 @@ const Table: React.FC<props> = ({
   setPagelength,
   expert,
   filterNormal,
+  filterExpert,
 }) => {
   const [cartSamples, setCartSamples] = useContext(ClickContext);
   const [range, setRange] = useState<number[]>([]);
@@ -98,6 +101,10 @@ const Table: React.FC<props> = ({
   useEffect(() => {
     setFilterState(filterNormal);
   }, [filterNormal]);
+
+  useEffect(() => {
+    setShow(show.map(index => (index = false)));
+  }, [filterNormal, filterExpert , page]);
 
   // Define a useEffect hook that triggers when the filterState variable changes
   useEffect(() => {
