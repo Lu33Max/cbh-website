@@ -745,7 +745,7 @@ const Table: React.FC<props> = ({
                           updateState(index);
                         }}
                       >
-                        <BiInfoCircle className="relative top-1" />
+                        <img src="/comment-info_1.png"></img>
                       </button>
                     </td>
                   </tr>

@@ -1210,6 +1210,160 @@ const Content: React.FC = () => {
                 {filter.ICD_Code.mandatory ? "!" : "?"}
               </button>
             </span>
+
+            
+            <span
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+                filter.Price.min ? "" : "hidden"
+              }`}
+            >
+              Price min:&nbsp;
+              {filter.Price.min && 
+                <>
+                  <>{filter.Price.min}</>
+                  <button
+                    className="relative top-1 text-xl"
+                    onClick={() => {
+                      setFilter((filter) => ({
+                        ...filter,
+                        Price: {
+                          min: undefined,
+                          max: filter.Price.max,
+                          mandatory: filter.Price.mandatory
+                        },
+                      }));
+                    }}
+                  >
+                    <BiX />
+                  </button>
+                </>
+              }
+              <button
+                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                onClick={() => {
+                  const temp8 = filter.Price;
+                  temp8.mandatory = !temp8.mandatory;
+                  setFilter((filter) => ({ ...filter, Price: temp8 }));
+                }}
+              >
+                {filter.Price.mandatory ? "!" : "?"}
+              </button>
+            </span>
+
+            <span
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+                filter.Price.max ? "" : "hidden"
+              }`}
+            >
+              Price max:&nbsp;
+              {filter.Price.max && 
+                <>
+                  <>{filter.Price.max}</>
+                  <button
+                    className="relative top-1 text-xl"
+                    onClick={() => {
+                      setFilter((filter) => ({
+                        ...filter,
+                        Price: {
+                          min: filter.Price.min,
+                          max: undefined,
+                          mandatory: filter.Price.mandatory
+                        },
+                      }));
+                    }}
+                  >
+                    <BiX />
+                  </button>
+                </>
+              }
+              <button
+                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                onClick={() => {
+                  const temp9 = filter.Price;
+                  temp9.mandatory = !temp9.mandatory;
+                  setFilter((filter) => ({ ...filter, Price: temp9 }));
+                }}
+              >
+                {filter.Price.mandatory ? "!" : "?"}
+              </button>
+            </span>
+
+            <span
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+                filter.Quantity.min ? "" : "hidden"
+              }`}
+            >
+              Quantity min:&nbsp;
+              {filter.Quantity.min && 
+                <>
+                  <>{filter.Quantity.min}</>
+                  <button
+                    className="relative top-1 text-xl"
+                    onClick={() => {
+                      setFilter((filter) => ({
+                        ...filter,
+                        Quantity: {
+                          min: undefined,
+                          max: filter.Quantity.max,
+                          mandatory: filter.Quantity.mandatory
+                        },
+                      }));
+                    }}
+                  >
+                    <BiX />
+                  </button>
+                </>
+              }
+              <button
+                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                onClick={() => {
+                  const temp10 = filter.Quantity;
+                  temp10.mandatory = !temp10.mandatory;
+                  setFilter((filter) => ({ ...filter, Quantity: temp10 }));
+                }}
+              >
+                {filter.Quantity.mandatory ? "!" : "?"}
+              </button>
+            </span>
+
+            <span
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+                filter.Quantity.max ? "" : "hidden"
+              }`}
+            >
+              Quantity max:&nbsp;
+              {filter.Quantity.max && 
+                <>
+                  <>{filter.Quantity.max}</>
+                  <button
+                    className="relative top-1 text-xl"
+                    onClick={() => {
+                      setFilter((filter) => ({
+                        ...filter,
+                        Quantity: {
+                          min: filter.Quantity.min,
+                          max: undefined,
+                          mandatory: filter.Quantity.mandatory
+                        },
+                      }));
+                    }}
+                  >
+                    <BiX />
+                  </button>
+                </>
+              }
+              <button
+                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                onClick={() => {
+                  const temp11 = filter.Quantity;
+                  temp11.mandatory = !temp11.mandatory;
+                  setFilter((filter) => ({ ...filter, Quantity: temp11 }));
+                }}
+              >
+                {filter.Quantity.mandatory ? "!" : "?"}
+              </button>
+            </span>
+
           </div>
         </div>
       </div>
