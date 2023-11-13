@@ -186,8 +186,26 @@ const Content: React.FC = () => {
     <>
       {
         //categories button
-        <button className="mx-3 text-xl" onClick={() => setCategories(!categories)}>
+        <button className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4 mx-3`} onClick={() => setCategories(!categories)}>
           Categories
+          <svg
+                  width="12"
+                  height="21"
+                  viewBox="0 0 20 36"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`ml-2 translate-y-[4px] rotate-90 transform`}
+          >
+                  <path
+                    opacity="0.4"
+                    d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+                    fill="black"
+                  />
+                  <path
+                    d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+                    fill="black"
+                  />
+          </svg>
         </button>
       }
     </>
@@ -929,7 +947,7 @@ const Content: React.FC = () => {
           {/* Displaying active filters */}
           <div className="mx-4 overflow-hidden">
             <span
-              className={`mx-1 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 search ? "" : "hidden"
               }`}
             >
@@ -942,7 +960,7 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Matrix.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -969,7 +987,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp1 = filter.Matrix;
                   temp1.mandatory = !temp1.mandatory;
@@ -980,7 +998,7 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Unit.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1007,7 +1025,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp2 = filter.Unit;
                   temp2.mandatory = !temp2.mandatory;
@@ -1018,7 +1036,7 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Lab_Parameter.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1045,7 +1063,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp3 = filter.Lab_Parameter;
                   temp3.mandatory = !temp3.mandatory;
@@ -1056,7 +1074,7 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Result_Interpretation.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1083,7 +1101,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp4 = filter.Result_Interpretation;
                   temp4.mandatory = !temp4.mandatory;
@@ -1097,7 +1115,7 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Result_Unit.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1124,7 +1142,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp5 = filter.Result_Unit;
                   temp5.mandatory = !temp5.mandatory;
@@ -1135,7 +1153,7 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Diagnosis.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1162,7 +1180,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp6 = filter.Diagnosis;
                   temp6.mandatory = !temp6.mandatory;
@@ -1173,7 +1191,7 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.ICD_Code.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1200,7 +1218,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp7 = filter.ICD_Code;
                   temp7.mandatory = !temp7.mandatory;
@@ -1213,7 +1231,7 @@ const Content: React.FC = () => {
 
             
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Price.min ? "" : "hidden"
               }`}
             >
@@ -1239,7 +1257,7 @@ const Content: React.FC = () => {
                 </>
               }
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp8 = filter.Price;
                   temp8.mandatory = !temp8.mandatory;
@@ -1251,7 +1269,7 @@ const Content: React.FC = () => {
             </span>
 
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Price.max ? "" : "hidden"
               }`}
             >
@@ -1277,7 +1295,7 @@ const Content: React.FC = () => {
                 </>
               }
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp9 = filter.Price;
                   temp9.mandatory = !temp9.mandatory;
@@ -1289,7 +1307,7 @@ const Content: React.FC = () => {
             </span>
 
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Quantity.min ? "" : "hidden"
               }`}
             >
@@ -1315,7 +1333,7 @@ const Content: React.FC = () => {
                 </>
               }
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp10 = filter.Quantity;
                   temp10.mandatory = !temp10.mandatory;
@@ -1327,7 +1345,7 @@ const Content: React.FC = () => {
             </span>
 
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[rgb(174,207,150)] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
                 filter.Quantity.max ? "" : "hidden"
               }`}
             >
@@ -1353,7 +1371,7 @@ const Content: React.FC = () => {
                 </>
               }
               <button
-                className="relative w-fit rounded-2xl bg-[rgb(165,207,134)] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp11 = filter.Quantity;
                   temp11.mandatory = !temp11.mandatory;
