@@ -613,20 +613,23 @@ const Table: React.FC<props> = ({
           {/*settings*/}
           {showSettings && (
             <div className="my-3">
-              <h1 className="text-2xl">Settings</h1>
-              <label>Auto-Formatting: </label>
+              <h1 className={`text-2xl text-[${Colors.dark}]`}><b>SETTINGS</b></h1>
+              <label className={`text-2xl text-[${Colors.dark}] mb-2`}>auto-formatting</label>
               <input
                 type="checkbox"
                 onChange={() => setSettings({formatting: !settings.formatting, activeColumns: settings.activeColumns})}
                 checked={settings.formatting}
+                className="ml-2 mr-5"
               ></input>
               <button
                 onClick={() => {
                   setSettings({formatting: settings.formatting, activeColumns: sortColumns(defaultColumns)});
                 }}
-                className="w-[10rem] rounded-2xl border-2 border-solid border-orange-300 bg-orange-300 px-4 py-1 text-center text-lg text-white"
+                className="w-[10rem] rounded-2xl border-2 border-solid border-orange-300 bg-orange-300 px-4 py-1 text-center text-lg text-white mb-2"
               >
-                Reset
+                <b>
+                  RESET
+                </b>
               </button>
               <br />
               {Object.getOwnPropertyNames(tableSamples[0]?.data).map(
@@ -637,10 +640,10 @@ const Table: React.FC<props> = ({
                         key={i}
                         onClick={() => showColumns(name)}
                         disabled={settings.formatting}
-                        className={`mx-1 my-1 rounded-lg p-2 ${
+                        className={`mx-2 my-1 rounded-2xl p-2 ${
                           settings.activeColumns.find((c) => c === name)
-                            ? "bg-[#9DC88D]"
-                            : "bg-gray-300"
+                            ? `bg-[${Colors.light_light}]`
+                            : "bg-white border-solid border-2 border-gray-300"
                         }`}
                       >
                         {name.replace(/_/g, " ")}

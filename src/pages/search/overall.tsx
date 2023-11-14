@@ -186,7 +186,7 @@ const Content: React.FC = () => {
     <>
       {
         //categories button
-        <button className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4 mx-3`} onClick={() => setCategories(!categories)}>
+        <button className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4 mx-3 hover:bg-[#D8E9D1] active:bg-[#cae4c2]`} onClick={() => setCategories(!categories)}>
           Categories
           <svg
                   width="12"
@@ -314,7 +314,7 @@ const Content: React.FC = () => {
             <div className="flex flex-row items-stretch justify-center">
               {/*load filter button*/}
               <button
-                className={`w-full px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl border-2 border-solid bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-[${Colors.dark}] border-r-0`}
+                className={`w-full px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4]`}
                 onClick={() => setShowLoad(true)}
               >
                 Load Filter
@@ -322,7 +322,7 @@ const Content: React.FC = () => {
 
               {/*save filter button*/}
               <button
-                className={`w-full px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-r-2xl border-2 border-solid bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475] border-[${Colors.dark}]`}
+                className={`w-full px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-r-2xl bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475]`}
                 onClick={() => setShowSave(true)}
               >
                 Save Filter
@@ -331,7 +331,7 @@ const Content: React.FC = () => {
             <div className="mt-2 flex flex-row items-center">
               {/*button to show the filter options*/}
               <button
-                className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4`}
+                className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4 hover:bg-[#dae9d5] active:bg-[#cae4c2]`}
                 onClick={() => setShowFilter(!showFilter)}
               >
                 Filter
@@ -414,7 +414,7 @@ const Content: React.FC = () => {
           <div className="flex w-full flex-row">
             <div className="flex w-[50%] flex-row items-center justify-start">
               <button
-                className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4`}
+                className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4 hover:bg-[#dae9d5] active:bg-[#cae4c2]`}
                 onClick={() => setShowFilter(!showFilter)}
               >
                 Filter
@@ -498,14 +498,14 @@ const Content: React.FC = () => {
             <div className="flex w-[50%] flex-row justify-end">
               {/*load filter button*/}
               <button
-                className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl border-2 border-solid bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-[${Colors.dark}] border-r-0`}
+                className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-r-0`}
                 onClick={() => setShowLoad(true)}
               >
                 Load Filter
               </button>
               {/*save filter button*/}
               <button
-                className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-r-2xl border-2 border-solid bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475] border-[${Colors.dark}]`}
+                className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-r-2xl bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475]`}
                 onClick={() => setShowSave(true)}
               >
                 Save Filter
@@ -684,9 +684,28 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md">
+                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center">
                     Price
+                    <svg
+                      width="12"
+                      height="21"
+                      viewBox="0 0 20 36"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                    >
+                      <path
+                        opacity="0.4"
+                        d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+                        fill="black"
+                      />
+                      <path
+                        d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+                        fill="black"
+                      />
+                    </svg>
                   </button>
+
                 </OverlayTrigger>
               </div>
               {/* General Data */}
@@ -719,8 +738,26 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md">
+                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center">
                     General Data
+                    <svg
+                      width="12"
+                      height="21"
+                      viewBox="0 0 20 36"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                    >
+                      <path
+                        opacity="0.4"
+                        d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+                        fill="black"
+                      />
+                      <path
+                        d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+                        fill="black"
+                      />
+                    </svg>
                   </button>
                 </OverlayTrigger>
               </div>
@@ -790,8 +827,26 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900  shadow-md">
+                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900  shadow-md flex flex-row items-center justify-center">
                     Quantity Information
+                    <svg
+                      width="12"
+                      height="21"
+                      viewBox="0 0 20 36"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                    >
+                      <path
+                        opacity="0.4"
+                        d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+                        fill="black"
+                      />
+                      <path
+                        d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+                        fill="black"
+                      />
+                    </svg>
                   </button>
                 </OverlayTrigger>
               </div>
@@ -889,8 +944,26 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900  shadow-md">
+                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900  shadow-md flex flex-row items-center justify-center">
                     Laboratory
+                    <svg
+                      width="12"
+                      height="21"
+                      viewBox="0 0 20 36"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                    >
+                      <path
+                        opacity="0.4"
+                        d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+                        fill="black"
+                      />
+                      <path
+                        d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+                        fill="black"
+                      />
+                    </svg>
                   </button>
                 </OverlayTrigger>
               </div>
@@ -936,8 +1009,26 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900  shadow-md">
+                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900  shadow-md flex flex-row items-center justify-center">
                     Diagnosis
+                    <svg
+                      width="12"
+                      height="21"
+                      viewBox="0 0 20 36"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                    >
+                      <path
+                        opacity="0.4"
+                        d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+                        fill="black"
+                      />
+                      <path
+                        d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+                        fill="black"
+                      />
+                    </svg>
                   </button>
                 </OverlayTrigger>
               </div>
