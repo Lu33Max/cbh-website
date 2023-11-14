@@ -117,6 +117,11 @@ const Content: React.FC = () => {
 
   const [categories, setCategories] = useState<boolean>(false);
 
+  const [isPriceActive, setIsPriceActive] = useState(false);
+  const [isGeneralDataActive, setIsGeneralDataActive] = useState(false);
+  const [isQuantityActive, setIsQuantityActive] = useState(false);
+  const [isLabActive, setIsLabActive] = useState(false);
+  const [isDiagnosisActive, setIsDiagnosisActive] = useState(false);
 
   const windowSize = useWindowSize();
 
@@ -684,7 +689,11 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center">
+                  <button onClick={() => setIsPriceActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                    isPriceActive
+                      ? ' text-yellow-500 border-yellow-500'
+                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
+                  }`}>
                     Price
                     <svg
                       width="12"
@@ -692,16 +701,22 @@ const Content: React.FC = () => {
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                      className={`ml-3 mb-2 translate-y-[4px] transform rotate-90 ${
+                        isPriceActive ? '-scale-x-100' : ''
+                      }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill="black"
+                        fill={`${
+                          isPriceActive ? 'orange' : 'black'
+                        }`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill="black"
+                        fill={`${
+                          isPriceActive ? 'orange' : 'black'
+                        }`}
                       />
                     </svg>
                   </button>
@@ -738,24 +753,34 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center">
-                    General Data
+                  <button onClick={() => setIsGeneralDataActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                    isGeneralDataActive
+                      ? ' text-yellow-500 border-yellow-500'
+                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
+                  }`}>                
+                      General Data
                     <svg
                       width="12"
                       height="21"
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform ${
+                        isGeneralDataActive ? '-scale-x-100' : ''
+                      }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill="black"
+                        fill={`${
+                          isGeneralDataActive ? 'orange' : 'black'
+                        }`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill="black"
+                        fill={`${
+                          isGeneralDataActive ? 'orange' : 'black'
+                        }`}
                       />
                     </svg>
                   </button>
@@ -827,7 +852,11 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900  shadow-md flex flex-row items-center justify-center">
+                  <button onClick={() => setIsQuantityActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                    isQuantityActive
+                      ? ' text-yellow-500 border-yellow-500'
+                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
+                  }`}>                    
                     Quantity Information
                     <svg
                       width="12"
@@ -835,16 +864,22 @@ const Content: React.FC = () => {
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform ${
+                        isQuantityActive ? '-scale-x-100' : ''
+                      }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill="black"
+                        fill={`${
+                          isQuantityActive ? 'orange' : 'black'
+                        }`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill="black"
+                        fill={`${
+                          isQuantityActive ? 'orange' : 'black'
+                        }`}
                       />
                     </svg>
                   </button>
@@ -944,7 +979,11 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900  shadow-md flex flex-row items-center justify-center">
+                <button onClick={() => setIsLabActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                    isLabActive
+                      ? ' text-yellow-500 border-yellow-500'
+                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
+                  }`}>                    
                     Laboratory
                     <svg
                       width="12"
@@ -952,16 +991,22 @@ const Content: React.FC = () => {
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform ${
+                        isLabActive ? '-scale-x-100' : ''
+                      }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill="black"
+                        fill={`${
+                          isLabActive ? 'orange' : 'black'
+                        }`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill="black"
+                        fill={`${
+                          isLabActive ? 'orange' : 'black'
+                        }`}
                       />
                     </svg>
                   </button>
@@ -1009,7 +1054,11 @@ const Content: React.FC = () => {
                     </Popover>
                   }
                 >
-                  <button className="w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900  shadow-md flex flex-row items-center justify-center">
+                <button onClick={() => setIsDiagnosisActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                    isDiagnosisActive
+                      ? ' text-yellow-500 border-yellow-500'
+                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
+                  }`}>                
                     Diagnosis
                     <svg
                       width="12"
@@ -1017,16 +1066,22 @@ const Content: React.FC = () => {
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform`}
+                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform ${
+                        isDiagnosisActive ? '-scale-x-100' : ''
+                      }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill="black"
+                        fill={`${
+                          isDiagnosisActive ? 'orange' : 'black'
+                        }`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill="black"
+                        fill={`${
+                          isDiagnosisActive ? 'orange' : 'black'
+                        }`}
                       />
                     </svg>
                   </button>
