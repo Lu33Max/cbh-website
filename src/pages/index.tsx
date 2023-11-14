@@ -222,7 +222,7 @@ const Content: React.FC = () => {
         </h1>
       </div>
       <div>
-        <div className="relative my-5 h-[380px] flex-row items-center justify-center justify-items-center bg-[rgba(157,200,141,0.25)]">
+        <div className="relative my-5 h-[auto] flex-row items-center justify-center justify-items-center bg-[rgba(157,200,141,0.25)]">
           <Carousel
           type={CarouselType.partners}
           settings={{
