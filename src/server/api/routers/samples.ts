@@ -561,6 +561,8 @@ export const sampleRouter = createTRPCRouter({
           : 0;
       const query = BuildQuery(input.group); //Builds the full query with a recursive methods, to account for all possible sub groups
 
+      console.log(JSON.stringify(query));
+
       if (query === Prisma.empty) {
         //Gets all unique samples, of the column CBH_Sample_ID, accounting for pagination
         const uniqueSamples = await ctx.prisma.samples.findMany({
