@@ -295,6 +295,7 @@ const ExpertSearch: NextPage = () => {
               setPage={setPage}
               setPagelength={setPagelength}
               expert={true}
+              filterExpert={state.value}
             />
           </div>
           <Footer />
