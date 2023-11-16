@@ -87,12 +87,11 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
       {/* Render the input element */}
       <input
         value={state.currentVal}
-        className="w-[200px] rounded-full border-2 border-gray-500 px-3 py-1 text-lg outline-none transition focus:border-gray-700"
+        className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer"
         autoComplete="off"
         list="autocomplete-list"
         id="list"
         name="list"
-        placeholder="Search"
         onChange={handleOnChange}
         onBlur={handleOnBlur}
       />

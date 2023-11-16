@@ -118,6 +118,7 @@ const Content: React.FC = () => {
   const [categories, setCategories] = useState<boolean>(false);
 
   const [isPriceActive, setIsPriceActive] = useState(false);
+
   const [isGeneralDataActive, setIsGeneralDataActive] = useState(false);
   const [isQuantityActive, setIsQuantityActive] = useState(false);
   const [isLabActive, setIsLabActive] = useState(false);
@@ -647,31 +648,28 @@ const Content: React.FC = () => {
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
-                          <div className="col-span-1">Min:</div>
-                          <input
-                            type="number"
-                            value={filter.Price.min}
-                            className="w-[200px] rounded-full border-2 border-gray-500 px-3 py-1 text-lg outline-none transition focus:border-gray-700"
-                            placeholder="Min price"
-                            onChange={(e) => {
-                              const temp = filter.Price;
-                              temp.min =
-                                e.currentTarget.value.length > 0
-                                  ? parseFloat(e.currentTarget.value)
-                                  : undefined;
-                              setFilter((filter) => ({
-                                ...filter,
-                                Price: temp,
-                              }));
-                            }}
-                          />
-                          <div className="col-span-1">Max:</div>
+                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
+                            <input
+                              type="number"
+                              value={filter.Price.min}
+                              className={`w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer`}
+                              onChange={(e) => {
+                                const temp = filter.Price;
+                                temp.min =
+                                  e.currentTarget.value.length > 0
+                                    ? parseFloat(e.currentTarget.value)
+                                    : undefined;
+                                setFilter((filter) => ({
+                                  ...filter,
+                                  Price: temp,
+                                }));
+                              }}
+                            />
+                            <label className={`absolute left-3 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>min Price</label>
                           <input
                             type="number"
                             value={filter.Price.max}
-                            className="w-[200px] rounded-full border-2 border-gray-500 px-3 py-1 text-lg outline-none transition focus:border-gray-700"
-                            placeholder="Max price"
+                            className="w-[200px] rounded-full border-2 hover:border-green-800 px-3 py-1 text-lg outline-none transition focus:border-yellow-400 peer/max"
                             onChange={(e) => {
                               const temp = filter.Price;
                               temp.max =
@@ -684,6 +682,7 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
+                          <label className="absolute left-56 pointer-events-none text-gray-400 peer-hover/max:text-green-800 translate-y-0 transition peer-focus/max:scale-75 peer-focus/max:-translate-y-1/2 peer-focus/max:bg-white peer-focus/max:p-1 peer-focus/max:text-yellow-400">max Price</label>
                         </div>
                       </Popover.Body>
                     </Popover>
@@ -735,9 +734,7 @@ const Content: React.FC = () => {
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center  shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
-                          <div className="col-span-1">Matrix:</div>
-                          <div className="col-span-1">
+                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
                             <AutoComplete
                               col="Matrix"
                               onSelect={handleFilterChange}
@@ -747,7 +744,7 @@ const Content: React.FC = () => {
                                 ] ?? ""
                               }
                             />
-                          </div>
+                            <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Matrix</label>
                         </div>
                       </Popover.Body>
                     </Popover>
@@ -798,13 +795,11 @@ const Content: React.FC = () => {
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center  shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
-                          <div className="col-span-1">Min:</div>
+                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
                           <input
                             type="number"
                             value={filter.Quantity.min}
-                            className="w-[200px] rounded-full border-2 border-gray-500 px-3 py-1 text-lg outline-none transition focus:border-gray-700"
-                            placeholder="Min quantity"
+                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/minQuantity"
                             onChange={(e) => {
                               const temp = filter.Quantity;
                               temp.min =
@@ -817,12 +812,11 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <div className="col-span-1">Max:</div>
+                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/minQuantity:text-green-800 transition peer-focus/minQuantity:scale-75 peer-focus/minQuantity:-translate-y-1/2 peer-focus/minQuantity:bg-white peer-focus/minQuantity:p-1 peer-focus/minQuantity:text-yellow-400`}>min Quantity</label>
                           <input
                             type="number"
                             value={filter.Quantity.max}
-                            className="w-[200px] rounded-full border-2 border-gray-500 px-3 py-1 text-lg outline-none transition focus:border-gray-700"
-                            placeholder="Max quantity"
+                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/maxQuantity"
                             onChange={(e) => {
                               const temp = filter.Quantity;
                               temp.max =
@@ -835,8 +829,7 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <div className="col-span-1">Unit:</div>
-                          <div className="col-span-1">
+                          <label className={`absolute left-56 pointer-events-none text-gray-400 peer-hover/maxQuantity:text-green-800 transition peer-focus/maxQuantity:scale-75 peer-focus/maxQuantity:-translate-y-1/2 peer-focus/maxQuantity:bg-white peer-focus/maxQuantity:p-1 peer-focus/maxQuantity:text-yellow-400`}>max Quantity</label>
                             <AutoComplete
                               col="Unit"
                               onSelect={handleFilterChange}
@@ -846,7 +839,7 @@ const Content: React.FC = () => {
                                 ] ?? ""
                               }
                             />
-                          </div>
+                            <label className={`absolute right-32 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Unit</label>
                         </div>
                       </Popover.Body>
                     </Popover>
@@ -897,25 +890,20 @@ const Content: React.FC = () => {
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center  shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
-                          <div className="col-span-1 text-right">
-                            Parameter:
-                          </div>
-                          <div className="col-span-1">
-                            <AutoComplete
-                              col="Lab_Parameter"
-                              onSelect={handleFilterChange}
-                              value={
-                                filter.Lab_Parameter.value[
-                                  filter.Lab_Parameter.value.length - 1
-                                ] ?? ""
-                              }
-                            />
-                          </div>
-                          <div className="col-span-1 text-right">
-                            Result Interpretation:
-                          </div>
-                          <div className="col-span-1">
+                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
+                            <div>
+                              <AutoComplete
+                                col="Lab_Parameter"
+                                onSelect={handleFilterChange}
+                                value={
+                                  filter.Lab_Parameter.value[
+                                    filter.Lab_Parameter.value.length - 1
+                                  ] ?? ""
+                                }
+                              />
+                              <label className={`absolute left-3 mt-2 peer-focus:mt-0.5 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Parameter</label>
+                            </div>
+                            <div>
                             <AutoComplete
                               col="Result_Interpretation"
                               onSelect={handleFilterChange}
@@ -925,13 +913,13 @@ const Content: React.FC = () => {
                                 ] ?? ""
                               }
                             />
-                          </div>
-                          <div className="col-span-1">Min:</div>
+                            <label className={`absolute left-56 mt-2 peer-focus:mt-0.5 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Result Interpretation</label>
+                            </div>
+                          <div>
                           <input
                             type="number"
                             value={filter.Result_Numerical.min || ""}
-                            className="w-[200px] rounded-full border-2 border-gray-500 px-3 py-1 text-lg outline-none transition focus:border-gray-700"
-                            placeholder="Min result"
+                            className="w-[200px] rounded-full border-2  px-3 py-1 text-lg outline-none transition peer/labmin hover:text-green-800 hover:border-green-800 focus:border-yellow-400"
                             onChange={(e) => {
                               const temp = filter.Result_Numerical;
                               temp.min =
@@ -944,12 +932,13 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <div className="col-span-1">Max:</div>
+                          <label className={`absolute left-[433px] mt-2 peer-focus/labmin:mt-0.5 pointer-events-none text-gray-400 peer-hover/labmin:text-green-800 transition peer-focus/labmin:scale-75 peer-focus/labmin:-translate-y-1/2 peer-focus/labmin:bg-white peer-focus/labmin:p-1 peer-focus/labmin:text-yellow-400`}>Min result</label>
+                          </div>
+                          <div>
                           <input
                             type="number"
                             value={filter.Result_Numerical.max || ""}
-                            className="w-[200px] rounded-full border-2 border-gray-500 px-3 py-1 text-lg outline-none transition focus:border-gray-700"
-                            placeholder="Max result"
+                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition peer/labmax hover:text-green-800 hover:border-green-800 focus:border-yellow-400"
                             onChange={(e) => {
                               const temp = filter.Result_Numerical;
                               temp.max =
@@ -962,8 +951,10 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <div className="col-span-1 text-right">Unit:</div>
-                          <div className="col-span-1">
+                          
+                          <label className={`absolute right-[322px] mt-2 peer-focus/labmax:mt-0 pointer-events-none text-gray-400 peer-hover/labmax:text-green-800 transition peer-focus/labmax:scale-75 peer-focus/labmax:-translate-y-1/2 peer-focus/labmax:bg-white peer-focus/labmax:p-0.5 peer-focus/labmax:text-yellow-400`}>Max result</label>
+                          </div>
+                          <div>
                             <AutoComplete
                               col="Result_Unit"
                               onSelect={handleFilterChange}
@@ -973,6 +964,7 @@ const Content: React.FC = () => {
                                 ] ?? ""
                               }
                             />
+                            <label className={`absolute right-40 mt-2 peer-focus:mt-0.5 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Unit</label>
                           </div>
                         </div>
                       </Popover.Body>
@@ -1025,7 +1017,6 @@ const Content: React.FC = () => {
                     >
                       <Popover.Body>
                         <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
-                          <div className="col-span-1">Diagnosis:</div>
                           <div className="col-span-1">
                             <AutoComplete
                               col="Diagnosis"
@@ -1036,8 +1027,8 @@ const Content: React.FC = () => {
                                 ] ?? ""
                               }
                             />
+                            <label className={`absolute left-5 mt-2 peer-focus:mt-0 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-0.5 peer-focus:text-yellow-400`}>Diagnosis</label>
                           </div>
-                          <div className="col-span-1">ICD Code:</div>
                           <div className="col-span-1">
                             <AutoComplete
                               col="ICD_Code"
@@ -1048,6 +1039,7 @@ const Content: React.FC = () => {
                                 ] ?? ""
                               }
                             />
+                            <label className={`absolute right-28 mt-2 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:mt-0  peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-0.5 peer-focus:text-yellow-400`}>ICD Code</label>
                           </div>
                         </div>
                       </Popover.Body>
