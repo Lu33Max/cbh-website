@@ -1,8 +1,8 @@
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import Head from "next/head";
 import { useContext, useState } from "react";
 import { BiDetail, BiX } from "react-icons/bi";
-import { IOptionalTableSample, ITableSample } from "~/common/types";
+import type { IOptionalTableSample, ITableSample } from "~/common/types";
 
 import Header from "~/components/overall/header";
 import ClickContext from "~/context/cart";

@@ -1,10 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useState } from "react";
-import { useRouter } from "next/router";
 import HeaderNEW from "~/components/overall/header";
-import Carousel, { CarouselType } from "~/components/home/carousel";
 import useWindowSize from "~/utils/window";
 import Footer from "~/components/overall/footer";
 
@@ -30,29 +27,7 @@ const Home: NextPage = () => {
 export default Home;
 
 const Content: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const router = useRouter();
   const windowSize = useWindowSize();
-
-  const onSearch = (event: React.FormEvent) => {
-    event.preventDefault();
-    const encodedSearchQuery = encodeURI(searchQuery);
-    void router.push(`/search/overall?q=${encodedSearchQuery}`);
-  };
-
-  // Slider Contents
-  const settings = {
-    arrows: true,
-    autoplay: true,
-    dots: windowSize.width && windowSize.width < 500 ? false : true,
-    infinite: true,
-    speed: 500,
-    autoplaySpeed: 5000,
-    slidesToShow: Math.floor(windowSize.width ? windowSize.width / 250 : 6),
-    slidesToScroll: windowSize.width && windowSize.width < 500 ? 1 : 2,
-  };
-
-  const style = "items-center justify-center text-center mx-10 ";
 
   return (
     <div className="max-h-[calc(100vh-80px)] overflow-x-hidden overflow-y-scroll font-poppins">

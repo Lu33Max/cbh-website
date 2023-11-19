@@ -120,7 +120,7 @@ const Content: React.FC = () => {
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [categoryQuery, setCategoryQuery] = useState<string>("Overall");
 
-  const [categories, setCategories] = useState<boolean>(false);
+  const [showCategories, setShowCategories] = useState<boolean>(false);
 
   const [isPriceActive, setIsPriceActive] = useState(false);
 
@@ -199,7 +199,7 @@ const Content: React.FC = () => {
         //categories button
         <button
           className={`text-xl text-[${Colors.dark}] mx-3 flex flex-row rounded-lg pl-2 pr-4 hover:bg-[#D8E9D1] active:bg-[#cae4c2]`}
-          onClick={() => setCategories(!categories)}
+          onClick={() => setShowCategories(prev => !prev)}
         >
           Categories
           <svg
@@ -208,7 +208,7 @@ const Content: React.FC = () => {
             viewBox="0 0 20 36"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={`ml-2 translate-y-[4px] rotate-90 transform`}
+            className={`ml-2 translate-y-[4px] ${showCategories ? "-scale-x-100" : "" } rotate-90 transform ease-in-out transition-all`}
           >
             <path
               opacity="0.4"
@@ -316,7 +316,7 @@ const Content: React.FC = () => {
               {/*button to show the filter options*/}
               <button
                 className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4 hover:bg-[#dae9d5] active:bg-[#cae4c2]`}
-                onClick={() => setShowFilter(!showFilter)}
+                onClick={() => setShowFilter(prev => !prev)}
               >
                 Filter
                 <svg
@@ -325,7 +325,7 @@ const Content: React.FC = () => {
                   viewBox="0 0 20 36"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`ml-2 translate-y-[4px] rotate-90 transform`}
+                  className={`ml-2 translate-y-[4px] ${showFilter ? "-rotate-90" : "rotate-90"} transform`}
                 >
                   <path
                     opacity="0.4"
@@ -358,7 +358,7 @@ const Content: React.FC = () => {
                     viewBox="0 0 20 36"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`ml-2 translate-y-[4px] rotate-90 transform`}
+                    className={`ml-2 translate-y-[4px] ${showFilter ? "-scale-x-100" : "" } rotate-90 transform ease-in-out transition-all`}
                   >
                     <path
                       opacity="0.4"
@@ -395,9 +395,10 @@ const Content: React.FC = () => {
             </div>
 
             <div>
-              {categories && (
-                <div className="my-3 flex w-full flex-col items-start">
-                  <div className="flex w-full flex-wrap">
+              <div className={`grid ${
+                showCategories ? "mt-4 grid-rows-[2fr]" : "grid-rows-[0fr]"
+              } transition-all ease-in-out duration-300`}>
+                  <div className="flex w-full flex-wrap overflow-hidden">
                     {gridData.map((item) => (
                       <div
                         key={item.id}
@@ -407,7 +408,7 @@ const Content: React.FC = () => {
                           value={item?.label}
                           onClick={(e) => {
                             setCategoryQuery(e.currentTarget.value);
-                            setCategories(!categories);
+                            setShowCategories(!showCategories);
                           }}
                         >
                           <b>{item.label}</b>
@@ -425,7 +426,7 @@ const Content: React.FC = () => {
                             value={sub}
                             onClick={(e) => {
                               setCategoryQuery(e.currentTarget.value);
-                              setCategories(!categories);
+                              setShowCategories(!showCategories);
                             }}
                           >
                             {sub}
@@ -435,7 +436,6 @@ const Content: React.FC = () => {
                     ))}
                   </div>
                 </div>
-              )}
             </div>
           </>
         )}
@@ -458,7 +458,7 @@ const Content: React.FC = () => {
         >
           {/* Input fields */}
           <div
-            className={`items-center justify-center overflow-hidden px-5 ${
+            className={`items-center justify-center overflow-hidden  ${
               showFilter ? "mb-2" : ""
             }`}
           >
@@ -1032,7 +1032,7 @@ const Content: React.FC = () => {
           </div>
 
           {/* Displaying active filters */}
-          <div className="mx-4 overflow-hidden">
+          <div className="overflow-hidden mt-3">
             <span
               className={`mx-1 justify-center rounded-lg bg-[${
                 Colors.light_light
