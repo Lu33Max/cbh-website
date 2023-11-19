@@ -6,6 +6,7 @@ type AutoCompleteProps = {
   col: string;
   onSelect: (value: string, column: string) => void;
   value: string;
+  classname?: string;
 };
 
 type AutoCompleteState = {
@@ -54,7 +55,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
         test ? tempArray.push(test.toString()) : void 0;
       }
     }
-
+    
     tempArray.sort();
     
     dispatch({ type: "SET_RESULTS", payload: tempArray });
@@ -87,7 +88,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
       {/* Render the input element */}
       <input
         value={state.currentVal}
-        className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer"
+        required
+        className={`w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 ${props.classname ?? "peer"}`}
         autoComplete="off"
         list="autocomplete-list"
         id="list"
@@ -98,8 +100,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
 
       {/* Render the datalist element for autocomplete options */}
       <datalist id="autocomplete-list">
-        {state.results.map((item) => (
-          <option key={item} value={item} />
+        {state.results.map((item, i) => (
+          <option key={`${props.col}-${item}-${i}`} value={item} />
         ))}
       </datalist>
     </>

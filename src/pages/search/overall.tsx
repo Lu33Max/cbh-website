@@ -313,8 +313,6 @@ const Content: React.FC = () => {
           </Link>
         </div>
 
-        
-
         {windowSize.width && windowSize.width < 700 ? (
           <div className="flex flex-col">
             <div className="flex flex-row items-stretch justify-center">
@@ -366,179 +364,80 @@ const Content: React.FC = () => {
                 {categoriesButton}
               </div>
 
-              {/*             
-              <select
-                className={`mx-3 text-xl text-[${Colors.dark}] flex h-10 w-[200px] appearance-none flex-row rounded-lg bg-transparent bg-[url('/ArrowDown.png')] bg-[length:1.3rem_auto] bg-[170px] bg-no-repeat pl-2 pr-8`}
-                value={categoryQuery}
-                onChange={(e) => setCategoryQuery(e.target.value)}
-              >
-                <option value="Overall">Overall</option>
-                <option value="Pregnancy">Pregnancy</option>
-                <option value="Infectious Diseases">Infectious Diseases</option>
-                <option value="Sexually Transmitted Diseases">
-                  Sexually Transmitted Diseases
-                </option>
-                <option value="Cancer Samples">Cancer Samples</option>
-                <option value="Allergies">Allergies</option>
-                <option value="Autoimmune Diseases">Autoimmune Diseases</option>
-                <option value="Cardiovascular Diseases">
-                  Cardiovascular Diseases
-                </option>
-                <option value="Musculoskeletal System and Connective Tissue">
-                  Musculoskeletal System and Connective Tissue
-                </option>
-                <option value="Endocrine Disorders">Endocrine Disorders</option>
-                <option value="COVID 19">COVID 19</option>
-                <option value="Gynaecology">Gynaecology</option>
-                <option value="Healthy Donors">Healthy Donors</option>
-                <option value="Metabolic Disorders">Metabolic Disorders</option>
-                <option value="Parasitology">Parasitology</option>
-                <option value="Neurological Disorders">
-                  Neurological Disorders
-                </option>
-                <option value="Respiratory Tract Infections">
-                  Respiratory Tract Infections
-                </option>
-                <option value="Tropical Infections">Tropical Infections</option>
-                <option value="Other Vector Borne Diseases">
-                  Other Vector Borne Diseases
-                </option>
-                <option value="Specimen Matrix">Specimen Matrix</option>
-                <option value="Tissue Bank">Tissue Bank</option>
-                <option value="Cell Products">Cell Products</option>
-                <option value="Other Biofluids">Other Biofluids</option>
-                <option value="Dermatological Diseases">
-                  Dermatological Diseases
-                </option>
-              </select>
-              */}
-
             </div>
           </div>
         ) : (
           <>
-          <div className="flex w-full flex-row">
-            <div className="flex w-[50%] flex-row items-center justify-start">
-              <button
-                className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4 hover:bg-[#dae9d5] active:bg-[#cae4c2]`}
-                onClick={() => setShowFilter(!showFilter)}
-              >
-                Filter
-                <svg
-                  width="12"
-                  height="21"
-                  viewBox="0 0 20 36"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={`ml-2 translate-y-[4px] rotate-90 transform`}
+            <div className="flex w-full flex-row">
+              <div className="flex w-[50%] flex-row items-center justify-start">
+                <button
+                  className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4 hover:bg-[#dae9d5] active:bg-[#cae4c2]`}
+                  onClick={() => setShowFilter(!showFilter)}
                 >
-                  <path
-                    opacity="0.4"
-                    d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                    fill="black"
-                  />
-                  <path
-                    d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                    fill="black"
-                  />
-                </svg>
-              </button>
+                  Filter
+                  <svg
+                    width="12"
+                    height="21"
+                    viewBox="0 0 20 36"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`ml-2 translate-y-[4px] rotate-90 transform`}
+                  >
+                    <path
+                      opacity="0.4"
+                      d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+                      fill="black"
+                    />
+                    <path
+                      d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+                      fill="black"
+                    />
+                  </svg>
+                </button>
 
-
-              {/*choose category*/}
-              <div>
-                {categoriesButton}
-              </div> 
-
-              
-              
-              {/*
-              <select
-                className={`mx-3 text-xl text-[${Colors.dark}] flex h-10 w-[200px] appearance-none flex-row rounded-lg bg-transparent bg-[url('/ArrowDown.png')] bg-[length:1.3rem_auto] bg-[170px] bg-no-repeat pl-2 pr-8`}
-                value={categoryQuery}
-                onChange={(e) => setCategoryQuery(e.target.value)}
-              >
-                <option value="Overall">Overall</option>
-                <option value="Pregnancy">Pregnancy</option>
-                <option value="Infectious Diseases">Infectious Diseases</option>
-                <option value="Sexually Transmitted Diseases">
-                  Sexually Transmitted Diseases
-                </option>
-                <option value="Cancer Samples">Cancer Samples</option>
-                <option value="Allergies">Allergies</option>
-                <option value="Autoimmune Diseases">Autoimmune Diseases</option>
-                <option value="Cardiovascular Diseases">
-                  Cardiovascular Diseases
-                </option>
-                <option value="Musculoskeletal System and Connective Tissue">
-                  Musculoskeletal System and Connective Tissue
-                </option>
-                <option value="Endocrine Disorders">Endocrine Disorders</option>
-                <option value="COVID 19">COVID 19</option>
-                <option value="Gynaecology">Gynaecology</option>
-                <option value="Healthy Donors">Healthy Donors</option>
-                <option value="Metabolic Disorders">Metabolic Disorders</option>
-                <option value="Parasitology">Parasitology</option>
-                <option value="Neurological Disorders">
-                  Neurological Disorders
-                </option>
-                <option value="Respiratory Tract Infections">
-                  Respiratory Tract Infections
-                </option>
-                <option value="Tropical Infections">Tropical Infections</option>
-                <option value="Other Vector Borne Diseases">
-                  Other Vector Borne Diseases
-                </option>
-                <option value="Specimen Matrix">Specimen Matrix</option>
-                <option value="Tissue Bank">Tissue Bank</option>
-                <option value="Cell Products">Cell Products</option>
-                <option value="Other Biofluids">Other Biofluids</option>
-                <option value="Dermatological Diseases">
-                  Dermatological Diseases
-                </option>
-              </select>
-              */}
-            </div>
-            
-
-            <div className="flex w-[50%] flex-row justify-end">
-              {/*load filter button*/}
-              <button
-                className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-r-0`}
-                onClick={() => setShowLoad(true)}
-              >
-                Load Filter
-              </button>
-              {/*save filter button*/}
-              <button
-                className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-r-2xl bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475]`}
-                onClick={() => setShowSave(true)}
-              >
-                Save Filter
-              </button>
-            </div>
-            
-          </div>
-          <div>
-            {categories && (          
-              <div className="w-full my-3 flex flex-col items-start">
-                <div className="w-full flex flex-wrap">
-                  {gridData.map((item) => (
-                    <div key={item.id} className="w-1/6 p-4 flex flex-col items-start">
-                      <button value={item?.label} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}><b>{item.label}</b></button>
-                      <img src={item.imageSrc} alt={item.label} width="100" height="100" className="py-2"/>
-                      <button value={item.subCategory} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory}</button>
-                      <button value={item.subCategory2} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory2}</button>
-                      <button value={item.subCategory3} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory3}</button>
-                      <button value={item.subCategory4} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory4}</button>
-                    </div>
-                  ))}
-                </div>
+                {/*choose category*/}
+                <div>
+                  {categoriesButton}
+                </div> 
               </div>
-            )}
-          </div>
-        </>
+              
+              <div className="flex w-[50%] flex-row justify-end">
+                {/*load filter button*/}
+                <button
+                  className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-r-0`}
+                  onClick={() => setShowLoad(true)}
+                >
+                  Load Filter
+                </button>
+                {/*save filter button*/}
+                <button
+                  className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-r-2xl bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475]`}
+                  onClick={() => setShowSave(true)}
+                >
+                  Save Filter
+                </button>
+              </div>
+            </div>
 
+            <div>
+              {categories && (          
+                <div className="w-full my-3 flex flex-col items-start">
+                  <div className="w-full flex flex-wrap">
+                    {gridData.map((item) => (
+                      <div key={item.id} className="w-1/6 p-4 flex flex-col items-start">
+                        <button value={item?.label} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}><b>{item.label}</b></button>
+                        <img src={item.imageSrc} alt={item.label} width="100" height="100" className="py-2"/>
+                        <button value={item.subCategory} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory}</button>
+                        <button value={item.subCategory2} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory2}</button>
+                        <button value={item.subCategory3} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory3}</button>
+                        <button value={item.subCategory4} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory4}</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
         )}
 
         <ModalSave
@@ -592,6 +491,7 @@ const Content: React.FC = () => {
                   }}
                 />
               </div>
+
               {/* CBH Donor ID */}
               <div className="items-center text-center">
                 <input
@@ -614,6 +514,7 @@ const Content: React.FC = () => {
                   }}
                 />
               </div>
+
               {/* CBH Sample ID */}
               <div className="items-center text-center">
                 <input
@@ -636,12 +537,15 @@ const Content: React.FC = () => {
                   }}
                 />
               </div>
+              
               {/* Price */}
               <div className="items-center text-center">
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom"
                   rootClose={true}
+                  onExit={() => setIsPriceActive(false)}
+                  onEnter={() => setIsPriceActive(true)}
                   overlay={
                     <Popover
                       id="popover-basic"
@@ -649,26 +553,28 @@ const Content: React.FC = () => {
                     >
                       <Popover.Body>
                         <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
-                            <input
-                              type="number"
-                              value={filter.Price.min}
-                              className={`w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer`}
-                              onChange={(e) => {
-                                const temp = filter.Price;
-                                temp.min =
-                                  e.currentTarget.value.length > 0
-                                    ? parseFloat(e.currentTarget.value)
-                                    : undefined;
-                                setFilter((filter) => ({
-                                  ...filter,
-                                  Price: temp,
-                                }));
-                              }}
-                            />
-                            <label className={`absolute left-3 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>min Price</label>
+                          <input
+                            type="number"
+                            value={filter.Price.min}
+                            required
+                            className={`w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/min`}
+                            onChange={(e) => {
+                              const temp = filter.Price;
+                              temp.min =
+                                e.currentTarget.value.length > 0
+                                  ? parseFloat(e.currentTarget.value)
+                                  : undefined;
+                              setFilter((filter) => ({
+                                ...filter,
+                                Price: temp,
+                              }));
+                            }}
+                          />
+                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/min:text-green-800 transition peer-focus/min:scale-75 peer-valid/min:scale-75 peer-focus/min:-translate-y-2/3 peer-valid/min:-translate-y-2/3 peer-focus/min:bg-white peer-valid/min:bg-white peer-focus/min:text-yellow-400 peer-focus/min:px-1 peer-valid/min:px-1`}>min Price</label>
                           <input
                             type="number"
                             value={filter.Price.max}
+                            required
                             className="w-[200px] rounded-full border-2 hover:border-green-800 px-3 py-1 text-lg outline-none transition focus:border-yellow-400 peer/max"
                             onChange={(e) => {
                               const temp = filter.Price;
@@ -682,13 +588,13 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className="absolute left-56 pointer-events-none text-gray-400 peer-hover/max:text-green-800 translate-y-0 transition peer-focus/max:scale-75 peer-focus/max:-translate-y-1/2 peer-focus/max:bg-white peer-focus/max:p-1 peer-focus/max:text-yellow-400">max Price</label>
+                          <label className="absolute left-56 pointer-events-none text-gray-400 peer-hover/max:text-green-800 transition peer-focus/max:scale-75 peer-valid/max:scale-75 peer-focus/max:-translate-y-2/3 peer-valid/max:-translate-y-2/3 peer-focus/max:bg-white peer-valid/max:bg-white peer-focus/max:text-yellow-400 peer-focus/max:px-1 peer-valid/max:px-1">max Price</label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                  <button onClick={() => setIsPriceActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                  <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
                     isPriceActive
                       ? ' text-yellow-500 border-yellow-500'
                       : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
@@ -722,16 +628,19 @@ const Content: React.FC = () => {
 
                 </OverlayTrigger>
               </div>
+              
               {/* General Data */}
               <div className="items-center text-center">
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom"
                   rootClose={true}
+                  onExit={() => setIsGeneralDataActive(false)}
+                  onEnter={() => setIsGeneralDataActive(true)}
                   overlay={
                     <Popover
                       id="popover-basic"
-                      className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center  shadow-md"
+                      className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center shadow-md"
                     >
                       <Popover.Body>
                         <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
@@ -744,13 +653,13 @@ const Content: React.FC = () => {
                                 ] ?? ""
                               }
                             />
-                            <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Matrix</label>
+                            <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-valid:scale-75 peer-focus:-translate-y-2/3 peer-valid:-translate-y-2/3 peer-focus:bg-white peer-valid:bg-white peer-focus:text-yellow-400 peer-focus:px-1 peer-valid:px-1`}>Matrix</label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                  <button onClick={() => setIsGeneralDataActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                  <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
                     isGeneralDataActive
                       ? ' text-yellow-500 border-yellow-500'
                       : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
@@ -783,12 +692,15 @@ const Content: React.FC = () => {
                   </button>
                 </OverlayTrigger>
               </div>
+              
               {/* Quantity Information */}
               <div className="items-center text-center">
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom"
                   rootClose={true}
+                  onExit={() => setIsQuantityActive(false)}
+                  onEnter={() => setIsQuantityActive(true)}
                   overlay={
                     <Popover
                       id="popover-basic"
@@ -799,7 +711,8 @@ const Content: React.FC = () => {
                           <input
                             type="number"
                             value={filter.Quantity.min}
-                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/minQuantity"
+                            required
+                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/min"
                             onChange={(e) => {
                               const temp = filter.Quantity;
                               temp.min =
@@ -812,11 +725,12 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/minQuantity:text-green-800 transition peer-focus/minQuantity:scale-75 peer-focus/minQuantity:-translate-y-1/2 peer-focus/minQuantity:bg-white peer-focus/minQuantity:p-1 peer-focus/minQuantity:text-yellow-400`}>min Quantity</label>
+                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/min:text-green-800 transition peer-focus/min:scale-75 peer-valid/min:scale-75 peer-focus/min:-translate-y-2/3 peer-valid/min:-translate-y-2/3 peer-focus/min:bg-white peer-valid/min:bg-white peer-focus/min:text-yellow-400 peer-focus/min:px-1 peer-valid/min:px-1`}>min Quantity</label>
                           <input
                             type="number"
                             value={filter.Quantity.max}
-                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/maxQuantity"
+                            required
+                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/max"
                             onChange={(e) => {
                               const temp = filter.Quantity;
                               temp.max =
@@ -829,7 +743,7 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className={`absolute left-56 pointer-events-none text-gray-400 peer-hover/maxQuantity:text-green-800 transition peer-focus/maxQuantity:scale-75 peer-focus/maxQuantity:-translate-y-1/2 peer-focus/maxQuantity:bg-white peer-focus/maxQuantity:p-1 peer-focus/maxQuantity:text-yellow-400`}>max Quantity</label>
+                          <label className={`absolute left-56 pointer-events-none text-gray-400 peer-hover/max:text-green-800 transition peer-focus/max:scale-75 peer-valid/max:scale-75 peer-focus/max:-translate-y-2/3 peer-valid/max:-translate-y-2/3 peer-focus/max:bg-white peer-valid/max:bg-white peer-focus/max:text-yellow-400 peer-focus/max:px-1 peer-valid/max:px-1`}>max Quantity</label>
                             <AutoComplete
                               col="Unit"
                               onSelect={handleFilterChange}
@@ -838,14 +752,15 @@ const Content: React.FC = () => {
                                   filter.Unit.value.length - 1
                                 ] ?? ""
                               }
+                              classname="peer/unit"
                             />
-                            <label className={`absolute right-32 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Unit</label>
+                            <label className={`absolute right-32 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus/unit:scale-75 peer-valid/unit:scale-75 peer-focus/unit:-translate-y-1/2 peer-valid/unit:-translate-y-1/2 peer-focus/unit:bg-white peer-valid/unit:bg-white peer-focus/unit:p-1 peer-valid/unit:p-1 peer-focus/unit:text-yellow-400`}>Unit</label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                  <button onClick={() => setIsQuantityActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                  <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
                     isQuantityActive
                       ? ' text-yellow-500 border-yellow-500'
                       : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
@@ -878,12 +793,15 @@ const Content: React.FC = () => {
                   </button>
                 </OverlayTrigger>
               </div>
+
               {/* Laboratory */}
               <div className="items-center text-center">
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom"
                   rootClose={true}
+                  onExit={() => setIsLabActive(false)}
+                  onEnter={() => setIsLabActive(true)}
                   overlay={
                     <Popover
                       id="popover-basic"
@@ -891,35 +809,33 @@ const Content: React.FC = () => {
                     >
                       <Popover.Body>
                         <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
-                            <div>
-                              <AutoComplete
-                                col="Lab_Parameter"
-                                onSelect={handleFilterChange}
-                                value={
-                                  filter.Lab_Parameter.value[
-                                    filter.Lab_Parameter.value.length - 1
-                                  ] ?? ""
-                                }
-                              />
-                              <label className={`absolute left-3 mt-2 peer-focus:mt-0.5 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Parameter</label>
-                            </div>
-                            <div>
-                            <AutoComplete
-                              col="Result_Interpretation"
-                              onSelect={handleFilterChange}
-                              value={
-                                filter.Result_Interpretation.value[
-                                  filter.Result_Interpretation.value.length - 1
-                                ] ?? ""
-                              }
-                            />
-                            <label className={`absolute left-56 mt-2 peer-focus:mt-0.5 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Result Interpretation</label>
-                            </div>
-                          <div>
+                          <AutoComplete
+                            col="Lab_Parameter"
+                            onSelect={handleFilterChange}
+                            value={
+                              filter.Lab_Parameter.value[
+                                filter.Lab_Parameter.value.length - 1
+                              ] ?? ""
+                            }
+                            classname="peer/param"
+                          />
+                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/param:text-green-800 transition peer-focus/param:scale-75 peer-valid/param:scale-75 peer-focus/param:-translate-y-2/3 peer-valid/param:-translate-y-2/3 peer-focus/param:bg-white peer-valid/param:bg-white peer-focus/param:text-yellow-400 peer-focus/param:px-1 peer-valid/param:px-1`}>Parameter</label>
+                          <AutoComplete
+                            col="Result_Interpretation"
+                            onSelect={handleFilterChange}
+                            value={
+                              filter.Result_Interpretation.value[
+                                filter.Result_Interpretation.value.length - 1
+                              ] ?? ""
+                            }
+                            classname="peer/interp"
+                          />
+                          <label className={`absolute left-56 pointer-events-none text-gray-400 peer-hover/interp:text-green-800 transition peer-focus/interp:scale-75 peer-valid/interp:scale-75 peer-focus/interp:-translate-y-2/3 peer-valid/interp:-translate-y-2/3 peer-focus/interp:bg-white peer-valid/interp:bg-white peer-focus/interp:text-yellow-400 peer-focus/interp:px-1 peer-valid/interp:px-1`}>Result Interpretation</label>
                           <input
                             type="number"
                             value={filter.Result_Numerical.min || ""}
-                            className="w-[200px] rounded-full border-2  px-3 py-1 text-lg outline-none transition peer/labmin hover:text-green-800 hover:border-green-800 focus:border-yellow-400"
+                            required
+                            className="w-[200px] rounded-full border-2 hover:border-green-800 px-3 py-1 text-lg outline-none transition focus:border-yellow-400 peer/min"
                             onChange={(e) => {
                               const temp = filter.Result_Numerical;
                               temp.min =
@@ -932,13 +848,12 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className={`absolute left-[433px] mt-2 peer-focus/labmin:mt-0.5 pointer-events-none text-gray-400 peer-hover/labmin:text-green-800 transition peer-focus/labmin:scale-75 peer-focus/labmin:-translate-y-1/2 peer-focus/labmin:bg-white peer-focus/labmin:p-1 peer-focus/labmin:text-yellow-400`}>Min result</label>
-                          </div>
-                          <div>
+                          <label className={`absolute left-[433px] pointer-events-none text-gray-400 peer-hover/min:text-green-800 transition peer-focus/min:scale-75 peer-valid/min:scale-75 peer-focus/min:-translate-y-2/3 peer-valid/min:-translate-y-2/3 peer-focus/min:bg-white peer-valid/min:bg-white peer-focus/min:text-yellow-400 peer-focus/min:px-1 peer-valid/min:px-1`}>Min result</label>
                           <input
                             type="number"
                             value={filter.Result_Numerical.max || ""}
-                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition peer/labmax hover:text-green-800 hover:border-green-800 focus:border-yellow-400"
+                            required
+                            className="w-[200px] rounded-full border-2 hover:border-green-800 px-3 py-1 text-lg outline-none transition focus:border-yellow-400 peer/max"
                             onChange={(e) => {
                               const temp = filter.Result_Numerical;
                               temp.max =
@@ -951,27 +866,23 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          
-                          <label className={`absolute right-[322px] mt-2 peer-focus/labmax:mt-0 pointer-events-none text-gray-400 peer-hover/labmax:text-green-800 transition peer-focus/labmax:scale-75 peer-focus/labmax:-translate-y-1/2 peer-focus/labmax:bg-white peer-focus/labmax:p-0.5 peer-focus/labmax:text-yellow-400`}>Max result</label>
-                          </div>
-                          <div>
-                            <AutoComplete
-                              col="Result_Unit"
-                              onSelect={handleFilterChange}
-                              value={
-                                filter.Result_Unit.value[
-                                  filter.Result_Unit.value.length - 1
-                                ] ?? ""
-                              }
-                            />
-                            <label className={`absolute right-40 mt-2 peer-focus:mt-0.5 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-1 peer-focus:text-yellow-400`}>Unit</label>
-                          </div>
+                          <label className={`absolute right-80 pointer-events-none text-gray-400 peer-hover/max:text-green-800 transition peer-focus/max:scale-75 peer-valid/max:scale-75 peer-focus/max:-translate-y-2/3 peer-valid/max:-translate-y-2/3 peer-focus/max:bg-white peer-valid/max:bg-white peer-focus/max:text-yellow-400 peer-focus/max:px-1 peer-valid/max:px-1`}>Max result</label>
+                          <AutoComplete
+                            col="Result_Unit"
+                            onSelect={handleFilterChange}
+                            value={
+                              filter.Result_Unit.value[
+                                filter.Result_Unit.value.length - 1
+                              ] ?? ""
+                            }
+                          />
+                          <label className={`absolute right-36 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-valid:scale-75 peer-focus:-translate-y-2/3 peer-valid:-translate-y-2/3 peer-focus:bg-white peer-valid:bg-white peer-focus:text-yellow-400 peer-focus:px-1 peer-valid:px-1`}>Unit</label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                <button onClick={() => setIsLabActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
                     isLabActive
                       ? ' text-yellow-500 border-yellow-500'
                       : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
@@ -1004,49 +915,49 @@ const Content: React.FC = () => {
                   </button>
                 </OverlayTrigger>
               </div>
+
               {/* Clinical Diagnosis */}
               <div className="items-center text-center">
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom"
                   rootClose={true}
+                  onExit={() => setIsDiagnosisActive(false)}
+                  onEnter={() => setIsDiagnosisActive(true)}
                   overlay={
                     <Popover
                       id="popover-basic"
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center  shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
-                          <div className="col-span-1">
-                            <AutoComplete
-                              col="Diagnosis"
-                              onSelect={handleFilterChange}
-                              value={
-                                filter.Diagnosis.value[
-                                  filter.Diagnosis.value.length - 1
-                                ] ?? ""
-                              }
-                            />
-                            <label className={`absolute left-5 mt-2 peer-focus:mt-0 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-0.5 peer-focus:text-yellow-400`}>Diagnosis</label>
-                          </div>
-                          <div className="col-span-1">
-                            <AutoComplete
-                              col="ICD_Code"
-                              onSelect={handleFilterChange}
-                              value={
-                                filter.ICD_Code.value[
-                                  filter.ICD_Code.value.length - 1
-                                ] ?? ""
-                              }
-                            />
-                            <label className={`absolute right-28 mt-2 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:mt-0  peer-focus:scale-75 peer-focus:-translate-y-1/2 peer-focus:bg-white peer-focus:p-0.5 peer-focus:text-yellow-400`}>ICD Code</label>
-                          </div>
+                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
+                          <AutoComplete
+                            col="Diagnosis"
+                            onSelect={handleFilterChange}
+                            value={
+                              filter.Diagnosis.value[
+                                filter.Diagnosis.value.length - 1
+                              ] ?? ""
+                            }
+                            classname="peer/dia"
+                          />
+                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/dia:text-green-800 transition peer-focus/dia:scale-75 peer-valid/dia:scale-75 peer-focus/dia:-translate-y-2/3 peer-valid/dia:-translate-y-2/3 peer-focus/dia:bg-white peer-valid/dia:bg-white peer-focus/dia:text-yellow-400 peer-focus/dia:px-1 peer-valid/dia:px-1`}>Diagnosis</label>
+                          <AutoComplete
+                            col="ICD_Code"
+                            onSelect={handleFilterChange}
+                            value={
+                              filter.ICD_Code.value[
+                                filter.ICD_Code.value.length - 1
+                              ] ?? ""
+                            }
+                          />
+                          <label className={`absolute left-56 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-valid:scale-75 peer-focus:-translate-y-2/3 peer-valid:-translate-y-2/3 peer-focus:bg-white peer-valid:bg-white peer-focus:text-yellow-400 peer-focus:px-1 peer-valid:px-1`}>ICD Code</label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                <button onClick={() => setIsDiagnosisActive(prev => !prev)} className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
+                <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
                     isDiagnosisActive
                       ? ' text-yellow-500 border-yellow-500'
                       : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
