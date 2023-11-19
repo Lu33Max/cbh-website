@@ -61,7 +61,7 @@ const Carousel: React.FC<props> = ({ type, settings, style }) => {
       >
         <Image
           className="mx-auto mb-2"
-          src={`/slider/categories/${i + 1}.png`}
+          src={`/slider/categories/${i + 1}_new.png`}
           alt={`category${i}`}
           width={80}
           height={80}
@@ -80,56 +80,25 @@ const Carousel: React.FC<props> = ({ type, settings, style }) => {
   }
 
   //Partners
-  const partnerContents: JSX.Element[] = [
-    <div key={301} className="mx-auto mb-2">
-      <Image
-        src="/slider/categories/1.png"
-        alt="Eastern Research Solutions"
-        className=""
-        width={200}
-        height={200}
-      />
-    </div>,
-    <div key={302} className="mx-auto mb-2">
-      <Image
-        src="/slider/partners/1.png"
-        alt="Eastern Research Solutions"
-        className=""
-        width={200}
-        height={200}
-      />
-    </div>,
-    <div key={303} className="mx-auto mb-2">
-      <Image
-        src="/slider/partners/3.png"
-        alt="Eastern Research Solutions"
-        className=""
-        width={200}
-        height={200}
-      />
-    </div>,
-  ];
+  const partnerCount = 11;
+  const partnerContents: JSX.Element[] = [];
 
-    // Categories
-    const test = 11;
-    const testContents: JSX.Element[] = [];
-  
-    for (let i = 0; i < test; i++) {
-      testContents.push(
-        <div
-          key={400 + i}
-          className="flex cursor-pointer flex-col justify-start"          
-        >
-          <Image
-            className="mx-auto mb-2"
-            src={`/slider/partners/1-${i + 1}.png`}
-            alt={`category${i}`}
-            width={windowSize.width ? windowSize.width - 800 : 1200}
-            height={80}
-          />
-        </div>
-      );
-    }
+  for (let i = 0; i < partnerCount; i++) {
+    partnerContents.push(
+      <div
+        key={400 + i}
+        className="flex cursor-pointer flex-col justify-start"          
+      >
+        <Image
+          className="mx-auto mb-2"
+          src={`/slider/partners/1-${i + 1}.png`}
+          alt={`category${i}`}
+          width={windowSize.width ? windowSize.width - 800 : 1200}
+          height={80}
+        />
+      </div>
+    );
+  }
 
   //Testimonials
   const testimonialContents: JSX.Element[] = [
@@ -205,7 +174,7 @@ const Carousel: React.FC<props> = ({ type, settings, style }) => {
       )}
       {type === CarouselType.partners && (
         <Slider {...settings} className={style}>
-          {testContents.map((el) => el)}
+          {partnerContents.map((el) => el)}
         </Slider>
       )}
       {type === CarouselType.testimonials && (

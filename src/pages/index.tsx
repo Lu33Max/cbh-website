@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import HeaderNEW from "~/components/overall/header";
+import Header from "~/components/overall/header";
 import Carousel, { CarouselType } from "~/components/home/carousel";
 import useWindowSize from "~/utils/window";
 import Footer from "~/components/overall/footer";
@@ -19,7 +19,7 @@ const Home: NextPage = () => {
 
       <div className="fixed max-h-full min-h-full min-w-full max-w-full overflow-hidden bg-gray-100">
         <div className="flex flex-col">
-          <HeaderNEW />
+          <Header />
           <Content />
         </div>
       </div>

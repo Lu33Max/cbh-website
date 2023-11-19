@@ -1,25 +1,30 @@
+import React, { useEffect, useState } from "react";
+
 import { type NextPage } from "next";
 import Head from "next/head";
-import { NormalFilterSchema } from "~/common/filter/filter";
-import { api } from "~/utils/api";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
+
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import { BiHome, BiX } from "react-icons/bi";
 
-import HeaderNEW from "~/components/overall/header";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { type INormalFilter } from "~/common/filter/filter";
+import { Colors } from "~/common/styles";
+import { gridData } from "~/common/data";
+
+import { NormalFilterSchema } from "~/common/filter/filter";
+import Header from "~/components/overall/header";
+import AutoComplete from "~/components/search/normal/autofill";
+import Footer from "~/components/overall/footer";
 import Table from "~/components/search/table";
 import ModalLoad from "~/components/search/normal/modalLoad";
 import ModalSave from "~/components/search/normal/modalSave";
 
-import { type INormalFilter } from "~/common/filter/filter";
-import Footer from "~/components/overall/footer";
-import { usePathname } from "next/navigation";
-import { Colors } from "~/common/styles";
-import Link from "next/link";
-import AutoComplete from "~/components/search/normal/autofill";
 import useWindowSize from "~/utils/window";
+import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   return (
@@ -32,7 +37,7 @@ const Home: NextPage = () => {
 
       <div className="fixed max-h-full min-h-full min-w-full max-w-full overflow-hidden bg-gray-100">
         <div className="flex flex-col">
-          <HeaderNEW />
+          <Header />
           <Content />
         </div>
       </div>
@@ -192,58 +197,33 @@ const Content: React.FC = () => {
     <>
       {
         //categories button
-        <button className={`text-xl text-[${Colors.dark}] flex flex-row rounded-lg pl-2 pr-4 mx-3 hover:bg-[#D8E9D1] active:bg-[#cae4c2]`} onClick={() => setCategories(!categories)}>
+        <button
+          className={`text-xl text-[${Colors.dark}] mx-3 flex flex-row rounded-lg pl-2 pr-4 hover:bg-[#D8E9D1] active:bg-[#cae4c2]`}
+          onClick={() => setCategories(!categories)}
+        >
           Categories
           <svg
-                  width="12"
-                  height="21"
-                  viewBox="0 0 20 36"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={`ml-2 translate-y-[4px] rotate-90 transform`}
+            width="12"
+            height="21"
+            viewBox="0 0 20 36"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={`ml-2 translate-y-[4px] rotate-90 transform`}
           >
-                  <path
-                    opacity="0.4"
-                    d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                    fill="black"
-                  />
-                  <path
-                    d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                    fill="black"
-                  />
+            <path
+              opacity="0.4"
+              d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
+              fill="black"
+            />
+            <path
+              d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
+              fill="black"
+            />
           </svg>
         </button>
       }
     </>
   );
-
-  //data to fill the grid for the categories
-  const gridData = [
-    { id: 1, imageSrc: '/slider/categories/1.png', label: 'Overall', subCategory: 'overall'},
-    { id: 2, imageSrc: '/slider/categories/2.png', label: 'Pregnancy', subCategory: '1st Trimester', subCategory2: '2nd Trimester', subCategory3: '3nd Trimester' },
-    { id: 3, imageSrc: '/slider/categories/3.png', label: 'Infectious Diseases', subCategory: 'Hepatitis', subCategory2: 'Influenza', subCategory3: 'Sepsis', subCategory4: 'Influenza A Swabs' },
-    { id: 4, imageSrc: '/slider/categories/4.png', label: 'Sexually Transmitted Diseases', subCategory: 'Chlamydia', subCategory2: 'HIV', subCategory3: 'Syphilis'},
-    { id: 5, imageSrc: '/slider/categories/5.png', label: 'cancer samples', subCategory: 'Cancer Inventory', subCategory2: 'FFPE Samples', subCategory3: 'Triple Negative Breast Cancer' },  
-    { id: 6, imageSrc: '/slider/categories/6.png', label: 'Allergies', subCategory: 'Food Allergens', subCategory2: 'Grass Pollen', subCategory3: 'Animal Allergens', subCategory4: 'Stinging Insect Allergens' },
-    { id: 7, imageSrc: '/slider/categories/7.png', label: 'Autoimmune Diseases', subCategory: 'Rheumatoid arthritis', subCategory2: 'Coeliac Disease', subCategory3: 'Autoimmune Thyroid Disorders', subCategory4: 'Inflammatory Bowel disease'},
-    { id: 8, imageSrc: '/slider/categories/8.png', label: 'Cardiovascular Diseases', subCategory: 'Hypertensive Disease', subCategory2: 'Hyperlipidaemia', subCategory3: 'Myocardial Infarction' },
-    { id: 9, imageSrc: '/slider/categories/9.png', label: 'Musculoskeletal System and Connective Tissue', subCategory: 'Arthrosis', subCategory2: 'Osteoporosis' },
-    { id: 10, imageSrc: '/slider/categories/10.png', label: 'Endocrine Disorders', subCategory: 'Hypothyroidism', subCategory2: 'Hyperthyroidism', subCategory3: 'Addisons Disease' },
-    { id: 11, imageSrc: '/slider/categories/11.png', label: 'COVID 19', subCategory: 'Vaccinated Donors', subCategory2: 'Variants', subCategory3: 'Clinically Confirmed' },
-    { id: 12, imageSrc: '/slider/categories/12.png', label: 'Gynaecology', subCategory: 'Endometriosis' },
-    { id: 13, imageSrc: '/slider/categories/13.png', label: 'Healthy Donors (Self Reported)' },
-    { id: 14, imageSrc: '/slider/categories/14.png', label: 'Metabolic Disorders', subCategory: 'Diabetes I', subCategory2: 'Diabetes II' },
-    { id: 15, imageSrc: '/slider/categories/15.png', label: 'Parasitology', subCategory: 'Chagas', subCategory2: 'Toxoplamosis' },
-    { id: 16, imageSrc: '/slider/categories/16.png', label: 'Neurological Disorders', subCategory: 'Parkinson' },
-    { id: 17, imageSrc: '/slider/categories/17.png', label: 'Respiratory Tract Infections', subCategory: 'Pneumonia', subCategory2: 'Tuberculosis' },
-    { id: 18, imageSrc: '/slider/categories/18.png', label: 'Tropical Infections', subCategory: 'Chikungunya Virus', subCategory2: 'Dengue Fever', subCategory3: 'West Nile Virus' },
-    { id: 19, imageSrc: '/slider/categories/19.png', label: 'Other Vector Borne Diseases', subCategory: 'Lyme disease' },
-    { id: 20, imageSrc: '/slider/categories/20.png', label: 'Specimen Matrix', subCategory: 'Human Serum Samples', subCategory2: 'Plasma Samples', subCategory3: 'Whole Blood Samples', subCategory4: 'Urine Samples' },
-    { id: 21, imageSrc: '/slider/categories/21.png', label: 'Tissue Bank', subCategory: 'Human Tissue Samples', subCategory2: 'Frozen Tissue'  },
-    { id: 22, imageSrc: '/slider/categories/22.png', label: 'Cell Products', subCategory: 'PBMC', subCategory2: 'B Cells', subCategory3: 'T Cells'  },
-    { id: 23, imageSrc: '/slider/categories/23.png', label: 'Other Biofluids', subCategory: 'Cerebrospinal Fluid (CSF)', subCategory2: 'Saliva', subCategory3: 'Aqueous Humor' },
-    { id: 24, imageSrc: '/slider/categories/24.png', label: 'Dermatological Diseases', subCategory: 'Atopic Dermatitis', subCategory2: 'Psoriasis'  },    
-  ];
 
   return (
     <div className="max-h-[calc(100dvh-80px)] overflow-x-hidden overflow-y-scroll font-poppins">
@@ -304,7 +284,7 @@ const Content: React.FC = () => {
           <Link className="relative top-1 text-xl" href={"/search/overall"}>
             Overall Search
           </Link>
-          <label className="mx-1">|</label>          
+          <label className="mx-1">|</label>
           <Link
             className="relative top-1 text-xl"
             href={`/search/overall?c=${encodeURI(categoryQuery)}`}
@@ -360,10 +340,7 @@ const Content: React.FC = () => {
               </button>
 
               {/*choose category*/}
-              <div>
-                {categoriesButton}
-              </div>
-
+              <div>{categoriesButton}</div>
             </div>
           </div>
         ) : (
@@ -396,15 +373,13 @@ const Content: React.FC = () => {
                 </button>
 
                 {/*choose category*/}
-                <div>
-                  {categoriesButton}
-                </div> 
+                <div>{categoriesButton}</div>
               </div>
-              
+
               <div className="flex w-[50%] flex-row justify-end">
                 {/*load filter button*/}
                 <button
-                  className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-r-0`}
+                  className={`w-[10rem] px-4 py-1 text-center text-xl text-[${Colors.dark}] rounded-l-2xl border-r-0 bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4]`}
                   onClick={() => setShowLoad(true)}
                 >
                   Load Filter
@@ -420,17 +395,42 @@ const Content: React.FC = () => {
             </div>
 
             <div>
-              {categories && (          
-                <div className="w-full my-3 flex flex-col items-start">
-                  <div className="w-full flex flex-wrap">
+              {categories && (
+                <div className="my-3 flex w-full flex-col items-start">
+                  <div className="flex w-full flex-wrap">
                     {gridData.map((item) => (
-                      <div key={item.id} className="w-1/6 p-4 flex flex-col items-start">
-                        <button value={item?.label} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}><b>{item.label}</b></button>
-                        <img src={item.imageSrc} alt={item.label} width="100" height="100" className="py-2"/>
-                        <button value={item.subCategory} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory}</button>
-                        <button value={item.subCategory2} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory2}</button>
-                        <button value={item.subCategory3} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory3}</button>
-                        <button value={item.subCategory4} onClick={e => {setCategoryQuery(e.currentTarget.value); setCategories(!categories)}}>{item.subCategory4}</button>
+                      <div
+                        key={item.id}
+                        className="flex w-1/6 flex-col items-start p-4"
+                      >
+                        <button
+                          value={item?.label}
+                          onClick={(e) => {
+                            setCategoryQuery(e.currentTarget.value);
+                            setCategories(!categories);
+                          }}
+                        >
+                          <b>{item.label}</b>
+                        </button>
+                        <Image
+                          src={item.src}
+                          alt={item.label}
+                          width="100"
+                          height="100"
+                          className="py-2"
+                        />
+                        {item.subs.map((sub, i) => (
+                          <button
+                            key={`sub-${item.id}-${i}`}
+                            value={sub}
+                            onClick={(e) => {
+                              setCategoryQuery(e.currentTarget.value);
+                              setCategories(!categories);
+                            }}
+                          >
+                            {sub}
+                          </button>
+                        ))}
                       </div>
                     ))}
                   </div>
@@ -537,7 +537,7 @@ const Content: React.FC = () => {
                   }}
                 />
               </div>
-              
+
               {/* Price */}
               <div className="items-center text-center">
                 <OverlayTrigger
@@ -552,12 +552,12 @@ const Content: React.FC = () => {
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
+                        <div className="relative grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
                           <input
                             type="number"
                             value={filter.Price.min}
                             required
-                            className={`w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/min`}
+                            className={`peer/min w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400`}
                             onChange={(e) => {
                               const temp = filter.Price;
                               temp.min =
@@ -570,12 +570,16 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/min:text-green-800 transition peer-focus/min:scale-75 peer-valid/min:scale-75 peer-focus/min:-translate-y-2/3 peer-valid/min:-translate-y-2/3 peer-focus/min:bg-white peer-valid/min:bg-white peer-focus/min:text-yellow-400 peer-focus/min:px-1 peer-valid/min:px-1`}>min Price</label>
+                          <label
+                            className={`pointer-events-none absolute left-4 text-gray-400 transition peer-valid/min:-translate-y-2/3 peer-valid/min:scale-75 peer-valid/min:bg-white peer-valid/min:px-1 peer-hover/min:text-green-800 peer-focus/min:-translate-y-2/3 peer-focus/min:scale-75 peer-focus/min:bg-white peer-focus/min:px-1 peer-focus/min:text-yellow-400`}
+                          >
+                            min Price
+                          </label>
                           <input
                             type="number"
                             value={filter.Price.max}
                             required
-                            className="w-[200px] rounded-full border-2 hover:border-green-800 px-3 py-1 text-lg outline-none transition focus:border-yellow-400 peer/max"
+                            className="peer/max w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400"
                             onChange={(e) => {
                               const temp = filter.Price;
                               temp.max =
@@ -588,17 +592,21 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className="absolute left-56 pointer-events-none text-gray-400 peer-hover/max:text-green-800 transition peer-focus/max:scale-75 peer-valid/max:scale-75 peer-focus/max:-translate-y-2/3 peer-valid/max:-translate-y-2/3 peer-focus/max:bg-white peer-valid/max:bg-white peer-focus/max:text-yellow-400 peer-focus/max:px-1 peer-valid/max:px-1">max Price</label>
+                          <label className="pointer-events-none absolute left-56 text-gray-400 transition peer-valid/max:-translate-y-2/3 peer-valid/max:scale-75 peer-valid/max:bg-white peer-valid/max:px-1 peer-hover/max:text-green-800 peer-focus/max:-translate-y-2/3 peer-focus/max:scale-75 peer-focus/max:bg-white peer-focus/max:px-1 peer-focus/max:text-yellow-400">
+                            max Price
+                          </label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                  <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
-                    isPriceActive
-                      ? ' text-yellow-500 border-yellow-500'
-                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
-                  }`}>
+                  <button
+                    className={`flex w-full flex-row items-center justify-center rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md ${
+                      isPriceActive
+                        ? " border-yellow-500 text-yellow-500"
+                        : "active:border-yellow-500 active:bg-gray-100 active:text-yellow-500"
+                    }`}
+                  >
                     Price
                     <svg
                       width="12"
@@ -606,29 +614,24 @@ const Content: React.FC = () => {
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] transform rotate-90 ${
-                        isPriceActive ? '-scale-x-100' : ''
+                      className={`mb-2 ml-3 translate-y-[4px] rotate-90 transform ${
+                        isPriceActive ? "-scale-x-100" : ""
                       }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill={`${
-                          isPriceActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isPriceActive ? "orange" : "black"}`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill={`${
-                          isPriceActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isPriceActive ? "orange" : "black"}`}
                       />
                     </svg>
                   </button>
-
                 </OverlayTrigger>
               </div>
-              
+
               {/* General Data */}
               <div className="items-center text-center">
                 <OverlayTrigger
@@ -643,56 +646,58 @@ const Content: React.FC = () => {
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
-                            <AutoComplete
-                              col="Matrix"
-                              onSelect={handleFilterChange}
-                              value={
-                                filter.Matrix.value[
-                                  filter.Matrix.value.length - 1
-                                ] ?? ""
-                              }
-                            />
-                            <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-valid:scale-75 peer-focus:-translate-y-2/3 peer-valid:-translate-y-2/3 peer-focus:bg-white peer-valid:bg-white peer-focus:text-yellow-400 peer-focus:px-1 peer-valid:px-1`}>Matrix</label>
+                        <div className="relative grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
+                          <AutoComplete
+                            col="Matrix"
+                            onSelect={handleFilterChange}
+                            value={
+                              filter.Matrix.value[
+                                filter.Matrix.value.length - 1
+                              ] ?? ""
+                            }
+                          />
+                          <label
+                            className={`pointer-events-none absolute left-4 text-gray-400 transition peer-valid:-translate-y-2/3 peer-valid:scale-75 peer-valid:bg-white peer-valid:px-1 peer-hover:text-green-800 peer-focus:-translate-y-2/3 peer-focus:scale-75 peer-focus:bg-white peer-focus:px-1 peer-focus:text-yellow-400`}
+                          >
+                            Matrix
+                          </label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                  <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
-                    isGeneralDataActive
-                      ? ' text-yellow-500 border-yellow-500'
-                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
-                  }`}>                
-                      General Data
+                  <button
+                    className={`flex w-full flex-row items-center justify-center rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md ${
+                      isGeneralDataActive
+                        ? " border-yellow-500 text-yellow-500"
+                        : "active:border-yellow-500 active:bg-gray-100 active:text-yellow-500"
+                    }`}
+                  >
+                    General Data
                     <svg
                       width="12"
                       height="21"
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform ${
-                        isGeneralDataActive ? '-scale-x-100' : ''
+                      className={`mb-2 ml-3 translate-y-[4px] rotate-90 transform ${
+                        isGeneralDataActive ? "-scale-x-100" : ""
                       }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill={`${
-                          isGeneralDataActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isGeneralDataActive ? "orange" : "black"}`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill={`${
-                          isGeneralDataActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isGeneralDataActive ? "orange" : "black"}`}
                       />
                     </svg>
                   </button>
                 </OverlayTrigger>
               </div>
-              
+
               {/* Quantity Information */}
               <div className="items-center text-center">
                 <OverlayTrigger
@@ -707,12 +712,12 @@ const Content: React.FC = () => {
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center  shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
+                        <div className="relative grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
                           <input
                             type="number"
                             value={filter.Quantity.min}
                             required
-                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/min"
+                            className="peer/min w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400"
                             onChange={(e) => {
                               const temp = filter.Quantity;
                               temp.min =
@@ -725,12 +730,16 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/min:text-green-800 transition peer-focus/min:scale-75 peer-valid/min:scale-75 peer-focus/min:-translate-y-2/3 peer-valid/min:-translate-y-2/3 peer-focus/min:bg-white peer-valid/min:bg-white peer-focus/min:text-yellow-400 peer-focus/min:px-1 peer-valid/min:px-1`}>min Quantity</label>
+                          <label
+                            className={`pointer-events-none absolute left-4 text-gray-400 transition peer-valid/min:-translate-y-2/3 peer-valid/min:scale-75 peer-valid/min:bg-white peer-valid/min:px-1 peer-hover/min:text-green-800 peer-focus/min:-translate-y-2/3 peer-focus/min:scale-75 peer-focus/min:bg-white peer-focus/min:px-1 peer-focus/min:text-yellow-400`}
+                          >
+                            min Quantity
+                          </label>
                           <input
                             type="number"
                             value={filter.Quantity.max}
                             required
-                            className="w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 peer/max"
+                            className="peer/max w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400"
                             onChange={(e) => {
                               const temp = filter.Quantity;
                               temp.max =
@@ -743,28 +752,37 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className={`absolute left-56 pointer-events-none text-gray-400 peer-hover/max:text-green-800 transition peer-focus/max:scale-75 peer-valid/max:scale-75 peer-focus/max:-translate-y-2/3 peer-valid/max:-translate-y-2/3 peer-focus/max:bg-white peer-valid/max:bg-white peer-focus/max:text-yellow-400 peer-focus/max:px-1 peer-valid/max:px-1`}>max Quantity</label>
-                            <AutoComplete
-                              col="Unit"
-                              onSelect={handleFilterChange}
-                              value={
-                                filter.Unit.value[
-                                  filter.Unit.value.length - 1
-                                ] ?? ""
-                              }
-                              classname="peer/unit"
-                            />
-                            <label className={`absolute right-32 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus/unit:scale-75 peer-valid/unit:scale-75 peer-focus/unit:-translate-y-1/2 peer-valid/unit:-translate-y-1/2 peer-focus/unit:bg-white peer-valid/unit:bg-white peer-focus/unit:p-1 peer-valid/unit:p-1 peer-focus/unit:text-yellow-400`}>Unit</label>
+                          <label
+                            className={`pointer-events-none absolute left-56 text-gray-400 transition peer-valid/max:-translate-y-2/3 peer-valid/max:scale-75 peer-valid/max:bg-white peer-valid/max:px-1 peer-hover/max:text-green-800 peer-focus/max:-translate-y-2/3 peer-focus/max:scale-75 peer-focus/max:bg-white peer-focus/max:px-1 peer-focus/max:text-yellow-400`}
+                          >
+                            max Quantity
+                          </label>
+                          <AutoComplete
+                            col="Unit"
+                            onSelect={handleFilterChange}
+                            value={
+                              filter.Unit.value[filter.Unit.value.length - 1] ??
+                              ""
+                            }
+                            classname="peer/unit"
+                          />
+                          <label
+                            className={`pointer-events-none absolute right-32 text-gray-400 transition peer-valid/unit:-translate-y-1/2 peer-valid/unit:scale-75 peer-valid/unit:bg-white peer-valid/unit:p-1 peer-hover:text-green-800 peer-focus/unit:-translate-y-1/2 peer-focus/unit:scale-75 peer-focus/unit:bg-white peer-focus/unit:p-1 peer-focus/unit:text-yellow-400`}
+                          >
+                            Unit
+                          </label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                  <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
-                    isQuantityActive
-                      ? ' text-yellow-500 border-yellow-500'
-                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
-                  }`}>                    
+                  <button
+                    className={`flex w-full flex-row items-center justify-center rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md ${
+                      isQuantityActive
+                        ? " border-yellow-500 text-yellow-500"
+                        : "active:border-yellow-500 active:bg-gray-100 active:text-yellow-500"
+                    }`}
+                  >
                     Quantity Information
                     <svg
                       width="12"
@@ -772,22 +790,18 @@ const Content: React.FC = () => {
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform ${
-                        isQuantityActive ? '-scale-x-100' : ''
+                      className={`mb-2 ml-3 translate-y-[4px] rotate-90 transform ${
+                        isQuantityActive ? "-scale-x-100" : ""
                       }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill={`${
-                          isQuantityActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isQuantityActive ? "orange" : "black"}`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill={`${
-                          isQuantityActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isQuantityActive ? "orange" : "black"}`}
                       />
                     </svg>
                   </button>
@@ -808,7 +822,7 @@ const Content: React.FC = () => {
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center  shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
+                        <div className="relative grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
                           <AutoComplete
                             col="Lab_Parameter"
                             onSelect={handleFilterChange}
@@ -819,7 +833,11 @@ const Content: React.FC = () => {
                             }
                             classname="peer/param"
                           />
-                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/param:text-green-800 transition peer-focus/param:scale-75 peer-valid/param:scale-75 peer-focus/param:-translate-y-2/3 peer-valid/param:-translate-y-2/3 peer-focus/param:bg-white peer-valid/param:bg-white peer-focus/param:text-yellow-400 peer-focus/param:px-1 peer-valid/param:px-1`}>Parameter</label>
+                          <label
+                            className={`pointer-events-none absolute left-4 text-gray-400 transition peer-valid/param:-translate-y-2/3 peer-valid/param:scale-75 peer-valid/param:bg-white peer-valid/param:px-1 peer-hover/param:text-green-800 peer-focus/param:-translate-y-2/3 peer-focus/param:scale-75 peer-focus/param:bg-white peer-focus/param:px-1 peer-focus/param:text-yellow-400`}
+                          >
+                            Parameter
+                          </label>
                           <AutoComplete
                             col="Result_Interpretation"
                             onSelect={handleFilterChange}
@@ -830,12 +848,16 @@ const Content: React.FC = () => {
                             }
                             classname="peer/interp"
                           />
-                          <label className={`absolute left-56 pointer-events-none text-gray-400 peer-hover/interp:text-green-800 transition peer-focus/interp:scale-75 peer-valid/interp:scale-75 peer-focus/interp:-translate-y-2/3 peer-valid/interp:-translate-y-2/3 peer-focus/interp:bg-white peer-valid/interp:bg-white peer-focus/interp:text-yellow-400 peer-focus/interp:px-1 peer-valid/interp:px-1`}>Result Interpretation</label>
+                          <label
+                            className={`pointer-events-none absolute left-56 text-gray-400 transition peer-valid/interp:-translate-y-2/3 peer-valid/interp:scale-75 peer-valid/interp:bg-white peer-valid/interp:px-1 peer-hover/interp:text-green-800 peer-focus/interp:-translate-y-2/3 peer-focus/interp:scale-75 peer-focus/interp:bg-white peer-focus/interp:px-1 peer-focus/interp:text-yellow-400`}
+                          >
+                            Result Interpretation
+                          </label>
                           <input
                             type="number"
                             value={filter.Result_Numerical.min || ""}
                             required
-                            className="w-[200px] rounded-full border-2 hover:border-green-800 px-3 py-1 text-lg outline-none transition focus:border-yellow-400 peer/min"
+                            className="peer/min w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400"
                             onChange={(e) => {
                               const temp = filter.Result_Numerical;
                               temp.min =
@@ -848,12 +870,16 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className={`absolute left-[433px] pointer-events-none text-gray-400 peer-hover/min:text-green-800 transition peer-focus/min:scale-75 peer-valid/min:scale-75 peer-focus/min:-translate-y-2/3 peer-valid/min:-translate-y-2/3 peer-focus/min:bg-white peer-valid/min:bg-white peer-focus/min:text-yellow-400 peer-focus/min:px-1 peer-valid/min:px-1`}>Min result</label>
+                          <label
+                            className={`pointer-events-none absolute left-[433px] text-gray-400 transition peer-valid/min:-translate-y-2/3 peer-valid/min:scale-75 peer-valid/min:bg-white peer-valid/min:px-1 peer-hover/min:text-green-800 peer-focus/min:-translate-y-2/3 peer-focus/min:scale-75 peer-focus/min:bg-white peer-focus/min:px-1 peer-focus/min:text-yellow-400`}
+                          >
+                            Min result
+                          </label>
                           <input
                             type="number"
                             value={filter.Result_Numerical.max || ""}
                             required
-                            className="w-[200px] rounded-full border-2 hover:border-green-800 px-3 py-1 text-lg outline-none transition focus:border-yellow-400 peer/max"
+                            className="peer/max w-[200px] rounded-full border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400"
                             onChange={(e) => {
                               const temp = filter.Result_Numerical;
                               temp.max =
@@ -866,7 +892,11 @@ const Content: React.FC = () => {
                               }));
                             }}
                           />
-                          <label className={`absolute right-80 pointer-events-none text-gray-400 peer-hover/max:text-green-800 transition peer-focus/max:scale-75 peer-valid/max:scale-75 peer-focus/max:-translate-y-2/3 peer-valid/max:-translate-y-2/3 peer-focus/max:bg-white peer-valid/max:bg-white peer-focus/max:text-yellow-400 peer-focus/max:px-1 peer-valid/max:px-1`}>Max result</label>
+                          <label
+                            className={`pointer-events-none absolute right-80 text-gray-400 transition peer-valid/max:-translate-y-2/3 peer-valid/max:scale-75 peer-valid/max:bg-white peer-valid/max:px-1 peer-hover/max:text-green-800 peer-focus/max:-translate-y-2/3 peer-focus/max:scale-75 peer-focus/max:bg-white peer-focus/max:px-1 peer-focus/max:text-yellow-400`}
+                          >
+                            Max result
+                          </label>
                           <AutoComplete
                             col="Result_Unit"
                             onSelect={handleFilterChange}
@@ -876,17 +906,23 @@ const Content: React.FC = () => {
                               ] ?? ""
                             }
                           />
-                          <label className={`absolute right-36 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-valid:scale-75 peer-focus:-translate-y-2/3 peer-valid:-translate-y-2/3 peer-focus:bg-white peer-valid:bg-white peer-focus:text-yellow-400 peer-focus:px-1 peer-valid:px-1`}>Unit</label>
+                          <label
+                            className={`pointer-events-none absolute right-36 text-gray-400 transition peer-valid:-translate-y-2/3 peer-valid:scale-75 peer-valid:bg-white peer-valid:px-1 peer-hover:text-green-800 peer-focus:-translate-y-2/3 peer-focus:scale-75 peer-focus:bg-white peer-focus:px-1 peer-focus:text-yellow-400`}
+                          >
+                            Unit
+                          </label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
-                    isLabActive
-                      ? ' text-yellow-500 border-yellow-500'
-                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
-                  }`}>                    
+                  <button
+                    className={`flex w-full flex-row items-center justify-center rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md ${
+                      isLabActive
+                        ? " border-yellow-500 text-yellow-500"
+                        : "active:border-yellow-500 active:bg-gray-100 active:text-yellow-500"
+                    }`}
+                  >
                     Laboratory
                     <svg
                       width="12"
@@ -894,22 +930,18 @@ const Content: React.FC = () => {
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform ${
-                        isLabActive ? '-scale-x-100' : ''
+                      className={`mb-2 ml-3 translate-y-[4px] rotate-90 transform ${
+                        isLabActive ? "-scale-x-100" : ""
                       }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill={`${
-                          isLabActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isLabActive ? "orange" : "black"}`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill={`${
-                          isLabActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isLabActive ? "orange" : "black"}`}
                       />
                     </svg>
                   </button>
@@ -930,7 +962,7 @@ const Content: React.FC = () => {
                       className="z-20 min-w-[10vw] items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center  shadow-md"
                     >
                       <Popover.Body>
-                        <div className="grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg relative">
+                        <div className="relative grid auto-cols-max grid-flow-col items-center justify-center gap-3 text-lg">
                           <AutoComplete
                             col="Diagnosis"
                             onSelect={handleFilterChange}
@@ -941,7 +973,11 @@ const Content: React.FC = () => {
                             }
                             classname="peer/dia"
                           />
-                          <label className={`absolute left-4 pointer-events-none text-gray-400 peer-hover/dia:text-green-800 transition peer-focus/dia:scale-75 peer-valid/dia:scale-75 peer-focus/dia:-translate-y-2/3 peer-valid/dia:-translate-y-2/3 peer-focus/dia:bg-white peer-valid/dia:bg-white peer-focus/dia:text-yellow-400 peer-focus/dia:px-1 peer-valid/dia:px-1`}>Diagnosis</label>
+                          <label
+                            className={`pointer-events-none absolute left-4 text-gray-400 transition peer-valid/dia:-translate-y-2/3 peer-valid/dia:scale-75 peer-valid/dia:bg-white peer-valid/dia:px-1 peer-hover/dia:text-green-800 peer-focus/dia:-translate-y-2/3 peer-focus/dia:scale-75 peer-focus/dia:bg-white peer-focus/dia:px-1 peer-focus/dia:text-yellow-400`}
+                          >
+                            Diagnosis
+                          </label>
                           <AutoComplete
                             col="ICD_Code"
                             onSelect={handleFilterChange}
@@ -951,17 +987,23 @@ const Content: React.FC = () => {
                               ] ?? ""
                             }
                           />
-                          <label className={`absolute left-56 pointer-events-none text-gray-400 peer-hover:text-green-800 transition peer-focus:scale-75 peer-valid:scale-75 peer-focus:-translate-y-2/3 peer-valid:-translate-y-2/3 peer-focus:bg-white peer-valid:bg-white peer-focus:text-yellow-400 peer-focus:px-1 peer-valid:px-1`}>ICD Code</label>
+                          <label
+                            className={`pointer-events-none absolute left-56 text-gray-400 transition peer-valid:-translate-y-2/3 peer-valid:scale-75 peer-valid:bg-white peer-valid:px-1 peer-hover:text-green-800 peer-focus:-translate-y-2/3 peer-focus:scale-75 peer-focus:bg-white peer-focus:px-1 peer-focus:text-yellow-400`}
+                          >
+                            ICD Code
+                          </label>
                         </div>
                       </Popover.Body>
                     </Popover>
                   }
                 >
-                <button className={`w-full rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md flex flex-row items-center justify-center ${
-                    isDiagnosisActive
-                      ? ' text-yellow-500 border-yellow-500'
-                      : 'active:bg-gray-100 active:text-yellow-500 active:border-yellow-500'
-                  }`}>                
+                  <button
+                    className={`flex w-full flex-row items-center justify-center rounded-lg border-2 border-solid border-green-900 bg-white py-1 text-lg text-green-900 shadow-md ${
+                      isDiagnosisActive
+                        ? " border-yellow-500 text-yellow-500"
+                        : "active:border-yellow-500 active:bg-gray-100 active:text-yellow-500"
+                    }`}
+                  >
                     Diagnosis
                     <svg
                       width="12"
@@ -969,22 +1011,18 @@ const Content: React.FC = () => {
                       viewBox="0 0 20 36"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className={`ml-3 mb-2 translate-y-[4px] rotate-90 transform ${
-                        isDiagnosisActive ? '-scale-x-100' : ''
+                      className={`mb-2 ml-3 translate-y-[4px] rotate-90 transform ${
+                        isDiagnosisActive ? "-scale-x-100" : ""
                       }`}
                     >
                       <path
                         opacity="0.4"
                         d="M13.2156 9.00221L0 18.6931L0 33.0375C0 35.4922 3.03565 36.7195 4.81522 34.9808L18.371 21.7359C20.543 19.6136 20.543 16.1617 18.371 14.0394L13.2156 9.00221Z"
-                        fill={`${
-                          isDiagnosisActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isDiagnosisActive ? "orange" : "black"}`}
                       />
                       <path
                         d="M0 2.76626V18.6961L13.2156 9.00524L4.81522 0.797406C3.03565 -0.915755 0 0.311585 0 2.76626Z"
-                        fill={`${
-                          isDiagnosisActive ? 'orange' : 'black'
-                        }`}
+                        fill={`${isDiagnosisActive ? "orange" : "black"}`}
                       />
                     </svg>
                   </button>
@@ -996,9 +1034,9 @@ const Content: React.FC = () => {
           {/* Displaying active filters */}
           <div className="mx-4 overflow-hidden">
             <span
-              className={`mx-1 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
-                search ? "" : "hidden"
-              }`}
+              className={`mx-1 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${search ? "" : "hidden"}`}
             >
               Search: {search}{" "}
               <button
@@ -1009,9 +1047,9 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
-                filter.Matrix.value.length > 0 ? "" : "hidden"
-              }`}
+              className={`mx-1 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${filter.Matrix.value.length > 0 ? "" : "hidden"}`}
             >
               Matrix:&nbsp;
               {filter.Matrix.value.map((item, i) => (
@@ -1036,7 +1074,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp1 = filter.Matrix;
                   temp1.mandatory = !temp1.mandatory;
@@ -1047,9 +1085,9 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
-                filter.Unit.value.length > 0 ? "" : "hidden"
-              }`}
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${filter.Unit.value.length > 0 ? "" : "hidden"}`}
             >
               Unit:&nbsp;
               {filter.Unit.value.map((item, i) => (
@@ -1074,7 +1112,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp2 = filter.Unit;
                   temp2.mandatory = !temp2.mandatory;
@@ -1085,7 +1123,9 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${
                 filter.Lab_Parameter.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1112,7 +1152,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp3 = filter.Lab_Parameter;
                   temp3.mandatory = !temp3.mandatory;
@@ -1123,7 +1163,9 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${
                 filter.Result_Interpretation.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1150,7 +1192,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp4 = filter.Result_Interpretation;
                   temp4.mandatory = !temp4.mandatory;
@@ -1164,7 +1206,9 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${
                 filter.Result_Unit.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1191,7 +1235,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp5 = filter.Result_Unit;
                   temp5.mandatory = !temp5.mandatory;
@@ -1202,7 +1246,9 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${
                 filter.Diagnosis.value.length > 0 ? "" : "hidden"
               }`}
             >
@@ -1229,7 +1275,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp6 = filter.Diagnosis;
                   temp6.mandatory = !temp6.mandatory;
@@ -1240,9 +1286,9 @@ const Content: React.FC = () => {
               </button>
             </span>
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
-                filter.ICD_Code.value.length > 0 ? "" : "hidden"
-              }`}
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${filter.ICD_Code.value.length > 0 ? "" : "hidden"}`}
             >
               ICD:&nbsp;
               {filter.ICD_Code.value.map((item, i) => (
@@ -1267,7 +1313,7 @@ const Content: React.FC = () => {
                 </>
               ))}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp7 = filter.ICD_Code;
                   temp7.mandatory = !temp7.mandatory;
@@ -1278,14 +1324,13 @@ const Content: React.FC = () => {
               </button>
             </span>
 
-            
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
-                filter.Price.min ? "" : "hidden"
-              }`}
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${filter.Price.min ? "" : "hidden"}`}
             >
               Price min:&nbsp;
-              {filter.Price.min && 
+              {filter.Price.min && (
                 <>
                   <>{filter.Price.min}</>
                   <button
@@ -1296,7 +1341,7 @@ const Content: React.FC = () => {
                         Price: {
                           min: undefined,
                           max: filter.Price.max,
-                          mandatory: filter.Price.mandatory
+                          mandatory: filter.Price.mandatory,
                         },
                       }));
                     }}
@@ -1304,9 +1349,9 @@ const Content: React.FC = () => {
                     <BiX />
                   </button>
                 </>
-              }
+              )}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp8 = filter.Price;
                   temp8.mandatory = !temp8.mandatory;
@@ -1318,12 +1363,12 @@ const Content: React.FC = () => {
             </span>
 
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
-                filter.Price.max ? "" : "hidden"
-              }`}
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${filter.Price.max ? "" : "hidden"}`}
             >
               Price max:&nbsp;
-              {filter.Price.max && 
+              {filter.Price.max && (
                 <>
                   <>{filter.Price.max}</>
                   <button
@@ -1334,7 +1379,7 @@ const Content: React.FC = () => {
                         Price: {
                           min: filter.Price.min,
                           max: undefined,
-                          mandatory: filter.Price.mandatory
+                          mandatory: filter.Price.mandatory,
                         },
                       }));
                     }}
@@ -1342,9 +1387,9 @@ const Content: React.FC = () => {
                     <BiX />
                   </button>
                 </>
-              }
+              )}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp9 = filter.Price;
                   temp9.mandatory = !temp9.mandatory;
@@ -1356,12 +1401,12 @@ const Content: React.FC = () => {
             </span>
 
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
-                filter.Quantity.min ? "" : "hidden"
-              }`}
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${filter.Quantity.min ? "" : "hidden"}`}
             >
               Quantity min:&nbsp;
-              {filter.Quantity.min && 
+              {filter.Quantity.min && (
                 <>
                   <>{filter.Quantity.min}</>
                   <button
@@ -1372,7 +1417,7 @@ const Content: React.FC = () => {
                         Quantity: {
                           min: undefined,
                           max: filter.Quantity.max,
-                          mandatory: filter.Quantity.mandatory
+                          mandatory: filter.Quantity.mandatory,
                         },
                       }));
                     }}
@@ -1380,9 +1425,9 @@ const Content: React.FC = () => {
                     <BiX />
                   </button>
                 </>
-              }
+              )}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp10 = filter.Quantity;
                   temp10.mandatory = !temp10.mandatory;
@@ -1394,12 +1439,12 @@ const Content: React.FC = () => {
             </span>
 
             <span
-              className={`mx-1 mb-5 justify-center rounded-lg bg-[${Colors.light_light}] px-3 py-3 ${
-                filter.Quantity.max ? "" : "hidden"
-              }`}
+              className={`mx-1 mb-5 justify-center rounded-lg bg-[${
+                Colors.light_light
+              }] px-3 py-3 ${filter.Quantity.max ? "" : "hidden"}`}
             >
               Quantity max:&nbsp;
-              {filter.Quantity.max && 
+              {filter.Quantity.max && (
                 <>
                   <>{filter.Quantity.max}</>
                   <button
@@ -1410,7 +1455,7 @@ const Content: React.FC = () => {
                         Quantity: {
                           min: filter.Quantity.min,
                           max: undefined,
-                          mandatory: filter.Quantity.mandatory
+                          mandatory: filter.Quantity.mandatory,
                         },
                       }));
                     }}
@@ -1418,9 +1463,9 @@ const Content: React.FC = () => {
                     <BiX />
                   </button>
                 </>
-              }
+              )}
               <button
-                className="relative w-fit rounded-2xl bg-[${Colors.light_light}] px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
+                className="bg-[${Colors.light_light}] relative w-fit rounded-2xl px-3 py-1 text-center text-lg outline-none transition hover:bg-[rgb(183,224,153)]"
                 onClick={() => {
                   const temp11 = filter.Quantity;
                   temp11.mandatory = !temp11.mandatory;
@@ -1430,7 +1475,6 @@ const Content: React.FC = () => {
                 {filter.Quantity.mandatory ? "!" : "?"}
               </button>
             </span>
-
           </div>
         </div>
       </div>

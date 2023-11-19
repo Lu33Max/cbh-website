@@ -15,7 +15,7 @@ import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import { SampleSchema } from "~/common/database/samples";
-import HeaderNEW from "~/components/overall/header";
+import Header from "~/components/overall/header";
 import ModalSaveExpert from "~/components/search/expert/modalSave";
 import ModalLoadExpert from "~/components/search/expert/modalLoad";
 import { Colors } from "~/common/styles";
@@ -118,7 +118,7 @@ const ExpertSearch: NextPage = () => {
       </Head>
 
       <div className="fixed flex max-h-full min-h-full min-w-full max-w-full flex-col overflow-hidden bg-gray-100">
-        <HeaderNEW />
+        <Header />
         <div className="max-h-[calc(100vh-80px)] overflow-x-hidden overflow-y-scroll font-poppins">
           <div
             className={`flex w-full flex-row items-center justify-center text-[${Colors.dark}] border-[${Colors.dark}]`}

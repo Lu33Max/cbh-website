@@ -6,23 +6,25 @@ import React, {
   type SetStateAction,
 } from "react";
 
-import { BiCartAdd, BiCog, BiInfoCircle } from "react-icons/bi";
+import { BiCartAdd, BiCog } from "react-icons/bi";
 
-import { IGroup, type INormalFilter } from "~/common/filter/filter";
+import type { IGroup, INormalFilter } from "~/common/filter/filter";
 import { SampleSchema } from "~/common/database/samples";
-
-import ClickContext from "~/context/cart";
 import { Colors } from "~/common/styles";
+import ClickContext from "~/context/cart";
 import {
   type IOptionalSample,
   type IOptionalTableSample,
   type ITableSample,
 } from "~/common/types";
+
 import Header from "./header";
 import useWindowSize from "~/utils/window";
 import { api } from "~/utils/api";
+
 import SettingsContext from "~/context/settings";
-import { ImmutableObject } from "@hookstate/core";
+import type { ImmutableObject } from "@hookstate/core";
+import Image from "next/image";
 
 type props = {
   page: number;
@@ -103,7 +105,8 @@ const Table: React.FC<props> = ({
   }, [filterNormal]);
 
   useEffect(() => {
-    setShow(show.map(index => (index = false)));
+    setShow(show.map(_ => false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterNormal, filterExpert , page]);
 
   // Define a useEffect hook that triggers when the filterState variable changes
@@ -755,7 +758,7 @@ const Table: React.FC<props> = ({
                           updateState(index);
                         }}
                       >
-                        <img src="/comment-info_1.png"></img>
+                        <Image alt="details" src="/comment-info_1.png" width={0} height={0} style={{width: "100%", height: "100%"}}></Image>
                       </button>
                     </td>
                   </tr>
