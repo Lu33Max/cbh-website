@@ -192,9 +192,7 @@ const ExpertSearch: NextPage = () => {
                       : "w-[10rem]"
                   } px-4 py-1 text-center text-xl text-[${
                     Colors.dark
-                  }] rounded-l-2xl border-2 border-solid bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-[${
-                    Colors.dark
-                  }] border-r-0`}
+                  }] rounded-l-2xl bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4]`}
                   onClick={() => applyFilter()}
                 >
                   Apply Filter
@@ -208,9 +206,7 @@ const ExpertSearch: NextPage = () => {
                       : "w-[10rem]"
                   } px-4 py-1 text-center text-xl text-[${
                     Colors.dark
-                  }] rounded-r-2xl border-2 border-solid bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475] border-[${
-                    Colors.dark
-                  }]`}
+                  }] rounded-r-2xl bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475]`}
                   onClick={() =>
                     state.set({
                       not: false,
@@ -248,9 +244,7 @@ const ExpertSearch: NextPage = () => {
                       : "w-[10rem]"
                   } px-4 py-1 text-center text-xl text-[${
                     Colors.dark
-                  }] rounded-l-2xl border-2 border-solid bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4] border-[${
-                    Colors.dark
-                  }] border-r-0`}
+                  }] rounded-l-2xl bg-[#D8E9D1] transition-colors ease-in-out hover:bg-[#bfdab4]`}
                   onClick={() => setShowLoad(true)}
                 >
                   Load Filter
@@ -264,9 +258,7 @@ const ExpertSearch: NextPage = () => {
                       : "w-[10rem]"
                   } px-4 py-1 text-center text-xl text-[${
                     Colors.dark
-                  }] rounded-r-2xl border-2 border-solid bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475] border-[${
-                    Colors.dark
-                  }]`}
+                  }] rounded-r-2xl bg-[#F7D59B] transition-colors ease-in-out hover:bg-[#d8b475]`}
                   onClick={() => setShowSave(true)}
                 >
                   Save Filter
