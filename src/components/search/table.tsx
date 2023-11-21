@@ -642,26 +642,28 @@ const Table: React.FC<props> = ({
                 </b>
               </button>
               <br />
-              {Object.getOwnPropertyNames(tableSamples[0]?.data).map(
-                (name, i) => {
-                  if (name !== "id") {
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => showColumns(name)}
-                        disabled={settings.formatting}
-                        className={`mx-2 my-1 rounded-2xl p-2 ${
-                          settings.activeColumns.find((c) => c === name)
-                            ? `bg-[${Colors.light_light}]`
-                            : "bg-white border-solid border-2 border-gray-300"
-                        }`}
-                      >
-                        {name.replace(/_/g, " ")}
-                      </button>
-                    );
+              <div className="text-center">
+                {Object.getOwnPropertyNames(tableSamples[0]?.data).map(
+                  (name, i) => {
+                    if (name !== "id") {
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => showColumns(name)}
+                          disabled={settings.formatting}
+                          className={`mx-2 my-1 rounded-2xl p-2 ${
+                            settings.activeColumns.find((c) => c === name)
+                              ? `bg-[${Colors.light_light}]`
+                              : "bg-white border-solid border-2 border-gray-300"
+                          }`}
+                        >
+                          {name.replace(/_/g, " ")}
+                        </button>
+                      );
+                    }
                   }
-                }
-              )}
+                )}
+              </div>
               <br />
             </div>
           )}
