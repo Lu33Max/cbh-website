@@ -761,28 +761,31 @@ const Table: React.FC<props> = ({
                         return (
                           <>
                           <table className="w-full">
+                          {(i === 0 || column.category !== columns[i - 1]?.category) && (
                             <thead>
                                 <tr>
+                                  
                                     <th  className=" text-left bg-[#D8E9D1] rounded-2xl" colSpan={4}>
-                                        {(i === 0 || column.category !== columns[i - 1]?.category) && (
+                                        
                                             <h2 className="mx-3">
                                                 <b>{column.category}</b>
                                             </h2>
-                                        )}
+                                        
                                     </th>
                                 </tr>
                             </thead>
+                          )}
                             { i % 2 === breakpoint &&
                             <tbody className="rounded-xl">
                                 <tr>
-                                    <td className=" w-1/4 bg-gray-100 border-r-black border-r-2 border-b-gray-300 border-b-4 text-center border-l-2 rounded-l-xl">
-                                      {column.name}
+                                    <td className=" w-1/4 bg-gray-100 border-r-gray-500 border-r-2 border-b-gray-300 border-b-4 text-center border-l-2 rounded-l-xl">
+                                      {column.name.replaceAll("_"," ")}
                                     </td>
                                     <td className="w-1/4 bg-gray-200 border-b-gray-300 border-b-4 text-center">
                                       {getColumnValue(sample.data, column.name)}
                                     </td>                                    
-                                    <td className=" w-1/4 bg-gray-100  border-r-black border-r-2 border-b-gray-300 border-b-4 text-center">                                      
-                                      {column.category === columns[i+1]?.category ? columns[i+1]?.name : ""}
+                                    <td className=" w-1/4 bg-gray-100  border-r-gray-500 border-r-2 border-b-gray-300 border-b-4 text-center">                                      
+                                      {column.category === columns[i+1]?.category ? columns[i+1]?.name.replaceAll("_"," ") : ""}
                                     </td>
                                     <td className="w-1/4 bg-gray-200  border-b-gray-300 border-b-4  text-center rounded-r-xl">
                                       {columns[i+1]?.name && column.category === columns[i+1]?.category ? getColumnValue(sample.data, columns[i+1]?.name as string): (breakpoint === 0 ? breakpoint = 1 : breakpoint = 0)}
