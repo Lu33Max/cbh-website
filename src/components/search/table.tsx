@@ -85,6 +85,8 @@ const Table: React.FC<props> = ({
 
   const { data: columns } = api.columns.getAll.useQuery();
 
+  let breakpoint = 0;
+
   for (let i = 0; i < pagelength; i++) {
     defaultShow.push(false);
   }
@@ -753,6 +755,7 @@ const Table: React.FC<props> = ({
                     </td>
                   </tr>
                   <tr className={` ${show[index] ? "" : "hidden"}`}>
+                    <>{console.log(columns)}</>
                     <td colSpan={settings.activeColumns.length + 2}>
                       {columns?.map((column, i, columns) => {
                         return (
@@ -769,20 +772,24 @@ const Table: React.FC<props> = ({
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="rounded-2xl">
+                            { i % 2 === breakpoint &&
+                            <tbody className="rounded-xl">
                                 <tr>
-                                    <td className=" w-1/4 bg-gray-100 border-r-black border-r-2 border-b-gray-300 border-b-4 text-center border-l-2">
-                                        {columns[i+1]?.name}
+                                    <td className=" w-1/4 bg-gray-100 border-r-black border-r-2 border-b-gray-300 border-b-4 text-center border-l-2 rounded-l-xl">
+                                      {column.name}
                                     </td>
                                     <td className="w-1/4 bg-gray-200 border-b-gray-300 border-b-4 text-center">
-                                        {getColumnValue(sample.data, column.name)}
+                                      {getColumnValue(sample.data, column.name)}
                                     </td>                                    
-                                    <td className=" w-1/4 bg-gray-100  border-r-black border-r-2 border-b-gray-300 border-b-4 text-center">
+                                    <td className=" w-1/4 bg-gray-100  border-r-black border-r-2 border-b-gray-300 border-b-4 text-center">                                      
+                                      {column.category === columns[i+1]?.category ? columns[i+1]?.name : ""}
                                     </td>
-                                    <td className="w-1/4 bg-gray-200  border-b-gray-300 border-b-4  text-center">
+                                    <td className="w-1/4 bg-gray-200  border-b-gray-300 border-b-4  text-center rounded-r-xl">
+                                      {columns[i+1]?.name && column.category === columns[i+1]?.category ? getColumnValue(sample.data, columns[i+1]?.name as string): (breakpoint === 0 ? breakpoint = 1 : breakpoint = 0)}
                                     </td>                                    
                                 </tr>
                             </tbody>
+                            }
                           </table>
                           </>
                         );
