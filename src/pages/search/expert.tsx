@@ -380,9 +380,17 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                 </Popover>
               }
             >
+              {/*
               <button className="ml-5 w-[2.5rem] rounded-full border-2 border-solid border-green-900 bg-[#9DC88D] px-1 py-1 text-lg text-white shadow-md">
                 ?
               </button>
+              */}
+              {/*button to tutorial site*/}
+              <form action="/tutorial">
+              <button type="submit" className="ml-5 w-[2.5rem] rounded-full border-2 border-solid border-green-900 bg-[#9DC88D] px-1 py-1 text-lg text-white shadow-md">
+                ?
+              </button>
+              </form>
             </OverlayTrigger>
           </div>
           <div className="flex w-[50%] flex-row items-center justify-end pr-3">
