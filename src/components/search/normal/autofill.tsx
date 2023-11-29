@@ -50,12 +50,30 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
       />
 
       {focus && (
-        <div className="absolute top-14 w-[200px] flex flex-col bg-gray-50 p-2 max-h-60 overflow-y-scroll">
+        <div className="absolute top-14 w-[200px] flex flex-col bg-gray-50 p-2 max-h-60 overflow-y-scroll rounded-lg border-2 border-green-900">
           {results.map((item, i) => (
-            <label key={`${props.col}-${item}-${i}`} className=" mt-1 bg-gray-200" onClick={() => {setInput(""); props.onSelect(item, props.col)}}>{item}</label>
+            <label key={`${props.col}-${item}-${i}`} className="mt-1 bg-[#D8E9D1] rounded-lg" onClick={() => {setInput(""); props.onSelect(item, props.col)}}>{item}</label>
           ))}
+          <style jsx>{`
+            /* Add custom styles for the scrollbar here */
+            .overflow-y-scroll::-webkit-scrollbar {
+              width: 10px; /* Set the width of the scrollbar */
+            }
+
+            .overflow-y-scroll::-webkit-scrollbar-thumb {
+              background-color: #afd69f; /* Set the color of the scrollbar thumb */
+              border-radius: 6px; /* Set the border-radius of the scrollbar thumb */
+            }
+
+            .overflow-y-scroll::-webkit-scrollbar-track {
+              background-color: #d3d3d3; /* Set the color of the scrollbar track */
+              border-radius: 6px; /* Set the border-radius of the scrollbar track */
+            }
+          `}</style>
         </div>
       )}
+
+
     </div>
   );
 };
