@@ -499,19 +499,34 @@ const Table: React.FC<props> = ({
   }, [optionalSamples]);
 
   useEffect(() => {
+    // Kopiere die vorhandenen Query-Parameter
+    let newQuery = { ...router.query };
+  
+    // Entferne vorhandene Werte, wenn sie existieren
+    if (newQuery.hasOwnProperty('formatting')) {
+      delete newQuery.formatting;
+    }
+  
+    if (newQuery.hasOwnProperty('activeColumns')) {
+      delete newQuery.activeColumns;
+    }
+  
+    // Füge die aktualisierten Werte hinzu, nachdem settings.formatting in einen String umgewandelt wurde
+    newQuery.formatting = String(settings.formatting);
+    newQuery.activeColumns = settings.activeColumns;
+  
+    // Aktualisiere die URL mit den neuen Query-Parametern
     router.push(
       {
         ...router,
-        query: {
-          ...router.query,
-          formatting: settings.formatting,
-          activeColumns: settings.activeColumns,
-        },
+        query: newQuery,
       },
       undefined,
       { shallow: true },
     );
   }, [settings]);
+  
+  
 
   useEffect(() => {
     if (fo !== undefined) {
