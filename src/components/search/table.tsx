@@ -748,8 +748,8 @@ const Table: React.FC<props> = ({
                                   ? filterNormal?.Diagnosis.value.find((val) => val === item)
                                   : filterNormal?.Result_Interpretation.value.find((val) => val === item)
                               )
-                            : column === "Price" // Annahme: Dein Preisfeld heißt "Preis"
-                            ? prop?.toString() + " €" // Füge das €-Zeichen hinzu
+                            : column === "Price" 
+                            ? `${prop?.toString()} €`
                             : prop?.toString()}
                         </td>
                       );
