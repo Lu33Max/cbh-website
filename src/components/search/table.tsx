@@ -749,7 +749,7 @@ const Table: React.FC<props> = ({
                                   : filterNormal?.Result_Interpretation.value.find((val) => val === item)
                               )
                             : column === "Price" 
-                            ? `${prop?.toString()} €`
+                            ? `${prop?.toString()}${" €"}`
                             : prop?.toString()}
                         </td>
                       );
