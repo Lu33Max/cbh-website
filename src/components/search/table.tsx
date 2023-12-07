@@ -500,7 +500,7 @@ const Table: React.FC<props> = ({
 
   useEffect(() => {
     // Kopiere die vorhandenen Query-Parameter
-    let newQuery = { ...router.query };
+    const newQuery = { ...router.query };
   
     // Entferne vorhandene Werte, wenn sie existieren
     if (newQuery.hasOwnProperty('formatting')) {
@@ -516,7 +516,7 @@ const Table: React.FC<props> = ({
     newQuery.activeColumns = settings.activeColumns;
   
     // Aktualisiere die URL mit den neuen Query-Parametern
-    router.push(
+    const pushPromise = router.push(
       {
         ...router,
         query: newQuery,
@@ -524,7 +524,14 @@ const Table: React.FC<props> = ({
       undefined,
       { shallow: true },
     );
+  
+    // Warte darauf, dass die Promise erfüllt wird
+    pushPromise.catch(err => {
+      // Behandle Fehler hier
+      console.error("error:", err);
+    });
   }, [settings]);
+  
   
   
 
