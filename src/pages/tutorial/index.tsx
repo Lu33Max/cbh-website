@@ -124,15 +124,15 @@ const Content: React.FC = () => {
               <h2><b>Deactivate Button</b></h2>
               <div>
                 - toggles the activation state of the group <br/>
-                - This button switches the 'activated' state<br/>
-                 of the group between 'activate' and 'deactivate'
+                - This button switches the &apos;activated&apos; state<br/>
+                 of the group between &apos;activate&apos; and &apos;deactivate&apos;
               </div>
             </div>
             <div className="ml-5">
               <h2><b>Optional Button</b></h2>
               <div>
                 - Toggles the optional state of the group <br/>
-                - Clicking this button toggles the '!' or '?' symbol,<br/>
+                - Clicking this button toggles the &apos;!&apos; or &apos;?&apos; symbol,<br/>
                  representing the optional state of the group
               </div>
             </div>
@@ -180,7 +180,7 @@ const Content: React.FC = () => {
               <h2><b>Optional Button</b></h2>
               <div>
                 - Toggles the optional state of the group <br/>
-                - Clicking this button toggles the '!' or '?' symbol,<br/>
+                - Clicking this button toggles the &apos;!&apos; or &apos;?&apos; symbol,<br/>
                  representing the optional state of the group
               </div>
             </div>
