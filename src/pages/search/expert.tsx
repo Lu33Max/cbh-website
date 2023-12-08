@@ -986,7 +986,7 @@ function ChooseValues(props: {
 
   return (
     <>
-      <div className="w-full">
+      <div className="w-full ">
         {type.value !== "between" && type.value !== "in" && (
           <>
             <AutoComplete
