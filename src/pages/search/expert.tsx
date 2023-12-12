@@ -986,14 +986,14 @@ function ChooseValues(props: {
 
   return (
     <>
-      <div className="w-full ">
+      <div className="w-full">
         {type.value !== "between" && type.value !== "in" && (
           <>
-            <AutoComplete
-              col={col.value}
-              onSelect={SetValues}
-              value={values[0] ?? empty}
-            />
+              <AutoComplete
+                col={col.value}
+                onSelect={SetValues}
+                value={values[0] ?? empty}
+              />
           </>
         )}
         {type.value === "between" && (
