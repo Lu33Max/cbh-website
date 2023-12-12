@@ -8,6 +8,9 @@ type AutoCompleteProps = {
   onSelect: (value: string, column: string) => void;
   value: State<string, {}>;
   classname?: string;
+  ref: React.RefObject<HTMLInputElement>;
+  x: number;
+  y: number;
 };
 
 const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
@@ -49,10 +52,11 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
         onChange={(e) => setInput(e.target.value)}
         onBlur={() => setTimeout(() => setFocus(false), 300)}
         onFocus={() => setFocus(true)}
+        ref={props.ref}
       />
 
       {focus && (
-        <div className="absolute top-[20%] w-[200px] flex flex-col bg-gray-50 p-2 max-h-60 overflow-y-scroll rounded-lg border-2 border-green-900 z-50">
+        <div className={`absolute top-[${props.y}] left-[${props.x}]  w-[200px] flex flex-col bg-gray-50 p-2 max-h-60 overflow-y-scroll rounded-lg border-2 border-green-900 z-50`}>
           {results.map((item, i) => (
             <label key={`${props.col}-${item}-${i}`} className="mt-1 bg-[#D8E9D1] rounded-lg" onClick={() => {setInput(""); props.onSelect(item, props.col); setValue(item)}}>{item}</label>
           ))}

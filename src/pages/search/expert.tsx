@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, createRef } from "react";
 import { useHookstate, type State } from "@hookstate/core";
 import { type NextPage } from "next";
 
@@ -966,6 +966,18 @@ function ChooseValues(props: {
 
   const empty = useHookstate("");
 
+  const autoCompleteRef = createRef<HTMLInputElement>();
+  const autoCompleteRef2 = createRef<HTMLInputElement>();
+  const autoCompleteRef3 = createRef<HTMLInputElement>();
+  const autoCompleteRef4 = createRef<HTMLInputElement>();
+
+  type coordinates = {x: number, y: number}
+  const [pos, setPos] = useState({x: 0, y: 0});
+  const [pos2, setPos2] = useState({x: 0, y: 0});
+  const [pos3, setPos3] = useState({x: 0, y: 0});
+  const [pos4, setPos4] = useState({x: 0, y: 0});
+
+
   function SetValues(value: string): void {
     values.set([value]);
   }
@@ -984,44 +996,72 @@ function ChooseValues(props: {
     }
   }
 
+  useEffect(() => {
+    function handleResize() {
+      if (autoCompleteRef !== null) {
+        const x = autoCompleteRef?.current?.getBoundingClientRect().left ?? 0;
+        let y = autoCompleteRef?.current?.getBoundingClientRect().top ?? 0;
+        y = y - window.scrollY;
+        setPos({ x, y });
+      }
+    }
+
+    handleResize(); // initial call to get position of the element on mount
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [autoCompleteRef]);
+
   return (
     <>
       <div className="w-full">
         {type.value !== "between" && type.value !== "in" && (
-          <>
+          <div className="">
               <AutoComplete
                 col={col.value}
                 onSelect={SetValues}
                 value={values[0] ?? empty}
+                ref={autoCompleteRef}
+                x={pos.x}
+                y={pos.y}
               />
-          </>
+          </div>
         )}
         {type.value === "between" && (
           <div className="flex flex-row">
-            <div className="w-full">
+            <div className="w-full ">
               <AutoComplete
                 col={col.value}
                 onSelect={SetValuesBetween1}
                 value={values[0] ?? empty}
+                ref={autoCompleteRef2}
+                x={pos2.x}
+                y={pos2.y}
               />
             </div>
-            <div className="w-full">
+            <div className="w-full ">
               <AutoComplete
                 col={col.value}
                 onSelect={SetValuesBetween2}
                 value={values[1] ?? empty}
+                ref={autoCompleteRef3}
+                x={pos3.x}
+                y={pos3.y}
               />
             </div>
           </div>
         )}
         {type.value === "in" && (
-          <>
+          <div className="">
             <AutoComplete
               col={col.value}
               onSelect={In}
               value={values[values.length - 1] ?? empty}
+              ref={autoCompleteRef4}
+              x={pos4.x}
+              y={pos4.y}
             />
-          </>
+          </div>
         )}
       </div>
     </>
