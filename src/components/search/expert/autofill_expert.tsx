@@ -1,4 +1,4 @@
-import { State } from "@hookstate/core";
+import type { State } from "@hookstate/core";
 import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 
@@ -6,11 +6,7 @@ import { api } from "~/utils/api";
 type AutoCompleteProps = {
   col: string;
   onSelect: (value: string, column: string) => void;
-  value: State<string, {}>;
-  classname?: string;
-  ref: React.RefObject<HTMLInputElement>;
-  x: number;
-  y: number;
+  value: State<string, object>;
 };
 
 const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
@@ -44,36 +40,33 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
       <input
         value={value}
         required
-        className={`w-full rounded-r border-2 px-3 py-1 text-lg outline-none transition hover:border-green-800 focus:border-yellow-400 ${props.classname ?? "peer"}`}
+        className={`w-full z-20 rounded-r-full border-2 border-gray-500 px-3 py-1 text-lg outline-none transition focus:border-gray-700 relative`}
         autoComplete="off"
         list="autocomplete-list"
-        id="list"
         name="list"
         onChange={(e) => setInput(e.target.value)}
         onBlur={() => setTimeout(() => setFocus(false), 300)}
         onFocus={() => setFocus(true)}
-        ref={props.ref}
       />
 
       {focus && (
-        <div className={`absolute top-[${props.y}] left-[${props.x}]  w-[200px] flex flex-col bg-gray-50 p-2 max-h-60 overflow-y-scroll rounded-lg border-2 border-green-900 z-50`}>
+        <div className={`absolute w-fit max-w-[500px] flex flex-col bg-gray-50 p-2 max-h-60 overflow-y-scroll rounded-lg border-2 border-green-900 z-50`}>
           {results.map((item, i) => (
-            <label key={`${props.col}-${item}-${i}`} className="mt-1 bg-[#D8E9D1] rounded-lg" onClick={() => {setInput(""); props.onSelect(item, props.col); setValue(item)}}>{item}</label>
+            <label key={`${props.col}-${item}-${i}`} className="mt-1 px-3 bg-[#D8E9D1] rounded-lg" onClick={() => {setInput(""); props.onSelect(item, props.col); setValue(item)}}>{item}</label>
           ))}
           <style jsx>{`
-            /* Add custom styles for the scrollbar here */
             .overflow-y-scroll::-webkit-scrollbar {
-              width: 10px; /* Set the width of the scrollbar */
+              width: 10px;
             }
 
             .overflow-y-scroll::-webkit-scrollbar-thumb {
-              background-color: #afd69f; /* Set the color of the scrollbar thumb */
-              border-radius: 6px; /* Set the border-radius of the scrollbar thumb */
+              background-color: #afd69f;
+              border-radius: 6px;
             }
 
             .overflow-y-scroll::-webkit-scrollbar-track {
-              background-color: #d3d3d3; /* Set the color of the scrollbar track */
-              border-radius: 6px; /* Set the border-radius of the scrollbar track */
+              background-color: #d3d3d3;
+              border-radius: 6px;
             }
           `}</style>
         </div>
