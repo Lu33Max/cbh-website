@@ -733,34 +733,28 @@ const Table: React.FC<props> = ({
                     </td>
 
                     {settings.activeColumns.map((column, i) => {
-                      const prop = getProperty(
-                        sample.data,
-                        column as SampleKey
-                      );
+                      const prop = getProperty(sample.data, column as SampleKey);
                       return (
                         <td key={i} className={`bg-gray-200`}>
                           {(!expert || (expert && settings.formatting)) &&
-                          (column === "Lab_Parameter" ||
-                            column === "Diagnosis" ||
-                            column === "Result_Interpretation") &&
-                          Array.isArray(prop)
+                            (column === "Lab_Parameter" ||
+                              column === "Diagnosis" ||
+                              column === "Result_Interpretation") &&
+                            Array.isArray(prop)
                             ? (prop as string[]).filter((item: string) =>
                                 column === "Lab_Parameter"
-                                  ? filterNormal?.Lab_Parameter.value.find(
-                                      (val) => val === item
-                                    )
+                                  ? filterNormal?.Lab_Parameter.value.find((val) => val === item)
                                   : column === "Diagnosis"
-                                  ? filterNormal?.Diagnosis.value.find(
-                                      (val) => val === item
-                                    )
-                                  : filterNormal?.Result_Interpretation.value.find(
-                                      (val) => val === item
-                                    )
+                                  ? filterNormal?.Diagnosis.value.find((val) => val === item)
+                                  : filterNormal?.Result_Interpretation.value.find((val) => val === item)
                               )
+                            : column === "Price" 
+                            ? `${prop?.toString() ?? ""}${" €"}`
                             : prop?.toString()}
                         </td>
                       );
                     })}
+
                     <td className={`rounded-r-xl bg-gray-200 px-3 py-2`}>
                       <button
                         onClick={() => {
