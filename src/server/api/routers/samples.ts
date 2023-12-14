@@ -30,19 +30,26 @@ export const sampleRouter = createTRPCRouter({
   // Read
   //Gets all distinct entries for a column
   getDistinct: publicProcedure
-    .input(z.string().optional())
+    .input(
+      z.object({
+        filter: NormalFilterSchema,
+        search: z.string().optional(),
+        category: z.string(),
+        column: z.string()
+      })
+    )
     .query(async ({ ctx, input }) => {
       type SampleKey = keyof Samples;
 
+      sampleRouter.createCaller(ctx).getAll({pages: 1, lines: 1000000, filter: input.filter, search: input.search, category: input.category})
+
       if (
         Object.getOwnPropertyNames(SampleSchema.shape).find(
-          (item) => item === input
+          (item) => item === input.column
         )
       ) {
-        const result = await ctx.prisma.samples.findMany({
-          distinct: [input as Prisma.SamplesScalarFieldEnum],
-        });
-        return result.map((item) => getProperty(item, input as SampleKey));
+        const result: IOptionalSample[] = await sampleRouter.createCaller(ctx).getAll({pages: 1, lines: 1000000, filter: input.filter, search: input.search, category: input.category}) 
+        return [...new Set(result.map((item) => getProperty(item.data, input.column as SampleKey)))];
       }
 
       return [];

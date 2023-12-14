@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { INormalFilter } from "~/common/filter/filter";
 import { api } from "~/utils/api";
 
 // Props for the AutoComplete component
@@ -7,11 +8,15 @@ type AutoCompleteProps = {
   onSelect: (value: string, column: string) => void;
   value: string;
   classname?: string;
+  filter: INormalFilter;
+  search?: string;
+  category: string;
+  column: string;
 };
 
 const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   // Fetch data using an API call
-  const { data: autofill } = api.samples.getDistinct.useQuery(props.col);
+  const { data: autofill } = api.samples.getDistinct.useQuery({filter: props.filter, search: props.search, category: props.category, column: props.column});
 
   const [focus, setFocus] = useState<boolean>(false)
   const [results, setResults] = useState<string[]>([])

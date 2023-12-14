@@ -655,6 +655,10 @@ const Content: React.FC = () => {
                                 filter.Matrix.value.length - 1
                               ] ?? ""
                             }
+                            filter={filter}
+                            search={search}
+                            category={categoryQuery}
+                            column="Matrix"
                           />
                           <label
                             className={`pointer-events-none absolute left-4 text-gray-400 transition peer-valid:-translate-y-2/3 peer-valid:scale-75 peer-valid:bg-white peer-valid:px-1 peer-hover:text-green-800 peer-focus:-translate-y-2/3 peer-focus:scale-75 peer-focus:bg-white peer-focus:px-1 peer-focus:text-yellow-400`}
@@ -765,6 +769,10 @@ const Content: React.FC = () => {
                               ""
                             }
                             classname="peer/unit"
+                            filter={filter}
+                            search={search}
+                            category={categoryQuery}
+                            column="Unit"
                           />
                           <label
                             className={`pointer-events-none absolute right-32 text-gray-400 transition peer-valid/unit:-translate-y-1/2 peer-valid/unit:scale-75 peer-valid/unit:bg-white peer-valid/unit:p-1 peer-hover:text-green-800 peer-focus/unit:-translate-y-1/2 peer-focus/unit:scale-75 peer-focus/unit:bg-white peer-focus/unit:p-1 peer-focus/unit:text-yellow-400`}
@@ -832,6 +840,10 @@ const Content: React.FC = () => {
                               ] ?? ""
                             }
                             classname="peer/param"
+                            filter={filter}
+                            search={search}
+                            category={categoryQuery}
+                            column="Lab_Parameter"
                           />
                           <label
                             className={`pointer-events-none absolute left-4 text-gray-400 transition peer-valid/param:-translate-y-2/3 peer-valid/param:scale-75 peer-valid/param:bg-white peer-valid/param:px-1 peer-hover/param:text-green-800 peer-focus/param:-translate-y-2/3 peer-focus/param:scale-75 peer-focus/param:bg-white peer-focus/param:px-1 peer-focus/param:text-yellow-400`}
@@ -847,6 +859,10 @@ const Content: React.FC = () => {
                               ] ?? ""
                             }
                             classname="peer/interp"
+                            filter={filter}
+                            search={search}
+                            category={categoryQuery}
+                            column="Result_Interpretation"
                           />
                           <label
                             className={`pointer-events-none absolute left-56 text-gray-400 transition peer-valid/interp:-translate-y-2/3 peer-valid/interp:scale-75 peer-valid/interp:bg-white peer-valid/interp:px-1 peer-hover/interp:text-green-800 peer-focus/interp:-translate-y-2/3 peer-focus/interp:scale-75 peer-focus/interp:bg-white peer-focus/interp:px-1 peer-focus/interp:text-yellow-400`}
@@ -905,6 +921,10 @@ const Content: React.FC = () => {
                                 filter.Result_Unit.value.length - 1
                               ] ?? ""
                             }
+                            filter={filter}
+                            search={search}
+                            category={categoryQuery}
+                            column="Result_Unit"
                           />
                           <label
                             className={`pointer-events-none absolute right-36 text-gray-400 transition peer-valid:-translate-y-2/3 peer-valid:scale-75 peer-valid:bg-white peer-valid:px-1 peer-hover:text-green-800 peer-focus:-translate-y-2/3 peer-focus:scale-75 peer-focus:bg-white peer-focus:px-1 peer-focus:text-yellow-400`}
@@ -972,6 +992,10 @@ const Content: React.FC = () => {
                               ] ?? ""
                             }
                             classname="peer/dia"
+                            filter={filter}
+                            search={search}
+                            category={categoryQuery}
+                            column="Diagnosis"
                           />
                           <label
                             className={`pointer-events-none absolute left-4 text-gray-400 transition peer-valid/dia:-translate-y-2/3 peer-valid/dia:scale-75 peer-valid/dia:bg-white peer-valid/dia:px-1 peer-hover/dia:text-green-800 peer-focus/dia:-translate-y-2/3 peer-focus/dia:scale-75 peer-focus/dia:bg-white peer-focus/dia:px-1 peer-focus/dia:text-yellow-400`}
@@ -986,6 +1010,10 @@ const Content: React.FC = () => {
                                 filter.ICD_Code.value.length - 1
                               ] ?? ""
                             }
+                            filter={filter}
+                            search={search}
+                            category={categoryQuery}
+                            column="ICD_Code"
                           />
                           <label
                             className={`pointer-events-none absolute left-56 text-gray-400 transition peer-valid:-translate-y-2/3 peer-valid:scale-75 peer-valid:bg-white peer-valid:px-1 peer-hover:text-green-800 peer-focus:-translate-y-2/3 peer-focus:scale-75 peer-focus:bg-white peer-focus:px-1 peer-focus:text-yellow-400`}
