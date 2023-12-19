@@ -17,7 +17,7 @@ export const gridData: CategoryData[] = [
     id: 2,
     src: "/slider/categories/2_new.png",
     label: "Pregnancy",
-    subs: ["1st Trimester", "2nd Trimester", "3nd Trimester"],
+    subs: ["1st Trimester", "2nd Trimester", "3rd Trimester"],
   },
   {
     id: 3,
