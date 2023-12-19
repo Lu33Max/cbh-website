@@ -606,6 +606,18 @@ const Table: React.FC<props> = ({
     </>
   );
 
+  const [openCategories, setOpenCategories] = useState<string[]>([]);
+
+  const toggleCategory = (categoryId: string) => {
+    setOpenCategories((prevOpenCategories) => {
+      if (prevOpenCategories.includes(categoryId)) {
+        return prevOpenCategories.filter((id) => id !== categoryId);
+      } else {
+        return [...prevOpenCategories, categoryId];
+      }
+    });
+  };
+
   function switchBreakpoint(): string {
     breakpoint === 0 ? breakpoint = 1 : breakpoint = 0;
     return ""
@@ -768,13 +780,14 @@ const Table: React.FC<props> = ({
                   <tr className={` ${show[index] ? "" : "hidden"}`}>
                     <td colSpan={settings.activeColumns.length + 2}>
                       {columns?.map((column, i, columns) => {
+                        const categoryId = `${column.category}-${i}`;
                         return (
                           <>
                             <table className="w-full">
                               {(i === 0 || column.category !== columns[i - 1]?.category) && (
                                 <thead>
                                   <tr>
-                                    <th  className=" text-left bg-[#D8E9D1] rounded-2xl" colSpan={4}>
+                                    <th  className=" text-left bg-[#D8E9D1] rounded-2xl cursor-pointer" colSpan={4} onClick={() => toggleCategory(categoryId)}>
                                       <h2 className="mx-3">
                                           <b>{column.category}</b>
                                       </h2>
@@ -782,9 +795,10 @@ const Table: React.FC<props> = ({
                                   </tr>
                                 </thead>
                               )}
-                              {i % 2 === breakpoint &&
-                              <tbody className="rounded-xl">
-                                  <tr>
+                              {/*i % 2 === breakpoint &&*/}
+                              {openCategories.includes(categoryId) &&
+                              <tbody className="rounded-xl" key={`tbody-${categoryId}`}>
+                                  <tr key={`row-${categoryId}`}>
                                       <td className=" w-1/4 bg-gray-100 border-r-gray-500 border-r-2 border-b-gray-300 border-b-4 text-center border-l-2 rounded-l-xl">
                                         {column.name.replaceAll("_"," ")}
                                       </td>
