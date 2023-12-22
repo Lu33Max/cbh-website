@@ -33,7 +33,7 @@ export const sampleRouter = createTRPCRouter({
     .input(z.string().optional())
     .query(async ({ ctx, input }) => {
       type SampleKey = keyof Samples;
-
+      
       if (
         Object.getOwnPropertyNames(SampleSchema.shape).find(
           (item) => item === input
@@ -432,14 +432,16 @@ export const sampleRouter = createTRPCRouter({
     }),
 
   // Update
-  update: publicProcedure.input(SampleSchema).mutation(({ ctx, input }) => {
+  update: publicProcedure
+    .input(SampleSchema)
+    .mutation(({ ctx, input }) => {
     return ctx.prisma.samples.update({
       where: {
         id: input.id,
       },
       data: input,
     });
-  }),
+    }),
 
   // Delete
   delete: publicProcedure
@@ -452,9 +454,10 @@ export const sampleRouter = createTRPCRouter({
       });
     }),
 
-  deleteAll: publicProcedure.mutation(async ({ ctx }) => {
-    return ctx.prisma.samples.deleteMany({});
-  }),
+  deleteAll: publicProcedure
+    .mutation(async ({ ctx }) => {
+      return ctx.prisma.samples.deleteMany({});
+    }),
 
   //Counts all entries in table for the expert search
   countExpert: publicProcedure
@@ -973,7 +976,7 @@ function mapSearch(
   return map;
 }
 
-//Dynamicaly creates prisma query for optinals
+//Dynamicaly creates prisma query for optionals
 function mapOptional(
   filter: INormalFilter,
   search: string | undefined

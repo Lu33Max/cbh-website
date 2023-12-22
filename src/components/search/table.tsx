@@ -217,7 +217,6 @@ const Table: React.FC<props> = ({
   }, [count, pagelength]);
 
   useEffect(() => {
-
     const newShow: boolean[] = [];
     for (let i = 0; i < pagelength; i++) {
       newShow.push(false);
