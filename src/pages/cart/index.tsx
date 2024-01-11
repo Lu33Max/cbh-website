@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useContext, useState } from "react";
 import { BiDetail, BiX } from "react-icons/bi";
 import type { IOptionalTableSample, ITableSample } from "~/common/types";
+import Image from "next/image";
 
 import Header from "~/components/overall/header";
 import ClickContext from "~/context/cart";
@@ -179,7 +180,7 @@ const Content: React.FC = () => {
                             updateState(index);
                           }}
                         >
-                          <BiDetail className="relative top-1" />
+                          <Image alt="details" src="/comment-info_1.png" width={0} height={0} style={{width: "100%", height: "100%"}}></Image>
                         </button>
                       </td>
                     </tr>

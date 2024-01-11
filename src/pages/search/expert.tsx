@@ -21,6 +21,7 @@ import ModalLoadExpert from "~/components/search/expert/modalLoad";
 import { Colors } from "~/common/styles";
 import Footer from "~/components/overall/footer";
 import useWindowSize from "~/utils/window";
+import { gridData } from "~/common/data";
 
 const defaultGroup: IGroup = {
   not: false,
