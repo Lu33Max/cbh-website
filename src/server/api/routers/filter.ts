@@ -20,7 +20,7 @@ export const filterRouter = createTRPCRouter({
       });
     }),
 
-    //Gets alls available defaukt or expert filters for the current user 
+  //Gets alls available defaukt or expert filters for the current user 
   getAll: protectedProcedure
     .input(z.object({ type: z.string() }))
     .query(async ({ ctx, input }) => {

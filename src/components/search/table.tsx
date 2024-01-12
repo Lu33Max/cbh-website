@@ -54,7 +54,7 @@ const Table: React.FC<props> = ({
   const [sortBy, setSortBy] = useState("");
   const [showPage, setShowPage] = useState(page);
   const [samplesToAdd, setSamplesToAdd] = useState(0);
-
+  
   const defaultShow: boolean[] = [];
   const [show, setShow] = useState<boolean[]>(defaultShow);
 
@@ -63,15 +63,6 @@ const Table: React.FC<props> = ({
 
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [settings, setSettings] = useContext(SettingsContext)
-
-  /*
-  const [formatting, setFormatting] = useState<boolean>(false);
-
-  
-  
-  const [activeColumns, setActiveColumns] = useState<string[]>(defaultColumns);
-  const [bufferColumns, setBufferColumns] = useState<string[]>(defaultColumns);
-  */
 
   const defaultColumns = [
     "CBH_Donor_ID",
@@ -87,7 +78,6 @@ const Table: React.FC<props> = ({
   const [filterState, setFilterState] = useState(filterNormal);
 
   const windowSize = useWindowSize();
-
   const { data: columns } = api.columns.getAll.useQuery();
 
   let breakpoint = 0;
@@ -575,9 +565,7 @@ const Table: React.FC<props> = ({
   function addSamplesToCart() {
     const tempArray: IOptionalTableSample[] = [];
 
-    {
-      /*add samples to cart*/
-    }
+    /*add samples to cart*/
     for (let i = 0; i < samplesToAdd; i++) {
       const tempSample = tableSamples[i];
       if (tempSample) {
@@ -775,29 +763,29 @@ const Table: React.FC<props> = ({
                                   <tr>
                                     <th  className=" text-left bg-[#D8E9D1] rounded-2xl" colSpan={4}>
                                       <h2 className="mx-3">
-                                          <b>{column.category}</b>
+                                        <b>{column.category}</b>
                                       </h2>
                                     </th>
                                   </tr>
                                 </thead>
                               )}
                               {i % 2 === breakpoint &&
-                              <tbody className="rounded-xl">
-                                  <tr>
-                                      <td className=" w-1/4 bg-gray-100 border-r-gray-500 border-r-2 border-b-gray-300 border-b-4 text-center border-l-2 rounded-l-xl">
-                                        {column.name.replaceAll("_"," ")}
-                                      </td>
-                                      <td className="w-1/4 bg-gray-200 border-b-gray-300 border-b-4 text-center">
-                                        {getColumnValue(sample.data, column.name)}
-                                      </td>                                    
-                                      <td className=" w-1/4 bg-gray-100  border-r-gray-500 border-r-2 border-b-gray-300 border-b-4 text-center">                                      
-                                        {column.category === columns[i+1]?.category ? columns[i+1]?.name.replaceAll("_"," ") : ""}
-                                      </td>
-                                      <td className="w-1/4 bg-gray-200  border-b-gray-300 border-b-4  text-center rounded-r-xl">
-                                        {columns[i+1]?.name && column.category === columns[i+1]?.category ? getColumnValue(sample.data, columns[i+1]?.name as string) : <>{switchBreakpoint()}</>}
-                                      </td>                                    
-                                  </tr>
-                              </tbody>
+                                <tbody className="rounded-xl">
+                                    <tr>
+                                        <td className=" w-1/4 bg-gray-100 border-r-gray-500 border-r-2 border-b-gray-300 border-b-4 text-center border-l-2 rounded-l-xl">
+                                          {column.name.replaceAll("_"," ")}
+                                        </td>
+                                        <td className="w-1/4 bg-gray-200 border-b-gray-300 border-b-4 text-center">
+                                          {getColumnValue(sample.data, column.name)}
+                                        </td>                                    
+                                        <td className=" w-1/4 bg-gray-100  border-r-gray-500 border-r-2 border-b-gray-300 border-b-4 text-center">                                      
+                                          {column.category === columns[i+1]?.category ? columns[i+1]?.name.replaceAll("_"," ") : ""}
+                                        </td>
+                                        <td className="w-1/4 bg-gray-200  border-b-gray-300 border-b-4  text-center rounded-r-xl">
+                                          {columns[i+1]?.name && column.category === columns[i+1]?.category ? getColumnValue(sample.data, columns[i+1]?.name as string) : <>{switchBreakpoint()}</>}
+                                        </td>                                    
+                                    </tr>
+                                </tbody>
                               }
                             </table>
                           </>
