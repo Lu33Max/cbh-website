@@ -343,7 +343,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
   return (
     <>
       <div className="mt-3 w-fit min-w-full rounded-3xl bg-gradient-to-r from-[#164A41] to-[#4D774E] py-1 text-lg">
-        <div className="font-body flex flex-row px-5 py-2 font-poppins text-2xl font-thin">
+        <div className="font-body flex flex-row px-2 py-2 font-poppins text-2xl font-thin">
           <div className="flex w-[50%] flex-row items-center justify-start">
             {/* Button to toggle the NOT state */}
             <button
@@ -388,8 +388,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                 <Popover id="popover-basic" className="z-30">
                   <Popover.Body className="items-center justify-center rounded-xl border-2 border-solid border-green-900 bg-white px-2 py-3 text-center shadow-md">
                     <div>
-                      The buttons for AND or OR indicate how the different filters should be connected within the group. <br />
-                      Underneath you select the column which should be filtered and in which form and then you enter the value.
+                      Click here to go to the tutorial page.
                     </div>
                   </Popover.Body>
                 </Popover>
@@ -402,7 +401,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
               */}
               {/*button to tutorial site*/}
               <form action="/tutorial">
-              <button type="submit" className="ml-5 w-[2.5rem] rounded-full border-2 border-solid border-green-900 bg-[#9DC88D] px-1 py-1 text-lg text-white shadow-md">
+              <button type="submit" className="ml-5 w-[2.5rem] rounded-full border-2 border-solid border-green-900 bg-[#9DC88D] px-1 py-1 text-lg text-white shadow-md hover:bg-[#87ad78] active:bg-[#9fc591]">
                 ?
               </button>
               </form>
@@ -488,7 +487,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             i
           ) => (
             <div key={i}>
-              <div className="my-1 ml-5 flex flex-row">
+              <div className="my-1 ml-5 -mr-3 flex flex-row ">
                 {/* Render the column select component */}
                 <ColSelect
                   col={filterState.col}

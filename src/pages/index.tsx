@@ -243,35 +243,35 @@ const Content: React.FC = () => {
             <Image
               src="/facebook.png"
               alt=""
-              className="mx-4"
+              className="mx-auto"
               width={32}
               height={60}
             />
             <Image
               src="/twitter.png"
               alt=""
-              className="mx-4"
+              className="mx-auto"
               width={75}
               height={60}
             />
             <Image
               src="/youtube.png"
               alt=""
-              className="mx-4"
+              className="mx-auto"
               width={75}
               height={60}
             />
             <Image
               src="/instagram.png"
               alt=""
-              className="mx-4"
+              className="mx-auto"
               width={60}
               height={60}
             />
             <Image
               src="/linkedin.png"
               alt=""
-              className="mx-4"
+              className="mx-auto"
               width={66}
               height={60}
             />

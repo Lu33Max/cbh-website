@@ -394,49 +394,7 @@ const Content: React.FC = () => {
               </div>
             </div>
 
-            <div>
-              <div className={`grid ${
-                showCategories ? "mt-4 grid-rows-[2fr]" : "grid-rows-[0fr]"
-              } transition-all ease-in-out duration-300`}>
-                  <div className="flex w-full flex-wrap overflow-hidden">
-                    {gridData.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex w-1/6 flex-col items-start p-4"
-                      >
-                        <button
-                          value={item?.label}
-                          onClick={(e) => {
-                            setCategoryQuery(e.currentTarget.value);
-                            setShowCategories(!showCategories);
-                          }}
-                        >
-                          <b>{item.label}</b>
-                        </button>
-                        <Image
-                          src={item.src}
-                          alt={item.label}
-                          width="100"
-                          height="100"
-                          className="py-2"
-                        />
-                        {item.subs.map((sub, i) => (
-                          <button
-                            key={`sub-${item.id}-${i}`}
-                            value={sub}
-                            onClick={(e) => {
-                              setCategoryQuery(e.currentTarget.value);
-                              setShowCategories(!showCategories);
-                            }}
-                          >
-                            {sub}
-                          </button>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-            </div>
+            
           </>
         )}
 
@@ -1030,6 +988,50 @@ const Content: React.FC = () => {
               </div>
             </div>
           </div>
+
+          <div>
+              <div className={`grid ${
+                showCategories ? "mt-4 grid-rows-[2fr]" : "grid-rows-[0fr]"
+              } transition-all ease-in-out duration-300`}>
+                  <div className="flex w-full flex-wrap overflow-hidden">
+                    {gridData.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex w-1/6 flex-col items-center p-4"
+                      >
+                        <button
+                          value={item?.label}
+                          onClick={(e) => {
+                            setCategoryQuery(e.currentTarget.value);
+                            setShowCategories(!showCategories);
+                          }}
+                        >
+                          <b>{item.label}</b>
+                        </button>
+                        <Image
+                          src={item.src}
+                          alt={item.label}
+                          width="100"
+                          height="100"
+                          className="py-2"
+                        />
+                        {item.subs.map((sub, i) => (
+                          <button
+                            key={`sub-${item.id}-${i}`}
+                            value={sub}
+                            onClick={(e) => {
+                              setCategoryQuery(e.currentTarget.value);
+                              setShowCategories(!showCategories);
+                            }}
+                          >
+                            {sub}
+                          </button>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+            </div>
 
           {/* Displaying active filters */}
           <div className="overflow-hidden mt-3">
