@@ -123,7 +123,6 @@ const Content: React.FC = () => {
   const [showCategories, setShowCategories] = useState<boolean>(false);
 
   const [isPriceActive, setIsPriceActive] = useState(false);
-
   const [isGeneralDataActive, setIsGeneralDataActive] = useState(false);
   const [isQuantityActive, setIsQuantityActive] = useState(false);
   const [isLabActive, setIsLabActive] = useState(false);
