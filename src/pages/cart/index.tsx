@@ -13,7 +13,7 @@ const Home: NextPage = () => {
       <Head>
         <title>Central BioHub</title>
         <meta name="description" content="Central BioHub - Cart" />
-        <link rel="icon" href="/CBH Logo.png" />
+        <link rel="icon" href="/CBH_Logo_NoText.png" />
       </Head>
 
       <div className="fixed max-h-full min-h-full min-w-full max-w-full overflow-hidden bg-gray-100">
