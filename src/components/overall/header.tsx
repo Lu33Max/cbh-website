@@ -126,6 +126,7 @@ const Header: React.FC = () => {
             className={`z-[999] flex w-[100px] flex-row justify-center text-center ${
               buttonClicked ? "text-white" : `text-${contactColor}`
             }`}
+            onClick={() => void router.push("/about")}
           >
             Contact
           </button>
