@@ -282,6 +282,7 @@ const ExpertSearch: NextPage = () => {
             />
           </div>
           <div className="mx-4 my-2">
+            {/*table*/}
             {isLoading === false && (
               <>
                 <Table
@@ -296,6 +297,7 @@ const ExpertSearch: NextPage = () => {
                 />
               </>
             )}
+            {/*loading symbol*/}
             {isLoading === true && (
               <>
                 <div
@@ -988,24 +990,29 @@ function ChooseValues(props: {
   activated: State<boolean>;
   filterActivated: State<boolean>;
 }) {
+  // Extracting props using useHookstate
   const type = useHookstate(props.type);
   const values = useHookstate(props.values);
   const col = useHookstate(props.col);
 
   const empty = useHookstate("");
 
+  // Function to set a single value
   function SetValues(value: string): void {
     values.set([value]);
   }
 
+  // Function to set the minimum value (for 'between' type)
   function SetMinValue(value: string): void {
     values.set((a) => [value, a[1] ?? ""]);
   }
 
+  // Function to set the maximum value (for 'between' type)
   function SetMaxValue(value: string): void {
     values.set((a) => [a[0] ?? "", value]);
   }
 
+  // Function to add a value to the list (for 'in' type)
   function AddToValues(value: string): void {
     if (!values.value.find((v) => v === value)) {
       values.set((v) => (v || []).concat([value]));
@@ -1015,6 +1022,7 @@ function ChooseValues(props: {
   return (
     <>
       <div className="w-full">
+        {/* Render autocomplete based on the type */}
         {type.value !== "between" && type.value !== "in" && (
               <div id={"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"} className="">
               <AutoComplete

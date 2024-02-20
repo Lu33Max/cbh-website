@@ -37,7 +37,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   };
 
   useEffect(() => {
-    // Hier wird der lokale State aktualisiert, wenn sich der externe Wert ändert
+    // change local state if extern state changes 
     setInput(props.value.get() || '');
   }, [props.value]);
 

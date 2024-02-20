@@ -177,16 +177,23 @@ const Content: React.FC = () => {
   }, [filter, categoryQuery]);
 
   function handleFilterChange(value: string, column: string): void {
+    // Define a type representing the keys of the INormalFilter interface
     type FilterKey = keyof INormalFilter;
 
     if (column in filter) {
       const temp = filter[column as FilterKey];
+
+      // Check if the accessed filter object has a 'value' property that is an array
       if (
         "value" in temp &&
         Array.isArray(temp.value) &&
+        // Ensure the value is not already in the array
         !temp.value.find((e) => e === value)
       ) {
+        // Add the new value to the 'value' array of the filter object
         temp.value.push(value);
+
+        // Update the filter state with the modified filter object
         setFilter((filter) => ({ ...filter, [column]: temp }));
       }
     }
@@ -439,6 +446,7 @@ const Content: React.FC = () => {
           </>
         )}
 
+        {/*Modals to save and load filter*/}
         <ModalSave
           showModal={showSave}
           setShowModal={setShowSave}
@@ -1479,6 +1487,7 @@ const Content: React.FC = () => {
       </div>
 
       <div className="mx-4 my-2">
+        {/*table*/}
         {isLoading === false &&
         <Table
           page={page}
@@ -1491,6 +1500,7 @@ const Content: React.FC = () => {
           filterNormal={filter}
         />
         }
+        {/*loading symbol*/}
         {isLoading === true &&
           <>
           <div className="w-full flex flex-row justify-center" role="status">
