@@ -99,14 +99,20 @@ const ExpertSearch: NextPage = () => {
   }, [f]);
 
   function applyFilter() {
+
+    // Perform a redirection using router.push with the current filter state
     void router.push(
       `${pathname}?f=${encodeURIComponent(JSON.stringify(state.value))}`,
       undefined,
       { shallow: true }
     );
+
+    // Parse the filter state using GroupSchema to ensure it matches the schema
     const result = GroupSchema.safeParse(
       JSON.parse(JSON.stringify(state.value))
     );
+
+    // If parsing is successful, update the filter state with the parsed data
     if (result.success) {
       setNewFilter(result.data);
     }
@@ -416,11 +422,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
                 </Popover>
               }
             >
-              {/*
-              <button className="ml-5 w-[2.5rem] rounded-full border-2 border-solid border-green-900 bg-[#9DC88D] px-1 py-1 text-lg text-white shadow-md">
-                ?
-              </button>
-              */}
+
               {/*button to tutorial site*/}
               <form action="/tutorial">
                 <button
@@ -433,6 +435,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             </OverlayTrigger>
           </div>
           <div className="flex w-[50%] flex-row items-center justify-end pr-3">
+
             {/* Button to add a new group */}
             <button
               className="w-[10rem] whitespace-nowrap rounded-l-2xl border-2 border-solid border-[#9DC88D] bg-[#9DC88D] px-4 py-1 text-center text-lg text-white"
@@ -459,6 +462,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             >
               New Group
             </button>
+
             {/* Button to add a new filter rule */}
             <button
               className="w-[10rem] whitespace-nowrap border-2 border-solid border-y-[#9DC88D] bg-[#9DC88D] px-4 py-1 text-center text-lg text-white"
@@ -478,6 +482,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             >
               New Rule
             </button>
+
             {/* Button to toggle the activated state of the group */}
             <button
               className="w-[10rem] whitespace-nowrap rounded-r-2xl border-2 border-solid border-orange-400 bg-orange-400 px-4 py-1 text-center text-lg text-white"
@@ -487,6 +492,7 @@ function InitialContentEditor(props: { self: State<IGroup> }) {
             >
               {self.activated.value ? "deactivate" : "activate"}
             </button>
+            
             {/* Button to toggle the optional state of the group */}
             <button
               className="relative w-fit whitespace-nowrap rounded-2xl bg-[#F1B24A] px-3 py-1 text-center text-lg text-white outline-none transition hover:bg-[#e8b25b]"

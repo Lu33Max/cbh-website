@@ -30,6 +30,8 @@ const Content: React.FC = () => {
   const windowSize = useWindowSize();
 
   return (
+
+    // tutorial page for the expert search
     <div className="max-h-[calc(100vh-80px)] overflow-x-hidden overflow-y-scroll font-poppins">
       <div className="mt-10 flex w-full flex-row items-center justify-center">
         <div className="m-5  h-3 w-full rounded-3xl border-gray-400"></div>
@@ -52,6 +54,7 @@ const Content: React.FC = () => {
             className="z-20 cursor-pointer"
       />
 
+      {/*Description of differnt combinations of the filters*/}
       <div className="flex w-[50%] flex-row items-center justify-start mt-8">
             {/* Button to toggle the NOT state */}
             <button
@@ -77,6 +80,7 @@ const Content: React.FC = () => {
         Underneath you select the column which should be filtered and in which form and then you enter the value.
       </div>
 
+      {/* Description how to add new filters and groups and how the deactivate and optional button works*/}
       <div className="flex w-[50%] flex-row items-center justify-start ml-5 mt-14">
             {/* Button to add a new group */}
             <button
@@ -138,6 +142,7 @@ const Content: React.FC = () => {
             </div>
           </div>         
       
+      {/* Description of different input fields*/}
       <div className="mt-14">
       <Image
               src="/expertSearchRule.png"

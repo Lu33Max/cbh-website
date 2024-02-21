@@ -162,7 +162,12 @@ const Content: React.FC = () => {
   }, [f]);
 
   useEffect(() => {
+
+    // Check if the current filter object differs from the default filter object
     if (!(JSON.stringify(filter) === JSON.stringify(defaultFilter))) {
+
+      // If the filter object is not equal to the default filter object,
+      // perform a redirection using router.push
       void router.push(
         `${pathname}?${
           search ? `q=${encodeURIComponent(search)}&` : ""
@@ -282,6 +287,7 @@ const Content: React.FC = () => {
           </p>
         )}
 
+        {/*hierarchy tree*/}
         <div className="mb-4 mt-2 flex flex-row items-center text-3xl font-extralight">
           <Link className="relative top-1" href={"/"}>
             <BiHome />
@@ -401,6 +407,7 @@ const Content: React.FC = () => {
             </div>
 
             <div>
+              {/*shows different categories*/}
               <div className={`grid ${
                 showCategories ? "mt-4 grid-rows-[2fr]" : "grid-rows-[0fr]"
               } transition-all ease-in-out duration-300`}>

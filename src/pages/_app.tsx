@@ -12,6 +12,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  // Returning the JSX for the app
   return (
     <SessionProvider session={session}>
       <CartProvider>

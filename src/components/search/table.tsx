@@ -196,13 +196,22 @@ const Table: React.FC<props> = ({
   }, [filterState]);
 
   useEffect(() => {
+    // Initialize an empty array to store the new range
     const newRange = [];
+
+    // Check if count is defined and not null
     if (count !== undefined && count !== null) {
+      // Calculate the number of pages based on count and page length
       const num = Math.ceil(count / pagelength);
+      
+      // Loop through the calculated number of pages
       for (let i = 1; i <= num; i++) {
+        // Push each page number to the new range array
         newRange.push(i);
       }
     }
+
+    // Update the range state with the new range
     setRange(newRange);
   }, [count, pagelength]);
 
@@ -496,39 +505,47 @@ const Table: React.FC<props> = ({
   }, [optionalSamples]);
 
   const updateState = (index: number) => {
+    // Create a new array by mapping over the 'show' array
     const newArray = show.map((item, i) => {
-      if (index === i) {
-        return !item;
-      } else {
-        return item;
-      }
+        // If the index matches the current iteration index, toggle the value
+        if (index === i) {
+            return !item;
+        } else {
+            return item;
+        }
     });
+
+    // Update the 'show' state with the new array
     setShow(newArray);
-  };
+};
 
   function getProperty<T, K extends keyof T>(o: T, propertyName: K): T[K] {
     return o[propertyName];
   }
 
   const handleSort = (column: SampleKey) => {
-    let sortArray: IOptionalTableSample[] = [];
+    // Create a copy of the tableSamples array to avoid mutating the original array
+    let sortArray: IOptionalTableSample[] = [...tableSamples];
 
-    sortArray = [...tableSamples].sort(
-      (a: IOptionalTableSample, b: IOptionalTableSample) => {
+    // Sort the copied array based on the specified column
+    sortArray = sortArray.sort((a: IOptionalTableSample, b: IOptionalTableSample) => {
+        // Retrieve the values of the specified column for the two samples
         const a1 = getProperty(a.data, column);
         const b1 = getProperty(b.data, column);
 
+        // Compare the values and perform sorting
         if (a1 !== null && b1 !== null) {
-          if (a1 > b1) return column == sortBy ? -1 : 1;
-          else if (b1 > a1) return column == sortBy ? 1 : -1;
-          return 0;
+            if (a1 > b1) return column == sortBy ? -1 : 1; // Sort in descending order if the column is already sorted by the same column, otherwise sort in ascending order
+            else if (b1 > a1) return column == sortBy ? 1 : -1; // Sort in ascending order if the column is already sorted by the same column, otherwise sort in descending order
+            return 0; // Return 0 if values are equal
         }
-        return -1;
-      }
-    );
+        return -1; // Return -1 if either value is null
+    });
 
+    // Update the tableSamples state with the sorted array
     setTableSamples(sortArray);
-  };
+};
+
 
   function showColumns(column: string): void {
     if (settings.activeColumns.find((c) => c === column)) {
@@ -539,28 +556,28 @@ const Table: React.FC<props> = ({
   }
 
   function sortColumns(arrayToSort: string[]): string[] {
+    // Initialize a new array to store the sorted columns
     let sortArray: string[] = [];
 
+    // Create a copy of the input array to avoid mutating the original array
     sortArray = [...arrayToSort].sort((a: string, b: string) => {
-      if (
-        Object.getOwnPropertyNames(SampleSchema.shape).findIndex(
-          (i) => i === a
-        ) >
-        Object.getOwnPropertyNames(SampleSchema.shape).findIndex((i) => i === b)
-      )
-        return 1;
-      else if (
-        Object.getOwnPropertyNames(SampleSchema.shape).findIndex(
-          (i) => i === b
-        ) >
-        Object.getOwnPropertyNames(SampleSchema.shape).findIndex((i) => i === a)
-      )
-        return -1;
-      return 0;
+        // Compare the indices of columns in the SampleSchema.shape object
+        // Get the index of column 'a' in the SampleSchema.shape object
+        const indexA = Object.getOwnPropertyNames(SampleSchema.shape).findIndex((i) => i === a);
+        // Get the index of column 'b' in the SampleSchema.shape object
+        const indexB = Object.getOwnPropertyNames(SampleSchema.shape).findIndex((i) => i === b);
+
+        // Compare the indices and return the sorting order
+        if (indexA > indexB)
+            return 1;
+        else if (indexB > indexA)
+            return -1;
+        return 0; // If indices are equal, maintain the order
     });
 
-    return sortArray
-  }
+    return sortArray;
+}
+
 
   function addSamplesToCart() {
     const tempArray: IOptionalTableSample[] = [];

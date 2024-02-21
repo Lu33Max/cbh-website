@@ -53,23 +53,28 @@ const Carousel: React.FC<props> = ({ type, settings, style }) => {
   ];
 
   for (let i = 0; i < categories; i++) {
+    // Create a div element for each category, with a unique key
+    // Attach an onClick event listener to each div to handle category selection
     categoryContents.push(
-      <div
-        key={100 + i}
-        className="flex cursor-pointer flex-col justify-start"
-        onClick={() => category(i)}
-      >
-        <Image
-          className="mx-auto mb-2"
-          src={`/slider/categories/${i + 1}_new.png`}
-          alt={`category${i}`}
-          width={80}
-          height={80}
-        />
-        {categoryLabels[i] || ""}
-      </div>
+        <div
+            key={100 + i} // Unique key for each category
+            className="flex cursor-pointer flex-col justify-start"
+            onClick={() => category(i)}
+        >
+            {/* Display an image for the category */}
+            <Image
+                className="mx-auto mb-2"
+                src={`/slider/categories/${i + 1}_new.png`}
+                alt={`category${i}`}
+                width={80}
+                height={80}
+            />
+            {/* Display the category label, or an empty string if not available */}
+            {categoryLabels[i] || ""}
+        </div>
     );
-  }
+}
+
 
   function category(i: number) {
     const labels = categoryLabels[i];

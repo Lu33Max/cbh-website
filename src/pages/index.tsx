@@ -87,6 +87,7 @@ const Content: React.FC = () => {
           </div>
 
           <div className="justify-center text-center">
+            {/*search input field with submit button*/}
             <div className="mt-10 flex items-center justify-center rounded px-4 py-2">
               <form onSubmit={onSearch}>
                 <input
