@@ -2,18 +2,57 @@
 
 ## Installation
 
-1. Download the repository from Git-Hub
-2. Downlaod and install the lastest version of Visual Studio Code
-3. Download and install Node.js
-4. Create a new .env file by copying the .env.example file
-5. In the new .env file, add the database link and GitHub Client Authentication
-GITHUB_CLIENT_ID="1c0c448d94dd6fc85469"
-GITHUB_CLIENT_SECRET="1972da0b3e2377d01d22a51f48bbc425ccf7261e"
-6. Install packages with the following command in the terminal: npm install
-7. Use npx prisma generate to genereate a new prisma client
+1. Clone the Git repository: Open your command-line interface (e.g., Terminal) and navigate to the directory where you want to download the project. Then, run the following command to clone the repository:
 
-8. Start the website with npm run dev
-9. open localhost:3000 in your browser
+```
+git clone <repository-url>
+```
+
+
+2. Navigate to the project directory: Once the repository is cloned, navigate to the project directory using the following command:
+
+```
+cd <project-directory>
+```
+
+
+3. Install Node.js: Ensure that you have Node.js installed on your machine. If you haven't installed it already, follow these steps:
+
+    1. Visit the official Node.js website [https://nodejs.org](https://nodejs.org) in your web browser.
+    2. Download the appropriate version of Node.js for your operating system (e.g., Windows, macOS, Linux).
+    3. Run the installer and follow the on-screen instructions to complete the installation.
+
+4. Install SQLite:
+
+- Windows:
+  - Visit the SQLite download page [https://www.sqlite.org/download.html](https://www.sqlite.org/download.html) in your web browser.
+  - Under the "Precompiled Binaries for Windows" section, download the appropriate "Precompiled Binaries for Windows" package based on your system architecture (32-bit or 64-bit).
+  - Extract the downloaded package to a directory of your choice.
+  - Add the directory containing the extracted files to your system's PATH environment variable. This allows you to access the `sqlite3` command from anywhere in the command-line interface.
+
+- Linux:
+  - Open your terminal and run the following command to install SQLite:
+    ```
+    sudo apt-get update
+    sudo apt-get install sqlite3
+    ```
+
+5. Install project dependencies: Run the following command to install the project dependencies specified in the `package.json` file:
+```
+npm install
+```
+This command will download and install all the required libraries and dependencies mentioned in the `package.json` file.
+
+6. Configure environment variables: If your project requires any environment variables (such as API keys or database credentials), make sure to set them up in the `.env` file.
+
+7. Start the project: Once the dependencies are installed, start the project using the appropriate command.
+
+```
+npm run dev
+```
+
+8. Access the project: After starting the project, open your web browser and navigate to the URL provided by the project, which is [http://localhost:3000].
+
 
 ## Project Structure
 
@@ -21,7 +60,15 @@ This paragraph is supposed to give you a rough idea of the projekt strukture. Im
 
 - prisma
   - schema.prisma               
-  Contains all models used for data struktures
+  Contains all models used for data structures
+    - generated
+    contains automatically generated files from the database; Types or schemes for the database entries
+    - zod
+    contains schema for the entries, users, filters and everything
+
+- public
+    - Contains all graphics, logos and pictures 
+
 - src
     - common
         - database
@@ -49,8 +96,14 @@ This paragraph is supposed to give you a rough idea of the projekt strukture. Im
             The Header
             - table.tsx         
             The table being displayed on the expert and normal search
+
+    - context
+        - cart.tsx
+        - settigs.tsx
+
     - pages                     
-    Contains all pages used in this project 
+        - Contains all pages used in this project 
+
     - server
     Backend of the project
         - api
@@ -61,8 +114,15 @@ This paragraph is supposed to give you a rough idea of the projekt strukture. Im
             Used to register api controllers
         - auth.ts
         Used to add providers for authentication
+
+    - styles
+    contains style of the pages
+
+    - utils
+    contains smaller scripts that are used again and again in different places
+
 - .env
-Contains basic settings for the project
+    - Contains basic settings for the project 
 
 ## Tech List
 
