@@ -22,30 +22,15 @@ cd <project-directory>
     2. Download the appropriate version of Node.js for your operating system (e.g., Windows, macOS, Linux).
     3. Run the installer and follow the on-screen instructions to complete the installation.
 
-4. Install SQLite:
-
-- Windows:
-  - Visit the SQLite download page [https://www.sqlite.org/download.html](https://www.sqlite.org/download.html) in your web browser.
-  - Under the "Precompiled Binaries for Windows" section, download the appropriate "Precompiled Binaries for Windows" package based on your system architecture (32-bit or 64-bit).
-  - Extract the downloaded package to a directory of your choice.
-  - Add the directory containing the extracted files to your system's PATH environment variable. This allows you to access the `sqlite3` command from anywhere in the command-line interface.
-
-- Linux:
-  - Open your terminal and run the following command to install SQLite:
-    ```
-    sudo apt-get update
-    sudo apt-get install sqlite3
-    ```
-
-5. Install project dependencies: Run the following command to install the project dependencies specified in the `package.json` file:
+4. Install project dependencies: Run the following command to install the project dependencies specified in the `package.json` file:
 ```
 npm install
 ```
 This command will download and install all the required libraries and dependencies mentioned in the `package.json` file.
 
-6. Configure environment variables: If your project requires any environment variables (such as API keys or database credentials), make sure to set them up in the `.env` file.
+5. Configure environment variables: If your project requires any environment variables (such as API keys or database credentials), make sure to set them up in the `.env` file.
 
-7. Start the project: Once the dependencies are installed, start the project using the appropriate command.
+6. Start the project: Once the dependencies are installed, start the project using the appropriate command.
 
 ```
 npm run dev
