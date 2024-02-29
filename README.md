@@ -41,7 +41,7 @@ npm run dev
 
 ## Project Structure
 
-This paragraph is supposed to give you a rough idea of the projekt strukture. Important files are being listed and described here.
+This paragraph is supposed to give you a rough idea of the projekt structure. Important files are being listed and described here.
 
 - prisma
   - schema.prisma               
@@ -113,49 +113,49 @@ This paragraph is supposed to give you a rough idea of the projekt strukture. Im
 
 The following list containst all used technologies and their license
 
-- @builder.io/react MIT
-- @hookstate/core MIT
-- @next-auth/prisma-adapter ISC
-- @nextui-org/react MIT
-- @prisma/client    Apache-2.0
-- @tanstack/react-query MIT
-- @trendyol-js/react-carousel MIT
-- @trpc/client MIT
-- @trpc/next MIT
-- @trpc/react-query MIT
-- @trpc/server MIT
-- @types/crypto-js MIT
-- @types/react-native-snap-carousel MIT
-- caniuse-lite  CC-BY-4.0
-- crypto-js MIT
-- next MIT
-- next-auth ISC
-- react MIT
-- react-bootstrap MIT
-- react-dom MIT
-- react-icons MIT
-- react-slick MIT
-- slick-carousel MIT
-- superjson MIT
-- zod MIT
-- zod-prisma-types MIT
-- @types/eslint MIT
-- @types/node MIT
-- @types/prettier MIT
-- @types/react MIT
-- @types/react-dom MIT
-- @types/react-slick MIT
-- @typescript-eslint/eslint-plugin MIT
-- @typescript-eslint/parser BSD-2-Clause
-- autoprefixer MIT
-- eslint MIT
-- eslint-config-next MIT
-- postcss MIT
-- prettier MIT
-- prettier-plugin-tailwindcss MIT
-- prisma Apache-2.0
-- tailwindcss MIT
-- typescript Apache-2.0
+- @hookstate/core@4.0.1                     MIT
+- @next-auth/prisma-adapter@1.0.7           ISC
+- @nextui-org/react@1.0.0-beta.9-dbg2       MIT
+- @preact/signals-react@1.3.8               MIT
+- @prisma/client@4.16.2                     Apache-2.0
+- @tanstack/react-query@4.36.1              MIT
+- @trendyol-js/react-carousel@3.0.2         MIT
+- @trpc/client@10.45.1                      MIT
+- @trpc/next@10.45.1                        MIT
+- @trpc/react-query@10.45.1                 MIT
+- @trpc/server@10.45.1                      MIT
+- @types/crypto-js@4.2.2                    MIT
+- @types/eslint@8.56.3                      MIT
+- @types/node@18.19.18                      MIT
+- @types/prettier@2.7.3                     MIT
+- @types/react-dom@18.2.19                  MIT
+- @types/react-native-snap-carousel@3.8.10  MIT
+- @types/react-slick@0.23.13                MIT
+- @types/react@18.2.58                      MIT
+- @typescript-eslint/eslint-plugin@5.62.0   MIT
+- @typescript-eslint/parser@5.62.0          BSD-2-Clause
+- autoprefixer@10.4.17                      MIT
+- caniuse-lite@1.0.30001589                 CC-BY-4.0
+- crypto-js@4.2.0                           MIT
+- eslint-config-next@13.5.6                 MIT
+- eslint@8.57.0                             MIT
+- next-auth@4.24.6                          ISC
+- next@13.5.6                               MIT
+- postcss@8.4.35                            MIT
+- prettier-plugin-tailwindcss@0.2.8         MIT
+- prettier@2.8.8                            MIT
+- prisma@4.16.2                             Apache-2.0
+- react-bootstrap@2.10.1                    MIT
+- react-dom@18.2.0                          MIT
+- react-icons@4.12.0                        MIT
+- react-slick@0.29.0                        MIT
+- react@18.2.0                              MIT
+- slick-carousel@1.8.1                      MIT
+- superjson@1.12.2                          MIT
+- tailwindcss@3.4.1                         MIT
+- typescript@5.3.3                          Apache-2.0
+- zod-prisma-types@2.8.1                    MIT
+- zod@3.22.4                                MIT
 
 
 
