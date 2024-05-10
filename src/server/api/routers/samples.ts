@@ -435,12 +435,12 @@ export const sampleRouter = createTRPCRouter({
   update: publicProcedure
     .input(SampleSchema)
     .mutation(({ ctx, input }) => {
-    return ctx.prisma.samples.update({
-      where: {
-        id: input.id,
-      },
-      data: input,
-    });
+      return ctx.prisma.samples.update({
+        where: {
+          id: input.id,
+        },
+        data: input,
+      });
     }),
 
   // Delete
