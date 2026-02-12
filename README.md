@@ -1,5 +1,9 @@
 # Documentation
 
+## The project
+
+This project was realized by group of Media Informatics students at the University of Applied Sciences Mittweida as part of the four semester long "Sciences & Economics" module. The goal was to redesign the existing website of our partnered e-commerce company by showing the capabilities of a more modern technology stack than what was still present within their company structure. Beyond the basic design special attention was also given to the advanced sorting and filtering logic for products that allows for a recursive connection of filter options for maximized control down to the tiniest detail.
+
 ## Installation
 
 1. Clone the Git repository: Open your command-line interface (e.g., Terminal) and navigate to the directory where you want to download the project. Then, run the following command to clone the repository:
@@ -41,7 +45,7 @@ npm run dev
 
 ## Project Structure
 
-This paragraph is supposed to give you a rough idea of the projekt structure. Important files are being listed and described here.
+This paragraph is supposed to give you a rough idea of the project structure. Important files are being listed and described here.
 
 - prisma
   - schema.prisma               
